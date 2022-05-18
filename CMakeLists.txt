@@ -9,15 +9,20 @@ if(NOT MSVC)
 endif()
 
 if(MSVC)
-	add_definitions(/MP /openmp)
-	
-	find_library(OpenCL_LIBRARY OpenCL HINTS ${OpenCL_LIBRARIES})
+	add_definitions(/openmp ${CUSTOM_ADD_DEFINITIONS})
 
+	if(NOT MMX_VERSION MATCHES "^v([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
+		string(TIMESTAMP BUILD_TIMESTAMP "%Y%m%d")
+		set(MMX_VERSION "v0.0.0-${BUILD_TIMESTAMP}-nightly")
+	endif()
+
+	message(STATUS "MMX_VERSION=${MMX_VERSION}")
+	
 	find_library(secp256k1_LIBRARY secp256k1 HINTS ${secp256k1_LIBRARIES})
 	add_library(secp256k1 INTERFACE IMPORTED)
 	set_target_properties(secp256k1 PROPERTIES INTERFACE_LINK_LIBRARIES ${secp256k1_LIBRARY})
 
-	set(MMXIFACE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "")	
+	set(MMXIFACE_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "")
 endif()
 
 set(ARITH "easy" CACHE STRING "BLS ARITH")
@@ -207,3 +212,7 @@ add_executable(tx_bench src/tx_bench.cpp)
 
 target_link_libraries(tx_bench mmx_iface)
 
+
+if (MSVC)
+include(cmake/win_pack.cmake)
+endif()
