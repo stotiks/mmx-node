@@ -562,7 +562,7 @@ app.component('address-view', {
 	},
 	template: `
 		<div class="ui large labels">
-			<div class="ui horizontal label">Address</div>
+			<div class="ui horizontal label">Address</div>&nbsp;
 			<div class="ui horizontal label">{{address}}</div>
 		</div>
 		<balance-table :address="address" :show_empty="true"></balance-table>

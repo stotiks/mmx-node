@@ -86,7 +86,7 @@ app.component('account-header', {
 	},
 	template: `
 		<div class="ui large labels">
-			<div class="ui horizontal label">Wallet #{{index}}</div>
+			<div class="ui horizontal label">Wallet #{{index}}</div>&nbsp;
 			<div class="ui horizontal label">{{address}}</div>
 		</div>
 		`
@@ -402,7 +402,7 @@ app.component('account-contract-summary', {
 	template: `
 		<div class="ui raised segment">
 			<div class="ui large labels">
-				<div class="ui horizontal label">{{contract.__type}}</div>
+				<div class="ui horizontal label">{{contract.__type}}</div>&nbsp;
 				<div class="ui horizontal label">{{address}}</div>
 			</div>
 			<object-table :data="contract"></object-table>
