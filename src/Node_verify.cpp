@@ -68,10 +68,7 @@ void Node::verify_proof(std::shared_ptr<fork_t> fork, const hash_t& vdf_challeng
 	if(!prev || !diff_block) {
 		throw std::logic_error("cannot verify");
 	}
-	if(!block->is_valid()) {
-		throw std::logic_error("invalid block");
-	}
-	block->validate();
+	// Note: block->is_valid() & block->validate() already called in pre-validate step
 
 	if(block->vdf_iters != prev->vdf_iters + diff_block->time_diff * params->time_diff_constant) {
 		throw std::logic_error("invalid vdf_iters");
@@ -110,12 +107,11 @@ uint64_t Node::get_virtual_plot_balance(const addr_t& plot_id, const vnx::option
 		throw std::logic_error("no such block");
 	}
 	const auto root = get_root();
-	const auto height = block->height;
-	const auto since = height - std::min(params->virtual_lifetime, height);
+	const auto since = block->height - std::min(params->virtual_lifetime, block->height);
 
 	uint128_t balance = 0;
 	for(const auto& entry : get_history({plot_id}, since)) {
-		if(entry.contract == addr_t() && entry.height <= std::min(root->height, height)) {
+		if(entry.contract == addr_t() && entry.height <= std::min(root->height, block->height)) {
 			switch(entry.type) {
 				case tx_type_e::REWARD:
 				case tx_type_e::RECEIVE:
@@ -126,7 +122,7 @@ uint64_t Node::get_virtual_plot_balance(const addr_t& plot_id, const vnx::option
 	}
 	while(fork) {
 		const auto& block = fork->block;
-		if(block->height < since) {
+		if(block->height <= root->height || block->height < since) {
 			break;
 		}
 		for(const auto& tx : block->get_all_transactions()) {
@@ -187,7 +183,7 @@ void Node::verify_proof(	std::shared_ptr<const ProofOfSpace> proof, const hash_t
 		throw std::logic_error("invalid proof type");
 	}
 	if(score != proof->score) {
-		throw std::logic_error("proof score mismatch");
+		throw std::logic_error("proof score mismatch: expected " + std::to_string(proof->score) + " but got " + score.str(10));
 	}
 	if(score >= params->score_threshold) {
 		throw std::logic_error("score >= score_threshold");
@@ -291,7 +287,7 @@ void Node::verify_vdf(std::shared_ptr<const ProofOfTime> proof, const uint32_t c
 
 void Node::verify_vdf_success(std::shared_ptr<const ProofOfTime> proof, std::shared_ptr<vdf_point_t> point)
 {
-	if(verified_vdfs.count(proof->height) == 0) {
+	if(is_synced && !verified_vdfs.count(proof->height)) {
 		log(INFO) << "-------------------------------------------------------------------------------";
 	}
 	verified_vdfs.emplace(proof->height, point);
@@ -301,7 +297,7 @@ void Node::verify_vdf_success(std::shared_ptr<const ProofOfTime> proof, std::sha
 	if(elapsed > params->block_time) {
 		log(WARN) << "VDF verification took longer than block interval, unable to keep sync!";
 	}
-	else if(elapsed > 0.7 * params->block_time) {
+	else if(elapsed > 0.5 * params->block_time) {
 		log(WARN) << "VDF verification took longer than recommended: " << elapsed << " sec";
 	}
 
@@ -315,15 +311,13 @@ void Node::verify_vdf_success(std::shared_ptr<const ProofOfTime> proof, std::sha
 			(prev ? ", delta = " + std::to_string((point->recv_time - prev->recv_time) / 1e6) + " sec" : "") << ", took " << elapsed << " sec";
 
 	// add dummy blocks
-	{
-		std::vector<std::shared_ptr<const Block>> blocks;
-		for(const auto& entry : fork_index) {
-			blocks.push_back(entry.second->block);
-		}
-		for(const auto& prev : blocks) {
-			add_dummy_blocks(prev);
-		}
-		add_dummy_blocks(get_root());
+	const auto root = get_root();
+	if(proof->height == root->height + 1) {
+		add_dummy_blocks(root);
+	}
+	const auto range = fork_index.equal_range(proof->height - 1);
+	for(auto iter = range.first; iter != range.second; ++iter) {
+		add_dummy_blocks(iter->second->block);
 	}
 	add_task(std::bind(&Node::update, this));
 }

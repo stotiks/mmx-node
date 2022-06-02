@@ -12,7 +12,7 @@
 
 namespace mmx {
 
-hash_t TransactionBase::calc_hash() const {
+hash_t TransactionBase::calc_hash(const vnx::bool_t& full_hash) const {
 	return id;
 }
 
@@ -51,7 +51,7 @@ vnx::bool_t Transaction::is_valid() const
 			&& (!parent || parent->is_valid()) && calc_hash() == id;
 }
 
-hash_t Transaction::calc_hash() const
+hash_t Transaction::calc_hash(const vnx::bool_t& full_hash) const
 {
 	std::vector<uint8_t> buffer;
 	vnx::VectorOutputStream stream(&buffer);
@@ -62,7 +62,7 @@ hash_t Transaction::calc_hash() const
 	write_bytes(out, get_type_hash());
 	write_field(out, "version", version);
 	write_field(out, "expires", expires);
-	write_field(out, "fee_ratio", 	fee_ratio);
+	write_field(out, "fee_ratio", fee_ratio);
 	write_field(out, "note", 	note);
 	write_field(out, "nonce", 	nonce);
 	write_field(out, "salt", 	salt);
@@ -72,12 +72,17 @@ hash_t Transaction::calc_hash() const
 	write_bytes(out, "execute");
 	write_bytes(out, uint64_t(execute.size()));
 	for(const auto& op : execute) {
-		write_bytes(out, op ? op->calc_hash() : hash_t());
+		write_bytes(out, op ? op->calc_hash(full_hash) : hash_t());
 	}
-	write_field(out, "deploy", deploy ? deploy->calc_hash() : hash_t());
-	write_field(out, "parent", parent ? parent->calc_hash() : hash_t());
+	write_field(out, "deploy", deploy ? deploy->calc_hash(full_hash) : hash_t());
+	write_field(out, "parent", parent ? parent->calc_hash(full_hash) : hash_t());
 	write_field(out, "is_extendable", is_extendable);
 
+	if(full_hash) {
+		for(const auto& sol : solutions) {
+			write_bytes(out, sol ? sol->calc_hash() : hash_t());
+		}
+	}
 	out.flush();
 
 	return hash_t(buffer);

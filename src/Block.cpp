@@ -23,7 +23,7 @@ vnx::bool_t Block::is_valid() const
 			&& tx_count == tx_list.size() && calc_tx_hash() == tx_hash;
 }
 
-mmx::hash_t Block::calc_tx_hash() const
+hash_t Block::calc_tx_hash() const
 {
 	std::vector<uint8_t> buffer;
 	vnx::VectorOutputStream stream(&buffer);
@@ -32,6 +32,7 @@ mmx::hash_t Block::calc_tx_hash() const
 	buffer.reserve(1024 * 1024);
 
 	for(const auto& tx : tx_list) {
+		// TODO: use full hash
 		write_bytes(out, tx ? tx->calc_hash() : hash_t());
 	}
 	out.flush();
@@ -84,9 +85,6 @@ void Block::validate() const
 	if(!farmer_sig) {
 		if(nonce) {
 			throw std::logic_error("invalid block nonce");
-		}
-		if(proof) {
-			// TODO: throw std::logic_error("proof without farmer_sig");
 		}
 		if(tx_base || tx_list.size()) {
 			throw std::logic_error("cannot have transactions");

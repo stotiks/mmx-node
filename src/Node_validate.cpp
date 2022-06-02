@@ -209,7 +209,7 @@ std::shared_ptr<Node::execution_context_t> Node::validate(std::shared_ptr<const 
 		throw std::logic_error("invalid space_diff adjust");
 	}
 	const auto diff_block = get_diff_header(block);
-	const auto weight = calc_block_weight(params, diff_block, block->proof, block->farmer_sig);
+	const auto weight = calc_block_weight(params, diff_block, block, block->farmer_sig);
 	if(block->weight != weight) {
 		throw std::logic_error("invalid block weight: " + block->weight.str(10) + " != " + weight.str(10));
 	}
@@ -488,10 +488,10 @@ void Node::validate(std::shared_ptr<const Transaction> tx,
 		if(tx->deploy) {
 			throw std::logic_error("coin base cannot deploy");
 		}
-		if(!tx->inputs.empty()) {
+		if(tx->inputs.size()) {
 			throw std::logic_error("coin base cannot have inputs");
 		}
-		if(!tx->execute.empty()) {
+		if(tx->execute.size()) {
 			throw std::logic_error("coin base cannot have operations");
 		}
 		if(tx->note != tx_note_e::REWARD) {
@@ -514,6 +514,9 @@ void Node::validate(std::shared_ptr<const Transaction> tx,
 		}
 		if(tx->is_extendable) {
 			throw std::logic_error("coin base cannot be extendable");
+		}
+		if(tx->solutions.size()) {
+			throw std::logic_error("coin base cannot have solutions");
 		}
 	} else {
 		if(tx->note == tx_note_e::REWARD) {

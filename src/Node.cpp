@@ -595,8 +595,9 @@ std::shared_ptr<const Contract> Node::get_contract_at(const addr_t& address, con
 		contract = tx->deploy;
 	}
 	if(contract) {
+		const auto root = get_root();
 		std::vector<vnx::Object> mutations;
-		if(mutate_log.find_range(std::make_pair(address, 0), std::make_pair(address, block->height + 1), mutations)) {
+		if(mutate_log.find_range(std::make_pair(address, 0), std::make_pair(address, std::min(root->height, block->height) + 1), mutations)) {
 			auto copy = vnx::clone(contract);
 			for(const auto& method : mutations) {
 				copy->vnx_call(vnx::clone(method));
@@ -647,42 +648,6 @@ std::map<addr_t, std::shared_ptr<const Contract>> Node::get_contracts_by(const s
 		}
 	}
 	return res;
-}
-
-void Node::add_block(std::shared_ptr<const Block> block)
-{
-	if(fork_tree.count(block->hash)) {
-		return;
-	}
-	const auto root = get_root();
-	if(block->height <= root->height) {
-		return;
-	}
-	if(!block->is_valid()) {
-		return;
-	}
-	auto fork = std::make_shared<fork_t>();
-	fork->recv_time = vnx::get_wall_time_micros();
-	fork->block = block;
-	add_fork(fork);
-}
-
-void Node::add_transaction(std::shared_ptr<const Transaction> tx, const vnx::bool_t& pre_validate)
-{
-	if(!tx->is_valid()) {
-		throw std::logic_error("invalid tx");
-	}
-	if(tx_pool.count(tx->id)) {
-		return;
-	}
-	if(pre_validate) {
-		validate(tx);
-	}
-	tx_pool[tx->id].tx = tx;
-
-	if(!vnx_sample) {
-		publish(tx, output_transactions);
-	}
 }
 
 uint128 Node::get_balance(const addr_t& address, const addr_t& currency, const uint32_t& min_confirm) const
@@ -944,6 +909,43 @@ void Node::http_request_chunk_async(std::shared_ptr<const vnx::addons::HttpReque
 	throw std::logic_error("not implemented");
 }
 
+void Node::add_block(std::shared_ptr<const Block> block)
+{
+	auto fork = std::make_shared<fork_t>();
+	fork->recv_time = vnx::get_wall_time_micros();
+	fork->block = block;
+
+	if(block->farmer_sig) {
+		pending_forks.push_back(fork);
+	}
+	else if(block->is_valid()) {
+		block->validate();
+		add_fork(fork);
+	}
+}
+
+void Node::add_fork(std::shared_ptr<fork_t> fork)
+{
+	if(auto block = fork->block) {
+		if(fork_tree.emplace(block->hash, fork).second) {
+			fork_index.emplace(block->height, fork);
+			add_dummy_blocks(block);
+		}
+	}
+}
+
+void Node::add_transaction(std::shared_ptr<const Transaction> tx, const vnx::bool_t& pre_validate)
+{
+	if(pre_validate) {
+		validate(tx);
+	}
+	pending_transactions[tx->calc_hash(true)] = tx;
+
+	if(!vnx_sample) {
+		publish(tx, output_transactions);
+	}
+}
+
 bool Node::recv_height(const uint32_t& height)
 {
 	if(auto root = get_root()) {
@@ -952,7 +954,7 @@ bool Node::recv_height(const uint32_t& height)
 		}
 	}
 	if(auto peak = get_peak()) {
-		if(height > peak->height && height - peak->height > 2 * params->commit_delay) {
+		if(height > peak->height && height - peak->height > 1000) {
 			return false;
 		}
 	}
@@ -961,9 +963,6 @@ bool Node::recv_height(const uint32_t& height)
 
 void Node::handle(std::shared_ptr<const Block> block)
 {
-	if(!block->proof) {
-		return;
-	}
 	if(!recv_height(block->height)) {
 		return;
 	}
@@ -1006,7 +1005,7 @@ void Node::handle(std::shared_ptr<const ProofOfTime> proof)
 
 void Node::handle(std::shared_ptr<const ProofResponse> value)
 {
-	if(!is_synced || !value->is_valid()) {
+	if(!is_synced || !value->is_valid() || !recv_height(value->request->height)) {
 		return;
 	}
 	pending_proofs.push_back(value);
@@ -1106,7 +1105,7 @@ void Node::sync_result(const uint32_t& height, const std::vector<std::shared_ptr
 				sync_peak = height;
 			}
 		}
-		if(!sync_retry && height % 64 == 0) {
+		if(!sync_retry && height % max_sync_jobs == 0) {
 			add_task(std::bind(&Node::update, this));
 		}
 		sync_more();
@@ -1256,9 +1255,10 @@ std::shared_ptr<Node::fork_t> Node::find_best_fork() const
 
 std::vector<std::shared_ptr<Node::fork_t>> Node::get_fork_line(std::shared_ptr<fork_t> fork_head) const
 {
+	const auto root = get_root();
 	std::vector<std::shared_ptr<fork_t>> line;
 	auto fork = fork_head ? fork_head : find_fork(state_hash);
-	while(fork) {
+	while(fork && fork->block->height > root->height) {
 		line.push_back(fork);
 		fork = fork->prev.lock();
 	}
@@ -1557,7 +1557,7 @@ void Node::revert(const uint32_t height, std::shared_ptr<const Block> block) noe
 	if(block) {
 		for(const auto& tx : block->tx_list) {
 			auto& entry = tx_pool[tx->id];
-			entry.did_validate = true;
+			entry.is_valid = true;
 			entry.tx = tx;
 		}
 		state_hash = block->prev;
