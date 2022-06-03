@@ -38,19 +38,33 @@ void Node::add_dummy_blocks(std::shared_ptr<const BlockHeader> prev)
 {
 	if(auto vdf_point = find_next_vdf_point(prev))
 	{
-		auto block = Block::create();
-		block->version = 0;
-		block->prev = prev->hash;
-		block->height = prev->height + 1;
-		block->time_diff = prev->time_diff;
-		block->space_diff = calc_new_space_diff(params, prev->space_diff, params->score_threshold);
-		block->vdf_iters = vdf_point->vdf_iters;
-		block->vdf_output = vdf_point->output;
+		std::vector<std::shared_ptr<const ProofOfSpace>> proofs = {nullptr};
+		{
+			hash_t vdf_challenge;
+			if(find_vdf_challenge(prev, vdf_challenge, 1)) {
+				const auto challenge = get_challenge(prev, vdf_challenge, 1);
+				for(const auto& response : find_proof(challenge)) {
+					proofs.push_back(response->proof);
+				}
+			}
+		}
 		const auto diff_block = get_diff_header(prev, 1);
-		block->weight = calc_block_weight(params, diff_block, block, false);
-		block->total_weight = prev->total_weight + block->weight;
-		block->finalize();
-		add_block(block);
+
+		for(const auto& proof : proofs) {
+			auto block = Block::create();
+			block->version = 0;
+			block->prev = prev->hash;
+			block->height = prev->height + 1;
+			block->proof = proof;
+			block->time_diff = prev->time_diff;
+			block->space_diff = calc_new_space_diff(params, prev->space_diff, proof ? proof->score : params->score_threshold);
+			block->vdf_iters = vdf_point->vdf_iters;
+			block->vdf_output = vdf_point->output;
+			block->weight = calc_block_weight(params, diff_block, block, false);
+			block->total_weight = prev->total_weight + block->weight;
+			block->finalize();
+			add_block(block);
+		}
 	}
 }
 
@@ -309,14 +323,15 @@ void Node::update()
 	}
 
 	// try to make a block
+	bool made_block = false;
+	for(uint32_t i = 0; i < params->infuse_delay && i <= peak->height; ++i)
 	{
-		auto prev = peak;
-		bool made_block = false;
-		for(uint32_t i = 0; prev && i <= 1; ++i)
-		{
-			if(prev->height < root->height) {
-				break;
-			}
+		const auto height = peak->height - i;
+		if(height < root->height) {
+			break;
+		}
+		if(auto fork = find_best_fork(height)) {
+			const auto& prev = fork->block;
 			hash_t vdf_challenge;
 			if(find_vdf_challenge(prev, vdf_challenge, 1)) {
 				const auto challenge = get_challenge(prev, vdf_challenge, 1);
@@ -341,12 +356,11 @@ void Node::update()
 					}
 				}
 			}
-			prev = find_prev_header(prev);
 		}
-		if(made_block) {
-			// update again right away
-			add_task(std::bind(&Node::update, this));
-		}
+	}
+	if(made_block) {
+		// update again right away
+		add_task(std::bind(&Node::update, this));
 	}
 
 	// publish challenges

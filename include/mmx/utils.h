@@ -73,9 +73,11 @@ uint64_t calc_block_reward(std::shared_ptr<const ChainParams> params, const uint
 inline
 uint64_t calc_final_block_reward(std::shared_ptr<const ChainParams> params, const uint64_t reward, const uint64_t fees)
 {
+	if(reward == 0) {
+		return fees;
+	}
 	const uint64_t scale = 1 << 16;
-	const uint64_t reward_ = std::max(reward, params->min_reward);
-	return uint64_t(std::max<int64_t>(int64_t(scale) - ((scale * fees) / (2 * reward_)), 0) * reward_) / scale + fees;
+	return uint64_t(std::max<int64_t>(int64_t(scale) - ((scale * fees) / (2 * reward)), 0) * reward) / scale + fees;
 }
 
 inline
@@ -111,7 +113,9 @@ uint128_t calc_block_weight(std::shared_ptr<const ChainParams> params, std::shar
 	// TODO: remove height switch
 	if(block->height > 200000) {
 		if(block->proof) {
-			weight += params->score_threshold;
+			if(have_farmer_sig) {
+				weight += params->score_threshold;
+			}
 			weight += params->score_threshold - block->proof->score;
 		} else {
 			weight += 1;

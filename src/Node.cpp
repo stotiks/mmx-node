@@ -1225,13 +1225,14 @@ std::shared_ptr<const BlockHeader> Node::fork_to(std::shared_ptr<fork_t> fork_he
 	return did_fork ? forked_at : nullptr;
 }
 
-std::shared_ptr<Node::fork_t> Node::find_best_fork() const
+std::shared_ptr<Node::fork_t> Node::find_best_fork(const uint32_t height) const
 {
 	uint128_t max_weight = 0;
 	std::shared_ptr<fork_t> best_fork;
 	const auto root = get_root();
 	const auto begin = fork_index.upper_bound(root->height);
-	for(auto iter = begin; iter != fork_index.end(); ++iter)
+	const auto end = fork_index.upper_bound(height);
+	for(auto iter = begin; iter != end; ++iter)
 	{
 		const auto& fork = iter->second;
 		const auto& block = fork->block;
@@ -1691,11 +1692,19 @@ std::vector<std::shared_ptr<const ProofResponse>> Node::find_proof(const hash_t&
 
 uint64_t Node::calc_block_reward(std::shared_ptr<const BlockHeader> block) const
 {
-	// TODO: remove height switch
-	if(!block->proof || (std::dynamic_pointer_cast<const ProofOfStake>(block->proof) && block->height > 100000)) {
+	if(!block->proof) {
 		return 0;
 	}
-	return mmx::calc_block_reward(params, get_diff_header(block)->space_diff);
+	if(std::dynamic_pointer_cast<const ProofOfStake>(block->proof)) {
+		// TODO: remove height switches
+		if(block->height > 200000) {
+			return 0;
+		} else if(block->height > 100000) {
+			return params->min_reward;
+		}
+	}
+	const auto reward = mmx::calc_block_reward(params, get_diff_header(block)->space_diff);
+	return std::max(reward, params->min_reward);
 }
 
 std::shared_ptr<const BlockHeader> Node::read_block(
