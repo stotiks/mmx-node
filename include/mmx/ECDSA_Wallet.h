@@ -122,11 +122,22 @@ public:
 		balance_map.clear();
 		balance_map.insert(balances.begin(), balances.end());
 
-		for(const auto& entry : reserved_map) {
-			balance_map[entry.first] -= entry.second;
+		std::vector<hash_t> expired;
+		for(const auto& entry : pending_tx) {
+			if(entry.second < height) {
+				expired.push_back(entry.first);
+			}
+		}
+		for(const auto& txid : expired) {
+			pending_tx.erase(txid);
+			pending_map.erase(txid);
 		}
 		for(const auto& entry : history) {
+			pending_tx.erase(entry.txid);
 			pending_map.erase(entry.txid);
+		}
+		for(const auto& entry : reserved_map) {
+			balance_map[entry.first] -= entry.second;
 		}
 		for(const auto& entry : pending_map) {
 			for(const auto& pending : entry.second) {
@@ -137,6 +148,9 @@ public:
 
 	void update_from(std::shared_ptr<const Transaction> tx)
 	{
+		if(tx) {
+			pending_tx[tx->id] = tx->expires;
+		}
 		while(tx) {
 			for(const auto& in : tx->inputs) {
 				if(find_address(in.address) >= 0) {
@@ -235,7 +249,7 @@ public:
 					std::map<std::pair<addr_t, addr_t>, uint128_t>& spent_map,
 					const spend_options_t& options = {}) const
 	{
-		tx->fee_ratio = options.fee_ratio;
+		tx->fee_ratio = std::max(tx->fee_ratio, options.fee_ratio);
 
 		uint64_t paid_fee = 0;
 		while(true) {
@@ -276,9 +290,6 @@ public:
 
 	void sign_off(std::shared_ptr<Transaction> tx, const spend_options_t& options = {}) const
 	{
-		if(!tx->sender) {
-			tx->sender = get_address(0);
-		}
 		tx->salt = genesis_hash;
 		tx->finalize();
 
@@ -368,6 +379,19 @@ public:
 
 	void complete(std::shared_ptr<Transaction> tx, const spend_options_t& options = {}) const
 	{
+		if(options.expire_at) {
+			tx->expires = std::min(tx->expires, *options.expire_at);
+		} else if(options.expire_delta) {
+			tx->expires = std::min(tx->expires, height + *options.expire_delta);
+		}
+		if(!tx->sender) {
+			if(options.tx_sender) {
+				tx->sender = *options.tx_sender;
+			} else {
+				tx->sender = get_address(0);
+			}
+		}
+
 		std::map<addr_t, uint128_t> missing;
 		{
 			std::shared_ptr<const Transaction> txi = tx;
@@ -412,14 +436,16 @@ public:
 		last_update = 0;
 		balance_map.clear();
 		reserved_map.clear();
+		pending_tx.clear();
 		pending_map.clear();
 	}
 
 	uint32_t height = 0;
 	int64_t last_update = 0;
-	std::map<std::pair<addr_t, addr_t>, uint128_t> balance_map;
-	std::map<std::pair<addr_t, addr_t>, uint128_t> reserved_map;
-	std::map<hash_t, std::map<std::pair<addr_t, addr_t>, uint128_t>> pending_map;
+	std::map<std::pair<addr_t, addr_t>, uint128_t> balance_map;									// [[address, currency] => balance]
+	std::map<std::pair<addr_t, addr_t>, uint128_t> reserved_map;								// [[address, currency] => balance]
+	std::unordered_map<hash_t, uint32_t> pending_tx;											// [txid => height]
+	std::unordered_map<hash_t, std::map<std::pair<addr_t, addr_t>, uint128_t>> pending_map;		// [txid => [[address, currency] => balance]]
 
 private:
 	skey_t master_sk;
