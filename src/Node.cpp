@@ -1249,15 +1249,17 @@ std::shared_ptr<Node::fork_t> Node::find_best_fork(const uint32_t height) const
 		if(prev && prev->is_invalid) {
 			fork->is_invalid = true;
 		}
-		if(!fork->is_proof_verified || fork->is_invalid) {
-			continue;
+		if((prev && prev->is_all_proof_verified) || (block->prev == root->hash)) {
+			fork->is_all_proof_verified = fork->is_proof_verified;
 		}
-		if(!best_fork
-			|| block->total_weight > max_weight
-			|| (block->total_weight == max_weight && block->hash < best_fork->block->hash))
-		{
-			best_fork = fork;
-			max_weight = block->total_weight;
+		if(fork->is_all_proof_verified && !fork->is_invalid) {
+			if(!best_fork
+				|| block->total_weight > max_weight
+				|| (block->total_weight == max_weight && block->hash < best_fork->block->hash))
+			{
+				best_fork = fork;
+				max_weight = block->total_weight;
+			}
 		}
 	}
 	return best_fork;
@@ -1270,10 +1272,13 @@ std::vector<std::shared_ptr<Node::fork_t>> Node::get_fork_line(std::shared_ptr<f
 	auto fork = fork_head ? fork_head : find_fork(state_hash);
 	while(fork && fork->block->height > root->height) {
 		line.push_back(fork);
+		if(fork->block->prev == root->hash) {
+			std::reverse(line.begin(), line.end());
+			return line;
+		}
 		fork = fork->prev.lock();
 	}
-	std::reverse(line.begin(), line.end());
-	return line;
+	return {};
 }
 
 void Node::purge_tree()
@@ -1292,6 +1297,16 @@ void Node::purge_tree()
 				purged.insert(block->hash);
 			}
 			iter = fork_index.erase(iter);
+		} else {
+			iter++;
+		}
+	}
+	for(auto iter = fork_tree.begin(); iter != fork_tree.end();)
+	{
+		const auto& fork = iter->second;
+		const auto& block = fork->block;
+		if(block->height <= root->height) {
+			iter = fork_tree.erase(iter);
 		} else {
 			iter++;
 		}
@@ -1341,12 +1356,21 @@ void Node::apply(	std::shared_ptr<const Block> block,
 	if(block->prev != state_hash) {
 		return;
 	}
+	std::unordered_set<hash_t> tx_set;
 	std::unordered_set<addr_t> addr_set;
 	std::unordered_set<hash_t> revoke_set;
 	std::set<std::pair<addr_t, addr_t>> balance_set;
 
 	for(const auto& tx : block->get_all_transactions()) {
+		tx_set.insert(tx->id);
 		apply(block, tx, addr_set, revoke_set, balance_set);
+	}
+	for(auto iter = pending_transactions.begin(); iter != pending_transactions.end();) {
+		if(tx_set.count(iter->second->id)) {
+			iter = pending_transactions.erase(iter);
+		} else {
+			iter++;
+		}
 	}
 	addr_log.insert(block->height, std::vector<addr_t>(addr_set.begin(), addr_set.end()));
 	revoke_log.insert(block->height, std::vector<hash_t>(revoke_set.begin(), revoke_set.end()));
@@ -1567,8 +1591,10 @@ void Node::revert(const uint32_t height, std::shared_ptr<const Block> block) noe
 	if(block) {
 		for(const auto& tx : block->tx_list) {
 			auto& entry = tx_pool[tx->id];
-			entry.is_valid = true;
 			entry.tx = tx;
+			entry.is_valid = true;
+			entry.last_check = block->height;
+			entry.full_hash = tx->calc_hash(true);
 		}
 		state_hash = block->prev;
 	}
