@@ -6,7 +6,7 @@ const availableLanguages = {
     //"es", "Español",
     //"nl": "Nederlands",
     //"pt": "Português",
-    //"ru": "Русский",
+    "ru": "Русский",
     //"uk": "Українська"
 };
 
