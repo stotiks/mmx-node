@@ -253,5 +253,10 @@
         "accept_offer": "Принять оффер",
         "you_receive": "Вы получите",
         "you_pay": "Вы платите"        
+    },
+
+    "login": {
+        "password_label": "Пароль (см. файл PASSWD)",
+        "login": "Войти"
     }    
 }
