@@ -43,9 +43,8 @@ jobs:
             type=ref,event=branch
             type=ref,event=pr
             type=ref,event=tag
-            type=sha
           flavor: |
-            latest=true
+            latest=auto
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
