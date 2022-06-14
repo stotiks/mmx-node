@@ -15,6 +15,9 @@ FROM alpine:edge AS runtime
 LABEL maintainer="Peyton"
 ENV TZ=Asia/Phnom_Penh
 
+EXPOSE 12336
+EXPOSE 11380
+
 RUN echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
     apk add --update --no-cache bash libsecp256k1 rocksdb libgomp screen
 
