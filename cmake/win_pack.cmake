@@ -41,10 +41,8 @@ install(TARGETS vnxpasswd generate_passwd RUNTIME DESTINATION ./ COMPONENT appli
 install(TARGETS automy_basic_opencl RUNTIME DESTINATION ./ COMPONENT applications)
 install(TARGETS tx_bench RUNTIME DESTINATION ./ COMPONENT tools)
 
-find_package(ZLIB REQUIRED)
-find_package(OpenCL REQUIRED)
-install(FILES ${ZLIB_INCLUDE_DIRS}/../bin/zlib1.dll DESTINATION ./ COMPONENT applications)
-install(FILES ${OpenCL_INCLUDE_DIRS}/../bin/OpenCL.dll DESTINATION ./ COMPONENT applications)
+install(FILES $<TARGET_FILE_DIR:vnx_addons>/zlib1.dll DESTINATION ./ COMPONENT applications)
+install(FILES $<TARGET_FILE_DIR:automy_basic_opencl>/OpenCL.dll DESTINATION ./ COMPONENT applications)
 
 install(DIRECTORY kernel/ DESTINATION kernel COMPONENT applications)
 install(DIRECTORY config/ DESTINATION config COMPONENT applications)
