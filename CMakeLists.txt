@@ -17,6 +17,7 @@ if(NOT MSVC)
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=thread")
 	endif()
 else()
+	add_compile_definitions(TARGET_FILENAME=$(TargetName)$(TargetExt))
 	add_definitions(/openmp ${CUSTOM_ADD_DEFINITIONS})
 	
 	find_library(secp256k1_LIBRARY secp256k1 HINTS ${secp256k1_LIBRARIES})
