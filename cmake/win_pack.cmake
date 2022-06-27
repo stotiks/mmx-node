@@ -13,7 +13,53 @@ add_custom_command(TARGET mmx PRE_BUILD
  	COMMAND ${CMAKE_COMMAND} -E copy_directory
  		${CMAKE_SOURCE_DIR}/scripts/win/ $<TARGET_FILE_DIR:mmx>)
 
- 		
+if(NOT MMX_VERSION MATCHES "^v([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
+	string(TIMESTAMP BUILD_TIMESTAMP "%Y%m%d")
+	set(MMX_VERSION "v0.6.0.${BUILD_TIMESTAMP}")
+endif()
+
+message(STATUS "MMX_VERSION=${MMX_VERSION}")
+
+#file(STRINGS "include/mmx/version.h" MMX_VERSION_H REGEX "^#define MMX_VERSION \"[^\"]*\"$")
+string(REGEX REPLACE "^v([0-9]+).*$" "\\1" MMX_VERSION_MAJOR "${MMX_VERSION}")
+string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*$" "\\1" MMX_VERSION_MINOR  "${MMX_VERSION}")
+string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+.*)$" "\\1" MMX_VERSION_PATCH "${MMX_VERSION}")
+
+set(MMX_VERSION_STRING "${MMX_VERSION_MAJOR}.${MMX_VERSION_MINOR}.${MMX_VERSION_PATCH}")
+#message(STATUS "MMX_VERSION_STRING: ${MMX_VERSION_STRING}")
+
+set(CPACK_PACKAGE_VERSION ${MMX_VERSION_STRING})
+set(CPACK_PACKAGE_VERSION_MAJOR ${MMX_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${MMX_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${MMX_VERSION_PATCH})
+
+include(cmake/product_version/generate_product_version.cmake)
+set(MMX_ICON "${CMAKE_CURRENT_SOURCE_DIR}/mmx.ico")
+set(MMX_FRIENDLY_STRING "MMX Node ${MMX_VERSION}")
+
+list(APPEND APPFILES
+	mmx mmx_node mmx_farmer mmx_wallet mmx_timelord mmx_harvester mmx_timelord_rewards
+	mmx_db mmx_vm mmx_vm_iface mmx_iface mmx_modules mmx_chiapos
+	vnx_base vnx_addons vnx_rocksdb url_cpp llhttp
+	vnxpasswd generate_passwd
+	automy_basic_opencl
+)
+foreach(APPFILE IN LISTS APPFILES)
+	set(ProductVersionFiles "ProductVersionFiles_${APPFILE}")
+	generate_product_version(
+		${ProductVersionFiles}
+		NAME ${APPFILE}
+		BUNDLE "MMX Node"
+		COMPANY_NAME "madMAx43v3r"
+		FILE_DESCRIPTION ${APPFILE}
+		ICON ${MMX_ICON}
+		VERSION_MAJOR ${CPACK_PACKAGE_VERSION_MAJOR}
+		VERSION_MINOR ${CPACK_PACKAGE_VERSION_MINOR}
+		VERSION_PATCH ${CPACK_PACKAGE_VERSION_PATCH}
+	)
+	target_sources(${APPFILE} PRIVATE ${${ProductVersionFiles}})
+endforeach()
+
 if ("${MMX_WIN_PACK}" STREQUAL "TRUE")
 
 set(CMAKE_INSTALL_SYSTEM_RUNTIME_COMPONENT libraries)
@@ -39,11 +85,7 @@ set(mmx_node_gui_RELEASE_DIR ${mmx_node_gui_SOURCE_DIR}/MMX_Node_GUI/bin/CPack_R
 
 install(DIRECTORY ${mmx_node_gui_RELEASE_DIR}/ DESTINATION ./ COMPONENT gui)
 
-install(TARGETS mmx mmx_node mmx_farmer mmx_wallet mmx_timelord mmx_harvester mmx_timelord_rewards RUNTIME DESTINATION ./ COMPONENT applications)
-install(TARGETS mmx_db mmx_vm mmx_vm_iface mmx_iface mmx_modules mmx_chiapos RUNTIME DESTINATION ./ COMPONENT applications)
-install(TARGETS vnx_base vnx_addons vnx_rocksdb url_cpp llhttp RUNTIME DESTINATION ./ COMPONENT applications)
-install(TARGETS vnxpasswd generate_passwd RUNTIME DESTINATION ./ COMPONENT applications)
-install(TARGETS automy_basic_opencl RUNTIME DESTINATION ./ COMPONENT applications)
+install(TARGETS ${APPFILES} RUNTIME DESTINATION ./ COMPONENT applications)
 install(TARGETS tx_bench RUNTIME DESTINATION ./ COMPONENT tools)
 
 install(FILES $<TARGET_FILE_DIR:vnx_addons>/zlib1.dll DESTINATION ./ COMPONENT applications)
@@ -94,25 +136,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MMX is a blockchain written from scratch 
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
 set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/madMAx43v3r/mmx-node")
 
-if(NOT MMX_VERSION MATCHES "^v([0-9]+)\\.([0-9]+)\\.([0-9]+)$")
-	string(TIMESTAMP BUILD_TIMESTAMP "%Y%m%d")
-	set(MMX_VERSION "v0.0.0-${BUILD_TIMESTAMP}-nightly")
-endif()
 
-message(STATUS "MMX_VERSION=${MMX_VERSION}")
-
-#file(STRINGS "include/mmx/version.h" MMX_VERSION_H REGEX "^#define MMX_VERSION \"[^\"]*\"$")
-string(REGEX REPLACE "^v([0-9]+).*$" "\\1" MMX_VERSION_MAJOR "${MMX_VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.([0-9]+).*$" "\\1" MMX_VERSION_MINOR  "${MMX_VERSION}")
-string(REGEX REPLACE "^v[0-9]+\\.[0-9]+\\.([0-9]+.*)$" "\\1" MMX_VERSION_PATCH "${MMX_VERSION}")
-
-set(MMX_VERSION_STRING "${MMX_VERSION_MAJOR}.${MMX_VERSION_MINOR}.${MMX_VERSION_PATCH}")
-#message(STATUS "MMX_VERSION_STRING: ${MMX_VERSION_STRING}")
-
-set(CPACK_PACKAGE_VERSION ${MMX_VERSION_STRING})
-set(CPACK_PACKAGE_VERSION_MAJOR ${MMX_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${MMX_VERSION_MINOR})
-set(CPACK_PACKAGE_VERSION_PATCH ${MMX_VERSION_PATCH})
 
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "MMX")
 
