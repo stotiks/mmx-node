@@ -11,7 +11,7 @@
             "name": "windows-base",
             "hidden": true,
             "description": "Sets Visual Studio generator, build directory",
-            "generator": "Visual Studio 17 2022",
+            "generator": "Visual Studio 16 2019",
             "binaryDir": "${sourceDir}/build/${presetName}",
             "cacheVariables": {                                
                 "CMAKE_TOOLCHAIN_FILE": {
