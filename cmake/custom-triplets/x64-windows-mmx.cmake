@@ -3,6 +3,6 @@ set(VCPKG_CRT_LINKAGE dynamic)
 set(VCPKG_LIBRARY_LINKAGE dynamic)
 set(VCPKG_BUILD_TYPE release)
 
-if(PORT MATCHES "gmp" OR PORT MATCHES "secp256k1")
+if(PORT MATCHES "gmp" OR PORT MATCHES "secp256k1" OR PORT MATCHES "rocksdb")
     set(VCPKG_LIBRARY_LINKAGE static)
 endif()
