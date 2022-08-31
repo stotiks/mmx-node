@@ -35,9 +35,10 @@ void Farmer::main()
 		log(INFO) << "Reward address: " << reward_addr->to_string();
 	}
 	wallet = std::make_shared<WalletAsyncClient>(wallet_server);
+	wallet->vnx_set_non_blocking(true);
 	add_async_client(wallet);
 
-	set_timer_millis(10000, std::bind(&Farmer::update, this));
+	set_timer_millis(60 * 1000, std::bind(&Farmer::update, this));
 
 	update();
 
