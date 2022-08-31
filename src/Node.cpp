@@ -57,7 +57,12 @@ void Node::main()
 			for(int i = 0; i < 2; ++i) {
 				opencl_vdf[i] = std::make_shared<OCL_VDF>(opencl_device);
 			}
-			log(INFO) << "Using OpenCL GPU device " << opencl_device << " (total of " << devices.size() << " found)";
+			char dev_name[64] = {};
+			size_t dev_name_len = 0;
+			clGetDeviceInfo(devices[opencl_device], CL_DEVICE_NAME, sizeof(dev_name), dev_name, &dev_name_len);
+
+			log(INFO) << "Using OpenCL GPU device [" << opencl_device << "] " << std::string(dev_name, dev_name_len)
+					<< " (total of " << devices.size() << " found)";
 		}
 		else if(devices.size()) {
 			log(WARN) <<  "No such OpenCL GPU device: " << opencl_device;
@@ -251,7 +256,7 @@ std::shared_ptr<const ChainParams> Node::get_params() const {
 std::shared_ptr<const NetworkInfo> Node::get_network_info() const
 {
 	if(const auto peak = get_peak()) {
-		if(!network || peak->height != network->height) {
+		if(!network || peak->height != network->height || is_synced != network->height) {
 			auto info = NetworkInfo::create();
 			info->is_synced = is_synced;
 			info->height = peak->height;
