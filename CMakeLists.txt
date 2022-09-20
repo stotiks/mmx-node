@@ -106,7 +106,6 @@ add_library(mmx_iface SHARED
 	src/contract/WebData.cpp
 	src/contract/PubKey.cpp
 	src/contract/MultiSig.cpp
-	src/contract/Offer.cpp
 	src/contract/Token.cpp
 	src/contract/TokenBase.cpp
 	src/contract/TimeLock.cpp
@@ -270,7 +269,7 @@ add_executable(mmx_timelord_rewards src/mmx_timelord_rewards.cpp)
 add_executable(generate_passwd src/generate_passwd.cpp)
 add_executable(create_offer_binary src/contract/create_offer_binary.cpp)
 
-target_link_libraries(mmx mmx_iface)
+target_link_libraries(mmx mmx_iface mmx_vm)
 target_link_libraries(mmx_node mmx_modules)
 target_link_libraries(mmx_farmer mmx_modules)
 target_link_libraries(mmx_wallet mmx_modules)
