@@ -519,12 +519,12 @@ Vue.component('account-history-form', {
 				<v-card-text>
 					<v-row>
 						<v-col cols="3">
-							<v-select v-model="type" label="Type"
+							<v-select v-model="type" :label="$t('account_history.type')"
 								:items="select_types" item-text="text" item-value="value">
 							</v-select>
 						</v-col>
 						<v-col>
-							<v-select v-model="currency" :label="$t('account_send_form.currency')"
+							<v-select v-model="currency" :label="$t('account_history.token')"
 								:items="select_tokens" item-text="text" item-value="value">
 							</v-select>
 						</v-col>
@@ -1317,7 +1317,8 @@ Vue.component('account-send-form', {
 								item-value="contract">
 
 								<template v-for="slotName in ['item', 'selection']" v-slot:[slotName]="{ item }">
-									{{item.symbol}} <template v-if="!item.is_native"> - [{{item.contract}}]</template>
+									{{item.symbol + (item.is_validated ? '' : '?')}}
+									<template v-if="!item.is_native"> - [{{item.contract}}]</template>
 								</template>
 
 							</v-select>
@@ -1471,7 +1472,8 @@ Vue.component('account-offer-form', {
 								item-value="contract">
 
 								<template v-for="slotName in ['item', 'selection']" v-slot:[slotName]="{ item }">
-									{{item.symbol}} <template v-if="!item.is_native"> - [{{item.contract}}]</template>
+									{{item.symbol + (item.is_validated ? '' : '?')}}
+									<template v-if="!item.is_native"> - [{{item.contract}}]</template>
 								</template>
 
 							</v-select>
@@ -1502,7 +1504,8 @@ Vue.component('account-offer-form', {
 								item-value="currency">
 
 								<template v-for="slotName in ['item', 'selection']" v-slot:[slotName]="{ item }">
-									{{item.symbol}}<template v-if="item.currency != MMX_ADDR"> - [{{item.currency}}]</template>
+									{{item.symbol}}
+									<template v-if="item.currency != MMX_ADDR"> - [{{item.currency}}]</template>
 								</template>
 
 							</v-select>

@@ -13,7 +13,8 @@
 #include <mmx/ChainParams.hxx>
 #include <mmx/RouterAsyncClient.hxx>
 #include <mmx/TimeLordAsyncClient.hxx>
-#include <mmx/operation/Mutate.hxx>
+#include <mmx/contract/Binary.hxx>
+#include <mmx/operation/Execute.hxx>
 #include <mmx/txio_entry_t.hpp>
 #include <mmx/OCL_VDF.h>
 #include <mmx/utils.h>
@@ -109,17 +110,17 @@ protected:
 
 	std::vector<exec_entry_t> get_exec_history(const addr_t& address, const int32_t& since) const override;
 
-	std::map<std::string, vm::varptr_t> read_storage(const addr_t& contract, const uint32_t& height) const override;
+	std::map<std::string, vm::varptr_t> read_storage(const addr_t& contract, const uint32_t& height = -1) const override;
 
-	std::map<uint64_t, vm::varptr_t> dump_storage(const addr_t& contract, const uint32_t& height) const override;
+	std::map<uint64_t, vm::varptr_t> dump_storage(const addr_t& contract, const uint32_t& height = -1) const override;
 
-	vm::varptr_t read_storage_var(const addr_t& contract, const uint64_t& address, const uint32_t& height) const override;
+	vm::varptr_t read_storage_var(const addr_t& contract, const uint64_t& address, const uint32_t& height = -1) const override;
 
-	std::pair<vm::varptr_t, uint64_t> read_storage_field(const addr_t& contract, const std::string& name, const uint32_t& height) const override;
+	std::pair<vm::varptr_t, uint64_t> read_storage_field(const addr_t& contract, const std::string& name, const uint32_t& height = -1) const override;
 
-	std::vector<vm::varptr_t> read_storage_array(const addr_t& contract, const uint64_t& address, const uint32_t& height) const override;
+	std::vector<vm::varptr_t> read_storage_array(const addr_t& contract, const uint64_t& address, const uint32_t& height = -1) const override;
 
-	std::map<vm::varptr_t, vm::varptr_t> read_storage_map(const addr_t& contract, const uint64_t& address, const uint32_t& height) const override;
+	std::map<vm::varptr_t, vm::varptr_t> read_storage_map(const addr_t& contract, const uint64_t& address, const uint32_t& height = -1) const override;
 
 	vnx::Variant call_contract(const addr_t& address, const std::string& method, const std::vector<vnx::Variant>& args) const override;
 
@@ -134,6 +135,14 @@ protected:
 	offer_data_t get_offer(const addr_t& address) const override;
 
 	std::vector<offer_data_t> get_offers(const uint32_t& since, const vnx::bool_t& is_open) const override;
+
+	std::vector<offer_data_t> get_offers_for(
+			const vnx::optional<addr_t>& bid, const vnx::optional<addr_t>& ask, const uint32_t& since, const vnx::bool_t& is_open) const override;
+
+	std::vector<trade_data_t> get_trade_history(const int32_t& since) const override;
+
+	std::vector<trade_data_t> get_trade_history_for(
+			const vnx::optional<addr_t>& bid, const vnx::optional<addr_t>& ask, const int32_t& since) const override;
 
 	void on_stuck_timeout();
 
@@ -264,6 +273,10 @@ private:
 	std::vector<tx_pool_t> validate_for_block(const uint64_t verify_limit, const uint64_t select_limit);
 
 	std::shared_ptr<const Block> make_block(std::shared_ptr<const BlockHeader> prev, const proof_data_t& proof_data);
+
+	std::vector<trade_data_t> get_trade_history_for(const std::vector<addr_t>& offers) const;
+
+	std::pair<vm::varptr_t, uint64_t> read_storage_field(const addr_t& binary, const addr_t& contract, const std::string& name, const uint32_t& height = -1) const;
 
 	void sync_more();
 
@@ -407,6 +420,8 @@ private:
 
 	uint_uint_table<uint32_t, uint32_t, addr_t> offer_log;						// [[height, counter] => contract]
 	uint_uint_table<uint32_t, uint32_t, addr_t> trade_log;						// [[height, counter] => contract]
+	hash_uint_uint_table<addr_t, uint32_t, uint32_t, addr_t> offer_map;			// [[currency, height, counter] => contract]
+	hash_uint_uint_table<addr_t, uint32_t, uint32_t, addr_t> trade_history;		// [[currency, height, counter] => contract]
 
 	balance_table_t<uint128> balance_table;										// [[addr, currency] => balance]
 	std::map<std::pair<addr_t, addr_t>, uint128> balance_map;					// [[addr, currency] => balance]
@@ -450,10 +465,11 @@ private:
 	std::shared_ptr<vnx::Timer> stuck_timer;
 	std::shared_ptr<vnx::Timer> update_timer;
 
-	std::shared_ptr<const ChainParams> params;
-	mutable std::shared_ptr<const BlockHeader> genesis;		// TODO: obsolete
+	mutable std::mutex mutex;
 	mutable std::shared_ptr<const NetworkInfo> network;
+	mutable std::unordered_map<addr_t, std::shared_ptr<const Contract>> contract_cache;
 
+	std::shared_ptr<const ChainParams> params;
 	std::shared_ptr<RouterAsyncClient> router;
 	std::shared_ptr<TimeLordAsyncClient> timelord;
 	std::shared_ptr<vnx::addons::HttpInterface<Node>> http;
