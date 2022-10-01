@@ -345,8 +345,15 @@ void Router::handle(std::shared_ptr<const ProofOfTime> value)
 	}
 }
 
-void Router::handle(std::shared_ptr<const ProofResponse> value)
+void Router::handle(std::shared_ptr<const ProofResponse> value_)
 {
+	if(!value_->proof || !value_->request) {
+		return;
+	}
+	auto value = vnx::clone(value_);
+	value->harvester.clear();
+	value->content_hash = value->calc_hash(true);
+
 	const auto& hash = value->content_hash;
 	if(relay_msg_hash(hash, proof_credits)) {
 		if(vnx::get_pipe(value->farmer_addr)) {
@@ -387,7 +394,7 @@ void Router::update()
 		peer->pending_cost = std::max<double>(peer->pending_cost, 0) * 0.99;
 
 		// clear old hashes
-		while(peer->sent_hashes.size() > max_sent_cache) {
+		while(peer->hash_queue.size() > max_sent_cache) {
 			peer->sent_hashes.erase(peer->hash_queue.front());
 			peer->hash_queue.pop();
 		}
@@ -410,8 +417,7 @@ void Router::update()
 
 	// clear seen hashes
 	while(hash_queue.size() > max_hash_cache) {
-		const auto hash = hash_queue.front();
-		hash_info.erase(hash);
+		hash_info.erase(hash_queue.front());
 		hash_queue.pop();
 	}
 
@@ -1079,8 +1085,9 @@ void Router::send()
 			const auto& item = iter->second;
 			if(!peer->sent_hashes.count(item.hash)) {
 				if(send_to(peer, item.value, item.reliable)) {
-					peer->sent_hashes.insert(item.hash);
-					peer->hash_queue.push(item.hash);
+					if(peer->sent_hashes.insert(item.hash).second) {
+						peer->hash_queue.push(item.hash);
+					}
 				}
 			}
 			iter = peer->send_queue.erase(iter);
