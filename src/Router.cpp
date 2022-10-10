@@ -106,6 +106,22 @@ void Router::main()
 		log(INFO) << "Loaded " << peer_set.size() << " known peers";
 	}
 	{
+		vnx::File file(storage_path + "connected_peers.dat");
+		if(file.exists()) {
+			std::vector<std::string> peers;
+			try {
+				file.open("rb");
+				vnx::read_generic(file.in, peers);
+				file.close();
+			}
+			catch(const std::exception& ex) {
+				log(WARN) << "Failed to read peers from file: " << ex.what();
+			}
+			last_peer_set.insert(peers.begin(), peers.end());
+		}
+		log(INFO) << "Loaded " << last_peer_set.size() << " previously connected peers";
+	}
+	{
 		vnx::File file(storage_path + "farmer_credits.dat");
 		if(file.exists()) {
 			try {
@@ -212,8 +228,7 @@ std::vector<T> get_subset(const std::set<T>& candidates, const size_t max_count,
 std::vector<std::string> Router::get_peers(const uint32_t& max_count) const
 {
 	std::set<std::string> valid;
-	for(const auto& entry : peer_map) {
-		const auto& addr = entry.second->address;
+	for(const auto& addr : peer_set) {
 		if(is_public_address(addr)) {
 			valid.insert(addr);
 		}
@@ -431,11 +446,13 @@ void Router::update()
 			}
 		}
 		if(num_peers < min_sync_peers) {
-			if(is_connected) {
-				log(WARN) << "Lost sync with network due to timeout!";
-				is_connected = false;
-				node->start_sync();
-			}
+			node->get_synced_height([this](const vnx::optional<uint32_t>& height) {
+				if(is_connected && height) {
+					log(WARN) << "Lost sync with network due to lost peers!";
+					is_connected = false;
+					node->start_sync();
+				}
+			});
 		} else {
 			is_connected = true;
 		}
@@ -692,8 +709,7 @@ void Router::connect()
 				connected = true;
 			}
 		}
-		if(!connected && !connecting_peers.count(address))
-		{
+		if(!connected && !connecting_peers.count(address)) {
 			connecting_peers.insert(address);
 			connect_threads->add_task(std::bind(&Router::connect_task, this, address));
 		}
@@ -720,7 +736,7 @@ void Router::connect()
 	{
 		std::set<std::string> peers;
 		peer_set.insert(seed_peers.begin(), seed_peers.end());
-		for(const auto& address : peer_set) {
+		for(const auto& address : (last_peer_set.empty() ? peer_set : last_peer_set)) {
 			bool connected = false;
 			for(const auto& entry : peer_map) {
 				if(address == entry.second->address) {
@@ -731,6 +747,8 @@ void Router::connect()
 				peers.insert(address);
 			}
 		}
+		last_peer_set.clear();
+
 		const auto num_connect = num_peers_out - outbound_synced.size();
 		for(const auto& address : get_subset(peers, num_connect, rand_engine))
 		{
@@ -834,7 +852,7 @@ void Router::query()
 void Router::discover()
 {
 	auto method = Router_get_peers::create();
-	method->max_count = num_peers_out;
+	method->max_count = max_connect_threads;
 	auto req = Request::create();
 	req->id = next_request_id++;
 	req->method = method;
@@ -848,6 +866,18 @@ void Router::save_data()
 		try {
 			file.open("wb");
 			const auto peers = get_known_peers();
+			vnx::write_generic(file.out, std::set<std::string>(peers.begin(), peers.end()));
+			file.close();
+		}
+		catch(const std::exception& ex) {
+			log(WARN) << "Failed to write peers to file: " << ex.what();
+		}
+	}
+	{
+		vnx::File file(storage_path + "connected_peers.dat");
+		try {
+			file.open("wb");
+			const auto peers = get_connected_peers();
 			vnx::write_generic(file.out, std::set<std::string>(peers.begin(), peers.end()));
 			file.close();
 		}
