@@ -954,9 +954,25 @@ std::vector<offer_data_t> Node::get_offers(const uint32_t& since, const vnx::boo
 
 std::vector<offer_data_t> Node::get_recent_offers(const int32_t& limit, const vnx::bool_t& is_open) const
 {
-	std::vector<addr_t> entries;
-	offer_log.find_last_range(std::make_pair(0, 0), std::make_pair(-1, -1), entries, limit);
-	return fetch_offers(entries, is_open);
+	std::vector<offer_data_t> result;
+	std::pair<uint32_t, uint32_t> offer_log_end(-1, -1);
+
+	while(result.size() < size_t(limit)) {
+		std::vector<std::pair<std::pair<uint32_t, uint32_t>, addr_t>> entries;
+		if(!offer_log.find_last_range(std::make_pair(0, 0), offer_log_end, entries, limit)) {
+			break;
+		}
+		offer_log_end = entries.front().first;
+
+		std::vector<addr_t> list;
+		for(const auto& entry : entries) {
+			list.push_back(entry.second);
+		}
+		const auto tmp = fetch_offers(list, is_open);
+		result.insert(result.end(), tmp.begin(), tmp.end());
+	}
+	result.resize(std::min(result.size(), size_t(limit)));
+	return result;
 }
 
 std::vector<offer_data_t> Node::get_offers_for(
@@ -1044,22 +1060,25 @@ std::vector<trade_data_t> Node::get_trade_history_for(
 		const std::vector<addr_t>& offers, const vnx::optional<addr_t>& bid, const vnx::optional<addr_t>& ask) const
 {
 	std::vector<trade_data_t> out;
+	std::unordered_set<addr_t> offer_set;
 	for(const auto& address : offers) {
-		const auto data = get_offer(address);
-		if((!bid || data.bid_currency == *bid) && (!ask || data.ask_currency == *ask)) {
-			trade_data_t tmp;
-			tmp.contract = address;
-			tmp.bid_amount = data.bid_amount;
-			tmp.ask_amount = data.ask_amount;
-			tmp.bid_currency = data.bid_currency;
-			tmp.ask_currency = data.ask_currency;
-			if(data.close_height) {
-				tmp.height = *data.close_height;
+		if(offer_set.insert(address).second) {
+			const auto data = get_offer(address);
+			if((!bid || data.bid_currency == *bid) && (!ask || data.ask_currency == *ask)) {
+				trade_data_t tmp;
+				tmp.contract = address;
+				tmp.bid_amount = data.bid_amount;
+				tmp.ask_amount = data.ask_amount;
+				tmp.bid_currency = data.bid_currency;
+				tmp.ask_currency = data.ask_currency;
+				if(data.close_height) {
+					tmp.height = *data.close_height;
+				}
+				if(data.trade_txid) {
+					tmp.txid = *data.trade_txid;
+				}
+				out.push_back(tmp);
 			}
-			if(data.trade_txid) {
-				tmp.txid = *data.trade_txid;
-			}
-			out.push_back(tmp);
 		}
 	}
 	return out;
