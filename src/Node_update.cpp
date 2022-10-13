@@ -134,7 +134,6 @@ void Node::update()
 					const auto height = block->height - 1;
 					if(!purged_blocks.count(hash) && !fetch_pending.count(hash) && height > root->height) {
 						fetch_block(hash);
-						log(WARN) << "Fetching missed block at height " << height << " with hash " << hash;
 					}
 				}
 			}
@@ -352,7 +351,7 @@ void Node::update()
 					// check if it's our proof
 					if(vnx::get_pipe(entry.second.farmer_mac))
 					{
-						const auto key = std::make_pair(prev->hash, entry.first);
+						const auto key = std::make_pair(prev->height + 1, entry.first);
 						if(!created_blocks.count(key)) {
 							try {
 								if(auto block = make_block(prev, entry.second)) {
