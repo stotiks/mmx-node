@@ -52,11 +52,11 @@ add_subdirectory(test)
 
 find_package(OpenCL)
 find_package(Threads REQUIRED)
+find_library(MINIUPNPC_LIB NAMES miniupnpc)
 
 if(NOT MSVC)
 	find_package(OpenMP REQUIRED)
 	find_library(JEMALLOC_LIB NAMES jemalloc)
-	find_library(MINIUPNPC_LIB NAMES miniupnpc)
 endif()
 
 include(cmake/chiapos.cmake)
