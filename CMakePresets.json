@@ -26,6 +26,9 @@
 
                 "MMX_WIN_PACK": "$env{MMX_WIN_PACK}",
                 "MMX_GIGAHORSE": "$env{MMX_GIGAHORSE}"
+            },
+            "environment": {
+                "VCPKG_ROOT": "./vcpkg"
             }
         },
 
