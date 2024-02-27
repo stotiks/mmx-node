@@ -6,7 +6,7 @@
         "secp256k1",
         "miniupnpc"
     ],
-    "builtin-baseline":"acc3bcf76b84ae5041c86ab55fe138ae7b8255c7",
+    "builtin-baseline":"a42af01b72c28a8e1d7b48107b33e4f286a55ef6",
     "overrides": [
         { "name": "secp256k1", "version": "2017-19-10#4" }
     ]
