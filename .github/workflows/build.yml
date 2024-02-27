@@ -15,6 +15,7 @@ concurrency:
 
 env:
   VCPKG_COMMIT_ID: "9edb1b8e590cc086563301d735cae4b6e732d2d2"
+  VCPKG_DISABLE_METRICS: true
   CMAKE_BUILD_PRESET: "gha-windows-release"
   MMX_VERSION: ${{ github.ref_name }}
   MMX_WIN_PACK: "TRUE"
