@@ -1,11 +1,5 @@
 #!/bin/bash
 
-set -e
-
-cd lib
-./make_all.sh
-cd ..
-
 mkdir -p build
 
 cd build
