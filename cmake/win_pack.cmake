@@ -102,7 +102,7 @@ set(CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)
 include(InstallRequiredSystemLibraries)
 
 add_custom_target(mmx_node_gui ALL)
-set(MMX_NODE_GUI_GIT_TAG "origin/main")
+set(MMX_NODE_GUI_GIT_TAG "origin/testnet11")
 message(STATUS "MMX Node GUI will be built from: ${MMX_NODE_GUI_GIT_TAG}")
 include(FetchContent)
 FetchContent_Declare(
