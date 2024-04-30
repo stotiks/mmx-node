@@ -6,7 +6,6 @@ include(FetchContent)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if(MSVC)
-	set(CMAKE_CXX_STANDARD 20)
 	include(GenerateExportHeader)
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 	
