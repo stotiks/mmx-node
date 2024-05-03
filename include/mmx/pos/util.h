@@ -11,6 +11,10 @@
 #include <cstdint>
 #include <algorithm>
 
+#ifdef _WIN32
+# include <intrin.h>
+#endif
+
 // compiler-specific byte swap macros.
 #if defined(_MSC_VER)
 	#include <cstdlib>
@@ -46,7 +50,7 @@ constexpr inline Int cdiv(const Int& a, const Int2& b) {
 }
 
 inline uint32_t rotl_32(const uint32_t v, int bits) {
-	return (v << bits) | (v >> (32 - bits));
+	return _rotl(v, bits);//(v << bits) | (v >> (32 - bits));
 }
 
 inline uint64_t rotl_64(const uint64_t v, int bits) {
