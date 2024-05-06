@@ -78,6 +78,7 @@ list(APPEND APP_FILES
 list(APPEND TOOL_FILES
 	tx_bench
 )
+
 foreach(APPFILE IN LISTS APP_FILES TOOL_FILES)
 	set(ProductVersionFiles "ProductVersionFiles_${APPFILE}")
 	generate_product_version(
@@ -134,6 +135,19 @@ install(FILES
 			$<TARGET_FILE_DIR:automy_basic_opencl>/OpenCL.dll
 			$<TARGET_FILE_DIR:mmx_modules>/miniupnpc.dll
 		DESTINATION ./ COMPONENT applications)
+
+message(STATUS "Fetching curl from https://curl.se/windows/")
+FetchContent_Declare(
+	curl 
+	URL https://curl.se/windows/dl-8.7.1_7/curl-8.7.1_7-win64-mingw.zip
+	URL_HASH SHA256=e80a9f569c988e51d1534f532551e9c55feebbe1e7e04579ae4989a8abe9fb5c)
+FetchContent_MakeAvailable(curl)
+
+add_custom_command(TARGET mmx PRE_BUILD
+ 	COMMAND ${CMAKE_COMMAND} -E copy_directory
+ 		${curl_SOURCE_DIR}/bin $<TARGET_FILE_DIR:mmx>)
+
+install(DIRECTORY ${curl_SOURCE_DIR}/bin DESTINATION ./ COMPONENT applications)
 
 install(DIRECTORY kernel/ DESTINATION kernel COMPONENT applications)
 install(DIRECTORY config/ DESTINATION config COMPONENT applications)
