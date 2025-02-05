@@ -305,7 +305,7 @@ if(OpenCL_FOUND)
 	target_compile_definitions(mmx_modules PUBLIC WITH_OPENCL)
 endif()
 
-if(CUDA_FOUND)
+if(CUDA_FOUND1)
 	message(STATUS "Found CUDA")
 	add_compile_definitions(WITH_CUDA)
 	cuda_add_library(mmx_pos_cuda STATIC src/pos/cuda_recompute.cu)
