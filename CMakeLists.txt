@@ -12,7 +12,7 @@ if(MSVC)
 	include_directories(${CMAKE_CURRENT_BINARY_DIR})
 	
 	add_compile_definitions(TARGET_FILENAME=$(TargetName)$(TargetExt))
-	add_compile_options(/openmp /EHsc /MP)
+	add_compile_options(/openmp /EHsc)
 
 	set(MSVC_DEBUG_OPTIONS /Od /FS)
 	set(MSVC_RELEASE_OPTIONS /W1 /O2)
