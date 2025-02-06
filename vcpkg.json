@@ -4,7 +4,6 @@
         "zlib",
         "zstd",
         "opencl",
-        "cuda",
         "secp256k1",
         "miniupnpc"
     ],
