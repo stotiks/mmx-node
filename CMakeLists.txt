@@ -253,7 +253,9 @@ if(MSVC)
 
 	GENERATE_EXPORT_HEADER(mmx_iface)
 	GENERATE_EXPORT_HEADER(mmx_modules)
-	
+	GENERATE_EXPORT_HEADER(mmx_db)
+	GENERATE_EXPORT_HEADER(mmx_pos)
+	GENERATE_EXPORT_HEADER(mmx_vm)
 	set_target_properties(mmx_iface PROPERTIES ENABLE_EXPORTS 1)
 	set_target_properties(mmx_iface PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
 	set_target_properties(mmx_iface PROPERTIES LINK_OPTIONS "/NODEFAULTLIB:LIBCMT")
