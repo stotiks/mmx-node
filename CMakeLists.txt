@@ -300,23 +300,13 @@ if(OpenCL_FOUND)
 	target_compile_definitions(mmx_modules PUBLIC WITH_OPENCL)
 endif()
 
-if(CUDA_FOUND)
-	message(STATUS "Found CUDA")
+if(CUDAToolkit_FOUND)
+	message(STATUS "Found CUDAToolkit")
 	add_compile_definitions(WITH_CUDA)
-	cuda_add_library(mmx_pos_cuda STATIC src/pos/cuda_recompute.cu)
+	add_library(mmx_pos_cuda STATIC src/pos/cuda_recompute.cu)
 	target_include_directories(mmx_pos_cuda PUBLIC include)
 	target_link_libraries(mmx_pos mmx_pos_cuda)
-	target_link_libraries(mmx_pos_cuda mmx_pos_verify mmx_iface)
-endif()
-
-if(MSVC AND CUDA_FOUND)
-    # Copy CUDA DLLs to the output folder
-    add_custom_command(TARGET mmx_modules
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CUDA_TOOLKIT_ROOT_DIR}/bin/cudart64_12.dll"
-        $<TARGET_FILE_DIR:mmx_modules>
-    )
+	target_link_libraries(mmx_pos_cuda mmx_pos_verify mmx_iface CUDA::cudart)
 endif()
 
 if(JEMALLOC_LIB)

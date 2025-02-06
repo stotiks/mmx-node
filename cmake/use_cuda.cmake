@@ -1,5 +1,5 @@
 
-find_package(CUDA)
+find_package(CUDAToolkit)
 
 if(NOT MSVC)
 	set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler ,-fPIC")
