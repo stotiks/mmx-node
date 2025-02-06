@@ -90,7 +90,7 @@ if(NOT DISABLE_OPENCL)
 	find_package(OpenCL)
 endif()
 if(NOT DISABLE_CUDA)
-	include(cmake/use_cuda.cmake)
+	#include(cmake/use_cuda.cmake)
 endif()
 
 file(GLOB GENERATED_SOURCE_FILES
