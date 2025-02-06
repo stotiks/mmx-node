@@ -253,9 +253,6 @@ if(MSVC)
 
 	GENERATE_EXPORT_HEADER(mmx_iface)
 	GENERATE_EXPORT_HEADER(mmx_modules)
-	GENERATE_EXPORT_HEADER(mmx_db)
-	GENERATE_EXPORT_HEADER(mmx_pos)
-	GENERATE_EXPORT_HEADER(mmx_vm)
 	
 	set_target_properties(mmx_iface PROPERTIES ENABLE_EXPORTS 1)
 	set_target_properties(mmx_iface PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
@@ -264,10 +261,6 @@ if(MSVC)
 	set_target_properties(mmx_modules PROPERTIES ENABLE_EXPORTS 1)
 	set_target_properties(mmx_modules PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
 	set_target_properties(mmx_modules PROPERTIES LINK_OPTIONS "/NODEFAULTLIB:LIBCMT")
-
-	set_target_properties(mmx_vm PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
-	set_target_properties(mmx_pos PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
-	set_target_properties(mmx_db PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS 1)
 
 	# Workaround for:
 	#	LNK1189: library limit of 65535 objects exceeded
@@ -305,7 +298,7 @@ if(OpenCL_FOUND)
 	target_compile_definitions(mmx_modules PUBLIC WITH_OPENCL)
 endif()
 
-if(CUDA_FOUND1)
+if(CUDA_FOUND)
 	message(STATUS "Found CUDA")
 	add_compile_definitions(WITH_CUDA)
 	cuda_add_library(mmx_pos_cuda STATIC src/pos/cuda_recompute.cu)
