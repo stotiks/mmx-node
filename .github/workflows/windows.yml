@@ -47,7 +47,7 @@ jobs:
           
       - uses: lukka/get-cmake@latest
         with:
-          cmakeVersion: "~3.13.0"
+          cmakeVersion: "~3"
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11
