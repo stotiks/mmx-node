@@ -6,8 +6,18 @@
         "baseUrl": "./",
         "moduleResolution": "bundler",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": [
+                "src/*"
+            ],
+            "@bex/*": [
+                "src-bex/*"
+            ]
         },
-        "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable",
+            "scripthost"
+        ]
     }
 }

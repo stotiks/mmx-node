@@ -24,8 +24,12 @@ dist-ssr
 *.sln
 *.sw?
 
+.output
+.wxt
+web-ext.config.ts
+web-ext.config.js
+
 *.bak
-bun.lockb	
 /.eslintrc-auto-import.json
 /auto-imports.d.ts
 /components.d.ts

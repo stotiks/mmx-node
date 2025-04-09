@@ -17,7 +17,14 @@
     "build:offline": "bunx --bun vite build --config vite.config.offline.js",
     "preview:offline": "bunx --bun vite preview --config vite.config.offline.js",
     "build:all": "bun run build && bun run build:explorer",
-    "build:android": "bun run build:explorer && bunx cap sync && bunx capacitor-assets generate --android && bunx cap build android"
+    "build:android": "bun run build:explorer && bunx cap sync && bunx capacitor-assets generate --android && bunx cap build android",
+    "dev:wxt": "bunx --bun wxt",
+    "dev:wxt:firefox": "bunx --bun wxt -b firefox",
+    "build:wxt": "bunx --bun wxt build",
+    "build:wxt:firefox": "bunx --bun wxt build -b firefox",
+    "zip:wxt": "bunx --bun wxt zip",
+    "zip:wxt:firefox": "bunx --bun wxt zip -b firefox",
+    "postinstall": "bunx --bun wxt prepare"
   },
   "dependencies": {
     "@capacitor/android": "^7.1.0",
@@ -26,6 +33,7 @@
     "@fontsource-variable/roboto-mono": "^5.2.5",
     "@highlightjs/vue-plugin": "^2.1.0",
     "@mdi/js": "^7.4.47",
+    "@metamask/browser-passworder": "^6.0.0",
     "@noble/hashes": "^1.7.1",
     "@noble/secp256k1": "^2.2.3",
     "@quasar/extras": "^1.16.17",
@@ -35,7 +43,9 @@
     "@tanstack/vue-query-devtools": "^5.71.1",
     "@vueuse/components": "^13.0.0",
     "@vueuse/core": "^13.0.0",
-    "@vueuse/integrations": "^13.0.0",
+    "@vueuse/integrations": "^13.1.0",
+    "@webext-core/messaging": "^2.2.0",
+    "@wxt-dev/storage": "^1.1.1",
     "animate.css": "^4.1.1",
     "axios": "^1.8.4",
     "dotenv": "^16.4.7",
@@ -75,7 +85,8 @@
     "vite-plugin-node-polyfills": "^0.23.0",
     "vite-plugin-singlefile": "^2.2.0",
     "vite-plugin-vue-devtools": "^7.7.2",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "wxt": "^0.20.0"
   },
   "packageManager": "pnpm@9.15.5"
 }
