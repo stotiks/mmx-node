@@ -20,7 +20,14 @@ class VaultStorage {
         if (!this.isLocked) {
             throw new Error("Vault is unlocked already");
         }
-        await this.#storageItem.get(password); // check password for validity
+
+        if (await this.#storageItem.exists()) {
+            // check password for validity
+            await this.#storageItem.get(password);
+        } else {
+            await this.#storageItem.set({}, password);
+        }
+
         this.#password = password;
     }
 
@@ -34,6 +41,9 @@ class VaultStorage {
     }
 
     async removeData() {
+        if (!this.isLocked) {
+            throw new Error("Vault is unlocked, cannot remove data");
+        }
         await this.#storageItem.remove();
     }
 
@@ -48,7 +58,7 @@ class VaultStorage {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        this.#storageItem.set(data, this.#password);
+        await this.#storageItem.set(data, this.#password);
     }
 }
 
