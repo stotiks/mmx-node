@@ -21,4 +21,9 @@ export class EncryptedStorageItem {
     async remove() {
         return await storage.removeItem(this.#storageItemName);
     }
+
+    async updatePassword(oldPassword, newPassword) {
+        const data = await this.get(oldPassword);
+        await this.set(data, newPassword);
+    }
 }
