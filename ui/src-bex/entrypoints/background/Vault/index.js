@@ -22,12 +22,12 @@ class Vault {
         const address = await wallet.getAddressAsync(0);
 
         const data = await this.#vaultStorage.getData();
-        if (data.wallets && data.wallets.some((wallet) => wallet.address === address)) {
-            console.log("Wallet already exists");
+        data.wallets ??= [];
+
+        if (data.wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
-        data.wallets ??= [];
         data.wallets.push({
             address,
             seed,
