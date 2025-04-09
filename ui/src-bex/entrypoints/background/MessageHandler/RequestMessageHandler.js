@@ -9,6 +9,6 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static mmx_requestAccounts = async () => {
-        return await vault.getWalletAddresses();
+        return await vault.getWalletsAddresses();
     };
 }
