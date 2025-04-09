@@ -4,8 +4,8 @@ class VaultStorage {
     #password = null;
     #storageItem;
 
-    constructor(storageKey) {
-        this.#storageItem = new EncryptedStorageItem(storageKey);
+    constructor() {
+        this.#storageItem = new EncryptedStorageItem("local:vault");
     }
 
     get isLocked() {
