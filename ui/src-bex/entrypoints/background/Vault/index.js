@@ -21,25 +21,24 @@ class Vault {
         const wallet = new ECDSA_Wallet(seed);
         const address = await wallet.getAddressAsync(0);
 
-        const data = await this.#vaultStorage.getData();
-        data.wallets ??= [];
+        const wallets = this.#vaultStorage.getWallets();
 
-        if (data.wallets.some((wallet) => wallet.address === address)) {
+        if (wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
-        data.wallets.push({
+        wallets.push({
             address,
             seed,
             mnemonic: seedToWords(seed), //debug
         });
 
-        await this.#vaultStorage.setData(data);
+        await this.#vaultStorage.save();
     }
 
     async getWalletsAddresses() {
-        const data = await this.#vaultStorage.getData();
-        return data.wallets.map((wallet) => wallet.address);
+        const wallets = this.#vaultStorage.getWallets();
+        return wallets.map((wallet) => wallet.address);
     }
 }
 
