@@ -3,6 +3,7 @@ import { EncryptedStorageItem } from "./EncryptedStorageItem";
 class VaultStorage {
     #password = null;
     #storageItem;
+    #data;
 
     constructor() {
         this.#storageItem = new EncryptedStorageItem("local:vault");
@@ -12,8 +13,10 @@ class VaultStorage {
         return this.#password === null;
     }
 
-    lock() {
+    async lock() {
+        await this.save();
         this.#password = null;
+        this.#data = null;
     }
 
     async unlock(password) {
@@ -22,10 +25,11 @@ class VaultStorage {
         }
 
         if (await this.#storageItem.exists()) {
-            // check password for validity
-            await this.#storageItem.get(password);
+            this.#data = await this.#storageItem.get(password);
         } else {
-            await this.#storageItem.set({}, password);
+            this.#data = {
+                wallets: [],
+            };
         }
 
         this.#password = password;
@@ -36,8 +40,8 @@ class VaultStorage {
             throw new Error("Vault is locked");
         }
 
-        await this.#storageItem.updatePassword(this.#password, password);
         this.#password = password;
+        this.save();
     }
 
     async removeData() {
@@ -47,18 +51,18 @@ class VaultStorage {
         await this.#storageItem.remove();
     }
 
-    async getData() {
+    async save() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        return await this.#storageItem.get(this.#password);
+        await this.#storageItem.set(this.#data, this.#password);
     }
 
-    async setData(data) {
+    getWallets() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        await this.#storageItem.set(data, this.#password);
+        return this.#data.wallets;
     }
 }
 
