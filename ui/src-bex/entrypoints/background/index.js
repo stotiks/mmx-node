@@ -43,25 +43,11 @@ export default defineBackground(() => {
     // console.log(seedToWords(seed));
 
     const initializeExtension = async () => {
+        await vault.removeData();
         await vault.unlock("password");
-        // const data = await vault.load();
-        // console.log("data", data);
-        const seed = randomSeed();
-        const wallet = new ECDSA_Wallet(seed);
-
-        const data2 = {
-            wallets: [
-                {
-                    address: await wallet.getAddressAsync(0),
-                    seed,
-                    mnemonic: seedToWords(seed), //debug
-                },
-            ],
-        };
-
-        console.log(data2);
-
-        await vault.save(data2);
+        await vault.addWallet(randomSeed());
+        await vault.addWallet(randomSeed());
+        await vault.addWallet(randomSeed());
     };
 
     initializeExtension();
