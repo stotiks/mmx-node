@@ -14,7 +14,7 @@ class Vault {
         return instance;
     }
 
-    async getWalletAddresses() {
+    async getWalletsAddresses() {
         const data = await this.#vaultStorage.getData();
         return data.wallets.map((wallet) => wallet.address);
     }
