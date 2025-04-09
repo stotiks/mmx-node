@@ -33,18 +33,31 @@ class Vault {
         this.#password = password;
     }
 
-    remove() {
-        this.#storageItem.remove();
+    async #remove() {
+        await this.#storageItem.remove();
     }
 
-    async load() {
+    async #getData() {
+        return await this.#load();
+    }
+
+    async #setData(data) {
+        return await this.#save(data);
+    }
+
+    async getWalletAddresses() {
+        const data = await this.#getData();
+        return data.wallets.map((wallet) => wallet.address);
+    }
+
+    async #load() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
         return await this.#storageItem.get(this.#password);
     }
 
-    async save(data) {
+    async #save(data) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
