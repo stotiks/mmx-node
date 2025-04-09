@@ -3,7 +3,7 @@ import VaultStorage from "./VaultStorage";
 let instance = null;
 
 class Vault {
-    #vaultStorage = new VaultStorage("local:vault");
+    #vaultStorage = new VaultStorage();
 
     unlock = async (password) => await this.#vaultStorage.unlock(password);
 
