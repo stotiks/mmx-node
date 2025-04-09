@@ -8,6 +8,10 @@ export class EncryptedStorageItem {
         this.#storageItemName = storageItemName;
     }
 
+    async exists() {
+        return (await storage.getItem(this.#storageItemName)) !== null;
+    }
+
     async get(password) {
         const encrypted = await storage.getItem(this.#storageItemName);
         return await decrypt(password, encrypted);
