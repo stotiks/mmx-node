@@ -2,11 +2,11 @@ import { EncryptedStorageItem } from "./EncryptedStorageItem";
 
 class VaultStorage {
     #password = null;
-    #storageItem;
-    #data;
+    #walletStorage;
+    #wallets;
 
     constructor() {
-        this.#storageItem = new EncryptedStorageItem("local:vault");
+        this.#walletStorage = new EncryptedStorageItem("local:vault");
     }
 
     get isLocked() {
@@ -15,8 +15,7 @@ class VaultStorage {
 
     async lock() {
         await this.save();
-        this.#password = null;
-        this.#data = null;
+        await this.#unload();
     }
 
     async unlock(password) {
@@ -24,15 +23,21 @@ class VaultStorage {
             throw new Error("Vault is unlocked already");
         }
 
-        if (await this.#storageItem.exists()) {
-            this.#data = await this.#storageItem.get(password);
-        } else {
-            this.#data = {
-                wallets: [],
-            };
-        }
-
+        await this.#load(password);
         this.#password = password;
+    }
+
+    async #load(password) {
+        if (await this.#walletStorage.exists()) {
+            this.#wallets = await this.#walletStorage.get(password);
+        } else {
+            this.#wallets = [];
+        }
+    }
+
+    async #unload() {
+        this.#wallets = null;
+        this.#password = null;
     }
 
     async updatePassword(password) {
@@ -48,21 +53,21 @@ class VaultStorage {
         if (!this.isLocked) {
             throw new Error("Vault is unlocked, cannot remove data");
         }
-        await this.#storageItem.remove();
+        await this.#walletStorage.remove();
     }
 
     async save() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        await this.#storageItem.set(this.#data, this.#password);
+        await this.#walletStorage.set(this.#wallets, this.#password);
     }
 
     getWallets() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        return this.#data.wallets;
+        return this.#wallets;
     }
 }
 
