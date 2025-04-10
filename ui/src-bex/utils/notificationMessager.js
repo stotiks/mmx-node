@@ -1,5 +1,5 @@
 import { openNotification } from "@bex/utils/openNotification";
-import { internalMessenger } from "@bex/utils/messaging";
+import { internalMessenger } from "@bex/utils/internalMessenger";
 
 export const notificationMessaging = {
     sendMessage: async (message) => {
