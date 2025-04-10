@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 
 // Plugins
-import { registerPlugins } from "@/plugins";
+import { registerPlugins } from "./plugins";
 
 // Import Quasar css
 import "quasar/src/css/index.sass";
