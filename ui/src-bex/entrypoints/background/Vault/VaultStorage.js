@@ -1,4 +1,4 @@
-import { EncryptedStorageItem } from "./EncryptedStorageItem";
+import { EncryptedStorageItem } from "./StorageItem";
 
 class VaultStorage {
     #password = null;
