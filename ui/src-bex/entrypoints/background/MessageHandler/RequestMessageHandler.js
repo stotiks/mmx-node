@@ -1,4 +1,4 @@
-import { notificationMessaging } from "@bex/utils/notificationMessaging";
+import { notificationMessaging } from "@bex/utils/notificationMessager";
 import { getNodeInfo } from "../queries";
 import vault from "../Vault";
 import { MessageHandlerBase } from "./MessageHandlerBase";
