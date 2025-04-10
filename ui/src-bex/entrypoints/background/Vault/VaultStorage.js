@@ -6,7 +6,7 @@ class VaultStorage {
     #wallets;
 
     constructor() {
-        this.#walletStorage = new EncryptedStorageItem("local:vault");
+        this.#walletStorage = new EncryptedStorageItem("local:wallets");
     }
 
     get isLocked() {
