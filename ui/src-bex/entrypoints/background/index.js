@@ -1,6 +1,6 @@
 import { defineBackground } from "#imports";
 import { randomSeed, seedToWords } from "@/mmx/wallet/mnemonic";
-import { internalMessenger } from "@bex/utils/messaging";
+import { internalMessenger } from "@bex/utils/internalMessenger";
 import vault from "./Vault";
 import { RequestMessageHandler } from "./MessageHandler/RequestMessageHandler";
 

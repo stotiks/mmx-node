@@ -1,4 +1,4 @@
-import { websiteMessenger } from "@bex/utils/website-messenging";
+import { websiteMessenger } from "@bex/utils/websiteMessenger";
 
 const proxify = (obj) =>
     new Proxy(obj, {
