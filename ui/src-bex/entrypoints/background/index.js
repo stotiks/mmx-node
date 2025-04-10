@@ -29,6 +29,10 @@ export default defineBackground(() => {
 
     initializeExtension();
 
+    setInterval(() => {
+        internalMessenger.sendMessage("notification", 123);
+    }, 1000);
+
     internalMessenger.onMessage("request", async (message) => {
         return await RequestMessageHandler.handle(message);
     });

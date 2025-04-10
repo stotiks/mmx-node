@@ -1,7 +1,8 @@
-import { MessageHandlerBase } from "./MessageHandlerBase";
+import { internalMessenger } from "@bex/utils/messaging";
 import { getNodeInfo } from "../queries";
+import { openNotification } from "../utils";
 import vault from "../Vault";
-import { openPopup } from "../utils";
+import { MessageHandlerBase } from "./MessageHandlerBase";
 
 export class RequestMessageHandler extends MessageHandlerBase {
     static mmx_blockNumber = async () => {
@@ -14,7 +15,13 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static dev_test_openPopup = async () => {
-        openPopup();
+        try {
+            await internalMessenger.sendMessage("notification", 123);
+        } catch (e) {
+            const popup = await openNotification();
+            await internalMessenger.sendMessage("notification", 1233453456);
+        }
+
         return "dev_test_openPopup";
     };
 }
