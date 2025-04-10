@@ -8,7 +8,11 @@
         </q-header> -->
         <q-page-container>
             <q-page padding>
-                <m-chip>qwe</m-chip>
+                <template v-for="account in accounts" :key="account">
+                    <div>
+                        <m-chip copy>{{ account }}</m-chip>
+                    </div>
+                </template>
             </q-page>
         </q-page-container>
     </q-layout>
@@ -16,4 +20,15 @@
 
 <script setup>
 import { mdiAlphaFBox } from "@mdi/js";
+
+import { internalMessenger } from "@bex/utils/internalMessenger";
+const accounts = computedAsync(
+    async () => await internalMessenger.sendMessage("request", { method: "mmx_requestAccounts" }),
+    null,
+    {
+        onError: (error) => {
+            throw error;
+        },
+    }
+);
 </script>
