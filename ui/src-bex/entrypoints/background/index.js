@@ -2,7 +2,6 @@
 /*eslint no-undef: "error"*/
 
 import { defineBackground } from "#imports";
-import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { randomSeed, seedToWords } from "@/mmx/wallet/mnemonic";
 import { internalMessenger } from "@bex/utils/messaging";
 import vault from "./Vault";
@@ -53,7 +52,6 @@ export default defineBackground(() => {
     initializeExtension();
 
     internalMessenger.onMessage("request", async (message) => {
-        console.log("request", message);
         return await RequestMessageHandler.handle(message);
     });
 });
