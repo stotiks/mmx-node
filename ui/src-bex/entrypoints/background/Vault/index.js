@@ -17,8 +17,8 @@ class Vault {
         return instance;
     }
 
-    async addWallet(seed) {
-        const wallet = new ECDSA_Wallet(seed);
+    async addWallet(seed, password) {
+        const wallet = new ECDSA_Wallet(seed, password);
         const address = await wallet.getAddressAsync(0);
 
         const wallets = this.#vaultStorage.getWallets();
@@ -30,6 +30,7 @@ class Vault {
         wallets.push({
             address,
             seed,
+            password,
             mnemonic: seedToWords(seed), //debug
         });
 
