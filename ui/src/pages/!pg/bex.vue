@@ -25,6 +25,9 @@ const requests = [
     //
     { method: "mmx_blockNumber" },
     { method: "mmx_requestAccounts" },
+
+    // dev test
+    { method: "dev_test_openPopup" },
 ];
 
 const $q = useQuasar();
