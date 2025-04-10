@@ -1,11 +1,11 @@
 <template>
     <q-layout view="hHh lpR fFf">
-        <q-header elevated>
+        <!-- <q-header elevated>
             <q-bar>
                 <q-btn dense flat :icon="mdiAlphaFBox" />
                 <div class="text-weight-bold">Furry Vault</div>
             </q-bar>
-        </q-header>
+        </q-header> -->
         <q-page-container>
             <q-page padding>
                 <m-chip>qwe</m-chip>
