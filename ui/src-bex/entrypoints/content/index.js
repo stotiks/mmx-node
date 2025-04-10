@@ -1,6 +1,6 @@
 import { defineContentScript, injectScript } from "#imports";
-import { websiteMessenger } from "@bex/utils/website-messenging";
-import { internalMessenger } from "@bex/utils/messaging";
+import { websiteMessenger } from "@bex/utils/websiteMessenger";
+import { internalMessenger } from "@bex/utils/internalMessenger";
 
 export default defineContentScript({
     matches: ["<all_urls>"],
