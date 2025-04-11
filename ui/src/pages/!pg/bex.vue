@@ -1,18 +1,20 @@
 <template>
-    <q-page padding>
-        <h6>BEX Playground</h6>
-        <div v-if="isBexLoaded" class="q-gutter-y-sm">
-            <template v-for="request in requests" :key="request.method">
-                <q-card flat>
-                    <q-card-section>
-                        <q-btn outline no-caps :label="request.method" @click="handleRequest(request)" />
-                        <span v-if="requestResults[request.method]">{{ requestResults[request.method] }}</span>
-                    </q-card-section>
-                </q-card>
-            </template>
-        </div>
-        <div v-else>Extension is not loaded</div>
-    </q-page>
+    <q-page-container>
+        <q-page padding>
+            <h6>BEX Playground</h6>
+            <div v-if="isBexLoaded" class="q-gutter-y-sm">
+                <template v-for="request in requests" :key="request.method">
+                    <q-card flat>
+                        <q-card-section>
+                            <q-btn outline no-caps :label="request.method" @click="handleRequest(request)" />
+                            <span v-if="requestResults[request.method]">{{ requestResults[request.method] }}</span>
+                        </q-card-section>
+                    </q-card>
+                </template>
+            </div>
+            <div v-else>Extension is not loaded</div>
+        </q-page>
+    </q-page-container>
 </template>
 
 <script setup>
