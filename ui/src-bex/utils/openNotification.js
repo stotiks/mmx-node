@@ -1,8 +1,33 @@
 /*global chrome browser*/
 /*eslint no-undef: "error"*/
 
-export const openNotification = async () =>
-    await new Promise((resolve) =>
+let windowId = null;
+let isNotificationOpen = false;
+export let isNotificationLoaded = false;
+
+export const openNotification = async () => {
+    if (windowId) {
+        const views = await browser.runtime.getContexts({ windowIds: [windowId] });
+        console.log(views);
+    } else {
+        windowId = null;
+    }
+
+    if (isNotificationOpen && windowId) {
+        console.log("Notification is already open.");
+        return new Promise((resolve) => {
+            const checkPopupLoaded = setInterval(() => {
+                if (isNotificationLoaded) {
+                    clearInterval(checkPopupLoaded);
+                    resolve();
+                }
+            }, 100);
+        });
+    }
+
+    isNotificationOpen = true;
+
+    const newWindow = await new Promise((resolve) =>
         chrome.windows.getCurrent((currentWindow) => {
             const rightOffset = 80;
             const topOffset = 80;
@@ -27,6 +52,16 @@ export const openNotification = async () =>
                         if (tabId === tabIdUpdated && changeInfo.status === "complete") {
                             chrome.tabs.onUpdated.removeListener(listener);
                             console.log("Window content fully loaded");
+                            isNotificationLoaded = true;
+                            chrome.tabs.onRemoved.addListener(function listener2(tabIdUpdated) {
+                                if (tabId === tabIdUpdated) {
+                                    chrome.tabs.onRemoved.removeListener(listener2);
+                                    console.log("Window closed");
+                                    isNotificationOpen = false;
+                                    isNotificationLoaded = false;
+                                }
+                            });
+
                             resolve(newWindow);
                         }
                     });
@@ -34,3 +69,7 @@ export const openNotification = async () =>
             );
         })
     );
+
+    windowId = newWindow.id;
+    return newWindow;
+};
