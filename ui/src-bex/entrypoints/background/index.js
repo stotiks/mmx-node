@@ -1,8 +1,8 @@
 import { defineBackground } from "#imports";
-import { randomSeed, seedToWords } from "@/mmx/wallet/mnemonic";
-import { internalMessenger } from "@bex/utils/internalMessenger";
-import vault from "./Vault";
+import { randomSeed } from "@/mmx/wallet/mnemonic";
+import { internalMessenger } from "@bex/messaging/background";
 import { RequestMessageHandler } from "./MessageHandler/RequestMessageHandler";
+import vault from "./Vault";
 
 export default defineBackground(() => {
     console.log("Hello from background world!");
@@ -29,7 +29,8 @@ export default defineBackground(() => {
 
     initializeExtension();
 
-    internalMessenger.onMessage("request", async (message) => {
+    internalMessenger.onWindowMessage("request", async (message) => {
+        console.log("request:", message);
         return await RequestMessageHandler.handle(message);
     });
 });
