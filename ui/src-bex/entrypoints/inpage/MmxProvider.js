@@ -1,4 +1,4 @@
-import { websiteMessenger } from "@bex/utils/websiteMessenger";
+import { windowMessenger } from "@bex/messaging/window";
 
 const proxify = (obj) =>
     new Proxy(obj, {
@@ -27,7 +27,7 @@ export class MmxProvider {
     // enable = () => {};
 
     constructor() {
-        websiteMessenger.onMessage("message", (message) => {
+        windowMessenger.onMessage("message", (message) => {
             const { eventName, data } = message.data;
             this.emit(eventName, data);
         });
@@ -66,5 +66,5 @@ export class MmxProvider {
         }
     }
 
-    request = async (data) => await websiteMessenger.sendMessage("request", data);
+    request = async (data) => await windowMessenger.sendMessage("request", data);
 }
