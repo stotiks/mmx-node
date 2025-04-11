@@ -1,7 +1,7 @@
-import { internalMessenger } from "@bex/utils/internalMessenger";
+import { internalMessenger } from "@bex/messaging/popup";
 
-internalMessenger.onMessage("notification", (data) => {
-    console.log("Received from background:", data);
+internalMessenger.onMessage("notification", (message) => {
+    console.log("Received from background:", message);
 });
 
 console.log("Hello from notification world!");
