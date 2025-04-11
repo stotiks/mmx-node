@@ -1,19 +1,21 @@
 /*global chrome browser*/
 /*eslint no-undef: "error"*/
 
-let windowId = null;
-let isNotificationOpen = false;
+let popupWindowId = null;
 export let isNotificationLoaded = false;
 
 export const openNotification = async () => {
-    if (windowId) {
-        const views = await browser.runtime.getContexts({ windowIds: [windowId] });
+    if (popupWindowId) {
+        const views = await browser.runtime.getContexts({ windowIds: [popupWindowId] });
+        if (views.length > 0) {
+            await chrome.windows.update(popupWindowId, { focused: true });
+        } else {
+            popupWindowId = null;
+        }
         console.log(views);
-    } else {
-        windowId = null;
     }
 
-    if (isNotificationOpen && windowId) {
+    if (popupWindowId) {
         console.log("Notification is already open.");
         return new Promise((resolve) => {
             const checkPopupLoaded = setInterval(() => {
@@ -25,9 +27,7 @@ export const openNotification = async () => {
         });
     }
 
-    isNotificationOpen = true;
-
-    const newWindow = await new Promise((resolve) =>
+    return await new Promise((resolve) =>
         chrome.windows.getCurrent((currentWindow) => {
             const rightOffset = 80;
             const topOffset = 80;
@@ -46,6 +46,7 @@ export const openNotification = async () => {
                     left: currentWindow.left + currentWindow.width - width - rightOffset,
                 },
                 function (newWindow) {
+                    popupWindowId = newWindow.id;
                     const tabId = newWindow.tabs[0].id;
 
                     chrome.tabs.onUpdated.addListener(function listener(tabIdUpdated, changeInfo) {
@@ -57,7 +58,6 @@ export const openNotification = async () => {
                                 if (tabId === tabIdUpdated) {
                                     chrome.tabs.onRemoved.removeListener(listener2);
                                     console.log("Window closed");
-                                    isNotificationOpen = false;
                                     isNotificationLoaded = false;
                                 }
                             });
@@ -69,7 +69,4 @@ export const openNotification = async () => {
             );
         })
     );
-
-    windowId = newWindow.id;
-    return newWindow;
 };
