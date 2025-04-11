@@ -44,7 +44,6 @@
     "@vueuse/components": "^13.0.0",
     "@vueuse/core": "^13.0.0",
     "@vueuse/integrations": "^13.1.0",
-    "@webext-core/messaging": "^2.2.0",
     "@wxt-dev/storage": "^1.1.1",
     "animate.css": "^4.1.1",
     "axios": "^1.8.4",
@@ -59,7 +58,8 @@
     "vue": "^3.5.13",
     "vue-echarts": "^7.0.3",
     "vue-i18n": "^11.1.2",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "webext-bridge": "^6.0.1"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
