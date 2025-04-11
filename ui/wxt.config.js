@@ -22,7 +22,7 @@ export default defineConfig({
         web_accessible_resources: [
             {
                 resources: ["inpage.js"],
-                matches: ["*://*/*"],
+                matches: ["<all_urls>"],
             },
         ],
     },
