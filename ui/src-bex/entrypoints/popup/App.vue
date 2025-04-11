@@ -21,7 +21,7 @@
 <script setup>
 import { mdiAlphaFBox } from "@mdi/js";
 
-import { internalMessenger } from "@bex/utils/internalMessenger";
+import { internalMessenger } from "@bex/messaging/popup";
 const accounts = computedAsync(
     async () => await internalMessenger.sendMessage("request", { method: "mmx_requestAccounts" }),
     null,

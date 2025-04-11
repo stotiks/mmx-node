@@ -2,7 +2,7 @@
 /*eslint no-undef: "error"*/
 
 let notificationWindowId = null;
-export let isNotificationLoaded = false;
+let isNotificationLoaded = false;
 
 export const openNotification = async () => {
     if (notificationWindowId) {
