@@ -40,6 +40,17 @@ export default [
 
             "vue/multi-word-component-names": "off",
             "vue/v-slot-style": "off",
+            "no-restricted-imports": [
+                "error",
+                {
+                    patterns: [
+                        {
+                            group: ["webext-bridge", "webext-bridge/*"],
+                            message: "Use the wrapper except in designated files",
+                        },
+                    ],
+                },
+            ],
         },
     },
 ];
