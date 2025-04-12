@@ -31,13 +31,20 @@ export default defineBackground(() => {
 
     initializeExtension();
 
+    //process messages from injected provider
     internalMessenger.onWindowMessage("request", async (message) => {
         console.log("Received from inpage:", message);
         return await RequestMessageHandler.handle(message);
     });
 
+    //process messages from popup/notification
     internalMessenger.onMessage("notification", async (message) => {
         console.log("Received from notification/popup:", message);
         return await NotificationMessageHandler.handle(message);
+    });
+
+    //forward events from vault to popup
+    vault.on("<any>", (eventName) => {
+        internalMessenger.sendMessage(eventName, null, "popup");
     });
 });
