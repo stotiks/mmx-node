@@ -3,7 +3,6 @@ import { MessageHandlerBase } from "./MessageHandlerBase";
 
 export class NotificationMessageHandler extends MessageHandlerBase {
     static isVaultLocked = async () => {
-        console.log("isVaultLocked", vault.isLocked);
         return vault.isLocked;
     };
 
