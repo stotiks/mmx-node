@@ -28,7 +28,7 @@ class Vault {
         }
         await this.saveAsync();
         await this.#unloadAsync();
-        this.emit("vault-lock");
+        this.emit("locked");
     }
 
     async unlockAsync(password) {
@@ -38,7 +38,7 @@ class Vault {
 
         await this.#loadAsync(password);
         this.#password = password;
-        this.emit("vault-unlock");
+        this.emit("unlocked");
     }
 
     async #loadAsync(password) {
