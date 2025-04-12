@@ -22,21 +22,21 @@ class Vault {
         return this.#password === null;
     }
 
-    async lock() {
-        await this.save();
-        await this.#unload();
+    async lockAsync() {
+        await this.saveAsync();
+        await this.#unloadAsync();
     }
 
-    async unlock(password) {
+    async unlockAsync(password) {
         if (!this.isLocked) {
             throw new Error("Vault is unlocked already");
         }
 
-        await this.#load(password);
+        await this.#loadAsync(password);
         this.#password = password;
     }
 
-    async #load(password) {
+    async #loadAsync(password) {
         if (await this.#walletStorage.exists()) {
             this.#wallets = await this.#walletStorage.get(password);
         } else {
@@ -44,28 +44,28 @@ class Vault {
         }
     }
 
-    async #unload() {
+    async #unloadAsync() {
         this.#wallets = null;
         this.#password = null;
     }
 
-    async updatePassword(password) {
+    async updatePasswordAsync(password) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
 
         this.#password = password;
-        this.save();
+        await this.saveAsync();
     }
 
-    async removeData() {
+    async removeDataAsync() {
         if (!this.isLocked) {
             throw new Error("Vault is unlocked, cannot remove data");
         }
         await this.#walletStorage.remove();
     }
 
-    async save() {
+    async saveAsync() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
@@ -79,7 +79,7 @@ class Vault {
         return this.#wallets;
     }
 
-    async addWallet(seed, password = "") {
+    async addWalletAsync(seed, password = "") {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
@@ -100,10 +100,10 @@ class Vault {
             mnemonic: seedToWords(seed), //debug
         });
 
-        await this.save();
+        await this.saveAsync();
     }
 
-    async getWalletsAddresses() {
+    getWalletsAddresses() {
         const wallets = this.#getWallets();
         return wallets.map((wallet) => wallet.address);
     }
