@@ -43,7 +43,7 @@ export default defineBackground(() => {
     });
 
     //forward events from vault to popup
-    vault.on("<any>", (eventName) => {
-        internalMessenger.sendMessage(eventName, null, "popup");
+    vault.on("<any>", (eventName, ...args) => {
+        internalMessenger.sendMessage(`vault:${eventName}`, args, "popup");
     });
 });
