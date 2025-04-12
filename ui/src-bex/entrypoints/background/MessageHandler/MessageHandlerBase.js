@@ -1,5 +1,5 @@
 export class MessageHandlerBase {
-    static handle(message) {
+    static async handle(message) {
         const { method, params } = message.data;
 
         const handler = this[method];
