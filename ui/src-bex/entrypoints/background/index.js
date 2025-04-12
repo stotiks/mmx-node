@@ -3,6 +3,7 @@ import { randomSeed } from "@/mmx/wallet/mnemonic";
 import { internalMessenger } from "@bex/messaging/background";
 import { RequestMessageHandler } from "./MessageHandler/RequestMessageHandler";
 import vault from "./Vault";
+import { NotificationMessageHandler } from "./MessageHandler/NotificationMessageHandler";
 
 export default defineBackground(() => {
     console.log("Hello from background world!");
@@ -25,12 +26,18 @@ export default defineBackground(() => {
         await vault.addWallet(randomSeed());
         await vault.addWallet(randomSeed());
         await vault.addWallet(randomSeed());
+        // await vault.lock();
     };
 
     initializeExtension();
 
     internalMessenger.onWindowMessage("request", async (message) => {
-        console.log("request:", message);
+        console.log("Received from inpage:", message);
         return await RequestMessageHandler.handle(message);
+    });
+
+    internalMessenger.onMessage("notification", async (message) => {
+        console.log("Received from notification/popup:", message);
+        return await NotificationMessageHandler.handle(message);
     });
 });
