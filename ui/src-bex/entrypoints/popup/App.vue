@@ -10,11 +10,11 @@
             <q-page padding>
                 <template v-if="isVaultLocked">
                     Vault is locked
-
                     <q-input v-model="password" type="password" label="Password" filled dense />
-                    <q-btn @click="doRequest({ method: 'unlockVault', params: password })">Unlock</q-btn>
+                    <q-btn @click="handleUnlock">Unlock</q-btn>
                 </template>
                 <template v-else>
+                    <q-btn @click="handleLock">Lock</q-btn>
                     <template v-for="account in accounts" :key="account">
                         <div>
                             <m-chip copy>{{ account }}</m-chip>
@@ -33,7 +33,7 @@ const password = ref("password");
 
 const $q = useQuasar();
 import { internalMessenger } from "@bex/messaging/popup";
-const doRequest = async (payload) => {
+const sendMessage = async (payload) => {
     try {
         return await internalMessenger.sendMessage("notification", payload);
     } catch (error) {
@@ -41,6 +41,34 @@ const doRequest = async (payload) => {
     }
 };
 
-const isVaultLocked = computedAsync(() => doRequest({ method: "isVaultLocked" }), false);
-const accounts = computedAsync(async () => await doRequest({ method: "getWalletsAddresses" }), []);
+const handleUnlock = async () => {
+    await sendMessage({ method: "unlockVault", params: { password: password.value } });
+};
+
+const handleLock = async () => {
+    await sendMessage({ method: "lockVault" });
+};
+
+const accounts = ref([]);
+const isVaultLocked = ref(true);
+onMounted(async () => {
+    isVaultLocked.value = await sendMessage({ method: "isVaultLocked" });
+    if (!isVaultLocked.value) {
+        accounts.value = await sendMessage({ method: "getWalletsAddresses" });
+    }
+});
+
+internalMessenger.onMessage("vault-unlock", (message) => {
+    isVaultLocked.value = false;
+    $q.notify({ type: "positive", message: "Vault is unlocked" });
+});
+
+internalMessenger.onMessage("vault-lock", (message) => {
+    isVaultLocked.value = true;
+    $q.notify({ type: "positive", message: "Vault is locked" });
+});
+
+internalMessenger.onMessage("wallets-loaded", async (message) => {
+    accounts.value = await sendMessage({ method: "getWalletsAddresses" });
+});
 </script>
