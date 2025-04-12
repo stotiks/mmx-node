@@ -66,26 +66,38 @@ const accounts = ref([]);
 const isVaultLocked = ref(true);
 onMounted(async () => {
     isVaultLocked.value = await sendMessage({ method: "isVaultLocked" });
-    if (!isVaultLocked.value) {
+});
+
+watchEffect(async () => {
+    if (isVaultLocked.value) {
+        accounts.value = [];
+    } else {
         accounts.value = await sendMessage({ method: "getWalletsAddresses" });
     }
 });
 
-internalMessenger.onMessage("vault:unlocked", (message) => {
-    isVaultLocked.value = false;
-    $q.notify({ type: "positive", message: "Vault is unlocked" });
-});
+import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+class VaultMessageHandler extends MessageHandlerBase {
+    static unlocked = async () => {
+        isVaultLocked.value = false;
+        $q.notify({ type: "positive", message: "Vault is unlocked" });
+    };
 
-internalMessenger.onMessage("vault:locked", (message) => {
-    isVaultLocked.value = true;
-    $q.notify({ type: "positive", message: "Vault is locked" });
-});
+    static locked = async () => {
+        isVaultLocked.value = true;
+        $q.notify({ type: "positive", message: "Vault is locked" });
+    };
 
-internalMessenger.onMessage("vault:wallets-loaded", async (message) => {
-    accounts.value = await sendMessage({ method: "getWalletsAddresses" });
-});
+    static walletsLoaded = async () => {
+        accounts.value = await sendMessage({ method: "getWalletsAddresses" });
+    };
 
-internalMessenger.onMessage("vault:password-updated", async (message) => {
-    $q.notify({ type: "positive", message: "Password updated" });
+    static passwordUpdated = async () => {
+        $q.notify({ type: "positive", message: "Password updated" });
+    };
+}
+
+internalMessenger.onMessage("vault", async (message) => {
+    return await VaultMessageHandler.handle(message);
 });
 </script>
