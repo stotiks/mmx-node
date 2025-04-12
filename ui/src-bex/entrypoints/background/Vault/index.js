@@ -55,13 +55,18 @@ class Vault {
         this.#password = null;
     }
 
-    async updatePasswordAsync(password) {
+    async updatePasswordAsync(password, newPassword) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
 
-        this.#password = password;
+        if (password !== this.#password) {
+            throw new Error("Wrong password");
+        }
+
+        this.#password = newPassword;
         await this.saveAsync();
+        this.emit("password-updated");
     }
 
     async removeDataAsync() {
