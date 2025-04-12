@@ -58,17 +58,17 @@ onMounted(async () => {
     }
 });
 
-internalMessenger.onMessage("vault-unlock", (message) => {
+internalMessenger.onMessage("vault:unlocked", (message) => {
     isVaultLocked.value = false;
     $q.notify({ type: "positive", message: "Vault is unlocked" });
 });
 
-internalMessenger.onMessage("vault-lock", (message) => {
+internalMessenger.onMessage("vault:locked", (message) => {
     isVaultLocked.value = true;
     $q.notify({ type: "positive", message: "Vault is locked" });
 });
 
-internalMessenger.onMessage("wallets-loaded", async (message) => {
+internalMessenger.onMessage("vault:wallets-loaded", async (message) => {
     accounts.value = await sendMessage({ method: "getWalletsAddresses" });
 });
 </script>
