@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { onMessage as _onMessage, sendMessage } from "webext-bridge/popup";
 
 import { callbackGuard } from "./utils/callbackGuard";
