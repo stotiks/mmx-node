@@ -1,7 +1,7 @@
-import { notificationMessenger } from "../notificationMessenger";
 import { getNodeInfo } from "../queries";
+import { notificationMessenger } from "../notificationMessenger";
+import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import vault from "../Vault";
-import { MessageHandlerBase } from "./MessageHandlerBase";
 
 export class RequestMessageHandler extends MessageHandlerBase {
     static mmx_blockNumber = async () => {

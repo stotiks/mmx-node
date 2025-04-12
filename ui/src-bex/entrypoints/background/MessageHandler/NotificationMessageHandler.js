@@ -1,5 +1,5 @@
 import vault from "../Vault";
-import { MessageHandlerBase } from "./MessageHandlerBase";
+import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 
 export class NotificationMessageHandler extends MessageHandlerBase {
     static isVaultLocked = async () => {
