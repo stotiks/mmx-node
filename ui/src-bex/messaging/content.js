@@ -4,8 +4,8 @@ import {
     allowWindowMessaging as _allowWindowMessaging,
 } from "webext-bridge/content-script";
 
-import { callbackCleaner } from "./utils/callbackCleaner";
-const onMessage = (messageId, callback) => _onMessage(messageId, callbackCleaner(callback));
+import { callbackGuard } from "./utils/callbackGuard";
+const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(callback));
 
 export const internalMessenger = {
     onMessage,
