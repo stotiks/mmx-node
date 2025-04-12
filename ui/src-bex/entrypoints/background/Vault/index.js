@@ -1,5 +1,4 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
-import VaultStorage from "./VaultStorage";
 import { seedToWords } from "@/mmx/wallet/mnemonic";
 
 let instance = null;
