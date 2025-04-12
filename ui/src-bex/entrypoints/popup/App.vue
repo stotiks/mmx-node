@@ -14,12 +14,17 @@
                     <q-btn @click="handleUnlock">Unlock</q-btn>
                 </template>
                 <template v-else>
-                    <q-btn @click="handleLock">Lock</q-btn>
-                    <template v-for="account in accounts" :key="account">
-                        <div>
-                            <m-chip copy>{{ account }}</m-chip>
-                        </div>
-                    </template>
+                    <div class="q-gutter-y-sm">
+                        <q-btn @click="handleLock">Lock</q-btn>
+                        <q-input v-model="password" type="password" label="Password" filled dense />
+                        <q-input v-model="newPassword" type="password" label="Password" filled dense />
+                        <q-btn @click="handlePasswordUpdate">Update</q-btn>
+                        <template v-for="account in accounts" :key="account">
+                            <div>
+                                <m-chip copy>{{ account }}</m-chip>
+                            </div>
+                        </template>
+                    </div>
                 </template>
             </q-page>
         </q-page-container>
@@ -30,6 +35,7 @@
 import { mdiAlphaFBox } from "@mdi/js";
 
 const password = ref("password");
+const newPassword = ref("password");
 
 const $q = useQuasar();
 import { internalMessenger } from "@bex/messaging/popup";
@@ -47,6 +53,13 @@ const handleUnlock = async () => {
 
 const handleLock = async () => {
     await sendMessage({ method: "lockVault" });
+};
+
+const handlePasswordUpdate = async () => {
+    await sendMessage({
+        method: "updatePassword",
+        params: { password: password.value, newPassword: newPassword.value },
+    });
 };
 
 const accounts = ref([]);
@@ -70,5 +83,9 @@ internalMessenger.onMessage("vault:locked", (message) => {
 
 internalMessenger.onMessage("vault:wallets-loaded", async (message) => {
     accounts.value = await sendMessage({ method: "getWalletsAddresses" });
+});
+
+internalMessenger.onMessage("vault:password-updated", async (message) => {
+    $q.notify({ type: "positive", message: "Password updated" });
 });
 </script>
