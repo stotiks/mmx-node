@@ -1,9 +1,8 @@
 import { defineBackground } from "#imports";
-import { randomSeed } from "@/mmx/wallet/mnemonic";
 import { internalMessenger } from "@bex/messaging/background";
+import { NotificationMessageHandler } from "./MessageHandler/NotificationMessageHandler";
 import { RequestMessageHandler } from "./MessageHandler/RequestMessageHandler";
 import vault from "./Vault";
-import { NotificationMessageHandler } from "./MessageHandler/NotificationMessageHandler";
 
 export default defineBackground(() => {
     console.log("Hello from background world!");
