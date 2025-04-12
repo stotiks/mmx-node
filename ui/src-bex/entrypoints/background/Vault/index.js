@@ -23,8 +23,12 @@ class Vault {
     }
 
     async lockAsync() {
+        if (this.isLocked) {
+            throw new Error("Vault is locked already");
+        }
         await this.saveAsync();
         await this.#unloadAsync();
+        this.emit("vault-lock");
     }
 
     async unlockAsync(password) {
@@ -34,11 +38,13 @@ class Vault {
 
         await this.#loadAsync(password);
         this.#password = password;
+        this.emit("vault-unlock");
     }
 
     async #loadAsync(password) {
         if (await this.#walletStorage.exists()) {
             this.#wallets = await this.#walletStorage.get(password);
+            this.emit("wallets-loaded");
         } else {
             this.#wallets = [];
         }
@@ -106,6 +112,50 @@ class Vault {
     getWalletsAddresses() {
         const wallets = this.#getWallets();
         return wallets.map((wallet) => wallet.address);
+    }
+
+    // events
+    _events = new Map();
+
+    on = (eventName, callback) => {
+        if (!this._events.has(eventName)) {
+            this._events.set(eventName, []);
+        }
+        this._events.get(eventName).push(callback);
+        return this;
+    };
+
+    removeListener(eventName, callback) {
+        if (this._events.has(eventName)) {
+            const callbacks = this._events.get(eventName);
+            const index = callbacks.indexOf(callback);
+            if (index > -1) {
+                callbacks.splice(index, 1);
+            }
+        }
+        return this;
+    }
+
+    emit(eventName, ...args) {
+        if (this._events.has(eventName)) {
+            this._events.get(eventName).forEach((callback) => {
+                try {
+                    callback(...args);
+                } catch (err) {
+                    console.error(`Error in ${eventName} handler:`, err);
+                }
+            });
+        }
+
+        if (this._events.has("<any>")) {
+            this._events.get("<any>").forEach((callback) => {
+                try {
+                    callback(eventName, ...args);
+                } catch (err) {
+                    console.error(`Error in ${eventName} handler:`, err);
+                }
+            });
+        }
     }
 }
 
