@@ -1,7 +1,7 @@
 import { onMessage as _onMessage, sendMessage } from "webext-bridge/background";
 
-import { callbackCleaner } from "./utils/callbackCleaner";
-const onMessage = (messageId, callback) => _onMessage(messageId, callbackCleaner(callback));
+import { callbackGuard } from "./utils/callbackGuard";
+const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(callback));
 
 const onWindowMessage = _onMessage;
 

@@ -1,6 +1,6 @@
 import { isInternalEndpoint } from "webext-bridge";
 
-export const callbackCleaner = (callback) => (message) => {
+export const callbackGuard = (callback) => (message) => {
     const { sender, id } = message;
     if (isInternalEndpoint(sender)) {
         return callback(message);
