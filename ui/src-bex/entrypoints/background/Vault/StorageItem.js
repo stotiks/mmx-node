@@ -27,7 +27,7 @@ export class StorageItem {
 
 export class EncryptedStorageItem extends StorageItem {
     async get(password) {
-        const encrypted = super.get();
+        const encrypted = await super.get();
         return await decrypt(password, encrypted);
     }
 
