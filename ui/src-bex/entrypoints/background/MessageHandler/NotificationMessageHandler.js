@@ -10,6 +10,10 @@ export class NotificationMessageHandler extends MessageHandlerBase {
         await vault.unlockAsync(password);
     };
 
+    static lockVault = async () => {
+        await vault.lockAsync();
+    };
+
     static getWalletsAddresses = () => {
         return vault.getWalletsAddresses();
     };
