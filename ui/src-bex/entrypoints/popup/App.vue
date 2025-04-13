@@ -19,9 +19,9 @@
                         <q-input v-model="password" type="password" label="Password" filled dense />
                         <q-input v-model="newPassword" type="password" label="Password" filled dense />
                         <q-btn @click="handleUpdatePasswordAsync">Update</q-btn>
-                        <template v-for="account in accounts" :key="account">
+                        <template v-for="wallet in wallets" :key="wallet">
                             <div>
-                                <m-chip copy>{{ account }}</m-chip>
+                                <m-chip copy>{{ wallet.address }}</m-chip>
                             </div>
                         </template>
                     </div>
@@ -48,7 +48,7 @@ const tryCatchWrapper = async (fn) => {
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault.js";
 const vaultStore = useVaultStore();
-const { isLocked, accounts } = storeToRefs(vaultStore);
+const { isLocked, wallets } = storeToRefs(vaultStore);
 
 const handleUnlockAsync = async () => {
     await tryCatchWrapper(() => vaultStore.unlockAsync(password.value));

@@ -18,7 +18,7 @@ export class NotificationMessageHandler extends MessageHandlerBase {
         return await vault.updatePasswordAsync(password, newPassword);
     };
 
-    static getWalletsAddresses = () => {
-        return vault.getWalletsAddresses();
+    static getWallets = () => {
+        return vault.getWallets();
     };
 }
