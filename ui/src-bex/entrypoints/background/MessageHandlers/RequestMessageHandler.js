@@ -1,5 +1,5 @@
 import { getNodeInfo } from "../queries";
-import { popupMessenger } from "../utils/popupMessenger";
+import { notificationMessenger } from "../utils/notificationMessenger";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import vault from "../Vault";
 
@@ -14,7 +14,7 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static dev_test_openPopup = async () => {
-        await popupMessenger.sendMessage(1233453456);
+        await notificationMessenger.sendMessage(1233453456);
         return "Done!";
     };
 }
