@@ -126,9 +126,7 @@ class Vault {
 
     getWallets() {
         const wallets = this.#getWallets();
-        return wallets.map((wallet) => ({
-            address: wallet.address,
-        }));
+        return wallets.map(({ address }) => ({ address, seed: "######", password: "******" }));
     }
 
     // events
