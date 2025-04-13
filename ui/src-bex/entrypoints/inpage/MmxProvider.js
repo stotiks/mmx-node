@@ -66,5 +66,15 @@ export class MmxProvider {
         }
     }
 
-    request = async (data) => await windowMessenger.sendMessage("request", data);
+    #sendMessageAsync = async (messageId, payload) => {
+        const { success, data, error } = await windowMessenger.sendMessage(messageId, payload);
+
+        if (success) {
+            return data;
+        } else {
+            throw new Error(error || "Unknown error occurred");
+        }
+    };
+
+    request = async (data) => await this.#sendMessageAsync("request", data);
 }

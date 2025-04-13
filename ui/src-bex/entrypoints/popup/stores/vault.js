@@ -1,7 +1,15 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { internalMessenger } from "@bex/messaging/popup";
-const sendMessageAsync = async (payload) => await internalMessenger.sendMessage("notification", payload);
+const sendMessageAsync = async (payload) => {
+    const { success, data, error } = await internalMessenger.sendMessage("notification", payload);
+
+    if (success) {
+        return data;
+    } else {
+        throw new Error(error || "Unknown error occurred");
+    }
+};
 
 export const useVaultStore = defineStore("vault", () => {
     // State

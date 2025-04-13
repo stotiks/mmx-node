@@ -9,14 +9,22 @@ export class MessageHandlerBase {
         const method = toCamelCase(_method);
         const handler = this[method];
         if (!handler) {
-            throw new Error(`unknown method: ${method}`);
+            return {
+                success: false,
+                error: `unknown method: ${_method}`,
+            };
         }
 
         try {
-            return await handler.call(this, params);
-        } catch (err) {
-            console.error(`Error in ${method} handler:`, err);
-            throw err;
+            const result = await handler.call(this, params);
+            return { success: true, data: result };
+        } catch (error) {
+            // eslint-disable-next-line no-undef
+            if (process.env.NODE_ENV === "development") {
+                console.error(`Error handling method [${_method}]:`, error);
+            }
+
+            return { success: false, error: error.message };
         }
     }
 }

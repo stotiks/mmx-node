@@ -36,7 +36,7 @@ class Vault {
     async #loadAsync(password) {
         if (await this.#walletStorage.exists()) {
             this.#wallets = await this.#walletStorage.get(password);
-            this.emit("wallets-loaded");
+            //this.emit("wallets-loaded");
         } else {
             this.#wallets = [];
         }
@@ -107,6 +107,7 @@ class Vault {
         });
 
         await this.saveAsync();
+        this.emit("wallet-added");
     }
 
     getWallets() {
