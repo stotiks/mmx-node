@@ -1,9 +1,9 @@
 import { openNotification } from "@bex/entrypoints/background/utils/openNotification";
 import { internalMessenger } from "@bex/messaging/background";
 
-export const popupMessenger = {
+export const notificationMessenger = {
     sendMessage: async (data) => {
         await openNotification();
-        await internalMessenger.sendMessage("popup", data, "popup");
+        await internalMessenger.sendMessage("notification", data, "popup");
     },
 };
