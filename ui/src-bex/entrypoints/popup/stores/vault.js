@@ -39,6 +39,14 @@ export const useVaultStore = defineStore("vault", () => {
         wallets.value = await sendMessageAsync({ method: "getWallets" });
     };
 
+    const addWalletAsync = async (seed, password) => {
+        await sendMessageAsync({
+            method: "addWallet",
+            params: { seed, password },
+        });
+        await getWallets();
+    };
+
     //Initialize
     (async () => {
         await checkIsLocked();
@@ -56,9 +64,10 @@ export const useVaultStore = defineStore("vault", () => {
         unlockAsync,
         updatePasswordAsync,
         getWallets,
+        addWalletAsync,
     };
 });
 
 if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useNodeStore, import.meta.hot));
+    import.meta.hot.accept(acceptHMRUpdate(useVaultStore, import.meta.hot));
 }
