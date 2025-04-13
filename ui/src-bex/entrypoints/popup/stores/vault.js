@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 import { internalMessenger } from "@bex/messaging/popup";
-const sendMessage = async (payload) => await internalMessenger.sendMessage("notification", payload);
+const sendMessageAsync = async (payload) => await internalMessenger.sendMessage("notification", payload);
 
 export const useVaultStore = defineStore("vault", () => {
     // State
@@ -10,15 +10,15 @@ export const useVaultStore = defineStore("vault", () => {
 
     // Actions
     const checkIsLocked = async () => {
-        isLocked.value = await sendMessage({ method: "isLocked" });
+        isLocked.value = await sendMessageAsync({ method: "isLocked" });
     };
 
     const lockAsync = async () => {
-        isLocked.value = await sendMessage({ method: "lockVault" });
+        isLocked.value = await sendMessageAsync({ method: "lockVault" });
     };
 
     const unlockAsync = async (password) => {
-        isLocked.value = await sendMessage({
+        isLocked.value = await sendMessageAsync({
             method: "unlockVault",
             params: { password },
         });
@@ -29,17 +29,17 @@ export const useVaultStore = defineStore("vault", () => {
     };
 
     const updatePasswordAsync = async (password, newPassword) => {
-        await sendMessage({
+        await sendMessageAsync({
             method: "updatePassword",
             params: { password, newPassword },
         });
     };
 
     const getWalletsAddresses = async () => {
-        accounts.value = await sendMessage({ method: "getWalletsAddresses" });
+        accounts.value = await sendMessageAsync({ method: "getWalletsAddresses" });
     };
 
-    //Initialize async
+    //Initialize
     (async () => {
         await checkIsLocked();
         if (!isLocked.value) {
