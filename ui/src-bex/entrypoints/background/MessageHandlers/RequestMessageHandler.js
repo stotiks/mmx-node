@@ -1,5 +1,5 @@
 import { getNodeInfo } from "../queries";
-import { popupMessenger } from "../popupMessenger";
+import { popupMessenger } from "../utils/popupMessenger";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import vault from "../Vault";
 
