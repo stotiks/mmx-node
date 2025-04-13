@@ -25,6 +25,4 @@ export class NotificationMessageHandler extends MessageHandlerBase {
     static addWallet = async ({ seed, password }) => {
         return await vault.addWalletAsync(seed, password);
     };
-
-    static;
 }
