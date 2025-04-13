@@ -18,13 +18,7 @@ export default defineBackground(() => {
 
     const initializeExtension = async () => {
         //await vault.initAsync();
-
-        // await vault.removeData();
-        // await vault.unlock("password");
-        // await vault.addWallet(randomSeed());
-        // await vault.addWallet(randomSeed());
-        // await vault.addWallet(randomSeed());
-        // await vault.lock();
+        //await vault.removeDataAsync();
 
         //process messages from injected provider
         internalMessenger.onWindowMessage("request", async (message) => {
