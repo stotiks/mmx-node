@@ -1,4 +1,4 @@
-import vault from "../Vault";
+import vault from "../storage/vault";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 
 export class PopupMessageHandler extends MessageHandlerBase {
