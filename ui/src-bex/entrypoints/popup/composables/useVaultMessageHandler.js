@@ -13,12 +13,16 @@ export const useVaultMessageHandler = () => {
             $q.notify({ type: "positive", message: "Vault locked" });
         };
 
-        // static walletsLoaded = async () => {
-        //     $q.notify({ type: "positive", message: "Wallets loaded" });
-        // };
-
         static passwordUpdated = async () => {
             $q.notify({ type: "positive", message: "Password updated" });
+        };
+
+        static walletAdded = async () => {
+            $q.notify({ type: "positive", message: "Wallet added" });
+        };
+
+        static walletRemoved = async () => {
+            $q.notify({ type: "positive", message: "Wallet removed" });
         };
     }
 
