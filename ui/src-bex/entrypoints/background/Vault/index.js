@@ -1,22 +1,12 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
-import { seedToWords } from "@/mmx/wallet/mnemonic";
-
-let instance = null;
+import { mnemonicToSeed, seedToWords } from "@/mmx/wallet/mnemonic";
 
 import { EncryptedStorageItem } from "./StorageItem";
 
 class Vault {
     #password = null;
-    #walletStorage;
+    #walletStorage = new EncryptedStorageItem("local:wallets");
     #wallets;
-
-    constructor() {
-        if (!instance) {
-            this.#walletStorage = new EncryptedStorageItem("local:wallets");
-            instance = this;
-        }
-        return instance;
-    }
 
     get isLocked() {
         return this.#password === null;
@@ -93,12 +83,12 @@ class Vault {
         return this.#wallets;
     }
 
-    async addWalletAsync(seed, password = "") {
+    async addWalletAsync(mnemonic, password = "") {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
 
-        const wallet = new ECDSA_Wallet(seed, password);
+        const wallet = new ECDSA_Wallet(mnemonic, password);
         const address = await wallet.getAddressAsync(0);
 
         const wallets = this.#getWallets();
@@ -106,6 +96,8 @@ class Vault {
         if (wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
+
+        const seed = mnemonicToSeed(mnemonic);
 
         wallets.push({
             address,
@@ -117,9 +109,11 @@ class Vault {
         await this.saveAsync();
     }
 
-    getWalletsAddresses() {
+    getWallets() {
         const wallets = this.#getWallets();
-        return wallets.map((wallet) => wallet.address);
+        return wallets.map((wallet) => ({
+            address: wallet.address,
+        }));
     }
 
     // events
@@ -167,4 +161,9 @@ class Vault {
     }
 }
 
-export default new Vault();
+let vault;
+if (!vault) {
+    vault = new Vault();
+}
+
+export default vault;
