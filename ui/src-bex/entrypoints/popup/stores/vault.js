@@ -6,7 +6,7 @@ const sendMessageAsync = async (payload) => await internalMessenger.sendMessage(
 export const useVaultStore = defineStore("vault", () => {
     // State
     const isLocked = ref(true);
-    const accounts = ref([]);
+    const wallets = ref([]);
 
     // Actions
     const checkIsLocked = async () => {
@@ -24,7 +24,7 @@ export const useVaultStore = defineStore("vault", () => {
         });
 
         if (!isLocked.value) {
-            await getWalletsAddresses();
+            await getWallets();
         }
     };
 
@@ -35,27 +35,27 @@ export const useVaultStore = defineStore("vault", () => {
         });
     };
 
-    const getWalletsAddresses = async () => {
-        accounts.value = await sendMessageAsync({ method: "getWalletsAddresses" });
+    const getWallets = async () => {
+        wallets.value = await sendMessageAsync({ method: "getWallets" });
     };
 
     //Initialize
     (async () => {
         await checkIsLocked();
         if (!isLocked.value) {
-            await getWalletsAddresses();
+            await getWallets();
         }
     })();
 
     return {
         // State
         isLocked,
-        accounts,
+        wallets,
         // Actions
         lockAsync,
         unlockAsync,
         updatePasswordAsync,
-        getWalletsAddresses,
+        getWallets,
     };
 });
 
