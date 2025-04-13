@@ -1,9 +1,19 @@
 import { openNotification } from "@bex/entrypoints/background/utils/openNotification";
 import { internalMessenger } from "@bex/messaging/background";
 
+const sendMessageAsync = async (payload) => {
+    const { success, data, error } = await internalMessenger.sendMessage("notification", payload, "popup");
+
+    if (success) {
+        return data;
+    } else {
+        throw new Error(error || "Unknown error occurred");
+    }
+};
+
 export const notificationMessenger = {
-    sendMessage: async (data) => {
+    sendMessage: async (payload) => {
         await openNotification();
-        await internalMessenger.sendMessage("notification", data, "popup");
+        await sendMessageAsync(payload);
     },
 };
