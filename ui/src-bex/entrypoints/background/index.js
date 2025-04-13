@@ -1,7 +1,7 @@
 import { defineBackground } from "#imports";
 import { internalMessenger } from "@bex/messaging/background";
-import { NotificationMessageHandler } from "./MessageHandler/NotificationMessageHandler";
-import { RequestMessageHandler } from "./MessageHandler/RequestMessageHandler";
+import { PopupMessageHandler } from "./MessageHandlers/PopupMessageHandler";
+import { RequestMessageHandler } from "./MessageHandlers/RequestMessageHandler";
 import vault from "./Vault";
 
 export default defineBackground(() => {
@@ -33,9 +33,9 @@ export default defineBackground(() => {
         });
 
         //process messages from popup/notification
-        internalMessenger.onMessage("notification", async (message) => {
+        internalMessenger.onMessage("popup", async (message) => {
             console.log("Received from notification/popup:", message);
-            return await NotificationMessageHandler.handle(message);
+            return await PopupMessageHandler.handle(message);
         });
 
         //forward events from vault to popup
