@@ -44,6 +44,6 @@ export default defineBackground(() => {
 
     //forward events from vault to popup
     vault.on("<any>", async (eventName, ...args) => {
-        await internalMessenger.sendMessage(`vault:${eventName}`, args, "popup");
+        await internalMessenger.sendMessage("vault", { method: eventName, params: args }, "popup");
     });
 });
