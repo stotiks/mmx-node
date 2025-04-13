@@ -16,9 +16,31 @@
                 <template v-else>
                     <div class="q-gutter-y-sm">
                         <q-btn @click="handleLockAsync">Lock</q-btn>
-                        <q-input v-model="password" type="password" label="Password" filled dense />
-                        <q-input v-model="newPassword" type="password" label="Password" filled dense />
-                        <q-btn @click="handleUpdatePasswordAsync">Update</q-btn>
+
+                        <q-list bordered class="rounded-borders">
+                            <q-expansion-item
+                                label="Password update"
+                                header-class="text-h6"
+                                expand-separator
+                                group="expansionGroup"
+                            >
+                                <q-input v-model="password" type="password" label="Password" filled dense />
+                                <q-input v-model="newPassword" type="password" label="New password" filled dense />
+                                <q-btn @click="handleUpdatePasswordAsync">Update</q-btn>
+                            </q-expansion-item>
+
+                            <q-expansion-item
+                                label="Add wallet"
+                                header-class="text-h6"
+                                expand-separator
+                                group="expansionGroup"
+                            >
+                                <q-input v-model="newWalletMnemonic" label="Mnemonic" filled dense />
+                                <q-input v-model="newWalletPassword" label="Password" filled dense />
+                                <q-btn @click="handleAddWalletAsync">Add</q-btn>
+                            </q-expansion-item>
+                        </q-list>
+
                         <template v-for="wallet in wallets" :key="wallet">
                             <div>
                                 <m-chip copy>{{ wallet.address }}</m-chip>
@@ -60,6 +82,12 @@ const handleLockAsync = async () => {
 
 const handleUpdatePasswordAsync = async () => {
     await tryCatchWrapper(() => vaultStore.updatePasswordAsync(password.value, newPassword.value));
+};
+
+const newWalletMnemonic = ref("");
+const newWalletPassword = ref("");
+const handleAddWalletAsync = async () => {
+    await tryCatchWrapper(() => vaultStore.addWalletAsync(newWalletMnemonic.value, newWalletPassword.value));
 };
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/composables/useVaultMessageHandler";
