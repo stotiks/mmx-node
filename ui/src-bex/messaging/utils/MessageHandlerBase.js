@@ -11,7 +11,16 @@ export class MessageHandlerBase {
         if (!handler) {
             throw new Error(`unknown method: ${method}`);
         }
-        const result = handler.call(this, params);
-        return result instanceof Promise ? result : Promise.resolve(result);
+
+        let result;
+        try {
+            const callResult = handler.call(this, params);
+            result = callResult instanceof Promise ? await callResult : callResult;
+        } catch (err) {
+            console.error(`Error in ${method} handler:`, err);
+            throw err;
+        }
+
+        return result;
     }
 }
