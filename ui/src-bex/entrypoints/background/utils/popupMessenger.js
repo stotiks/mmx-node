@@ -1,4 +1,4 @@
-import { openNotification } from "@bex/entrypoints/background/openNotification";
+import { openNotification } from "@bex/entrypoints/background/utils/openNotification";
 import { internalMessenger } from "@bex/messaging/background";
 
 export const popupMessenger = {
