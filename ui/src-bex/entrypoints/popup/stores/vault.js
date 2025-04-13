@@ -55,6 +55,14 @@ export const useVaultStore = defineStore("vault", () => {
         await getWallets();
     };
 
+    const removeWalletAsync = async (address) => {
+        await sendMessageAsync({
+            method: "removeWallet",
+            params: { address },
+        });
+        await getWallets();
+    };
+
     //Initialize
     (async () => {
         await checkIsLocked();
@@ -73,6 +81,7 @@ export const useVaultStore = defineStore("vault", () => {
         updatePasswordAsync,
         getWallets,
         addWalletAsync,
+        removeWalletAsync,
     };
 });
 

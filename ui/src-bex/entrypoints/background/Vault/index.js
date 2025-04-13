@@ -103,11 +103,25 @@ class Vault {
             address,
             seed,
             password,
-            mnemonic: seedToWords(seed), //debug
         });
 
         await this.saveAsync();
         this.emit("wallet-added");
+    }
+
+    async removeWalletAsync(address) {
+        if (this.isLocked) {
+            throw new Error("Vault is locked");
+        }
+
+        const wallets = this.#getWallets();
+        const index = wallets.findIndex((wallet) => wallet.address === address);
+        if (index === -1) {
+            throw new Error("Wallet not found");
+        }
+        wallets.splice(index, 1);
+        await this.saveAsync();
+        this.emit("wallet-removed");
     }
 
     getWallets() {
