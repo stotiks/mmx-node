@@ -44,6 +44,7 @@
                         <template v-for="wallet in wallets" :key="wallet">
                             <div>
                                 <m-chip copy>{{ wallet.address }}</m-chip>
+                                <q-btn @click="handleRemoveWalletAsync(wallet.address)">Remove</q-btn>
                             </div>
                         </template>
                     </div>
@@ -88,6 +89,10 @@ const newWalletMnemonic = ref("");
 const newWalletPassword = ref("");
 const handleAddWalletAsync = async () => {
     await tryCatchWrapper(() => vaultStore.addWalletAsync(newWalletMnemonic.value, newWalletPassword.value));
+};
+
+const handleRemoveWalletAsync = async (address) => {
+    await tryCatchWrapper(() => vaultStore.removeWalletAsync(address));
 };
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/composables/useVaultMessageHandler";
