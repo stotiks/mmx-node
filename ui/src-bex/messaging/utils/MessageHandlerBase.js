@@ -12,15 +12,11 @@ export class MessageHandlerBase {
             throw new Error(`unknown method: ${method}`);
         }
 
-        let result;
         try {
-            const callResult = handler.call(this, params);
-            result = callResult instanceof Promise ? await callResult : callResult;
+            return await handler.call(this, params);
         } catch (err) {
             console.error(`Error in ${method} handler:`, err);
             throw err;
         }
-
-        return result;
     }
 }
