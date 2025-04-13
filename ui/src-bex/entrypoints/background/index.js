@@ -2,7 +2,7 @@ import { defineBackground } from "#imports";
 import { internalMessenger } from "@bex/messaging/background";
 import { PopupMessageHandler } from "./MessageHandlers/PopupMessageHandler";
 import { RequestMessageHandler } from "./MessageHandlers/RequestMessageHandler";
-import vault from "./Vault";
+import vault from "./storage/vault";
 
 export default defineBackground(() => {
     console.log("Hello from background world!");

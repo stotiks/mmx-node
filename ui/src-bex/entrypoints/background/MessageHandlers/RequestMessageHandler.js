@@ -1,7 +1,8 @@
 import { getNodeInfo } from "../queries";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
-import vault from "../Vault";
+import vault from "../storage/vault";
+import { openNotification } from "../utils/openNotification";
 
 export class RequestMessageHandler extends MessageHandlerBase {
     static mmx_blockNumber = async () => {
@@ -10,6 +11,9 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static mmx_requestAccounts = async () => {
+        if (vault.isLocked) {
+            await openNotification();
+        }
         return await vault.getWallets();
     };
 
