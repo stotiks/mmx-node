@@ -1,5 +1,5 @@
 import { defineContentScript, injectScript } from "#imports";
-import { allowWindowMessaging } from "@bex/messaging/content";
+import { allowWindowMessaging, contentMessenger } from "@bex/messaging/content";
 
 export default defineContentScript({
     matches: ["<all_urls>"],
@@ -11,5 +11,10 @@ export default defineContentScript({
         });
 
         allowWindowMessaging();
+
+        // sendMessage to window example
+        // setInterval(() => {
+        //     contentMessenger.sendMessage("message", { eventName: "ping", data: "pong" }, "window");
+        // }, 1000);
     },
 });

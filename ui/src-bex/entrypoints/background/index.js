@@ -1,5 +1,5 @@
 import { defineBackground } from "#imports";
-import { internalMessenger } from "@bex/messaging/background";
+import { backgroundMessenger } from "@bex/messaging/background";
 import { PopupMessageHandler } from "./MessageHandlers/PopupMessageHandler";
 import { RequestMessageHandler } from "./MessageHandlers/RequestMessageHandler";
 import vault from "./storage/vault";
@@ -21,20 +21,20 @@ export default defineBackground(() => {
         //await vault.removeDataAsync();
 
         //process messages from injected provider
-        internalMessenger.onWindowMessage("request", async (message) => {
+        backgroundMessenger.onWindowMessage("request", async (message) => {
             console.log("Received from inpage:", message);
             return await RequestMessageHandler.handle(message);
         });
 
         //process messages from popup/notification
-        internalMessenger.onMessage("popup", async (message) => {
+        backgroundMessenger.onMessage("popup", async (message) => {
             console.log("Received from notification/popup:", message);
             return await PopupMessageHandler.handle(message);
         });
 
         //forward events from vault to popup
         vault.on("<any>", async (eventName, ...args) => {
-            await internalMessenger.sendMessage("vault", { method: eventName, params: args }, "popup");
+            await backgroundMessenger.sendMessage("vault", { method: eventName, params: args }, "popup");
         });
     };
 
