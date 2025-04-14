@@ -6,7 +6,7 @@ const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(c
 
 const onWindowMessage = _onMessage;
 
-export const internalMessenger = {
+export const backgroundMessenger = {
     onMessage,
     onWindowMessage,
     sendMessage,
