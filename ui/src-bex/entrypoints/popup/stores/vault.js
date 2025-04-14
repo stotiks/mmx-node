@@ -1,8 +1,8 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
-import { internalMessenger } from "@bex/messaging/popup";
+import { popupMessenger } from "@bex/messaging/popup";
 const sendMessageAsync = async (payload) => {
-    const { success, data, error } = await internalMessenger.sendMessage("popup", payload);
+    const { success, data, error } = await popupMessenger.sendMessage("popup", payload);
 
     if (success) {
         return data;

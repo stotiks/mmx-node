@@ -8,7 +8,7 @@ import {
 import { callbackGuard } from "./utils/callbackGuard";
 const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(callback));
 
-export const internalMessenger = {
+export const contentMessenger = {
     onMessage,
     sendMessage,
 };
