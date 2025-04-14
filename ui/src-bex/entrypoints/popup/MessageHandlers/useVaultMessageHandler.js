@@ -1,4 +1,4 @@
-import { internalMessenger } from "@bex/messaging/popup";
+import { popupMessenger } from "@bex/messaging/popup";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 
 export const useVaultMessageHandler = () => {
@@ -26,7 +26,7 @@ export const useVaultMessageHandler = () => {
         };
     }
 
-    internalMessenger.onMessage("vault", async (message) => {
+    popupMessenger.onMessage("vault", async (message) => {
         return await VaultMessageHandler.handle(message);
     });
 };
