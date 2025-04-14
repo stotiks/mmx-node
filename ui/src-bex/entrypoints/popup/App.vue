@@ -95,6 +95,6 @@ const handleRemoveWalletAsync = async (address) => {
     await tryCatchWrapper(() => vaultStore.removeWalletAsync(address));
 };
 
-import { useVaultMessageHandler } from "@bex/entrypoints/popup/composables/useVaultMessageHandler";
+import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
 useVaultMessageHandler();
 </script>
