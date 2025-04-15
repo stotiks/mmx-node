@@ -40,13 +40,22 @@
                                 <q-btn @click="handleAddWalletAsync">Add</q-btn>
                             </q-expansion-item>
                         </q-list>
-
-                        <template v-for="wallet in wallets" :key="wallet">
+                        <q-select
+                            v-model="currentWallet"
+                            :options="walletsOptions"
+                            emit-value
+                            map-options
+                            label="Wallet"
+                            filled
+                            dense
+                        />
+                        <q-btn @click="handleRemoveWalletAsync(currentWallet)">Remove</q-btn>
+                        <!-- <template v-for="wallet in wallets" :key="wallet">
                             <div>
                                 <m-chip copy>{{ wallet.address }}</m-chip>
                                 <q-btn @click="handleRemoveWalletAsync(wallet.address)">Remove</q-btn>
                             </div>
-                        </template>
+                        </template> -->
                     </div>
                 </template>
             </q-page>
@@ -60,6 +69,8 @@ import { mdiAlphaFBox } from "@mdi/js";
 const password = ref("password");
 const newPassword = ref("password");
 
+const currentWallet = ref("");
+
 const $q = useQuasar();
 const tryCatchWrapper = async (fn) => {
     try {
@@ -72,6 +83,14 @@ const tryCatchWrapper = async (fn) => {
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault.js";
 const vaultStore = useVaultStore();
 const { isLocked, wallets } = storeToRefs(vaultStore);
+
+const walletsOptions = computed(() => {
+    return wallets.value.map((wallet) => ({ label: wallet.address, value: wallet.address }));
+});
+
+watch(wallets, () => {
+    currentWallet.value = wallets.value[0]?.address;
+});
 
 const handleUnlockAsync = async () => {
     await tryCatchWrapper(() => vaultStore.unlockAsync(password.value));
