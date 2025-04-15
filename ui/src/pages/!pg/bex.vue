@@ -28,6 +28,7 @@ const requests = [
     { method: "mmx_blockNumber" },
     { method: "mmx_requestWallets" },
     { method: "mmx_requestCurrentWallet" },
+    { method: "mmx_requestPubKey" },
 
     // dev test
     { method: "dev_test_openPopup" },
