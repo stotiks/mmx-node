@@ -7,8 +7,7 @@ class Vault {
     #password;
 
     #walletStorage = new EncryptedStorageItem("local:wallets");
-    //#wallets;
-    #wallets$$keys;
+    #wallets$$sensitive;
 
     #currentWallet;
 
@@ -39,14 +38,14 @@ class Vault {
 
     async #loadAsync(password) {
         if (await this.#walletStorage.exists()) {
-            this.#wallets$$keys = await this.#walletStorage.get(password);
+            this.#wallets$$sensitive = await this.#walletStorage.get(password);
         } else {
-            this.#wallets$$keys = [];
+            this.#wallets$$sensitive = [];
         }
     }
 
     async #unloadAsync() {
-        this.#wallets$$keys = null;
+        this.#wallets$$sensitive = null;
         this.#password = null;
     }
 
@@ -76,7 +75,7 @@ class Vault {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        await this.#walletStorage.set(this.#wallets$$keys, this.#password);
+        await this.#walletStorage.set(this.#wallets$$sensitive, this.#password);
     }
 
     #walletCleanup = (wallet) => ({ ...wallet, seed: "######", password: "******" });
@@ -84,7 +83,7 @@ class Vault {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        return this.#wallets$$keys.map((wallet) => this.#walletCleanup(wallet));
+        return this.#wallets$$sensitive.map((wallet) => this.#walletCleanup(wallet));
     }
 
     async addWalletAsync(mnemonic, password = "") {
@@ -94,26 +93,20 @@ class Vault {
 
         const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
         const address = await ecdsaWallet.getAddressAsync(0);
+        const seed = bytesToHex(mnemonicToSeed(mnemonic)).toUpperCase();
+
+        const newWallet$$sensitive = { address, seed, password };
 
         const wallets = this.getWallets();
         if (wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
-        const seed = bytesToHex(mnemonicToSeed(mnemonic)).toUpperCase();
-
-        const newWallet = {
-            address,
-            seed,
-            password,
-        };
-
-        this.#wallets$$keys.push(newWallet);
+        this.#wallets$$sensitive.push(newWallet$$sensitive);
         await this.saveAsync();
 
         this.emit("wallet-added");
-
-        return newWallet;
+        return this.#walletCleanup(newWallet$$sensitive);
     }
 
     async removeWalletAsync(address) {
@@ -126,7 +119,7 @@ class Vault {
             throw new Error("Wallet not found");
         }
 
-        this.#wallets$$keys.splice(index, 1);
+        this.#wallets$$sensitive.splice(index, 1);
         await this.saveAsync();
 
         this.emit("wallet-removed");
@@ -149,7 +142,7 @@ class Vault {
     }
 
     async getECDSAWalletAsync(address) {
-        const wallet = this.#wallets$$keys.find((wallet) => wallet.address === address);
+        const wallet = this.#wallets$$sensitive.find((wallet) => wallet.address === address);
         const seed = hexToBytes(wallet.seed);
         const ecdsaWallet = new ECDSA_Wallet(seed, wallet.password);
         return ecdsaWallet;
