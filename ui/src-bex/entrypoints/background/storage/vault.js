@@ -99,14 +99,17 @@ class Vault {
 
         const seed = mnemonicToSeed(mnemonic);
 
-        wallets.push({
+        const newWallet = {
             address,
             seed,
             password,
-        });
+        };
+        wallets.push(newWallet);
 
         await this.saveAsync();
         this.emit("wallet-added");
+
+        return this.#walletCleanup(newWallet);
     }
 
     async removeWalletAsync(address) {
@@ -124,9 +127,11 @@ class Vault {
         this.emit("wallet-removed");
     }
 
+    #walletCleanup = ({ address }) => ({ address, seed: "######", password: "******" });
+
     getWallets() {
         const wallets = this.#getWallets();
-        return wallets.map(({ address }) => ({ address, seed: "######", password: "******" }));
+        return wallets.map((wallet) => this.#walletCleanup(wallet));
     }
 
     // events
