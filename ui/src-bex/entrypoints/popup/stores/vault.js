@@ -35,7 +35,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     watch(currentWallet, async () => {
         await sendMessageAsync({
-            method: "updateCurrentWallet",
+            method: "setCurrentWallet",
             params: { currentWallet: currentWallet.value },
         });
     });
