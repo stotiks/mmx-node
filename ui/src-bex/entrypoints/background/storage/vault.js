@@ -4,12 +4,14 @@ import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { EncryptedStorageItem } from "./StorageItem";
 
 class Vault {
-    #password = null;
+    #password;
     #walletStorage = new EncryptedStorageItem("local:wallets");
     #wallets;
 
+    #currentWallet;
+
     get isLocked() {
-        return this.#password === null;
+        return this.#password == null;
     }
 
     async lockAsync() {
@@ -132,6 +134,21 @@ class Vault {
     getWallets() {
         const wallets = this.#getWallets();
         return wallets.map((wallet) => this.#walletCleanup(wallet));
+    }
+
+    setCurrentWalletAsync(address) {
+        if (this.isLocked) {
+            throw new Error("Vault is locked");
+        }
+        this.#currentWallet = address;
+        this.emit("current-wallet-updated");
+    }
+
+    getCurrentWalletAsync() {
+        if (this.isLocked) {
+            throw new Error("Vault is locked");
+        }
+        return this.#currentWallet;
     }
 
     // events

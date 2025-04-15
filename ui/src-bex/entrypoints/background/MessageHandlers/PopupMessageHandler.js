@@ -29,4 +29,8 @@ export class PopupMessageHandler extends MessageHandlerBase {
     static removeWallet = async ({ address }) => {
         return await vault.removeWalletAsync(address);
     };
+
+    static updateCurrentWallet = async ({ currentWallet }) => {
+        return await vault.setCurrentWalletAsync(currentWallet);
+    };
 }
