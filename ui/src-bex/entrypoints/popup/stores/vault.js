@@ -16,6 +16,21 @@ export const useVaultStore = defineStore("vault", () => {
     const isLocked = ref(true);
     const wallets = ref([]);
 
+    const currentWallet = ref("");
+
+    watch(wallets, () => {
+        if (wallets.value.length > 0) {
+            if (!wallets.value.find((wallet) => wallet.address === currentWallet.value)) {
+                currentWallet.value = wallets.value[0]?.address;
+            }
+        } else {
+            currentWallet.value = "";
+        }
+    });
+
+    // // Getters
+    // const isLockedComputed = computed(() => isLocked.value);
+
     // Actions
     const checkIsLocked = async () => {
         isLocked.value = await sendMessageAsync({ method: "isLocked" });
@@ -48,11 +63,12 @@ export const useVaultStore = defineStore("vault", () => {
     };
 
     const addWalletAsync = async (seed, password) => {
-        await sendMessageAsync({
+        const newWallet = await sendMessageAsync({
             method: "addWallet",
             params: { seed, password },
         });
         await getWallets();
+        currentWallet.value = newWallet.address;
     };
 
     const removeWalletAsync = async (address) => {
@@ -75,6 +91,7 @@ export const useVaultStore = defineStore("vault", () => {
         // State
         isLocked,
         wallets,
+        currentWallet,
         // Actions
         lockAsync,
         unlockAsync,
