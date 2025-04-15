@@ -69,8 +69,6 @@ import { mdiAlphaFBox } from "@mdi/js";
 const password = ref("password");
 const newPassword = ref("password");
 
-const currentWallet = ref("");
-
 const $q = useQuasar();
 const tryCatchWrapper = async (fn) => {
     try {
@@ -82,14 +80,10 @@ const tryCatchWrapper = async (fn) => {
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault.js";
 const vaultStore = useVaultStore();
-const { isLocked, wallets } = storeToRefs(vaultStore);
+const { isLocked, wallets, currentWallet } = storeToRefs(vaultStore);
 
 const walletsOptions = computed(() => {
     return wallets.value.map((wallet) => ({ label: wallet.address, value: wallet.address }));
-});
-
-watch(wallets, () => {
-    currentWallet.value = wallets.value[0]?.address;
 });
 
 const handleUnlockAsync = async () => {
