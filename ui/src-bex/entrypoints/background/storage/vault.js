@@ -2,11 +2,14 @@ import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 
 import { EncryptedStorageItem } from "./StorageItem";
+import { hexToBytes } from "@noble/hashes/utils";
 
 class Vault {
     #password;
+
     #walletStorage = new EncryptedStorageItem("local:wallets");
-    #wallets;
+    //#wallets;
+    #wallets$$keys;
 
     #currentWallet;
 
@@ -37,15 +40,14 @@ class Vault {
 
     async #loadAsync(password) {
         if (await this.#walletStorage.exists()) {
-            this.#wallets = await this.#walletStorage.get(password);
-            //this.emit("wallets-loaded");
+            this.#wallets$$keys = await this.#walletStorage.get(password);
         } else {
-            this.#wallets = [];
+            this.#wallets$$keys = [];
         }
     }
 
     async #unloadAsync() {
-        this.#wallets = null;
+        this.#wallets$$keys = null;
         this.#password = null;
     }
 
@@ -75,14 +77,15 @@ class Vault {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        await this.#walletStorage.set(this.#wallets, this.#password);
+        await this.#walletStorage.set(this.#wallets$$keys, this.#password);
     }
 
-    #getWallets() {
+    #walletCleanup = (wallet) => ({ ...wallet, seed: "######", password: "******" });
+    getWallets() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        return this.#wallets;
+        return this.#wallets$$keys.map((wallet) => this.#walletCleanup(wallet));
     }
 
     async addWalletAsync(mnemonic, password = "") {
@@ -90,28 +93,28 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
-        const wallet = new ECDSA_Wallet(mnemonic, password);
-        const address = await wallet.getAddressAsync(0);
+        const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
+        const address = await ecdsaWallet.getAddressAsync(0);
 
-        const wallets = this.#getWallets();
-
+        const wallets = this.getWallets();
         if (wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
-        const seed = mnemonicToSeed(mnemonic);
+        const seed = mnemonicToSeed(mnemonic).toHex();
 
         const newWallet = {
             address,
             seed,
             password,
         };
-        wallets.push(newWallet);
 
+        this.#wallets$$keys.push(newWallet);
         await this.saveAsync();
+
         this.emit("wallet-added");
 
-        return this.#walletCleanup(newWallet);
+        return newWallet;
     }
 
     async removeWalletAsync(address) {
@@ -119,21 +122,15 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
-        const wallets = this.#getWallets();
-        const index = wallets.findIndex((wallet) => wallet.address === address);
+        const index = this.getWallets().findIndex((wallet) => wallet.address === address);
         if (index === -1) {
             throw new Error("Wallet not found");
         }
-        wallets.splice(index, 1);
+
+        this.#wallets$$keys.splice(index, 1);
         await this.saveAsync();
+
         this.emit("wallet-removed");
-    }
-
-    #walletCleanup = ({ address }) => ({ address, seed: "######", password: "******" });
-
-    getWallets() {
-        const wallets = this.#getWallets();
-        return wallets.map((wallet) => this.#walletCleanup(wallet));
     }
 
     setCurrentWalletAsync(address) {
@@ -144,11 +141,34 @@ class Vault {
         this.emit("current-wallet-updated");
     }
 
-    getCurrentWalletAsync() {
+    async getCurrentWalletAsync() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        return this.#currentWallet;
+        const wallet = this.getWallets().find((wallet) => wallet.address === this.#currentWallet);
+        return wallet;
+    }
+
+    async getECDSAWalletAsync(address) {
+        const wallet = this.#wallets$$keys.find((wallet) => wallet.address === address);
+        const seed = hexToBytes(wallet.seed);
+        const ecdsaWallet = new ECDSA_Wallet(seed, wallet.password);
+        return ecdsaWallet;
+    }
+
+    async getPubKeyAsync(address) {
+        if (this.isLocked) {
+            throw new Error("Vault is locked");
+        }
+
+        if (address == null) {
+            address = this.#currentWallet;
+        }
+
+        const ecdsaWallet = await this.getECDSAWalletAsync(address);
+        const { pubKey } = await ecdsaWallet.getKeysAsync(0);
+
+        return pubKey.toHex();
     }
 
     // events
