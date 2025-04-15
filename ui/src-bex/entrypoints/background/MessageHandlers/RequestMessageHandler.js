@@ -9,11 +9,18 @@ export class RequestMessageHandler extends MessageHandlerBase {
         return info.height;
     };
 
-    static mmx_requestAccounts = async () => {
+    static mmx_requestWallets = async () => {
         if (vault.isLocked) {
             await notificationMessenger.sendMessage(1233453456);
         }
         return await vault.getWallets();
+    };
+
+    static mmx_requestCurrentWallet = async () => {
+        if (vault.isLocked) {
+            await notificationMessenger.sendMessage(1233453456);
+        }
+        return await vault.getCurrentWalletAsync();
     };
 
     static dev_test_openPopup = async () => {

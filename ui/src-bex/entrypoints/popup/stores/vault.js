@@ -19,13 +19,25 @@ export const useVaultStore = defineStore("vault", () => {
     const currentWallet = ref("");
 
     watch(wallets, () => {
+        let newCurrentWallet;
         if (wallets.value.length > 0) {
             if (!wallets.value.find((wallet) => wallet.address === currentWallet.value)) {
-                currentWallet.value = wallets.value[0]?.address;
+                newCurrentWallet = wallets.value[0]?.address;
             }
         } else {
-            currentWallet.value = "";
+            newCurrentWallet = "";
         }
+
+        if (newCurrentWallet !== currentWallet.value) {
+            currentWallet.value = newCurrentWallet;
+        }
+    });
+
+    watch(currentWallet, async () => {
+        await sendMessageAsync({
+            method: "updateCurrentWallet",
+            params: { currentWallet: currentWallet.value },
+        });
     });
 
     // // Getters
