@@ -26,7 +26,8 @@ const requestResults = ref([]);
 const requests = [
     //
     { method: "mmx_blockNumber" },
-    { method: "mmx_requestAccounts" },
+    { method: "mmx_requestWallets" },
+    { method: "mmx_requestCurrentWallet" },
 
     // dev test
     { method: "dev_test_openPopup" },
