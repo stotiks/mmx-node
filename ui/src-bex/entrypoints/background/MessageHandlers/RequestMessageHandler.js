@@ -23,11 +23,11 @@ export class RequestMessageHandler extends MessageHandlerBase {
         return await vault.getCurrentWalletAsync();
     };
 
-    static mmx_requestPubKey = async () => {
+    static mmx_requestPubKey = async (params) => {
         if (vault.isLocked) {
             await notificationMessenger.sendMessage(1233453456);
         }
-        return await vault.getPubKeyAsync();
+        return await vault.getPubKeyAsync(params?.address);
     };
 
     static dev_test_openPopup = async () => {
