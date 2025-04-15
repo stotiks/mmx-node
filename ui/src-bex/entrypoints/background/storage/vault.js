@@ -1,8 +1,7 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
-import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
-
 import { EncryptedStorageItem } from "./StorageItem";
-import { hexToBytes } from "@noble/hashes/utils";
+import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 
 class Vault {
     #password;
@@ -101,7 +100,7 @@ class Vault {
             throw new Error("Wallet already exists");
         }
 
-        const seed = mnemonicToSeed(mnemonic).toHex();
+        const seed = bytesToHex(mnemonicToSeed(mnemonic)).toUpperCase();
 
         const newWallet = {
             address,
@@ -168,7 +167,7 @@ class Vault {
         const ecdsaWallet = await this.getECDSAWalletAsync(address);
         const { pubKey } = await ecdsaWallet.getKeysAsync(0);
 
-        return pubKey.toHex();
+        return bytesToHex(pubKey).toUpperCase();
     }
 
     // events
