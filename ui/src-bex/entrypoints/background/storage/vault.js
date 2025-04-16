@@ -9,7 +9,14 @@ class Vault {
     #walletStorage = new EncryptedStorageItem("local:wallets");
     #wallets$$sensitive;
 
-    #currentWallet;
+    #currentWalletAddress;
+    getCurrentWalletAddress() {
+        return this.#currentWalletAddress;
+    }
+
+    getNetwork() {
+        return "MMX/mainnet";
+    }
 
     get isLocked() {
         return this.#password == null;
@@ -125,20 +132,12 @@ class Vault {
         this.emit("wallet-removed");
     }
 
-    setCurrentWalletAsync(address) {
+    setCurrentWallet(address) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
-        this.#currentWallet = address;
+        this.#currentWalletAddress = address;
         this.emit("current-wallet-updated");
-    }
-
-    async getCurrentWalletAsync() {
-        if (this.isLocked) {
-            throw new Error("Vault is locked");
-        }
-        const wallet = this.getWallets().find((wallet) => wallet.address === this.#currentWallet);
-        return wallet;
     }
 
     async getECDSAWalletAsync(address) {
@@ -146,21 +145,6 @@ class Vault {
         const seed = hexToBytes(wallet.seed);
         const ecdsaWallet = new ECDSA_Wallet(seed, wallet.password);
         return ecdsaWallet;
-    }
-
-    async getPubKeyAsync(address) {
-        if (this.isLocked) {
-            throw new Error("Vault is locked");
-        }
-
-        if (address == null) {
-            address = this.#currentWallet;
-        }
-
-        const ecdsaWallet = await this.getECDSAWalletAsync(address);
-        const { pubKey } = await ecdsaWallet.getKeysAsync(0);
-
-        return bytesToHex(pubKey).toUpperCase();
     }
 
     // events
