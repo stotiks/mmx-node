@@ -17,7 +17,7 @@ export class RequestMessageHandler extends MessageHandlerBase {
         return await vault.getWallets();
     };
 
-    static mmx_requestCurrentWallet = async () => {
+    static mmx_getCurrentWallet = async () => {
         if (vault.isLocked) {
             await notificationMessenger.sendMessage(1233453456);
         }
