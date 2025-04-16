@@ -40,9 +40,6 @@ export const useVaultStore = defineStore("vault", () => {
         });
     });
 
-    // // Getters
-    // const isLockedComputed = computed(() => isLocked.value);
-
     // Actions
     const checkIsLocked = async () => {
         isLocked.value = await sendMessageAsync({ method: "isLocked" });
