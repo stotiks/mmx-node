@@ -1,7 +1,8 @@
-import { getNodeInfo } from "../queries";
-import { notificationMessenger } from "../utils/notificationMessenger";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+import { getNodeInfo } from "../queries";
 import vault from "../storage/vault";
+import { notificationMessenger } from "../utils/notificationMessenger";
+import { getCurrentWalletAsync, getPubKeyAsync } from "../utils/walletHelpers";
 
 export class RequestMessageHandler extends MessageHandlerBase {
     static mmx_blockNumber = async () => {
@@ -20,14 +21,18 @@ export class RequestMessageHandler extends MessageHandlerBase {
         if (vault.isLocked) {
             await notificationMessenger.sendMessage(1233453456);
         }
-        return await vault.getCurrentWalletAsync();
+        return await getCurrentWalletAsync();
     };
 
-    static mmx_requestPubKey = async (params) => {
+    static mmx_getPubKey = async (params) => {
         if (vault.isLocked) {
             await notificationMessenger.sendMessage(1233453456);
         }
-        return await vault.getPubKeyAsync(params?.address);
+        return await getPubKeyAsync(params?.address);
+    };
+
+    static mmx_getNetwork = async () => {
+        return await vault.getNetwork();
     };
 
     static dev_test_openPopup = async () => {
