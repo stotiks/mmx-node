@@ -7,7 +7,14 @@
                     <q-card flat>
                         <q-card-section>
                             <q-btn outline no-caps :label="request.method" @click="handleRequest(request)" />
-                            <span v-if="requestResults[request.method]">{{ requestResults[request.method] }}</span>
+                            <template v-if="requestResults[request.method]">
+                                <template v-if="typeof requestResults[request.method] == 'object'">
+                                    <highlightjs :code="stringify(requestResults[request.method])" class="hljsCode" />
+                                </template>
+                                <template v-else>
+                                    <highlightjs :code="requestResults[request.method].toString()" class="hljsCode" />
+                                </template>
+                            </template>
                         </q-card-section>
                     </q-card>
                 </template>
@@ -18,6 +25,8 @@
 </template>
 
 <script setup>
+const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
+
 const isBexLoaded = computed(() => window.mmx && window.mmx.isFurryVault);
 const vault = computed(() => isBexLoaded.value && window.mmx);
 
@@ -30,6 +39,15 @@ const requests = [
     { method: "mmx_getCurrentWallet" },
     { method: "mmx_getPubKey" },
     { method: "mmx_getNetwork" },
+
+    { method: "mmx_signMessage", params: { message: "test123" } },
+
+    {
+        method: "mmx_signTransaction",
+        params: {
+            tx: '{"__type": "mmx.Transaction", "id": "", "version": 0, "expires": 591204, "fee_ratio": 1024, "static_cost": 60000, "max_fee_amount": 5050000, "note": "TRANSFER", "nonce": 8425803021051778044, "network": "mainnet", "sender": "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6", "inputs": [{"address": "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6", "contract": "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev", "amount": "1000000", "memo": "test", "solution": 0, "flags": 0}], "outputs": [{"address": "mmx1mw38rg8jcy2tjc5r7sxque6z45qrw6dsu6g2wmhahwf30342rraqyhsnea", "contract": "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev", "amount": "1000000", "memo": "test"}], "execute": [], "solutions": [{"__type": "mmx.solution.PubKey", "version": 0, "pubkey": "0344EE96D1B85CAC0F99B7CFA44F39EFFC590BDF51D45099D1F24AA09E5F9AD6E0", "signature": "25D6E0CCC23015E8613CDAA76EBCBFBC65BE1313AAD08BE212E36A1BBE9553CD0D68F10C694A9333D3E2EF48869A033055605A7136250E52F8FA4009158B3B51"}], "deploy": null, "exec_result": null, "content_hash": ""}',
+        },
+    },
 
     // dev test
     { method: "dev_test_openPopup" },
@@ -47,4 +65,25 @@ const doRequest = async (payload) => {
 const handleRequest = async (request) => {
     requestResults.value[request.method] = await doRequest({ method: request.method, params: request.params });
 };
+// window.addEventListener("message", function (event) {
+//     // Handle all incoming messages
+//     console.log("Received message:", event.data);
+
+//     // You can check the origin for security
+//     console.log("Message came from:", event.origin);
+
+//     // The source window that sent the message
+//     console.log("Source:", event.source);
+// });
 </script>
+
+<style scoped>
+::v-deep(.hljs) {
+    /* background: transparent !important; */
+    /* padding: 0px !important; */
+}
+
+::v-deep(pre.hljsCode) {
+    margin: 0px !important;
+}
+</style>
