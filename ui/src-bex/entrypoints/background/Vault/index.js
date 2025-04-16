@@ -29,6 +29,7 @@ class Vault {
         await this.saveAsync();
         await this.#unloadAsync();
         this.emit("locked");
+        return this.isLocked;
     }
 
     async unlockAsync(password) {
@@ -39,6 +40,7 @@ class Vault {
         await this.#loadAsync(password);
         this.#password = password;
         this.emit("unlocked");
+        return this.isLocked;
     }
 
     async #loadAsync(password) {
@@ -67,6 +69,7 @@ class Vault {
         this.#password = newPassword;
         await this.saveAsync();
         this.emit("password-updated");
+        return true;
     }
 
     async removeDataAsync() {
