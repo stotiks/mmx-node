@@ -15,7 +15,7 @@ class Vault {
     }
 
     getNetwork() {
-        return "MMX/mainnet";
+        return "mainnet";
     }
 
     get isLocked() {
