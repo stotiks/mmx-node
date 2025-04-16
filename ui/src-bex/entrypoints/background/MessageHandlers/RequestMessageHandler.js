@@ -2,7 +2,8 @@ import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import { getNodeInfo } from "../queries";
 import vault from "../storage/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
-import { getCurrentWallet, getPubKeyAsync, signMessageAsync } from "../utils/walletHelpers";
+import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
+import { Transaction } from "@/mmx/wallet/Transaction";
 
 export class RequestMessageHandler extends MessageHandlerBase {
     static mmx_blockNumber = async () => {
@@ -32,7 +33,8 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static mmx_getNetwork = async () => {
-        return await vault.getNetwork();
+        const network = await vault.getNetwork();
+        return `MMX/${network}`;
     };
 
     static mmx_signMessage = async (message) => {
@@ -40,6 +42,23 @@ export class RequestMessageHandler extends MessageHandlerBase {
             await notificationMessenger.sendMessage("TODO");
         }
         return await signMessageAsync(message);
+    };
+
+    static mmx_signTransaction = async ({ tx }) => {
+        if (vault.isLocked) {
+            await notificationMessenger.sendMessage("TODO");
+        }
+
+        let txObj;
+        try {
+            txObj = Transaction.parse(tx);
+        } catch (error) {
+            console.log(tx);
+            console.log(error);
+            throw new Error("Invalid transaction format");
+        }
+
+        return await signTransactionAsync(txObj);
     };
 
     static dev_test_openPopup = async () => {
