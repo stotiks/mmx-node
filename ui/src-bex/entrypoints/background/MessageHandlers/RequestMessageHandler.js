@@ -12,21 +12,21 @@ export class RequestMessageHandler extends MessageHandlerBase {
 
     static mmx_requestWallets = async () => {
         if (vault.isLocked) {
-            await notificationMessenger.sendMessage(1233453456);
+            await notificationMessenger.sendMessage("TODO");
         }
         return await vault.getWallets();
     };
 
     static mmx_getCurrentWallet = async () => {
         if (vault.isLocked) {
-            await notificationMessenger.sendMessage(1233453456);
+            await notificationMessenger.sendMessage("TODO");
         }
         return await getCurrentWalletAsync();
     };
 
     static mmx_getPubKey = async (params) => {
         if (vault.isLocked) {
-            await notificationMessenger.sendMessage(1233453456);
+            await notificationMessenger.sendMessage("TODO");
         }
         return await getPubKeyAsync(params?.address);
     };
@@ -36,7 +36,7 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static dev_test_openPopup = async () => {
-        await notificationMessenger.sendMessage(1233453456);
+        await notificationMessenger.sendMessage("TODO");
         return "Done!";
     };
 }
