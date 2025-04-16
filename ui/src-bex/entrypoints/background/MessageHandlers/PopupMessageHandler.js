@@ -1,5 +1,5 @@
-import vault from "../storage/vault";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+import vault from "../storage/vault";
 
 export class PopupMessageHandler extends MessageHandlerBase {
     static isLocked = async () => {
@@ -31,6 +31,6 @@ export class PopupMessageHandler extends MessageHandlerBase {
     };
 
     static setCurrentWallet = async ({ currentWallet }) => {
-        return await vault.setCurrentWalletAsync(currentWallet);
+        return vault.setCurrentWallet(currentWallet);
     };
 }
