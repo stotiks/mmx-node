@@ -27,8 +27,9 @@ const requests = [
     //
     { method: "mmx_blockNumber" },
     { method: "mmx_requestWallets" },
-    { method: "mmx_requestCurrentWallet" },
-    { method: "mmx_requestPubKey" },
+    { method: "mmx_getCurrentWallet" },
+    { method: "mmx_getPubKey" },
+    { method: "mmx_getNetwork" },
 
     // dev test
     { method: "dev_test_openPopup" },
