@@ -21,7 +21,7 @@ export const openNotification = async () => {
 
         const rightOffset = 80;
         const topOffset = 80;
-        const width = 400;
+        const width = 570;
         const height = 600;
 
         const newWindow = await chrome.windows.create({
