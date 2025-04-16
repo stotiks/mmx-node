@@ -22,7 +22,7 @@ export const useVaultStore = defineStore("vault", () => {
         let newCurrentWallet;
         if (wallets.value.length > 0) {
             if (!wallets.value.find((wallet) => wallet.address === currentWallet.value)) {
-                newCurrentWallet = wallets.value[0]?.address;
+                newCurrentWallet = wallets.value[0].address;
             }
         } else {
             newCurrentWallet = "";
@@ -33,11 +33,19 @@ export const useVaultStore = defineStore("vault", () => {
         }
     });
 
-    watch(currentWallet, async () => {
+    watchEffect(async () => {
         await sendMessageAsync({
             method: "setCurrentWallet",
             params: { currentWallet: currentWallet.value },
         });
+    });
+
+    watchEffect(async () => {
+        if (isLocked.value) {
+            wallets.value = [];
+        } else {
+            await _getWalletsAsync();
+        }
     });
 
     // Actions
@@ -54,10 +62,6 @@ export const useVaultStore = defineStore("vault", () => {
             method: "unlockVault",
             params: { password },
         });
-
-        if (!isLocked.value) {
-            await getWallets();
-        }
     };
 
     const updatePasswordAsync = async (password, newPassword) => {
@@ -67,7 +71,7 @@ export const useVaultStore = defineStore("vault", () => {
         });
     };
 
-    const getWallets = async () => {
+    const _getWalletsAsync = async () => {
         wallets.value = await sendMessageAsync({ method: "getWallets" });
     };
 
@@ -76,7 +80,7 @@ export const useVaultStore = defineStore("vault", () => {
             method: "addWallet",
             params: { seed, password },
         });
-        await getWallets();
+        await _getWalletsAsync();
         currentWallet.value = newWallet.address;
     };
 
@@ -85,14 +89,14 @@ export const useVaultStore = defineStore("vault", () => {
             method: "removeWallet",
             params: { address },
         });
-        await getWallets();
+        await _getWalletsAsync();
     };
 
     //Initialize
     (async () => {
         await checkIsLocked();
         if (!isLocked.value) {
-            await getWallets();
+            await _getWalletsAsync();
         }
     })();
 
@@ -105,7 +109,6 @@ export const useVaultStore = defineStore("vault", () => {
         lockAsync,
         unlockAsync,
         updatePasswordAsync,
-        getWallets,
         addWalletAsync,
         removeWalletAsync,
     };
