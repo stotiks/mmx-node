@@ -12,7 +12,7 @@ export default defineContentScript({
 
         allowWindowMessaging();
 
-        // sendMessage to window example
+        // // sendMessage to window example
         // setInterval(() => {
         //     contentMessenger.sendMessage("message", { eventName: "ping", data: "pong" }, "window");
         // }, 1000);
