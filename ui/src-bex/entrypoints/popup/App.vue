@@ -49,7 +49,9 @@
                             filled
                             dense
                         />
-                        <q-btn @click="handleRemoveWalletAsync(currentWallet)">Remove</q-btn>
+                        <q-btn :disabled="currentWallet === ''" @click="handleRemoveWalletAsync(currentWallet)"
+                            >Remove</q-btn
+                        >
                         <!-- <template v-for="wallet in wallets" :key="wallet">
                             <div>
                                 <m-chip copy>{{ wallet.address }}</m-chip>
