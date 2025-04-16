@@ -1,6 +1,7 @@
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 import vault from "../storage/vault";
 import { sha256 } from "@noble/hashes/sha256";
+// import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 
 const getWalletByAddress = async (address) => {
     return vault.getWallets().find((wallet) => wallet.address === address);
@@ -24,6 +25,12 @@ export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddr
 
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
 
-    const signature = await ecdsaWallet.signMsgAsync(address, msgHash);
-    return signature;
+    return await ecdsaWallet.signMsgAsync(address, msgHash);
+};
+
+export const signTransactionAsync = async (tx, address = vault.getCurrentWalletAddress()) => {
+    const ecdsaWallet = await vault.getECDSAWalletAsync(address);
+    //const options = new spend_options_t({ network1: "mainnet", expire_at1: -1 });
+    await ecdsaWallet.signOfAsync(tx, { network: "mainnet" });
+    return tx.toString();
 };
