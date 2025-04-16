@@ -21,7 +21,7 @@ export class MessageHandlerBase {
         } catch (error) {
             // eslint-disable-next-line no-undef
             if (process.env.NODE_ENV === "development") {
-                console.error(`Error handling method [${_method}]:`, error);
+                console.log(`Error handling method [${_method}]:`, error);
             }
 
             return { success: false, error: error.message };
