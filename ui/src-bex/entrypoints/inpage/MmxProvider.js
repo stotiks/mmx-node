@@ -1,4 +1,5 @@
 import { windowMessenger } from "@bex/messaging/window";
+windowMessenger.setNamespace();
 
 const proxify = (obj) =>
     new Proxy(obj, {
