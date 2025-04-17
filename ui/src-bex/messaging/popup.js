@@ -1,7 +1,10 @@
 // eslint-disable-next-line no-restricted-imports
-import { onMessage as _onMessage, sendMessage } from "webext-bridge/popup";
+import { onMessage as _onMessage, sendMessage as _sendMessage } from "webext-bridge/popup";
 
 import { callbackGuard } from "./utils/callbackGuard";
-const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(callback));
+import { sendMessageWrapper } from "./utils/sendMessageWrapper";
 
-export const popupMessenger = { onMessage, sendMessage };
+const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(callback));
+const sendMessageAsync = sendMessageWrapper(_sendMessage);
+
+export const popupMessenger = { onMessage, sendMessageAsync };
