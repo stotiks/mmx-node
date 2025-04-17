@@ -1,5 +1,5 @@
 import { defineContentScript, injectScript } from "#imports";
-import { allowWindowMessaging, contentScriptMessenger } from "@bex/messaging/content-script";
+import { contentScriptMessenger } from "@bex/messaging/content-script";
 
 export default defineContentScript({
     matches: ["<all_urls>"],
@@ -10,7 +10,7 @@ export default defineContentScript({
             keepInDom: false,
         });
 
-        allowWindowMessaging();
+        contentScriptMessenger.allowWindowMessaging();
 
         // sendMessage to window example
         setInterval(() => {
