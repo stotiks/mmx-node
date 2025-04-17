@@ -20,17 +20,21 @@ export const useVaultStore = defineStore("vault", () => {
             newCurrentWallet = "";
         }
 
-        currentWallet.value = newCurrentWallet;
+        if (newCurrentWallet !== currentWallet.value) {
+            currentWallet.value = newCurrentWallet;
+        }
     });
 
-    watchEffect(async () => {
-        await sendMessageAsync({
-            method: "setCurrentWallet",
-            params: { currentWallet: currentWallet.value },
-        });
+    watch(currentWallet, async () => {
+        if (!isLocked.value) {
+            await sendMessageAsync({
+                method: "setCurrentWallet",
+                params: { currentWallet: currentWallet.value },
+            });
+        }
     });
 
-    watchEffect(async () => {
+    watch(isLocked, async () => {
         if (isLocked.value) {
             wallets.value = [];
         } else {
