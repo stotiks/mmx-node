@@ -11,7 +11,7 @@ export const useVaultStore = defineStore("vault", () => {
     const currentWallet = ref("");
 
     watch(wallets, () => {
-        let newCurrentWallet;
+        let newCurrentWallet = currentWallet.value;
         if (wallets.value.length > 0) {
             if (!wallets.value.find((wallet) => wallet.address === currentWallet.value)) {
                 newCurrentWallet = wallets.value[0].address;
@@ -20,9 +20,7 @@ export const useVaultStore = defineStore("vault", () => {
             newCurrentWallet = "";
         }
 
-        if (newCurrentWallet !== currentWallet.value) {
-            currentWallet.value = newCurrentWallet;
-        }
+        currentWallet.value = newCurrentWallet;
     });
 
     watchEffect(async () => {
@@ -87,9 +85,6 @@ export const useVaultStore = defineStore("vault", () => {
     //Initialize
     (async () => {
         await checkIsLocked();
-        if (!isLocked.value) {
-            await _getWalletsAsync();
-        }
     })();
 
     return {
