@@ -1,5 +1,5 @@
 import { defineContentScript, injectScript } from "#imports";
-import { allowWindowMessaging, contentMessenger } from "@bex/messaging/content";
+import { allowWindowMessaging, contentScriptMessenger } from "@bex/messaging/content-script";
 
 export default defineContentScript({
     matches: ["<all_urls>"],
@@ -14,7 +14,7 @@ export default defineContentScript({
 
         // sendMessage to window example
         setInterval(() => {
-            contentMessenger.sendMessageAsync("message", { eventName: "ping", data: "pong" }, "window");
+            contentScriptMessenger.sendMessageAsync("message", { eventName: "ping", data: "pong" }, "window");
         }, 1000);
     },
 });
