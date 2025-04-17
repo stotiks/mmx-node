@@ -18,13 +18,15 @@ const proxify = (obj) =>
     });
 
 export class MmxProvider {
-    _events = new Map();
-
     isFurryVault = true;
+
     network = "mainnet";
 
     // selectedAddress = null;
-    // enable = () => {};
+
+    #sendMessageAsync = async (messageId, payload) => await windowMessenger.sendMessageAsync(messageId, payload);
+
+    request = async (payload) => await this.#sendMessageAsync("request", payload);
 
     constructor() {
         windowMessenger.onMessage("message", (message) => {
@@ -35,6 +37,8 @@ export class MmxProvider {
         return proxify(this);
     }
 
+    // events
+    _events = new Map();
     on = (eventName, callback) => {
         if (!this._events.has(eventName)) {
             this._events.set(eventName, []);
@@ -65,8 +69,4 @@ export class MmxProvider {
             });
         }
     }
-
-    #sendMessageAsync = async (messageId, payload) => await windowMessenger.sendMessageAsync(messageId, payload);
-
-    request = async (data) => await this.#sendMessageAsync("request", data);
 }
