@@ -48,7 +48,7 @@ export const messengerWrapper = (messenger) => {
     }
 
     if (messenger.setNamespace) {
-        messenger.setNamespace(namespace);
+        toExport.setNamespace = () => messenger.setNamespace(namespace);
     }
 
     return toExport;
