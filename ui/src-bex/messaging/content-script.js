@@ -13,7 +13,7 @@ import { sendMessageWrapper } from "./utils/sendMessageWrapper";
 const onMessage = (messageId, callback) => _onMessage(messageId, callbackGuard(callback));
 const sendMessageAsync = sendMessageWrapper(_sendMessage);
 
-export const contentMessenger = {
+export const contentScriptMessenger = {
     onMessage,
     sendMessageAsync,
 };
