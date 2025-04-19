@@ -35,19 +35,19 @@ export const messengerWrapper = (messenger) => {
     const onMessage = (messageID, callback) => messenger.onMessage(messageID, callbackGuard(callback));
     const onWindowMessage = messenger.onMessage;
 
-    const toExport = {
+    const messengerWrapped = {
         sendMessageAsync,
         onMessage,
         onWindowMessage,
     };
 
     if (messenger.allowWindowMessaging) {
-        toExport.allowWindowMessaging = () => messenger.allowWindowMessaging(namespace);
+        messengerWrapped.allowWindowMessaging = () => messenger.allowWindowMessaging(namespace);
     }
 
     if (messenger.setNamespace) {
-        toExport.setNamespace = () => messenger.setNamespace(namespace);
+        messengerWrapped.setNamespace = () => messenger.setNamespace(namespace);
     }
 
-    return toExport;
+    return messengerWrapped;
 };
