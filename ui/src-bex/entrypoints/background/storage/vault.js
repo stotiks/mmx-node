@@ -137,7 +137,7 @@ class Vault {
             throw new Error("Vault is locked");
         }
         this.#currentWalletAddress = address;
-        this.emit("current-wallet-updated");
+        //this.emit("current-wallet-updated");
     }
 
     async getECDSAWalletAsync(address) {
