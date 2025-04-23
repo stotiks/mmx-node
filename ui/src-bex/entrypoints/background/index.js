@@ -23,13 +23,13 @@ export default defineBackground(() => {
         //process messages from injected provider
         backgroundMessenger.onWindowMessage("request", async (message) => {
             console.log("Received from inpage:", message);
-            return await RequestMessageHandler.handle(message);
+            return await RequestMessageHandler.handleAsync(message);
         });
 
         //process messages from popup/notification
         backgroundMessenger.onMessage("popup", async (message) => {
             console.log("Received from notification/popup:", message);
-            return await PopupMessageHandler.handle(message);
+            return await PopupMessageHandler.handleAsync(message);
         });
 
         //forward events from vault to popup
