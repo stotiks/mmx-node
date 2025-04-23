@@ -1,34 +1,42 @@
+import { Transaction } from "@/mmx/wallet/Transaction";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import { getNodeInfo } from "../queries";
 import vault from "../storage/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
-import { Transaction } from "@/mmx/wallet/Transaction";
 
 export class RequestMessageHandler extends MessageHandlerBase {
+    static checkPermissionsAsync = async (message) => {
+        console.log("Checking permissions...");
+        console.log(message);
+
+        await notificationMessenger.sendMessage({ method: "requestPermissions" });
+        return true;
+    };
+
+    static async handleAsync(message) {
+        const permitted = await this.checkPermissionsAsync(message);
+        if (permitted) {
+            return await super.handleAsync(message);
+        } else {
+            throw new Error("Permissions not granted");
+        }
+    }
+
     static mmx_blockNumber = async () => {
         const info = await getNodeInfo();
         return info.height;
     };
 
     static mmx_requestWallets = async () => {
-        if (vault.isLocked) {
-            await notificationMessenger.sendMessage("TODO");
-        }
         return await vault.getWallets();
     };
 
     static mmx_getCurrentWallet = async () => {
-        if (vault.isLocked) {
-            await notificationMessenger.sendMessage("TODO");
-        }
         return getCurrentWallet();
     };
 
     static mmx_getPubKey = async (params) => {
-        if (vault.isLocked) {
-            await notificationMessenger.sendMessage("TODO");
-        }
         return await getPubKeyAsync(params?.address);
     };
 
@@ -38,17 +46,10 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static mmx_signMessage = async (message) => {
-        if (vault.isLocked) {
-            await notificationMessenger.sendMessage("TODO");
-        }
         return await signMessageAsync(message);
     };
 
     static mmx_signTransaction = async ({ tx }) => {
-        if (vault.isLocked) {
-            await notificationMessenger.sendMessage("TODO");
-        }
-
         let txObj;
         try {
             txObj = Transaction.parse(tx);
@@ -62,7 +63,7 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static dev_test_openPopup = async () => {
-        await notificationMessenger.sendMessage("TODO");
+        // await notificationMessenger.sendMessage("TODO");
         return "Done!";
     };
 }
