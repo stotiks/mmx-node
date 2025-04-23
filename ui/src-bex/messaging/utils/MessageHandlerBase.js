@@ -24,7 +24,10 @@ export class MessageHandlerBase {
                 console.log(`Error handling method [${_method}]:`, error);
             }
 
-            return { success: false, error: error.message };
+            return {
+                success: false,
+                error: error.message,
+            };
         }
     }
 }
