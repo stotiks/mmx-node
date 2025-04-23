@@ -1,5 +1,4 @@
-/*global chrome browser*/
-/*eslint no-undef: "error"*/
+/*global browser*/
 
 let notificationWindowId = null;
 let isNotificationLoaded = false;
@@ -8,7 +7,7 @@ export const openNotification = async () => {
     if (notificationWindowId) {
         const views = await browser.runtime.getContexts({ windowIds: [notificationWindowId] });
         if (views.length > 0) {
-            await chrome.windows.update(notificationWindowId, { focused: true });
+            await browser.windows.update(notificationWindowId, { focused: true });
         } else {
             notificationWindowId = null;
         }
@@ -17,15 +16,15 @@ export const openNotification = async () => {
     if (notificationWindowId) {
         //console.log("Notification is already open.");
     } else {
-        const currentWindow = await chrome.windows.getCurrent();
+        const currentWindow = await browser.windows.getCurrent();
 
         const rightOffset = 80;
         const topOffset = 80;
         const width = 570;
         const height = 600;
 
-        const newWindow = await chrome.windows.create({
-            url: chrome.runtime.getURL("notification.html"),
+        const newWindow = await browser.windows.create({
+            url: browser.runtime.getURL("notification.html"),
             type: "popup",
             width,
             height,
@@ -37,17 +36,17 @@ export const openNotification = async () => {
         notificationWindowId = newWindow.id;
         const tabId = newWindow.tabs[0].id;
 
-        chrome.tabs.onUpdated.addListener(function listener(tabIdUpdated, changeInfo) {
+        browser.tabs.onUpdated.addListener(function listener(tabIdUpdated, changeInfo) {
             if (tabId === tabIdUpdated && changeInfo.status === "complete") {
-                chrome.tabs.onUpdated.removeListener(listener);
+                browser.tabs.onUpdated.removeListener(listener);
                 isNotificationLoaded = true;
                 //console.log("Window content fully loaded");
             }
         });
 
-        chrome.tabs.onRemoved.addListener(function listener(tabIdUpdated) {
+        browser.tabs.onRemoved.addListener(function listener(tabIdUpdated) {
             if (tabId === tabIdUpdated) {
-                chrome.tabs.onRemoved.removeListener(listener);
+                browser.tabs.onRemoved.removeListener(listener);
                 isNotificationLoaded = false;
                 //console.log("Window closed");
             }
