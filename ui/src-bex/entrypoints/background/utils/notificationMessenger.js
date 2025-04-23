@@ -7,6 +7,6 @@ const sendMessageAsync = async (payload) =>
 export const notificationMessenger = {
     sendMessage: async (payload) => {
         await openNotification();
-        await sendMessageAsync(payload);
+        return await sendMessageAsync(payload);
     },
 };
