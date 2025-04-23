@@ -150,6 +150,21 @@ class Vault {
         return ecdsaWallet;
     }
 
+    // permissions
+    #allowedOriginsSet = new Set();
+    async checkPermissionsAsync(url) {
+        if (this.isLocked) {
+            throw new Error("Vault is locked");
+        }
+        const origin = new URL(url).origin;
+        if (this.#allowedOriginsSet.has(origin)) {
+            return true;
+        } else {
+            this.#allowedOriginsSet.add(origin); //debug
+        }
+        return false;
+    }
+
     // events
     _events = new Map();
 
