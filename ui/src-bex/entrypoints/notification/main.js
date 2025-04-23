@@ -1,7 +1,7 @@
 import { popupMessenger } from "@bex/messaging/popup";
 
 popupMessenger.onMessage("notification", async (message) => {
-    console.log("Received from background:", message);
+    console.log("Received from background:", JSON.parse(JSON.stringify(message)));
     // await new Promise((resolve) => setTimeout(resolve, 5000));
     return { success: true, data: { message: "Return from notification" } };
 });
