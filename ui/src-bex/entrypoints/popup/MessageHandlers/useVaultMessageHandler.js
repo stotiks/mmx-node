@@ -28,6 +28,6 @@ export const useVaultMessageHandler = () => {
 
     popupMessenger.onMessage("vault", async (message) => {
         console.log("Received from background:", message);
-        return await VaultMessageHandler.handle(message);
+        return await VaultMessageHandler.handleAsync(message);
     });
 };
