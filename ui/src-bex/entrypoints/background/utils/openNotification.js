@@ -1,4 +1,4 @@
-/*global browser*/
+/* global browser */
 
 let notificationWindowId = null;
 let isNotificationLoaded = false;
@@ -7,6 +7,7 @@ export const openNotification = async () => {
     if (notificationWindowId) {
         const views = await browser.runtime.getContexts({ windowIds: [notificationWindowId] });
         if (views.length > 0) {
+            // focus the window
             await browser.windows.update(notificationWindowId, { focused: true });
         } else {
             notificationWindowId = null;
