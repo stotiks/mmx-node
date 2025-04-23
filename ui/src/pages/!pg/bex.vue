@@ -58,7 +58,7 @@ const doRequest = async (payload) => {
     try {
         return await vault.value.request(payload);
     } catch (e) {
-        $q.notify({ type: "negative", message: e.message });
+        $q.notify({ type: "negative", message: e.message || "Unknown error" });
     }
 };
 
