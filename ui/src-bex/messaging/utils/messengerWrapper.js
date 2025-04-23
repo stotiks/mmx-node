@@ -18,7 +18,7 @@ const callbackGuard = (callback) => (message) => {
 
 const sendMessageWrapper = (sendMessage) => async (messageID, payload, target) => {
     const response = await sendMessage(messageID, payload, target);
-    if (response?.success !== undefined) {
+    if (response?.success != null) {
         const { success, data, error } = response;
         if (success) {
             return data;
