@@ -1,7 +1,6 @@
-import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
-import vault from "../storage/vault";
 import { sha256 } from "@noble/hashes/sha2";
-// import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
+import { bytesToHex } from "@noble/hashes/utils";
+import vault from "../storage/vault";
 
 const getWalletByAddress = async (address) => {
     return vault.getWallets().find((wallet) => wallet.address === address);
