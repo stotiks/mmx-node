@@ -8,28 +8,28 @@ export const useVaultStore = defineStore("vault", () => {
     const isLocked = ref(true);
     const wallets = ref([]);
 
-    const currentWallet = ref("");
+    const currentWalletAddress = ref("");
 
     watch(wallets, () => {
-        let newCurrentWallet = currentWallet.value;
+        let newCurrentWalletAddress = currentWalletAddress.value;
         if (wallets.value.length > 0) {
-            if (!wallets.value.find((wallet) => wallet.address === currentWallet.value)) {
-                newCurrentWallet = wallets.value[0].address;
+            if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
+                newCurrentWalletAddress = wallets.value[0].address;
             }
         } else {
-            newCurrentWallet = "";
+            newCurrentWalletAddress = "";
         }
 
-        if (newCurrentWallet !== currentWallet.value) {
-            currentWallet.value = newCurrentWallet;
+        if (newCurrentWalletAddress !== currentWalletAddress.value) {
+            currentWalletAddress.value = newCurrentWalletAddress;
         }
     });
 
-    watch(currentWallet, async () => {
+    watch(currentWalletAddress, async () => {
         if (!isLocked.value) {
             await sendMessageAsync({
                 method: "setCurrentWallet",
-                params: { currentWallet: currentWallet.value },
+                params: { address: currentWalletAddress.value },
             });
         }
     });
@@ -37,16 +37,13 @@ export const useVaultStore = defineStore("vault", () => {
     watch(isLocked, async () => {
         if (isLocked.value) {
             wallets.value = [];
+            currentWalletAddress.value = "";
         } else {
             await _getWalletsAsync();
         }
     });
 
     // Actions
-    const checkIsLocked = async () => {
-        isLocked.value = await sendMessageAsync({ method: "isLocked" });
-    };
-
     const lockAsync = async () => {
         isLocked.value = await sendMessageAsync({ method: "lockVault" });
     };
@@ -75,7 +72,7 @@ export const useVaultStore = defineStore("vault", () => {
             params: { seed, password },
         });
         await _getWalletsAsync();
-        currentWallet.value = newWallet.address;
+        currentWalletAddress.value = newWallet.address;
     };
 
     const removeWalletAsync = async (address) => {
@@ -87,15 +84,26 @@ export const useVaultStore = defineStore("vault", () => {
     };
 
     //Initialize
+    const getIsLockedAsync = async () => {
+        isLocked.value = await sendMessageAsync({ method: "isLocked" });
+    };
+
+    const getCurrentWalletAddressAsync = async () => {
+        if (!isLocked.value) {
+            currentWalletAddress.value = await sendMessageAsync({ method: "getCurrentWalletAddress" });
+        }
+    };
+
     (async () => {
-        await checkIsLocked();
+        await getIsLockedAsync();
+        await getCurrentWalletAddressAsync();
     })();
 
     return {
         // State
         isLocked,
         wallets,
-        currentWallet,
+        currentWalletAddress,
         // Actions
         lockAsync,
         unlockAsync,
