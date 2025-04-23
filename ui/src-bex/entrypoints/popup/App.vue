@@ -41,7 +41,7 @@
                             </q-expansion-item>
                         </q-list>
                         <q-select
-                            v-model="currentWallet"
+                            v-model="currentWalletAddress"
                             :options="walletsOptions"
                             emit-value
                             map-options
@@ -49,7 +49,9 @@
                             filled
                             dense
                         />
-                        <q-btn :disabled="currentWallet === ''" @click="handleRemoveWalletAsync(currentWallet)"
+                        <q-btn
+                            :disabled="currentWalletAddress === ''"
+                            @click="handleRemoveWalletAsync(currentWalletAddress)"
                             >Remove</q-btn
                         >
                         <!-- <template v-for="wallet in wallets" :key="wallet">
@@ -82,7 +84,7 @@ const tryCatchWrapper = async (fn) => {
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault.js";
 const vaultStore = useVaultStore();
-const { isLocked, wallets, currentWallet } = storeToRefs(vaultStore);
+const { isLocked, wallets, currentWalletAddress } = storeToRefs(vaultStore);
 
 const walletsOptions = computed(() => {
     return wallets.value.map((wallet) => ({ label: wallet.address, value: wallet.address }));
