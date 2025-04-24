@@ -5,6 +5,7 @@ import vault from "../storage/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
 import { openNotification } from "../utils/openNotification";
+import { sha256 } from "@noble/hashes/sha2";
 
 /* global browser */
 const getTabUrl = async (tabId) => {
@@ -16,6 +17,10 @@ const getTabUrl = async (tabId) => {
 class MessageHandlerWithAuth extends MessageHandlerBase {
     static checkPermissionsAsync = async (message) => {
         console.log("Checking permissions...");
+
+        if (message.sender.frameId != null) {
+            throw new Error("iFrame not supported");
+        }
 
         const tabId = message.sender.tabId;
         const url = await getTabUrl(tabId);
@@ -72,7 +77,9 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
     };
 
     static mmx_signMessage = async ({ message }) => {
-        return await signMessageAsync(message);
+        const msgWithPrefix = `MMX/sign_message/${message}`;
+        const msgHash = sha256(msgWithPrefix);
+        return await signMessageAsync(msgHash);
     };
 
     static mmx_signTransaction = async ({ tx }) => {
