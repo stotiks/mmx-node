@@ -114,6 +114,5 @@ import { useNotificationMessageHandler } from "./MessageHandlers/useNotification
 const isNotification = inject("isNotification");
 if (isNotification) {
     useNotificationMessageHandler();
-    console.log(isNotification);
 }
 </script>
