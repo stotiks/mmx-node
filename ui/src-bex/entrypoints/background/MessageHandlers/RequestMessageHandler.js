@@ -4,14 +4,38 @@ import { getNodeInfo } from "../queries";
 import vault from "../storage/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
+import { openNotification } from "../utils/openNotification";
 
-export class RequestMessageHandler extends MessageHandlerBase {
+/* global browser */
+const getTabUrl = async (tabId) => {
+    const tab = await browser.tabs.get(tabId);
+    const url = new URL(tab.url);
+    return url;
+};
+
+class MessageHandlerWithAuth extends MessageHandlerBase {
     static checkPermissionsAsync = async (message) => {
         console.log("Checking permissions...");
-        console.log(message);
 
-        await notificationMessenger.sendMessage({ method: "requestPermissions" });
-        return true;
+        const tabId = message.sender.tabId;
+        const url = await getTabUrl(tabId);
+
+        console.log("Tab url:", url.toString());
+
+        const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
+
+        if (await checkVaultPermissionsAsync()) {
+            return true;
+        } else {
+            console.log("Requesting permissions...");
+            const requestPermissionsResponse = await notificationMessenger.sendMessage({
+                method: "requestPermissions",
+                params: { url },
+            });
+            console.log("requestPermissionsResponse:", requestPermissionsResponse);
+        }
+
+        return await checkVaultPermissionsAsync();
     };
 
     static async handleAsync(message) {
@@ -22,7 +46,9 @@ export class RequestMessageHandler extends MessageHandlerBase {
             throw new Error("Permissions not granted");
         }
     }
+}
 
+export class RequestMessageHandler extends MessageHandlerWithAuth {
     static mmx_blockNumber = async () => {
         const info = await getNodeInfo();
         return info.height;
@@ -45,7 +71,7 @@ export class RequestMessageHandler extends MessageHandlerBase {
         return `MMX/${network}`;
     };
 
-    static mmx_signMessage = async (message) => {
+    static mmx_signMessage = async ({ message }) => {
         return await signMessageAsync(message);
     };
 
@@ -63,7 +89,7 @@ export class RequestMessageHandler extends MessageHandlerBase {
     };
 
     static dev_test_openPopup = async () => {
-        // await notificationMessenger.sendMessage("TODO");
+        await openNotification();
         return "Done!";
     };
 }
