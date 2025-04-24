@@ -60,6 +60,8 @@ export class WriteBytes extends WriteBuffer {
         const value = variant.valueOf();
         if (value === undefined || value === null) {
             this.write_bytes_cstr("NULL");
+        } else if (typeof value === "number") {
+            this.write_bytes_int64(BigInt(value));
         } else {
             this.write_bytes(value);
         }
