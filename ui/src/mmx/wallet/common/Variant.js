@@ -71,7 +71,7 @@ export class Variant {
                     data = new Uint32Array([Number(value)]);
                 } else {
                     code = CODE_UINT64;
-                    data = new BigUint64Array([value]);
+                    data = new BigUint64Array([BigInt(value)]);
                 }
             } else {
                 if (bitSize <= 8 + 1) {
