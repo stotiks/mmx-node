@@ -52,14 +52,9 @@
                         <q-btn
                             :disabled="currentWalletAddress === ''"
                             @click="handleRemoveWalletAsync(currentWalletAddress)"
-                            >Remove</q-btn
                         >
-                        <!-- <template v-for="wallet in wallets" :key="wallet">
-                            <div>
-                                <m-chip copy>{{ wallet.address }}</m-chip>
-                                <q-btn @click="handleRemoveWalletAsync(wallet.address)">Remove</q-btn>
-                            </div>
-                        </template> -->
+                            Remove
+                        </q-btn>
                     </div>
                 </template>
             </q-page>
@@ -114,4 +109,11 @@ const handleRemoveWalletAsync = async (address) => {
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
 useVaultMessageHandler();
+
+import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
+const isNotification = inject("isNotification");
+if (isNotification) {
+    useNotificationMessageHandler();
+    console.log(isNotification);
+}
 </script>
