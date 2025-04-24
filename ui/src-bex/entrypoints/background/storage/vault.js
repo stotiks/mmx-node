@@ -85,7 +85,7 @@ class Vault {
         await this.#walletStorage.set(this.#wallets$$sensitive, this.#password);
     }
 
-    #walletCleanup = (wallet) => ({ ...wallet, seed: "######", password: "******" });
+    #walletCleanup = ({ seed, password, ...wallet }) => wallet;
     getWallets() {
         if (this.isLocked) {
             throw new Error("Vault is locked");
