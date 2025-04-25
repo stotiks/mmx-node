@@ -6,6 +6,7 @@ import { notificationMessenger } from "../utils/notificationMessenger";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
 import { openNotification } from "../utils/openNotification";
 import { sha256 } from "@noble/hashes/sha2";
+import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 
 /* global browser */
 const getTabUrl = async (tabId) => {
@@ -87,7 +88,6 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         if (typeof tx === "string") {
             try {
                 txObj = Transaction.parse(tx);
-                console.log("x", { ...txObj });
             } catch (error) {
                 console.log(tx);
                 console.log(error);
@@ -107,8 +107,9 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         } else {
             throw new Error("Invalid options format");
         }
+        const optionsObj = new spend_options_t(options);
 
-        return (await signTransactionAsync(txObj, options)).toString();
+        return (await signTransactionAsync(txObj, optionsObj)).toString();
     };
 
     static dev_test_openPopup = async () => {
