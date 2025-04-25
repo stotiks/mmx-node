@@ -45,7 +45,8 @@ const requests = [
     {
         method: "mmx_signTransaction",
         params: {
-            tx: '{"__type": "mmx.Transaction", "id": "", "version": 0, "expires": -1, "fee_ratio": 1024, "static_cost": 60000, "max_fee_amount": 5050000, "note": "TRANSFER", "nonce": 8425803021051778044, "network": "mainnet", "sender": "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6", "inputs": [{"address": "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6", "contract": "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev", "amount": "1000000", "memo": "test"}], "outputs": [{"address": "mmx1mw38rg8jcy2tjc5r7sxque6z45qrw6dsu6g2wmhahwf30342rraqyhsnea", "contract": "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev", "amount": "1000000", "memo": "test"}], "execute": [], "solutions": [], "deploy": null, "exec_result": null, "content_hash": ""}',
+            tx: '{"__type": "mmx.Transaction", "id": "", "version": 0, "expires": -1, "fee_ratio": 1024, "static_cost": 60000, "max_fee_amount": 5050000, "note": "TRANSFER", "nonce": "8425803021051778044", "network": "mainnet", "sender": "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6", "inputs": [{"address": "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6", "contract": "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev", "amount": "1000000", "memo": "test"}], "outputs": [{"address": "mmx1mw38rg8jcy2tjc5r7sxque6z45qrw6dsu6g2wmhahwf30342rraqyhsnea", "contract": "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev", "amount": "1000000", "memo": "test"}], "execute": [], "deploy": null, "exec_result": null, "content_hash": ""}',
+            options: '{ "fee_ratio": 1024, "expire_at": -1, "nonce": "8425803021051778044", "network": "mainnet" }',
         },
     },
 
@@ -78,11 +79,6 @@ const handleRequest = async (request) => {
 </script>
 
 <style scoped>
-::v-deep(.hljs) {
-    /* background: transparent !important; */
-    /* padding: 0px !important; */
-}
-
 ::v-deep(pre.hljsCode) {
     margin: 0px !important;
 }
