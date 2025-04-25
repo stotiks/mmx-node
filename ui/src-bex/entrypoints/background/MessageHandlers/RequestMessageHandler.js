@@ -82,17 +82,33 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         return await signMessageAsync(msgHash);
     };
 
-    static mmx_signTransaction = async ({ tx }) => {
+    static mmx_signTransaction = async ({ tx, options }) => {
         let txObj;
-        try {
-            txObj = Transaction.parse(tx);
-        } catch (error) {
+        if (typeof tx === "string") {
+            try {
+                txObj = Transaction.parse(tx);
+                console.log("x", { ...txObj });
+            } catch (error) {
+                console.log(tx);
+                console.log(error);
+                throw new Error("Invalid transaction format");
+            }
+        } else if (typeof tx === "object") {
+            txObj = Transaction.cast(tx);
+        } else {
             console.log(tx);
-            console.log(error);
             throw new Error("Invalid transaction format");
         }
 
-        return await signTransactionAsync(txObj);
+        if (typeof options === "string") {
+            options = JSON.parse(options);
+        } else if (typeof options === "object") {
+            //options = options;
+        } else {
+            throw new Error("Invalid options format");
+        }
+
+        return (await signTransactionAsync(txObj, options)).toString();
     };
 
     static dev_test_openPopup = async () => {
