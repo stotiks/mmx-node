@@ -74,7 +74,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getExecuteTxAsync(ecdsaWallet, address, method, args, user, options);
 
-        assert.equal(tx.toString(), json);
+        assert.equal(tx.toString2(), json);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -100,7 +100,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getDepositTxAsync(ecdsaWallet, address, method, args, amount, currency, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -132,7 +132,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getDeployTxAsync(ecdsaWallet, contract, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -167,7 +167,7 @@ describe("Wallet", () => {
             options
         );
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -193,7 +193,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getOfferTradeTxAsync(ecdsaWallet, address, amount, ask_currency, price, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -218,7 +218,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getOfferWithdrawTxAsync(ecdsaWallet, offer, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -246,7 +246,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getAcceptOfferTxAsync(ecdsaWallet, offer, price, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -269,7 +269,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getCancelOfferTxAsync(ecdsaWallet, address, owner, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -292,7 +292,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getPlotNftCreateTxAsync(ecdsaWallet, name, owner, options);
 
-        assert.equal(tx.toString(), jsonTxt);
+        assert.equal(tx.toString2(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
