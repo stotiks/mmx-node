@@ -21,7 +21,7 @@ txs.forEach((item, key) => {
 
         it("parse", () => {
             const tx = Transaction.parse(json);
-            assert.equal(tx.toString(), JSONbigNative.stringify(JSONbigNative.parse(json)));
+            assert.equal(tx.toString2(), JSONbigNative.stringify(JSONbigNative.parse(json)));
         });
 
         it("calc_hash id", () => {
