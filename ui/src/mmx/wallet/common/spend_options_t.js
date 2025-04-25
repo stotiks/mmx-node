@@ -28,6 +28,10 @@ export class spend_options_t {
             throw new Error("expire_at is required");
         }
 
+        if (options.nonce) {
+            options.nonce = BigInt(options.nonce);
+        }
+
         Object.assign(this, options);
     }
 }
