@@ -59,8 +59,15 @@ class Transaction {
         return JSONbigNative.stringify(this, ...options);
     }
 
-    toString(...options) {
-        return this.#stringify(...options);
+    toString2() {
+        return this.#stringify();
+    }
+
+    toString() {
+        return this.#stringify((key, value) => {
+            if (key === "nonce" && value != null) return value.toString();
+            return value;
+        });
     }
 
     static hashHandler = {
