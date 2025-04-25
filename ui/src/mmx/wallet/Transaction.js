@@ -53,10 +53,10 @@ class Transaction {
     static cast(obj) {
         const tx = Object.assign(new Transaction(), obj);
         tx.nonce = BigInt(tx.nonce);
-        // tx.inputs = tx.inputs.map((item) => new txin_t(item));
-        // tx.outputs = tx.outputs.map((item) => new txout_t(item));
-        // tx.execute = tx.execute.map((item) => new Operation(item));
-        // tx.solutions = tx.solutions.map((item) => new PubKey(item));
+        tx.inputs = tx.inputs.map((item) => new txin_t(item));
+        tx.outputs = tx.outputs.map((item) => new txout_t(item));
+        tx.execute = tx.execute.map((item) => new Operation(item));
+        tx.solutions = tx.solutions.map((item) => new PubKey(item));
         return tx;
     }
 
