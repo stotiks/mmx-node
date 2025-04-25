@@ -1,7 +1,7 @@
 <template>
     <q-page padding>
         <div class="q-gutter-y-sm">
-            <q-input v-model="contract" filled type="textarea" input-style="height: 500px" />
+            <q-input v-model="txStr" filled type="textarea" input-style="height: 500px" />
             <div class="q-gutter-x-xs">
                 <q-btn label="Format" color="secondary" @click="handleFormat" />
                 <q-btn label="Validate" color="primary" @click="handleValidate" />
@@ -18,33 +18,33 @@
 <script setup>
 import { mdiLogout } from "@mdi/js";
 
-const contract = ref("{}");
+const txStr = ref("{}");
 
 import { Transaction } from "@/mmx/wallet/Transaction";
 import { JSONbigNative } from "@/mmx/wallet/utils/JSONbigNative";
 
-const getPayload = async () => {
-    const tx = Transaction.parse(contract.value);
-    const payload = JSONbigNative.stringify(tx);
+const getPayload = () => {
+    const tx = Transaction.parse(txStr.value);
+    const payload = tx.toString();
     return payload;
 };
 
 import { useTransactionValidate, useTransactionBroadcast } from "@/queries/wapi";
 
 const handleFormat = () => {
-    const obj = JSONbigNative.parse(contract.value);
-    contract.value = JSONbigNative.stringify(obj, null, 4);
+    const obj = JSONbigNative.parse(txStr.value);
+    txStr.value = JSONbigNative.stringify(obj, null, 4);
 };
 
 const transactionValidate = useTransactionValidate();
 const handleValidate = async () => {
-    const payload = await getPayload();
+    const payload = getPayload();
     transactionValidate.mutate(payload);
 };
 
 const transactionBroadcast = useTransactionBroadcast();
 const handleBroadcast = async () => {
-    const payload = await getPayload();
+    const payload = getPayload();
     transactionBroadcast.mutate(payload);
 };
 </script>
