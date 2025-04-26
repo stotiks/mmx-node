@@ -1,7 +1,7 @@
 import * as secp256k1 from "@noble/secp256k1";
 const { randomBytes, bytesToNumberBE } = secp256k1.etc;
 
-import { JSONbigNative } from "./utils/JSONbigNative";
+import { JSONbigNativeString } from "./utils/JSONbigNative";
 
 import { tx_note_e } from "./common/tx_note_e";
 import { addr_t, bytes_t, hash_t } from "./common/addr_t";
@@ -45,7 +45,7 @@ class Transaction {
     constructor() {}
 
     static parse(json) {
-        const obj = JSONbigNative.parse(json);
+        const obj = JSONbigNativeString.parse(json);
         const tx = Transaction.cast(obj);
         return tx;
     }
@@ -53,6 +53,7 @@ class Transaction {
     static cast(obj) {
         const tx = Object.assign(new Transaction(), obj);
         tx.nonce = BigInt(tx.nonce);
+        tx.static_cost = BigInt(tx.static_cost);
         tx.inputs = tx.inputs.map((item) => new txin_t(item));
         tx.outputs = tx.outputs.map((item) => new txout_t(item));
         tx.execute = tx.execute.map((item) => new Operation(item));
@@ -61,14 +62,7 @@ class Transaction {
     }
 
     #stringify(...options) {
-        return JSONbigNative.stringify(this, ...options);
-    }
-
-    toString2() {
-        return this.#stringify((key, value) => {
-            if (key === "nonce" && value != null) return BigInt(value);
-            return value;
-        });
+        return JSONbigNativeString.stringify(this, ...options);
     }
 
     toString() {
@@ -76,10 +70,7 @@ class Transaction {
     }
 
     toJSON() {
-        return {
-            ...this,
-            nonce: this.nonce.toString(),
-        };
+        return JSONbigNativeString.parse(JSONbigNativeString.stringify({ ...this }));
     }
 
     static hashHandler = {

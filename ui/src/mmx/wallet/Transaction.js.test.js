@@ -5,7 +5,7 @@ import { getChainParamsAsync } from "./utils/getChainParamsAsync";
 
 import "./Transaction.ext";
 
-import { JSONbigNative } from "./utils/JSONbigNative";
+import { JSONbigNativeString } from "./utils/JSONbigNative";
 import "./utils/Uint8ArrayUtils";
 
 import { txs } from "./Transaction.js.txs.test.js";
@@ -21,7 +21,7 @@ txs.forEach((item, key) => {
 
         it("parse", () => {
             const tx = Transaction.parse(json);
-            assert.equal(tx.toString2(), JSONbigNative.stringify(JSONbigNative.parse(json)));
+            assert.equal(tx.toString(), JSONbigNativeString.stringify(JSONbigNativeString.parse(json)));
         });
 
         it("calc_hash id", () => {
@@ -68,7 +68,7 @@ describe("Transaction #nonce as string", () => {
 
     it("parse", () => {
         const tx = Transaction.parse(json);
-        assert.equal(tx.toString(), JSONbigNative.stringify(JSONbigNative.parse(json)));
+        assert.equal(tx.toString(), JSONbigNativeString.stringify(JSONbigNativeString.parse(json)));
     });
 
     it("calc_hash id", () => {
