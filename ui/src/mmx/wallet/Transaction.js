@@ -42,7 +42,15 @@ class Transaction {
     deploy = null;
     exec_result = null;
 
-    constructor() {}
+    constructor(tx) {
+        if (typeof tx == "undefined") {
+            return this;
+        } else if (typeof tx === "object") {
+            return Transaction.cast(tx);
+        } else {
+            throw new Error("Invalid transaction format");
+        }
+    }
 
     static parse(json) {
         const obj = JSONbigNativeString.parse(json);
