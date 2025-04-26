@@ -5,7 +5,7 @@ import { addr_t } from "./common/addr_t";
 import { Wallet } from "./Wallet";
 
 import "./Transaction.ext";
-import { JSONbigNative } from "./utils/JSONbigNative";
+import { JSONbigNativeString } from "./utils/JSONbigNative";
 
 const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
 const ecdsaWallet = new ECDSA_Wallet(mnemonic, "");
@@ -58,7 +58,7 @@ describe("Wallet", () => {
 
     it("getExecuteTxAsync", async () => {
         const txTest = txs.get("OFFER UPDATE");
-        const json = JSONbigNative.stringify(JSONbigNative.parse(txTest.json));
+        const json = JSONbigNativeString.stringify(JSONbigNativeString.parse(txTest.json));
         const hex = txTest.hex;
 
         const options = {
@@ -74,7 +74,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getExecuteTxAsync(ecdsaWallet, address, method, args, user, options);
 
-        assert.equal(tx.toString2(), json);
+        assert.equal(tx.toString(), json);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -82,8 +82,8 @@ describe("Wallet", () => {
 
     it("getDepositTxAsync", async () => {
         const txTest = txs.get("SWAP ADD LIQUIDITY");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -100,7 +100,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getDepositTxAsync(ecdsaWallet, address, method, args, amount, currency, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -108,8 +108,8 @@ describe("Wallet", () => {
 
     it("getDeployTxAsync", async () => {
         const txTest = txs.get("TOKEN DEPLOY");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -132,7 +132,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getDeployTxAsync(ecdsaWallet, contract, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -140,8 +140,8 @@ describe("Wallet", () => {
 
     it("getMakeOfferTxAsync", async () => {
         const txTest = txs.get("OFFER DEPLOY");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -167,7 +167,7 @@ describe("Wallet", () => {
             options
         );
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -175,8 +175,8 @@ describe("Wallet", () => {
 
     it("getOfferTradeTxAsync", async () => {
         const txTest = txs.get("OFFER TRADE");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -193,7 +193,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getOfferTradeTxAsync(ecdsaWallet, address, amount, ask_currency, price, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -201,8 +201,8 @@ describe("Wallet", () => {
 
     it("getOfferWithdrawTxAsync", async () => {
         const txTest = txs.get("OFFER WITHDRAW");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -218,7 +218,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getOfferWithdrawTxAsync(ecdsaWallet, offer, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -226,8 +226,8 @@ describe("Wallet", () => {
 
     it("getAcceptOfferTxAsync", async () => {
         const txTest = txs.get("OFFER ACCEPT");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -246,7 +246,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getAcceptOfferTxAsync(ecdsaWallet, offer, price, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -254,8 +254,8 @@ describe("Wallet", () => {
 
     it("getCancelOfferTxAsync", async () => {
         const txTest = txs.get("OFFER REVOKE");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -269,7 +269,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getCancelOfferTxAsync(ecdsaWallet, address, owner, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
@@ -277,8 +277,8 @@ describe("Wallet", () => {
 
     it("getPlotNftCreateTxAsync", async () => {
         const txTest = txs.get("NFT PLOT DEPLOY");
-        const json = JSONbigNative.parse(txTest.json);
-        const jsonTxt = JSONbigNative.stringify(json);
+        const json = JSONbigNativeString.parse(txTest.json);
+        const jsonTxt = JSONbigNativeString.stringify(json);
         const hex = txTest.hex;
 
         const options = {
@@ -292,7 +292,7 @@ describe("Wallet", () => {
 
         const tx = await Wallet.getPlotNftCreateTxAsync(ecdsaWallet, name, owner, options);
 
-        assert.equal(tx.toString2(), jsonTxt);
+        assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
         assert.equal(hash_serialize.toHex(), hex);
