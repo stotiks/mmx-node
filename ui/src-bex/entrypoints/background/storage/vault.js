@@ -159,10 +159,16 @@ class Vault {
         const origin = new URL(url).origin;
         if (this.#allowedOriginsSet.has(origin)) {
             return true;
-        } else {
-            this.#allowedOriginsSet.add(origin); //debug
         }
         return false;
+    }
+
+    async allowUrlAsync(url) {
+        if (this.isLocked) {
+            throw new Error("Vault is locked");
+        }
+        const origin = new URL(url).origin;
+        this.#allowedOriginsSet.add(origin);
     }
 
     // events
