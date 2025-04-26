@@ -77,7 +77,7 @@ const tryCatchWrapper = async (fn) => {
     }
 };
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault.js";
+import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { isLocked, wallets, currentWalletAddress } = storeToRefs(vaultStore);
 
