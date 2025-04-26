@@ -65,14 +65,21 @@ class Transaction {
     }
 
     toString2() {
-        return this.#stringify();
+        return this.#stringify((key, value) => {
+            if (key === "nonce" && value != null) return BigInt(value);
+            return value;
+        });
     }
 
     toString() {
-        return this.#stringify((key, value) => {
-            if (key === "nonce" && value != null) return value.toString();
-            return value;
-        });
+        return this.#stringify();
+    }
+
+    toJSON() {
+        return {
+            ...this,
+            nonce: this.nonce.toString(),
+        };
     }
 
     static hashHandler = {
