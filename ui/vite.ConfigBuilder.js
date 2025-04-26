@@ -30,6 +30,7 @@ export class ConfigBuilder {
 
     buildTarget = BuildTargets.GUI;
     writeBuildInfo = false;
+    writeRobotsTxt = false;
     usePublicRPC = false;
     allowCustomRPC = false;
     useDefaultRollupOptions = false;
@@ -61,27 +62,33 @@ export class ConfigBuilder {
 
         (config.define ??= {}).__ALLOW_CUSTOM_RPC__ = JSON.stringify(this.allowCustomRPC);
 
+        let generateFileOptions = [];
         if (this.writeBuildInfo) {
             const buildId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
                 .toString(16)
                 .toUpperCase();
-            console.log("Build Id:", buildId);
-
             (config.define ??= {}).__BUILD_ID__ = JSON.stringify(buildId);
+            generateFileOptions.push({
+                type: "json",
+                output: "./guiBuildInfo.json",
+                data: {
+                    id: buildId,
+                    timestamp: this.#date.getTime(),
+                    datetime: this.#date.toISOString(),
+                },
+            });
+        }
 
-            (config.plugins ??= []).push(
-                GenerateFile([
-                    {
-                        type: "json",
-                        output: "./guiBuildInfo.json",
-                        data: {
-                            id: buildId,
-                            timestamp: this.#date.getTime(),
-                            datetime: this.#date.toISOString(),
-                        },
-                    },
-                ])
-            );
+        if (this.writeRobotsTxt) {
+            generateFileOptions.push({
+                type: "raw",
+                output: "./robots.txt",
+                data: "User-agent: * \nDisallow: /\n",
+            });
+        }
+
+        if (generateFileOptions.length > 0) {
+            (config.plugins ??= []).push(GenerateFile(generateFileOptions));
         }
 
         if (this.singleFile) {
