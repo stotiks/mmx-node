@@ -107,9 +107,11 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         } else {
             throw new Error("Invalid options format");
         }
-        const optionsObj = new spend_options_t(options);
 
-        return (await signTransactionAsync(txObj, optionsObj)).toString();
+        const optionsObj = new spend_options_t(options);
+        await signTransactionAsync(txObj, optionsObj);
+
+        return txObj;
     };
 
     static dev_test_openPopup = async () => {

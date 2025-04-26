@@ -25,5 +25,4 @@ export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddr
 export const signTransactionAsync = async (tx, options, address = vault.getCurrentWalletAddress()) => {
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
     await ecdsaWallet.signOfAsync(tx, options);
-    return tx;
 };
