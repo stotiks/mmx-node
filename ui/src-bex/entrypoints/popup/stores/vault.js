@@ -10,7 +10,10 @@ export const useVaultStore = defineStore("vault", () => {
 
     const currentWalletAddress = ref("");
 
-    watch(wallets, () => {
+    watch(wallets, async () => {
+        if (currentWalletAddress.value === "") {
+            await getCurrentWalletAddressAsync();
+        }
         let newCurrentWalletAddress = currentWalletAddress.value;
         if (wallets.value.length > 0) {
             if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
@@ -36,10 +39,10 @@ export const useVaultStore = defineStore("vault", () => {
 
     watch(isLocked, async () => {
         if (isLocked.value) {
-            wallets.value = [];
-            currentWalletAddress.value = "";
+            // wallets.value = [];
         } else {
             await _getWalletsAsync();
+            await getCurrentWalletAddressAsync();
         }
     });
 
