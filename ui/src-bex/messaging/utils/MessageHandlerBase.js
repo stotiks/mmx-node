@@ -3,11 +3,22 @@ const toCamelCase = (str) => {
 };
 
 export class MessageHandlerBase {
-    static async handleAsync(message) {
+    static getHandlerData = (message) => {
         const { method: _method, params } = message.data;
-
         const method = toCamelCase(_method);
+
+        return {
+            params,
+
+            method,
+            _method,
+        };
+    };
+
+    static async handleAsync(message) {
+        const { params, _method, method } = this.getHandlerData(message);
         const handler = this[method];
+
         if (!handler) {
             return {
                 success: false,
