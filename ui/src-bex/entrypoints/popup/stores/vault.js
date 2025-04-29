@@ -1,7 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-
-import { popupMessenger } from "@bex/messaging/popup";
-const sendMessageAsync = async (payload) => await popupMessenger.sendMessageAsync("popup", payload);
+import { vaultApiService } from "../vaultApiService";
 
 export const useVaultStore = defineStore("vault", () => {
     // State
@@ -28,12 +26,9 @@ export const useVaultStore = defineStore("vault", () => {
 
     watch(currentWalletAddress, async (newValue, oldValue) => {
         if (!isLocked.value) {
-            // TODO init check
-            //console.log("setCurrentWallet", currentWalletAddress.value, newValue, oldValue);
-            await sendMessageAsync({
-                method: "setCurrentWallet",
-                params: { address: currentWalletAddress.value },
-            });
+            if (currentWalletAddress.value != (await vaultApiService.getCurrentWalletAddressAsync())) {
+                await vaultApiService.setCurrentWalletAsync({ address: currentWalletAddress.value });
+            }
         }
     });
 
@@ -48,51 +43,39 @@ export const useVaultStore = defineStore("vault", () => {
 
     // Actions
     const lockAsync = async () => {
-        isLocked.value = await sendMessageAsync({ method: "lockVault" });
+        isLocked.value = await vaultApiService.lockVaultAsync();
     };
 
     const unlockAsync = async (password) => {
-        isLocked.value = await sendMessageAsync({
-            method: "unlockVault",
-            params: { password },
-        });
+        isLocked.value = await vaultApiService.unlockVaultAsync({ password });
     };
 
     const updatePasswordAsync = async (password, newPassword) => {
-        await sendMessageAsync({
-            method: "updatePassword",
-            params: { password, newPassword },
-        });
+        await vaultApiService.updatePasswordAsync({ password, newPassword });
     };
 
     const _updateWalletsAsync = async () => {
-        wallets.value = await sendMessageAsync({ method: "getWallets" });
+        wallets.value = await vaultApiService.getWalletsAsync();
     };
 
     const addWalletAsync = async (seed, password) => {
-        const newWallet = await sendMessageAsync({
-            method: "addWallet",
-            params: { seed, password },
-        });
+        const newWallet = await vaultApiService.addWalletAsync({ seed, password });
         await _updateWalletsAsync();
         currentWalletAddress.value = newWallet.address;
     };
 
     const removeWalletAsync = async (address) => {
-        await sendMessageAsync({
-            method: "removeWallet",
-            params: { address },
-        });
+        await vaultApiService.removeWalletAsync({ address });
         await _updateWalletsAsync();
     };
 
     const _updateIsLockedAsync = async () => {
-        isLocked.value = await sendMessageAsync({ method: "getIsLocked" });
+        isLocked.value = await vaultApiService.getIsLockedAsync();
     };
 
     const _updateCurrentWalletAddressAsync = async () => {
         if (!isLocked.value) {
-            currentWalletAddress.value = (await sendMessageAsync({ method: "getCurrentWalletAddress" })) ?? "";
+            currentWalletAddress.value = (await vaultApiService.getCurrentWalletAddressAsync()) ?? "";
         }
     };
 
