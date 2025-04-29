@@ -12,7 +12,6 @@ export const useVaultStore = defineStore("vault", () => {
         let newCurrentWalletAddress = currentWalletAddress.value;
         if (wallets.value.length > 0) {
             if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
-                //console.log("setCurrentWallet", wallets.value[0].address);
                 newCurrentWalletAddress = wallets.value[0].address;
             }
         } else {
@@ -24,7 +23,7 @@ export const useVaultStore = defineStore("vault", () => {
         }
     });
 
-    watch(currentWalletAddress, async (newValue, oldValue) => {
+    watch(currentWalletAddress, async () => {
         if (!isLocked.value) {
             if (currentWalletAddress.value != (await vaultApiService.getCurrentWalletAddressAsync())) {
                 await vaultApiService.setCurrentWalletAsync({ address: currentWalletAddress.value });
