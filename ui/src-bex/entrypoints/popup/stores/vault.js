@@ -12,7 +12,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     watch(wallets, async () => {
         if (currentWalletAddress.value === "") {
-            await getCurrentWalletAddressAsync();
+            await _updateCurrentWalletAddressAsync();
         }
         let newCurrentWalletAddress = currentWalletAddress.value;
         if (wallets.value.length > 0) {
@@ -41,8 +41,8 @@ export const useVaultStore = defineStore("vault", () => {
         if (isLocked.value) {
             // wallets.value = [];
         } else {
-            await _getWalletsAsync();
-            await getCurrentWalletAddressAsync();
+            await _updateWalletsAsync();
+            await _updateCurrentWalletAddressAsync();
         }
     });
 
@@ -65,7 +65,7 @@ export const useVaultStore = defineStore("vault", () => {
         });
     };
 
-    const _getWalletsAsync = async () => {
+    const _updateWalletsAsync = async () => {
         wallets.value = await sendMessageAsync({ method: "getWallets" });
     };
 
@@ -74,7 +74,7 @@ export const useVaultStore = defineStore("vault", () => {
             method: "addWallet",
             params: { seed, password },
         });
-        await _getWalletsAsync();
+        await _updateWalletsAsync();
         currentWalletAddress.value = newWallet.address;
     };
 
@@ -83,23 +83,23 @@ export const useVaultStore = defineStore("vault", () => {
             method: "removeWallet",
             params: { address },
         });
-        await _getWalletsAsync();
+        await _updateWalletsAsync();
     };
 
     //Initialize
-    const getIsLockedAsync = async () => {
+    const _updateIsLockedAsync = async () => {
         isLocked.value = await sendMessageAsync({ method: "isLocked" });
     };
 
-    const getCurrentWalletAddressAsync = async () => {
+    const _updateCurrentWalletAddressAsync = async () => {
         if (!isLocked.value) {
             currentWalletAddress.value = await sendMessageAsync({ method: "getCurrentWalletAddress" });
         }
     };
 
     (async () => {
-        await getIsLockedAsync();
-        await getCurrentWalletAddressAsync();
+        await _updateIsLockedAsync();
+        await _updateCurrentWalletAddressAsync();
     })();
 
     return {
