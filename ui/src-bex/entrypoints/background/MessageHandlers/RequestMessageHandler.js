@@ -96,7 +96,7 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
 
     static mmx_getNetwork = async () => {
         const network = await vault.getNetwork();
-        return `MMX/${network}`;
+        return network;
     };
 
     static mmx_signMessage = async ({ message }) => {
