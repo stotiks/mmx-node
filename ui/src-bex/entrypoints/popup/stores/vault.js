@@ -11,12 +11,10 @@ export const useVaultStore = defineStore("vault", () => {
     const currentWalletAddress = ref("");
 
     watch(wallets, async () => {
-        if (currentWalletAddress.value === "") {
-            await _updateCurrentWalletAddressAsync();
-        }
         let newCurrentWalletAddress = currentWalletAddress.value;
         if (wallets.value.length > 0) {
             if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
+                //console.log("setCurrentWallet", wallets.value[0].address);
                 newCurrentWalletAddress = wallets.value[0].address;
             }
         } else {
@@ -28,8 +26,10 @@ export const useVaultStore = defineStore("vault", () => {
         }
     });
 
-    watch(currentWalletAddress, async () => {
+    watch(currentWalletAddress, async (newValue, oldValue) => {
         if (!isLocked.value) {
+            // TODO init check
+            //console.log("setCurrentWallet", currentWalletAddress.value, newValue, oldValue);
             await sendMessageAsync({
                 method: "setCurrentWallet",
                 params: { address: currentWalletAddress.value },
@@ -41,8 +41,8 @@ export const useVaultStore = defineStore("vault", () => {
         if (isLocked.value) {
             // wallets.value = [];
         } else {
-            await _updateWalletsAsync();
             await _updateCurrentWalletAddressAsync();
+            await _updateWalletsAsync();
         }
     });
 
@@ -92,14 +92,13 @@ export const useVaultStore = defineStore("vault", () => {
 
     const _updateCurrentWalletAddressAsync = async () => {
         if (!isLocked.value) {
-            currentWalletAddress.value = await sendMessageAsync({ method: "getCurrentWalletAddress" });
+            currentWalletAddress.value = (await sendMessageAsync({ method: "getCurrentWalletAddress" })) ?? "";
         }
     };
 
     //Initialize
     (async () => {
         await _updateIsLockedAsync();
-        await _updateCurrentWalletAddressAsync();
     })();
 
     return {
