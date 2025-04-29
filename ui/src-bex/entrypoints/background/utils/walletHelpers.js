@@ -7,14 +7,14 @@ const getWalletByAddress = async (address) => {
 
 export const getCurrentWallet = () => {
     const address = vault.getCurrentWalletAddress();
-    if (address == null) {
+    if (!address) {
         throw new Error("No wallet selected");
     }
     return getWalletByAddress(address);
 };
 
 export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) => {
-    if (address == null) {
+    if (!address) {
         throw new Error("No wallet selected");
     }
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
@@ -24,7 +24,7 @@ export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) 
 };
 
 export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddress()) => {
-    if (address == null) {
+    if (!address) {
         throw new Error("No wallet selected");
     }
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
@@ -32,7 +32,7 @@ export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddr
 };
 
 export const signTransactionAsync = async (tx, options, address = vault.getCurrentWalletAddress()) => {
-    if (address == null) {
+    if (!address) {
         throw new Error("No wallet selected");
     }
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
