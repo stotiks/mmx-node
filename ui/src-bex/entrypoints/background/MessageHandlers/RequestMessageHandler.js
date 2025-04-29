@@ -50,6 +50,11 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
     };
 
     static async handleAsync(message) {
+        const { method } = this.getHandlerData(message);
+        const handler = this[method];
+
+        console.log("MessageHandlerBase.handleAsync", method, handler.metadata);
+
         const permitted = await this.checkPermissionsAsync(message);
         if (permitted) {
             return await super.handleAsync(message);
@@ -59,11 +64,23 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
     }
 }
 
+const $method = (fn, metadata) => {
+    const method = fn;
+    method.metadata = metadata;
+    return method;
+};
+
 export class RequestMessageHandler extends MessageHandlerWithAuth {
-    static mmx_blockNumber = async () => {
-        const info = await getNodeInfo();
-        return info.height;
-    };
+    static mmx_blockNumber = $method(
+        async () => {
+            const info = await getNodeInfo();
+            return info.height;
+        },
+        {
+            description: "Gets block height",
+            version: "1.0.0",
+        }
+    );
 
     static mmx_requestWallets = async () => {
         return await vault.getWallets();
