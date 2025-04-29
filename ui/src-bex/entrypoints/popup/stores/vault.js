@@ -88,7 +88,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     //Initialize
     const _updateIsLockedAsync = async () => {
-        isLocked.value = await sendMessageAsync({ method: "isLocked" });
+        isLocked.value = await sendMessageAsync({ method: "getIsLocked" });
     };
 
     const _updateCurrentWalletAddressAsync = async () => {

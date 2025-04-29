@@ -2,7 +2,7 @@ import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import vault from "../storage/vault";
 
 export class PopupMessageHandler extends MessageHandlerBase {
-    static isLocked = async () => {
+    static getIsLocked = async () => {
         return vault.isLocked;
     };
 
