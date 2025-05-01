@@ -39,11 +39,11 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
                 params: { url },
             });
             console.log("requestPermissionsResponse:", requestPermissionsResponse);
-            if (requestPermissionsResponse.success) {
-                if (requestPermissionsResponse.data.granted) {
-                    await vault.allowUrlAsync(url);
-                }
-            }
+            // if (requestPermissionsResponse.success === true) {
+            //     if (requestPermissionsResponse.data.granted === true) {
+            //         await vault.allowUrlAsync(url);
+            //     }
+            // }
         }
 
         return await checkVaultPermissionsAsync();
