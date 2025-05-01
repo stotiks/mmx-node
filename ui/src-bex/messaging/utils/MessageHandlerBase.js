@@ -3,36 +3,48 @@ const toCamelCase = (str) => {
 };
 
 export class MessageHandlerBase {
-    static getHandlerData = (message) => {
-        const { method: _method, params } = message.data;
-        const method = toCamelCase(_method);
+    static getHandlerObj() {
+        return this;
+    }
+
+    static getHandlerData(message) {
+        const { method: method, params } = message.data;
+        const methodCC = toCamelCase(method);
+
+        const ho = this.getHandlerObj();
+        const handler = ho[method] ?? ho[methodCC] ?? ho[methodCC + "Async"] ?? ho[methodCC.replace(/Async$/, "")];
+
+        const callFnAsync =
+            handler &&
+            (async () => {
+                return await handler.call(ho, params);
+            });
 
         return {
-            params,
-
+            callFnAsync,
+            handler,
             method,
-            _method,
+            params,
         };
-    };
+    }
 
     static async handleAsync(message) {
-        const { params, _method, method } = this.getHandlerData(message);
-        const handler = this[method];
+        const { callFnAsync, method } = this.getHandlerData(message);
 
-        if (!handler) {
+        if (!callFnAsync) {
             return {
                 success: false,
-                error: `unknown method: ${_method}`,
+                error: `unknown method: ${method}`,
             };
         }
 
         try {
-            const result = await handler.call(this, params);
+            const result = await callFnAsync();
             return { success: true, data: result };
         } catch (error) {
             // eslint-disable-next-line no-undef
             if (process.env.NODE_ENV === "development") {
-                console.log(`Error handling method [${_method}]:`, error);
+                console.log(`Error handling method [${method}]:`, error);
             }
 
             return {
