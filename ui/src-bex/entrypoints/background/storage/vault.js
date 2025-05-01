@@ -136,7 +136,7 @@ class Vault {
         this.emit("wallet-removed");
     }
 
-    setCurrentWallet(address) {
+    setCurrentWallet({ address }) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
