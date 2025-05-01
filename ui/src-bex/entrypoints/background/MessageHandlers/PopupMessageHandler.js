@@ -7,7 +7,7 @@ export class PopupMessageHandler extends MessageHandlerBase {
     };
 
     static unlockVault = async ({ password }) => {
-        return await vault.unlockAsync(password);
+        return await vault.unlockAsync({ password });
     };
 
     static lockVault = async () => {
@@ -15,26 +15,26 @@ export class PopupMessageHandler extends MessageHandlerBase {
     };
 
     static updatePassword = async ({ password, newPassword }) => {
-        return await vault.updatePasswordAsync(password, newPassword);
+        return await vault.updatePasswordAsync({ password, newPassword });
     };
 
     static getWallets = () => {
         return vault.getWallets();
     };
 
-    static addWallet = async ({ seed, password }) => {
-        return await vault.addWalletAsync(seed, password);
+    static addWallet = async ({ mnemonic, password }) => {
+        return await vault.addWalletAsync({ mnemonic, password });
     };
 
     static removeWallet = async ({ address }) => {
-        return await vault.removeWalletAsync(address);
+        return await vault.removeWalletAsync({ address });
     };
 
     static getCurrentWalletAddress = () => {
         return vault.getCurrentWalletAddress();
     };
 
-    static setCurrentWallet = async ({ address }) => {
+    static setCurrentWallet = ({ address }) => {
         return vault.setCurrentWallet(address);
     };
 }

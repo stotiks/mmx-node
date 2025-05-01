@@ -45,11 +45,11 @@ export const useVaultStore = defineStore("vault", () => {
         isLocked.value = await vaultApiService.lockVaultAsync();
     };
 
-    const unlockAsync = async (password) => {
+    const unlockAsync = async ({ password }) => {
         isLocked.value = await vaultApiService.unlockVaultAsync({ password });
     };
 
-    const updatePasswordAsync = async (password, newPassword) => {
+    const updatePasswordAsync = async ({ password, newPassword }) => {
         await vaultApiService.updatePasswordAsync({ password, newPassword });
     };
 
@@ -57,25 +57,25 @@ export const useVaultStore = defineStore("vault", () => {
         wallets.value = await vaultApiService.getWalletsAsync();
     };
 
-    const addWalletAsync = async (seed, password) => {
-        const newWallet = await vaultApiService.addWalletAsync({ seed, password });
+    const addWalletAsync = async ({ mnemonic, password }) => {
+        const newWallet = await vaultApiService.addWalletAsync({ mnemonic, password });
         await _updateWalletsAsync();
         currentWalletAddress.value = newWallet.address;
     };
 
-    const removeWalletAsync = async (address) => {
+    const removeWalletAsync = async ({ address }) => {
         await vaultApiService.removeWalletAsync({ address });
         await _updateWalletsAsync();
-    };
-
-    const _updateIsLockedAsync = async () => {
-        isLocked.value = await vaultApiService.getIsLockedAsync();
     };
 
     const _updateCurrentWalletAddressAsync = async () => {
         if (!isLocked.value) {
             currentWalletAddress.value = (await vaultApiService.getCurrentWalletAddressAsync()) ?? "";
         }
+    };
+
+    const _updateIsLockedAsync = async () => {
+        isLocked.value = await vaultApiService.getIsLockedAsync();
     };
 
     //Initialize

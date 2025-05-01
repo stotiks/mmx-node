@@ -22,6 +22,10 @@ class Vault {
         return this.#password == null;
     }
 
+    getIsLocked() {
+        return this.isLocked;
+    }
+
     async lockAsync() {
         if (this.isLocked) {
             throw new Error("Vault is locked already");
@@ -32,7 +36,7 @@ class Vault {
         return this.isLocked;
     }
 
-    async unlockAsync(password) {
+    async unlockAsync({ password }) {
         if (!this.isLocked) {
             throw new Error("Vault is unlocked already");
         }
@@ -56,7 +60,7 @@ class Vault {
         this.#password = null;
     }
 
-    async updatePasswordAsync(password, newPassword) {
+    async updatePasswordAsync({ password, newPassword }) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
@@ -93,7 +97,7 @@ class Vault {
         return this.#wallets$$sensitive.map((wallet) => this.#walletCleanup(wallet));
     }
 
-    async addWalletAsync(mnemonic, password = "") {
+    async addWalletAsync({ mnemonic, password = "" }) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
@@ -112,11 +116,11 @@ class Vault {
         this.#wallets$$sensitive.push(newWallet$$sensitive);
         await this.saveAsync();
 
-        this.emit("wallet-added");
+        this.emit("wallet-added", { address });
         return this.#walletCleanup(newWallet$$sensitive);
     }
 
-    async removeWalletAsync(address) {
+    async removeWalletAsync({ address }) {
         if (this.isLocked) {
             throw new Error("Vault is locked");
         }
