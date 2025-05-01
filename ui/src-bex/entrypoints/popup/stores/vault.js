@@ -42,11 +42,11 @@ export const useVaultStore = defineStore("vault", () => {
 
     // Actions
     const lockAsync = async () => {
-        isLocked.value = await vaultApiService.lockVaultAsync();
+        isLocked.value = await vaultApiService.lockAsync();
     };
 
     const unlockAsync = async ({ password }) => {
-        isLocked.value = await vaultApiService.unlockVaultAsync({ password });
+        isLocked.value = await vaultApiService.unlockAsync({ password });
     };
 
     const updatePasswordAsync = async ({ password, newPassword }) => {
