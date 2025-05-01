@@ -36,14 +36,9 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
             console.log("Requesting permissions...");
             const requestPermissionsResponse = await notificationMessenger.sendMessage({
                 method: "requestPermissions",
-                params: { url },
+                params: { message, url },
             });
             console.log("requestPermissionsResponse:", requestPermissionsResponse);
-            // if (requestPermissionsResponse.success === true) {
-            //     if (requestPermissionsResponse.data.granted === true) {
-            //         await vault.allowUrlAsync(url);
-            //     }
-            // }
         }
 
         return await checkVaultPermissionsAsync();
