@@ -26,7 +26,7 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
         const tabId = message.sender.tabId;
         const url = await getTabUrl(tabId);
 
-        console.log("Tab url:", url.toString());
+        //console.log("Tab url:", url.toString());
 
         const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
 
@@ -50,8 +50,7 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
     };
 
     static async handleAsync(message) {
-        const { method } = this.getHandlerData(message);
-        const handler = this[method];
+        const { handler, method } = this.getHandlerData(message);
 
         console.log("MessageHandlerBase.handleAsync", method, handler.metadata);
 
