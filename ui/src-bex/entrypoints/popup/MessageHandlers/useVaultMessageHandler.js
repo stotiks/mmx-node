@@ -17,8 +17,8 @@ export const useVaultMessageHandler = () => {
             $q.notify({ type: "positive", message: "Password updated" });
         };
 
-        static walletAdded = async ({ address }) => {
-            $q.notify({ type: "positive", message: `Wallet added: ${address}` });
+        static walletAdded = async () => {
+            $q.notify({ type: "positive", message: "Wallet added" });
         };
 
         static walletRemoved = async () => {
