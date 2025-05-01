@@ -86,7 +86,7 @@ const walletsOptions = computed(() => {
 });
 
 const handleUnlockAsync = async () => {
-    await tryCatchWrapper(() => vaultStore.unlockAsync(password.value));
+    await tryCatchWrapper(() => vaultStore.unlockAsync({ password: password.value }));
 };
 
 const handleLockAsync = async () => {
@@ -94,17 +94,21 @@ const handleLockAsync = async () => {
 };
 
 const handleUpdatePasswordAsync = async () => {
-    await tryCatchWrapper(() => vaultStore.updatePasswordAsync(password.value, newPassword.value));
+    await tryCatchWrapper(() =>
+        vaultStore.updatePasswordAsync({ password: password.value, newPassword: newPassword.value })
+    );
 };
 
 const newWalletMnemonic = ref("");
 const newWalletPassword = ref("");
 const handleAddWalletAsync = async () => {
-    await tryCatchWrapper(() => vaultStore.addWalletAsync(newWalletMnemonic.value, newWalletPassword.value));
+    await tryCatchWrapper(() =>
+        vaultStore.addWalletAsync({ mnemonic: newWalletMnemonic.value, password: newWalletPassword.value })
+    );
 };
 
 const handleRemoveWalletAsync = async (address) => {
-    await tryCatchWrapper(() => vaultStore.removeWalletAsync(address));
+    await tryCatchWrapper(() => vaultStore.removeWalletAsync({ address }));
 };
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
