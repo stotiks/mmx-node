@@ -25,11 +25,9 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
 
         const tabId = message.sender.tabId;
         const url = await getTabUrl(tabId);
-
         //console.log("Tab url:", url.toString());
 
         const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
-
         if (await checkVaultPermissionsAsync()) {
             return true;
         } else {
@@ -44,23 +42,59 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
         return await checkVaultPermissionsAsync();
     };
 
+    static async requestPermissionsAndAcceptAsync(message) {
+        console.log("Checking permissions...");
+
+        if (message.sender.frameId != null) {
+            throw new Error("iFrame not supported");
+        }
+
+        const tabId = message.sender.tabId;
+        const url = await getTabUrl(tabId);
+
+        const isAcceptRequired = this.getHandlerData(message).handler.metadata?.isAcceptRequired ?? true;
+
+        const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
+        const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
+
+        let accepted = false;
+        if (isAcceptRequired === true || _hasPermissions === false) {
+            const requestPermissionsResponse = await notificationMessenger.sendMessage({
+                method: "requestPermissions",
+                params: { message, url },
+            });
+            console.log("requestPermissionsResponse:", requestPermissionsResponse);
+            accepted = requestPermissionsResponse.data.accepted === true;
+        }
+
+        const hasPermissions = await checkVaultPermissionsAsync();
+        const hasAccept = accepted === true || isAcceptRequired === false;
+
+        if (!hasPermissions) {
+            throw new Error("Permissions not granted");
+        }
+
+        if (!hasAccept) {
+            throw new Error("Request not accepted");
+        }
+        console.log("requestPermissionsAndAcceptAsync:", { hasPermissions, hasAccept });
+        return { hasPermissions, hasAccept };
+    }
+
     static async handleAsync(message) {
-        const { handler, method } = this.getHandlerData(message);
+        const { hasPermissions, hasAccept } = await this.requestPermissionsAndAcceptAsync(message);
 
-        console.log("MessageHandlerBase.handleAsync", method, handler.metadata);
-
-        const permitted = await this.checkPermissionsAsync(message);
-        if (permitted) {
+        if (hasPermissions === true && hasAccept === true) {
             return await super.handleAsync(message);
         } else {
-            throw new Error("Permissions not granted");
+            throw new Error("Request not allowed");
         }
     }
 }
 
-const $method = (fn, metadata) => {
+const $method = (fn, metadata = {}) => {
     const method = fn;
-    method.metadata = metadata;
+    method.metadata = { isAcceptRequired: true, ...metadata };
     return method;
 };
 
@@ -71,35 +105,34 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
             return info.height;
         },
         {
-            description: "Gets block height",
-            version: "1.0.0",
+            isAcceptRequired: false,
         }
     );
 
-    static mmx_requestWallets = async () => {
+    static async mmx_requestWallets() {
         return await vault.getWallets();
-    };
+    }
 
-    static mmx_getCurrentWallet = async () => {
+    static async mmx_getCurrentWallet() {
         return getCurrentWallet();
-    };
+    }
 
-    static mmx_getPubKey = async (params) => {
+    static async mmx_getPubKey(params) {
         return await getPubKeyAsync(params?.address);
-    };
+    }
 
-    static mmx_getNetwork = async () => {
+    static async mmx_getNetwork() {
         const network = await vault.getNetwork();
         return network;
-    };
+    }
 
-    static mmx_signMessage = async ({ message }) => {
+    static async mmx_signMessage({ message }) {
         const msgWithPrefix = `MMX/sign_message/${message}`;
         const msgHash = sha256(msgWithPrefix);
         return await signMessageAsync(msgHash);
-    };
+    }
 
-    static mmx_signTransaction = async ({ tx: _tx, options: _options }) => {
+    static async mmx_signTransaction({ tx: _tx, options: _options }) {
         if (typeof _tx !== "object") {
             throw new Error("Invalid tx format");
         }
@@ -114,10 +147,10 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         await signTransactionAsync(tx, options);
 
         return tx;
-    };
+    }
 
-    static dev_test_openPopup = async () => {
+    static async dev_test_openPopup() {
         await openNotification();
         return "Done!";
-    };
+    }
 }
