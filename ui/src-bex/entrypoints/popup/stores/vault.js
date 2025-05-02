@@ -3,7 +3,7 @@ import { vaultService } from "../vaultService";
 
 export const useVaultStore = defineStore("vault", () => {
     // State
-    const isLocked = ref(true);
+    const isUnlocked = ref(true);
     const wallets = ref([]);
 
     const currentWalletAddress = ref("");
@@ -24,17 +24,15 @@ export const useVaultStore = defineStore("vault", () => {
     });
 
     watch(currentWalletAddress, async () => {
-        if (!isLocked.value) {
+        if (isUnlocked.value === true) {
             if (currentWalletAddress.value != (await vaultService.getCurrentWalletAddressAsync())) {
                 await vaultService.setCurrentWalletAsync({ address: currentWalletAddress.value });
             }
         }
     });
 
-    watch(isLocked, async () => {
-        if (isLocked.value) {
-            // wallets.value = [];
-        } else {
+    watch(isUnlocked, async () => {
+        if (isUnlocked.value === true) {
             await _updateCurrentWalletAddressAsync();
             await _updateWalletsAsync();
         }
@@ -42,11 +40,11 @@ export const useVaultStore = defineStore("vault", () => {
 
     // Actions
     const lockAsync = async () => {
-        isLocked.value = await vaultService.lockAsync();
+        isUnlocked.value = await vaultService.lockAsync();
     };
 
     const unlockAsync = async ({ password }) => {
-        isLocked.value = await vaultService.unlockAsync({ password });
+        isUnlocked.value = await vaultService.unlockAsync({ password });
     };
 
     const updatePasswordAsync = async ({ password, newPassword }) => {
@@ -69,23 +67,23 @@ export const useVaultStore = defineStore("vault", () => {
     };
 
     const _updateCurrentWalletAddressAsync = async () => {
-        if (!isLocked.value) {
+        if (isUnlocked.value === true) {
             currentWalletAddress.value = (await vaultService.getCurrentWalletAddressAsync()) ?? "";
         }
     };
 
-    const _updateIsLockedAsync = async () => {
-        isLocked.value = await vaultService.getIsLockedAsync();
+    const _updateIsUnlockedAsync = async () => {
+        isUnlocked.value = await vaultService.getIsUnlockedAsync();
     };
 
     //Initialize
     (async () => {
-        await _updateIsLockedAsync();
+        await _updateIsUnlockedAsync();
     })();
 
     return {
         // State
-        isLocked,
+        isUnlocked,
         wallets,
         currentWalletAddress,
         // Actions

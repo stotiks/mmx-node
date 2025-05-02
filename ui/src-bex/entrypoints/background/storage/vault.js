@@ -18,33 +18,33 @@ class Vault {
         return "mainnet";
     }
 
-    get isLocked() {
-        return this.#password == null;
+    get isUnlocked() {
+        return this.#password != null;
     }
 
-    getIsLocked() {
-        return this.isLocked;
+    getIsUnlocked() {
+        return this.isUnlocked;
     }
 
     async lockAsync() {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked already");
         }
         await this.saveAsync();
         await this.#unloadAsync();
         this.emit("locked");
-        return this.isLocked;
+        return this.isUnlocked;
     }
 
     async unlockAsync({ password }) {
-        if (!this.isLocked) {
+        if (this.isUnlocked === true) {
             throw new Error("Vault is unlocked already");
         }
 
         await this.#loadAsync(password);
         this.#password = password;
         this.emit("unlocked");
-        return this.isLocked;
+        return this.isUnlocked;
     }
 
     async #loadAsync(password) {
@@ -61,7 +61,7 @@ class Vault {
     }
 
     async updatePasswordAsync({ password, newPassword }) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
 
@@ -76,14 +76,14 @@ class Vault {
     }
 
     async removeDataAsync() {
-        if (!this.isLocked) {
+        if (this.isUnlocked === true) {
             throw new Error("Vault is unlocked, cannot remove data");
         }
         await this.#walletStorage.remove();
     }
 
     async saveAsync() {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
         await this.#walletStorage.set(this.#wallets$$sensitive, this.#password);
@@ -91,14 +91,14 @@ class Vault {
 
     #walletCleanup = ({ seed, password, ...wallet }) => wallet;
     getWallets() {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
         return this.#wallets$$sensitive.map((wallet) => this.#walletCleanup(wallet));
     }
 
     async addWalletAsync({ mnemonic, password = "" }) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
 
@@ -121,7 +121,7 @@ class Vault {
     }
 
     async removeWalletAsync({ address }) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
 
@@ -137,7 +137,7 @@ class Vault {
     }
 
     setCurrentWallet({ address }) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
         this.#currentWalletAddress = address;
@@ -145,7 +145,7 @@ class Vault {
     }
 
     async getECDSAWalletAsync(address) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
         const wallet = this.#wallets$$sensitive.find((wallet) => wallet.address === address);
@@ -157,7 +157,7 @@ class Vault {
     // permissions
     #allowedOriginsSet = new Set();
     async checkPermissionsAsync(url) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
         const origin = new URL(url).origin;
@@ -168,7 +168,7 @@ class Vault {
     }
 
     async allowUrlAsync(url) {
-        if (this.isLocked) {
+        if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
         const origin = new URL(url).origin;
