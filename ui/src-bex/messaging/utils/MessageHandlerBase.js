@@ -29,9 +29,9 @@ export class MessageHandlerBase {
     }
 
     static async handleAsync(message) {
-        const { callFnAsync, method } = this.getHandlerData(message);
+        const { callFnAsync, handler, method } = this.getHandlerData(message);
 
-        if (!callFnAsync) {
+        if (!callFnAsync || handler.name == "handleAsync") {
             return {
                 success: false,
                 error: `unknown method: ${method}`,
