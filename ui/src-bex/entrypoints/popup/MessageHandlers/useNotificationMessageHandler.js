@@ -1,14 +1,11 @@
 import { popupMessenger } from "@bex/messaging/popup";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
-import { vaultService } from "../vaultService";
 
-// import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 export const useNotificationMessageHandler = () => {
     const $q = useQuasar();
 
     const showHandleRequestDialogAsync = (props) => {
         return new Promise((resolve) => {
-            console.log("showHandleRequestDialogAsync");
             $q.dialog({
                 component: defineAsyncComponent(
                     () => import("@bex/entrypoints/popup/components/dialogs/handleRequestDialog.vue")
