@@ -109,30 +109,30 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         }
     );
 
-    static async mmx_requestWallets() {
+    static mmx_requestWallets = async () => {
         return await vault.getWallets();
-    }
+    };
 
-    static async mmx_getCurrentWallet() {
+    static mmx_getCurrentWallet = async () => {
         return getCurrentWallet();
-    }
+    };
 
-    static async mmx_getPubKey(params) {
+    static mmx_getPubKey = async (params) => {
         return await getPubKeyAsync(params?.address);
-    }
+    };
 
-    static async mmx_getNetwork() {
+    static mmx_getNetwork = async () => {
         const network = await vault.getNetwork();
         return network;
-    }
+    };
 
-    static async mmx_signMessage({ message }) {
+    static mmx_signMessage = async ({ message }) => {
         const msgWithPrefix = `MMX/sign_message/${message}`;
         const msgHash = sha256(msgWithPrefix);
         return await signMessageAsync(msgHash);
-    }
+    };
 
-    static async mmx_signTransaction({ tx: _tx, options: _options }) {
+    static mmx_signTransaction = async ({ tx: _tx, options: _options }) => {
         if (typeof _tx !== "object") {
             throw new Error("Invalid tx format");
         }
@@ -147,10 +147,15 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         await signTransactionAsync(tx, options);
 
         return tx;
-    }
+    };
 
-    static async dev_test_openPopup() {
-        await openNotification();
-        return "Done!";
-    }
+    static dev_test_openPopup = $method(
+        async () => {
+            await openNotification();
+            return "Done!";
+        },
+        {
+            isAcceptRequired: false,
+        }
+    );
 }
