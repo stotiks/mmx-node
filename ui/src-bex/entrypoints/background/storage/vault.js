@@ -178,13 +178,13 @@ class Vault {
     // events
     _events = new Map();
 
-    on = (eventName, callback) => {
+    on(eventName, callback) {
         if (!this._events.has(eventName)) {
             this._events.set(eventName, []);
         }
         this._events.get(eventName).push(callback);
         return this;
-    };
+    }
 
     removeListener(eventName, callback) {
         if (this._events.has(eventName)) {
