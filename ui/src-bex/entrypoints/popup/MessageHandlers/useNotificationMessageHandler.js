@@ -21,11 +21,21 @@ export const useNotificationMessageHandler = () => {
         });
     };
 
+    let isRunning = false;
     class NotificationMessageHandler extends MessageHandlerBase {
         static requestPermissions = async ({ url: _url, message }) => {
-            const url = new URL(_url);
-            const { accepted } = await showHandleRequestDialogAsync({ url, data: message.data }).catch(() => false);
-            return { success: true, data: { accepted } };
+            if (isRunning === true) {
+                throw new Error("Other request is running");
+            }
+
+            try {
+                isRunning = true;
+                const url = new URL(_url);
+                const { accepted } = await showHandleRequestDialogAsync({ url, data: message.data }).catch(() => false);
+                return { success: true, data: { accepted } };
+            } finally {
+                isRunning = false;
+            }
         };
     }
 
