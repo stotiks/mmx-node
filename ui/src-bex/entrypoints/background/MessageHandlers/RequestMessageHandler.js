@@ -16,73 +16,51 @@ const getTabUrl = async (tabId) => {
 };
 
 class MessageHandlerWithAuth extends MessageHandlerBase {
-    static checkPermissionsAsync = async (message) => {
-        console.log("Checking permissions...");
-
-        if (message.sender.frameId != null) {
-            throw new Error("iFrame not supported");
-        }
-
-        const tabId = message.sender.tabId;
-        const url = await getTabUrl(tabId);
-        //console.log("Tab url:", url.toString());
-
-        const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
-        if (await checkVaultPermissionsAsync()) {
-            return true;
-        } else {
-            console.log("Requesting permissions...");
-            const requestPermissionsResponse = await notificationMessenger.sendMessage({
-                method: "requestPermissions",
-                params: { message, url },
-            });
-            console.log("requestPermissionsResponse:", requestPermissionsResponse);
-        }
-
-        return await checkVaultPermissionsAsync();
-    };
-
-    static async requestPermissionsAndAcceptAsync(message) {
-        console.log("Checking permissions...");
-
-        if (message.sender.frameId != null) {
-            throw new Error("iFrame not supported");
-        }
-
-        const tabId = message.sender.tabId;
-        const url = await getTabUrl(tabId);
-
-        const isAcceptRequired = this.getHandlerData(message).handler.metadata?.isAcceptRequired ?? true;
-
-        const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
-        const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
-
-        let accepted = false;
-        if (isAcceptRequired === true || _hasPermissions === false) {
-            const requestPermissionsResponse = await notificationMessenger.sendMessage({
-                method: "requestPermissions",
-                params: { message, url },
-            });
-            console.log("requestPermissionsResponse:", requestPermissionsResponse);
-            accepted = requestPermissionsResponse.data.accepted === true;
-        }
-
-        const hasPermissions = await checkVaultPermissionsAsync();
-        const hasAccept = accepted === true || isAcceptRequired === false;
-
-        if (!hasPermissions) {
-            throw new Error("Permissions not granted");
-        }
-
-        if (!hasAccept) {
-            throw new Error("Request not accepted");
-        }
-        console.log("requestPermissionsAndAcceptAsync:", { hasPermissions, hasAccept });
-        return { hasPermissions, hasAccept };
-    }
-
     static async handleAsync(message) {
-        const { hasPermissions, hasAccept } = await this.requestPermissionsAndAcceptAsync(message);
+        // ---- start of requestPermissionsAndAcceptAsync
+        const requestPermissionsAndAcceptAsync = async (message) => {
+            console.log("Checking permissions...");
+
+            if (message.sender.frameId != null) {
+                throw new Error("iFrame not supported");
+            }
+
+            const tabId = message.sender.tabId;
+            const url = await getTabUrl(tabId);
+
+            const isAcceptRequired = this.getHandlerData(message).handler.metadata?.isAcceptRequired ?? true;
+
+            const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
+            const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
+
+            let accepted = false;
+            if (isAcceptRequired === true || _hasPermissions === false) {
+                const requestPermissionsResponse = await notificationMessenger.sendMessage({
+                    method: "requestPermissions",
+                    params: { message, url },
+                });
+                console.log("requestPermissionsResponse:", requestPermissionsResponse);
+                accepted = requestPermissionsResponse.data.accepted === true;
+            }
+
+            const hasPermissions = await checkVaultPermissionsAsync();
+            const hasAccept = accepted === true || isAcceptRequired === false;
+
+            console.log("requestPermissionsAndAcceptAsync:", { hasPermissions, hasAccept });
+
+            if (!hasPermissions) {
+                throw new Error("Permissions not granted");
+            }
+
+            if (!hasAccept) {
+                throw new Error("Request not accepted");
+            }
+
+            return { hasPermissions, hasAccept };
+        };
+        // ---- end of requestPermissionsAndAcceptAsync
+
+        const { hasPermissions, hasAccept } = await requestPermissionsAndAcceptAsync(message);
 
         if (hasPermissions === true && hasAccept === true) {
             return await super.handleAsync(message);
