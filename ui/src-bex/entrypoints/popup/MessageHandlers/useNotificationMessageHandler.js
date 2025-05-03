@@ -21,26 +21,28 @@ export const useNotificationMessageHandler = () => {
         });
     };
 
-    let isRunning = false;
-    class NotificationMessageHandler extends MessageHandlerBase {
+    class NotificationMessageHandlerMethods {
+        static isRunning = false;
         static requestPermissions = async ({ url: _url, message }) => {
-            if (isRunning === true) {
+            if (this.isRunning === true) {
                 throw new Error("Other request is running");
             }
 
             try {
-                isRunning = true;
+                this.isRunning = true;
                 const url = new URL(_url);
                 const { accepted } = await showHandleRequestDialogAsync({ url, data: message.data }).catch(() => false);
                 return { success: true, data: { accepted } };
             } finally {
-                isRunning = false;
+                this.isRunning = false;
             }
         };
     }
 
+    const notificationMessageHandler = new MessageHandlerBase(NotificationMessageHandlerMethods);
+
     popupMessenger.onMessage("notification", async (message) => {
         console.log("Received from background:", JSON.parse(JSON.stringify(message)));
-        return await NotificationMessageHandler.handleAsync(message);
+        return await notificationMessageHandler.handleAsync(message);
     });
 };
