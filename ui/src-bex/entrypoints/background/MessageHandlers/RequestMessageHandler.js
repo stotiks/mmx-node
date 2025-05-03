@@ -87,22 +87,42 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         }
     );
 
-    static mmx_requestWallets = async () => {
-        return await vault.getWallets();
-    };
+    static mmx_requestWallets = $method(
+        async () => {
+            return await vault.getWallets();
+        },
+        {
+            isAcceptRequired: false,
+        }
+    );
 
-    static mmx_getCurrentWallet = async () => {
-        return getCurrentWallet();
-    };
+    static mmx_getCurrentWallet = $method(
+        async () => {
+            return getCurrentWallet();
+        },
+        {
+            isAcceptRequired: false,
+        }
+    );
 
-    static mmx_getPubKey = async (params) => {
-        return await getPubKeyAsync(params?.address);
-    };
+    static mmx_getPubKey = $method(
+        async (params) => {
+            return await getPubKeyAsync(params?.address);
+        },
+        {
+            isAcceptRequired: false,
+        }
+    );
 
-    static mmx_getNetwork = async () => {
-        const network = await vault.getNetwork();
-        return network;
-    };
+    static mmx_getNetwork = $method(
+        async () => {
+            const network = await vault.getNetwork();
+            return network;
+        },
+        {
+            isAcceptRequired: false,
+        }
+    );
 
     static mmx_signMessage = async ({ message }) => {
         const msgWithPrefix = `MMX/sign_message/${message}`;
