@@ -10,7 +10,7 @@
     >
         <q-card class="q-dialog-plugin column">
             <div class="column" style="height: 100vw">
-                <q-toolbar class="bg-primary text-white col">
+                <q-toolbar class="bg-primary text-white col-1">
                     <q-toolbar-title class="text-subtitle1">
                         <b>Accept request: {{ props.data.method }}</b>
                     </q-toolbar-title>
@@ -24,11 +24,25 @@
                     </div>
                 </q-card-section>
 
-                <q-card-section class="col-1">
+                <q-card-section class="col">
                     <div class="col">
                         <div class="row justify-between q-gutter-x-sm">
-                            <q-btn :label="$t('market_offers.accept')" outline color="positive" @click="handleAccept" />
-                            <q-btn label="Reject" outline color="negative" @click="handleReject" />
+                            <q-btn
+                                label="Accept"
+                                :icon="mdiCheck"
+                                outline
+                                rounded
+                                color="positive"
+                                @click="handleAccept"
+                            />
+                            <q-btn
+                                label="Reject"
+                                :icon="mdiClose"
+                                outline
+                                rounded
+                                color="negative"
+                                @click="handleReject"
+                            />
                         </div>
                     </div>
                 </q-card-section>
@@ -38,7 +52,7 @@
 </template>
 
 <script setup>
-import rules from "@/helpers/rules";
+import { mdiCheck, mdiClose } from "@mdi/js";
 
 const props = defineProps({
     url: {
