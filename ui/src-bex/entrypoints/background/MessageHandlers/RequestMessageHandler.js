@@ -16,51 +16,49 @@ const getTabUrl = async (tabId) => {
 };
 
 class MessageHandlerWithAuth extends MessageHandlerBase {
-    static async handleAsync(message) {
-        // ---- start of requestPermissionsAndAcceptAsync
-        const requestPermissionsAndAcceptAsync = async (message) => {
-            console.log("Checking permissions...");
+    async requestPermissionsAndAcceptAsync(message) {
+        console.log("Checking permissions...");
 
-            if (message.sender.frameId != null) {
-                throw new Error("iFrame not supported");
-            }
+        if (message.sender.frameId != null) {
+            throw new Error("iFrame not supported");
+        }
 
-            const tabId = message.sender.tabId;
-            const url = await getTabUrl(tabId);
+        const tabId = message.sender.tabId;
+        const url = await getTabUrl(tabId);
 
-            const isAcceptRequired = this.getHandlerData(message).handler.metadata?.isAcceptRequired ?? true;
+        const isAcceptRequired = this.getHandlerData(message).handler.metadata?.isAcceptRequired ?? true;
 
-            const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
-            const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
+        const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
+        const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
 
-            let accepted = false;
-            if (isAcceptRequired === true || _hasPermissions === false) {
-                const requestPermissionsResponse = await notificationMessenger.sendMessage({
-                    method: "requestPermissions",
-                    params: { message, url },
-                });
-                console.log("requestPermissionsResponse:", requestPermissionsResponse);
-                accepted = requestPermissionsResponse.data.accepted === true;
-            }
+        let accepted = false;
+        if (isAcceptRequired === true || _hasPermissions === false) {
+            const requestPermissionsResponse = await notificationMessenger.sendMessage({
+                method: "requestPermissions",
+                params: { message, url },
+            });
+            console.log("requestPermissionsResponse:", requestPermissionsResponse);
+            accepted = requestPermissionsResponse.data.accepted === true;
+        }
 
-            const hasPermissions = await checkVaultPermissionsAsync();
-            const hasAccept = accepted === true || isAcceptRequired === false;
+        const hasPermissions = await checkVaultPermissionsAsync();
+        const hasAccept = accepted === true || isAcceptRequired === false;
 
-            console.log("requestPermissionsAndAcceptAsync:", { hasPermissions, hasAccept });
+        console.log("requestPermissionsAndAcceptAsync:", { hasPermissions, hasAccept });
 
-            if (!hasPermissions) {
-                throw new Error("Permissions not granted");
-            }
+        if (!hasPermissions) {
+            throw new Error("Permissions not granted");
+        }
 
-            if (!hasAccept) {
-                throw new Error("Request not accepted");
-            }
+        if (!hasAccept) {
+            throw new Error("Request not accepted");
+        }
 
-            return { hasPermissions, hasAccept };
-        };
-        // ---- end of requestPermissionsAndAcceptAsync
+        return { hasPermissions, hasAccept };
+    }
 
-        const { hasPermissions, hasAccept } = await requestPermissionsAndAcceptAsync(message);
+    async handleAsync(message) {
+        const { hasPermissions, hasAccept } = await this.requestPermissionsAndAcceptAsync(message);
 
         if (hasPermissions === true && hasAccept === true) {
             return await super.handleAsync(message);
@@ -76,7 +74,7 @@ const $method = (fn, metadata = {}) => {
     return method;
 };
 
-export class RequestMessageHandler extends MessageHandlerWithAuth {
+class RequestMessageHandlerMethods {
     static mmx_blockNumber = $method(
         async () => {
             const info = await getNodeInfo();
@@ -157,3 +155,5 @@ export class RequestMessageHandler extends MessageHandlerWithAuth {
         }
     );
 }
+
+export const requestMessageHandler = new MessageHandlerWithAuth(RequestMessageHandlerMethods);
