@@ -3,21 +3,23 @@ const toCamelCase = (str) => {
 };
 
 export class MessageHandlerBase {
-    static getHandlerObj() {
-        return this;
+    #handlerMethods;
+
+    constructor(handlerMethods) {
+        this.#handlerMethods = handlerMethods;
     }
 
-    static getHandlerData(message) {
+    getHandlerData(message) {
         const { method: method, params } = message.data;
         const methodCC = toCamelCase(method);
 
-        const ho = this.getHandlerObj();
-        const handler = ho[method] ?? ho[methodCC] ?? ho[methodCC + "Async"] ?? ho[methodCC.replace(/Async$/, "")];
+        const hm = this.#handlerMethods;
+        const handler = hm[method] ?? hm[methodCC] ?? hm[methodCC + "Async"] ?? hm[methodCC.replace(/Async$/, "")];
 
         const callFnAsync =
             handler &&
             (async () => {
-                return await handler.call(ho, params);
+                return await handler.call(hm, params);
             });
 
         return {
@@ -28,10 +30,10 @@ export class MessageHandlerBase {
         };
     }
 
-    static async handleAsync(message) {
-        const { callFnAsync, handler, method } = this.getHandlerData(message);
+    async handleAsync(message) {
+        const { callFnAsync, method } = this.getHandlerData(message);
 
-        if (!callFnAsync || handler.name == "handleAsync" || handler.name == "getHandlerObj") {
+        if (!callFnAsync) {
             return {
                 success: false,
                 error: `unknown method: ${method}`,
@@ -52,5 +54,17 @@ export class MessageHandlerBase {
                 error: error.message,
             };
         }
+    }
+
+    register(onWindowMessage, messageID) {
+        onWindowMessage(messageID, async (message) => {
+            console.log("Received:", JSON.parse(JSON.stringify(message)));
+            try {
+                return await this.handleAsync(message);
+            } catch (err) {
+                console.log(err);
+                throw err;
+            }
+        });
     }
 }
