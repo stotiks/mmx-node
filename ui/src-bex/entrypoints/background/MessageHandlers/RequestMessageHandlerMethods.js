@@ -61,13 +61,13 @@ export class RequestMessageHandlerMethods {
         }
     );
 
-    static mmx_signMessage = async ({ message }) => {
+    static mmx_signMessage = $method(async ({ message }) => {
         const msgWithPrefix = `MMX/sign_message/${message}`;
         const msgHash = sha256(msgWithPrefix);
         return await signMessageAsync(msgHash);
-    };
+    }, {});
 
-    static mmx_signTransaction = async ({ tx: _tx, options: _options }) => {
+    static mmx_signTransaction = $method(async ({ tx: _tx, options: _options }) => {
         if (typeof _tx !== "object") {
             throw new Error("Invalid tx format");
         }
@@ -82,7 +82,7 @@ export class RequestMessageHandlerMethods {
         await signTransactionAsync(tx, options);
 
         return tx;
-    };
+    }, {});
 
     static dev_test_openPopup = $method(
         async () => {
