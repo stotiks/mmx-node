@@ -40,9 +40,5 @@ export const useNotificationMessageHandler = () => {
     }
 
     const notificationMessageHandler = new MessageHandlerBase(NotificationMessageHandlerMethods);
-
-    popupMessenger.onMessage("notification", async (message) => {
-        console.log("Received from background:", JSON.parse(JSON.stringify(message)));
-        return await notificationMessageHandler.handleAsync(message);
-    });
+    notificationMessageHandler.register(popupMessenger.onMessage, "notification");
 };

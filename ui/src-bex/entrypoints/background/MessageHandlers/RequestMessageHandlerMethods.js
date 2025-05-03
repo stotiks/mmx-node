@@ -5,6 +5,8 @@ import { getNodeInfo } from "../queries";
 import { openNotification } from "../utils/openNotification";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
 
+import vault from "../storage/vault";
+
 const $method = (fn, metadata = {}) => {
     const method = fn;
     method.metadata = { isAcceptRequired: true, ...metadata };
