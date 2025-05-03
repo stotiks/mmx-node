@@ -58,7 +58,7 @@ export class MessageHandlerBase {
 
     register(onWindowMessage, messageID) {
         onWindowMessage(messageID, async (message) => {
-            console.log("Received:", JSON.parse(JSON.stringify(message)));
+            console.log(`Received [${messageID}] message:`, JSON.parse(JSON.stringify(message)));
             try {
                 return await this.handleAsync(message);
             } catch (err) {
