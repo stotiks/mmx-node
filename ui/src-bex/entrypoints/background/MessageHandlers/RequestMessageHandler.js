@@ -1,12 +1,8 @@
-import { Transaction } from "@/mmx/wallet/Transaction";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
-import { getNodeInfo } from "../queries";
-import vault from "../storage/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
-import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
-import { openNotification } from "../utils/openNotification";
-import { sha256 } from "@noble/hashes/sha2";
-import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
+import { RequestMessageHandlerMethods } from "./RequestMessageHandlerMethods";
+
+import vault from "../storage/vault";
 
 /* global browser */
 const getTabUrl = async (tabId) => {
@@ -66,94 +62,6 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
             throw new Error("Request not allowed");
         }
     }
-}
-
-const $method = (fn, metadata = {}) => {
-    const method = fn;
-    method.metadata = { isAcceptRequired: true, ...metadata };
-    return method;
-};
-
-class RequestMessageHandlerMethods {
-    static mmx_blockNumber = $method(
-        async () => {
-            const info = await getNodeInfo();
-            return info.height;
-        },
-        {
-            isAcceptRequired: false,
-        }
-    );
-
-    static mmx_requestWallets = $method(
-        async () => {
-            return await vault.getWallets();
-        },
-        {
-            isAcceptRequired: false,
-        }
-    );
-
-    static mmx_getCurrentWallet = $method(
-        async () => {
-            return getCurrentWallet();
-        },
-        {
-            isAcceptRequired: false,
-        }
-    );
-
-    static mmx_getPubKey = $method(
-        async (params) => {
-            return await getPubKeyAsync(params?.address);
-        },
-        {
-            isAcceptRequired: false,
-        }
-    );
-
-    static mmx_getNetwork = $method(
-        async () => {
-            const network = await vault.getNetwork();
-            return network;
-        },
-        {
-            isAcceptRequired: false,
-        }
-    );
-
-    static mmx_signMessage = async ({ message }) => {
-        const msgWithPrefix = `MMX/sign_message/${message}`;
-        const msgHash = sha256(msgWithPrefix);
-        return await signMessageAsync(msgHash);
-    };
-
-    static mmx_signTransaction = async ({ tx: _tx, options: _options }) => {
-        if (typeof _tx !== "object") {
-            throw new Error("Invalid tx format");
-        }
-
-        if (typeof _options !== "object") {
-            throw new Error("Invalid options format");
-        }
-
-        const tx = new Transaction(_tx);
-        const options = new spend_options_t(_options);
-
-        await signTransactionAsync(tx, options);
-
-        return tx;
-    };
-
-    static dev_test_openPopup = $method(
-        async () => {
-            await openNotification();
-            return "Done!";
-        },
-        {
-            isAcceptRequired: false,
-        }
-    );
 }
 
 export const requestMessageHandler = new MessageHandlerWithAuth(RequestMessageHandlerMethods);
