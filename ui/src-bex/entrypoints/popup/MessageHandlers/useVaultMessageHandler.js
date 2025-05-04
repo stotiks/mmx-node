@@ -25,9 +25,6 @@ export const useVaultMessageHandler = () => {
             $q.notify({ type: "positive", message: "Wallet removed" });
         };
     }
-
-    popupMessenger.onMessage("vault", async (message) => {
-        console.log("Received from background:", JSON.parse(JSON.stringify(message)));
-        return await VaultMessageHandler.handleAsync(message);
-    });
+    const vaultMessageHandler = new MessageHandlerBase(VaultMessageHandler);
+    vaultMessageHandler.register(popupMessenger.onMessage, "vault");
 };
