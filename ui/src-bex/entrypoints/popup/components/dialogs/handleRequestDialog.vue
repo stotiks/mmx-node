@@ -16,16 +16,13 @@
                     </q-toolbar-title>
                 </q-toolbar>
 
-                <q-card-section class="col-10">
-                    <div class="q-gutter-y-sm">
+                <q-card-section class="col-11 column">
+                    <div class="col">
                         {{ url }}
                         {{ isUnlocked }}
                         {{ props.data }}
                     </div>
-                </q-card-section>
-
-                <q-card-section class="col-1">
-                    <div class="row justify-between q-gutter-x-sm">
+                    <div class="row justify-between q-gutter-x-sm col-1">
                         <q-btn label="Accept" :icon="mdiCheck" outline rounded color="positive" @click="handleAccept" />
                         <q-btn label="Reject" :icon="mdiClose" outline rounded color="negative" @click="handleReject" />
                     </div>
