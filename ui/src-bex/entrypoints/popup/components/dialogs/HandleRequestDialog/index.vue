@@ -88,8 +88,10 @@ const handleReject = () => {
 
 import { vaultService } from "../../../vaultService";
 
+import { useTryCatchWrapper } from "@bex/entrypoints/popup/utils/useTryCatchWrapper";
+const tryCatchWrapper = useTryCatchWrapper();
 const handleAccept = async () => {
-    await vaultService.allowUrlAsync(props.url); // TODO move to vaultStore
+    tryCatchWrapper(async () => await vaultService.allowUrlAsync(props.url)); // TODO move to vaultStore
     onDialogOK({ accepted: true });
 };
 </script>
