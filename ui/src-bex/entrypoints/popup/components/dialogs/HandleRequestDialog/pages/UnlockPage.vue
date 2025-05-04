@@ -16,7 +16,7 @@
                     <div class="row justify-center">
                         <q-btn
                             label="Unlock"
-                            :icon="mdiLockOpen"
+                            :icon="mdiLockOpenVariant"
                             type="submit"
                             :color="password ? 'positive' : 'primary'"
                             rounded
@@ -32,7 +32,7 @@
 
 <script setup>
 import { useTryCatchWrapper } from "@bex/entrypoints/popup/utils/useTryCatchWrapper";
-import { mdiLockOpen, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
+import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
 
 const password = ref("");
 
