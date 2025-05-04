@@ -11,46 +11,7 @@
         <q-card class="q-dialog-plugin">
             <q-layout view="lHh Lpr lFf">
                 <q-page-container>
-                    <UnlockPage v-if="isUnlocked !== true" />
-                    <q-page v-else padding style="padding-top: 66px">
-                        <div>
-                            {{ url }}
-                            {{ isUnlocked }}
-                            {{ props.data }}
-                        </div>
-
-                        <q-page-sticky expand position="top">
-                            <q-toolbar class="bg-primary text-white">
-                                <q-toolbar-title class="text-subtitle1">
-                                    <b>Accept request: {{ props.data.method }}</b>
-                                </q-toolbar-title>
-                            </q-toolbar>
-                        </q-page-sticky>
-
-                        <q-page-sticky expand position="bottom" class="q-pa-md">
-                            <div class="col">
-                                <div class="row justify-between q-gutter-x-sm">
-                                    <q-btn
-                                        label="Accept"
-                                        :icon="mdiCheck"
-                                        outline
-                                        rounded
-                                        color="positive"
-                                        @click="handleAccept"
-                                    />
-
-                                    <q-btn
-                                        label="Reject"
-                                        :icon="mdiClose"
-                                        outline
-                                        rounded
-                                        color="negative"
-                                        @click="handleReject"
-                                    />
-                                </div>
-                            </div>
-                        </q-page-sticky>
-                    </q-page>
+                    <component :is="pageComponent.component" v-bind="pageComponent.props" v-on="pageComponent.events" />
                 </q-page-container>
             </q-layout>
         </q-card>
@@ -58,17 +19,19 @@
 </template>
 
 <script setup>
-import { mdiCheck, mdiClose } from "@mdi/js";
-import UnlockPage from "./pages/UnlockPage.vue";
-
 const props = defineProps({
     url: {
-        type: Object,
+        type: String,
         required: true,
     },
     data: {
         type: Object,
         required: true,
+    },
+    isAcceptRequired: {
+        type: Boolean,
+        required: false,
+        default: true,
     },
 });
 
@@ -76,22 +39,87 @@ import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
+import { vaultService } from "@bex/entrypoints/popup/vaultService";
+const checkVaultPermissionsAsync = async () => await vaultService.checkPermissionsAsync(props.url).catch(() => false);
+
+const hasPermissions = ref(false);
+const refreshHasPermissionsAsync = async () => {
+    hasPermissions.value = await checkVaultPermissionsAsync();
+};
+
 const onDialogShow = async () => {};
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { isUnlocked } = storeToRefs(vaultStore);
 
-const handleReject = () => {
-    onDialogCancel();
+watch(
+    isUnlocked,
+    async () => {
+        if (isUnlocked.value === true) {
+            await refreshHasPermissionsAsync();
+        }
+    },
+    { immediate: true }
+);
+
+import UnlockPage from "./pages/UnlockPage.vue";
+import RequestPermissionsPage from "./pages/RequestPermissionsPage.vue";
+import AcceptPage from "./pages/AcceptPage.vue";
+
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+const tryCatchWrapperASync = useTryCatchWrapperAsync();
+
+const UnlockPageComponent = {
+    component: UnlockPage,
+    props,
+    events: {},
 };
 
-import { vaultService } from "@bex/entrypoints/popup/vaultService";
+const RequestPermissionsPageComponent = {
+    component: RequestPermissionsPage,
+    props,
+    events: {
+        ok: async (result) => {
+            if (result.granted === true) {
+                await tryCatchWrapperASync(async () => await vaultStore.allowUrlAsync(props.url));
+                await refreshHasPermissionsAsync();
 
-import { useTryCatchWrapper } from "@bex/entrypoints/popup/utils/useTryCatchWrapper";
-const tryCatchWrapper = useTryCatchWrapper();
-const handleAccept = async () => {
-    tryCatchWrapper(async () => await vaultService.allowUrlAsync(props.url)); // TODO move to vaultStore
-    onDialogOK({ accepted: true });
+                if (props.isAcceptRequired !== true) {
+                    onDialogOK();
+                }
+            }
+        },
+        cancel: () => {
+            onDialogCancel();
+        },
+    },
 };
+
+const AcceptPageComponent = {
+    component: AcceptPage,
+    props,
+    events: {
+        ok: async (result) => {
+            if (result.accepted === true) {
+                onDialogOK({ accepted: true });
+            }
+        },
+        cancel: () => {
+            onDialogCancel();
+        },
+    },
+};
+
+const pageComponent = computed(() => {
+    if (isUnlocked.value !== true) {
+        return UnlockPageComponent;
+    }
+
+    if (hasPermissions.value !== true) {
+        return RequestPermissionsPageComponent;
+    }
+
+    return AcceptPageComponent;
+});
 </script>
