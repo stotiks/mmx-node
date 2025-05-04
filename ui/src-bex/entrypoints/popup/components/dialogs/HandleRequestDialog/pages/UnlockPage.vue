@@ -10,13 +10,13 @@
                 <q-form class="q-gutter-sm" @submit="handleUnlockAsync">
                     <q-input v-model="password" type="password" required filled label="Password">
                         <template v-slot:prepend>
-                            <q-icon :name="mdiLock" />
+                            <q-icon :name="mdiShieldLockOpen" />
                         </template>
                     </q-input>
                     <div class="row justify-center">
                         <q-btn
-                            label="Login"
-                            :icon="mdiLogin"
+                            label="Unlock"
+                            :icon="mdiLockOpen"
                             type="submit"
                             :color="password ? 'positive' : 'primary'"
                             rounded
@@ -32,7 +32,7 @@
 
 <script setup>
 import { useTryCatchWrapper } from "@bex/entrypoints/popup/utils/useTryCatchWrapper";
-import { mdiLock, mdiLogin } from "@mdi/js";
+import { mdiLockOpen, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
 
 const password = ref("");
 
