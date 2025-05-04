@@ -8,7 +8,7 @@ export const useNotificationMessageHandler = () => {
         return new Promise((resolve) => {
             $q.dialog({
                 component: defineAsyncComponent(
-                    () => import("@bex/entrypoints/popup/components/dialogs/handleRequestDialog.vue")
+                    () => import("@bex/entrypoints/popup/components/dialogs/HandleRequestDialog/index.vue")
                 ),
                 componentProps: props,
             })
