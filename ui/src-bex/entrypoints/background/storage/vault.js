@@ -38,7 +38,8 @@ class Vault {
 
     async unlockAsync({ password }) {
         if (this.isUnlocked === true) {
-            throw new Error("Vault is unlocked already");
+            //throw new Error("Vault is unlocked already");
+            return this.isUnlocked;
         }
 
         await this.#loadAsync(password);
