@@ -79,7 +79,7 @@ const tryCatchWrapper = async (fn) => {
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isLocked, wallets, currentWalletAddress } = storeToRefs(vaultStore);
+const { isUnlocked, wallets, currentWalletAddress } = storeToRefs(vaultStore);
 
 const walletsOptions = computed(() => {
     return wallets.value.map((wallet) => ({ label: wallet.address, value: wallet.address }));
