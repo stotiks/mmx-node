@@ -68,9 +68,9 @@ watch(
     { immediate: true }
 );
 
-import UnlockPage from "./pages/UnlockPage.vue";
-import RequestPermissionsPage from "./pages/RequestPermissionsPage.vue";
-import AcceptPage from "./pages/AcceptPage.vue";
+import UnlockPage from "../../UnlockPage";
+import RequestPermissionsPage from "./pages/RequestPermissionsPage";
+import AcceptPage from "./pages/AcceptPage";
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
 const tryCatchWrapperASync = useTryCatchWrapperAsync();
