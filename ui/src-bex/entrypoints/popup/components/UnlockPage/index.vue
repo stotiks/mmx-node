@@ -16,5 +16,5 @@
 </template>
 
 <script setup>
-import UnlockForm from "./UnlockForm.vue";
+import UnlockForm from "./UnlockForm";
 </script>
