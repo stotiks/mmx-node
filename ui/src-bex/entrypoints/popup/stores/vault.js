@@ -33,8 +33,8 @@ export const useVaultStore = defineStore("vault", () => {
 
     watch(isUnlocked, async () => {
         if (isUnlocked.value === true) {
-            await _updateCurrentWalletAddressAsync();
-            await _updateWalletsAsync();
+            await _refreshCurrentWalletAddressAsync();
+            await _refreshWalletsAsync();
         }
     });
 
@@ -51,38 +51,38 @@ export const useVaultStore = defineStore("vault", () => {
         await vaultService.updatePasswordAsync({ password, newPassword });
     };
 
-    const _updateWalletsAsync = async () => {
+    const _refreshWalletsAsync = async () => {
         wallets.value = await vaultService.getWalletsAsync();
     };
 
     const addWalletAsync = async ({ mnemonic, password }) => {
         const newWallet = await vaultService.addWalletAsync({ mnemonic, password });
-        await _updateWalletsAsync();
+        await _refreshWalletsAsync();
         currentWalletAddress.value = newWallet.address;
     };
 
     const removeWalletAsync = async ({ address }) => {
         await vaultService.removeWalletAsync({ address });
-        await _updateWalletsAsync();
+        await _refreshWalletsAsync();
     };
 
     const allowUrlAsync = async (url) => {
         await vaultService.allowUrlAsync(url);
     };
 
-    const _updateCurrentWalletAddressAsync = async () => {
+    const _refreshCurrentWalletAddressAsync = async () => {
         if (isUnlocked.value === true) {
             currentWalletAddress.value = (await vaultService.getCurrentWalletAddressAsync()) ?? "";
         }
     };
 
-    const _updateIsUnlockedAsync = async () => {
+    const _refreshIsUnlockedAsync = async () => {
         isUnlocked.value = await vaultService.getIsUnlockedAsync();
     };
 
     //Initialize
     (async () => {
-        await _updateIsUnlockedAsync();
+        await _refreshIsUnlockedAsync();
     })();
 
     return {
