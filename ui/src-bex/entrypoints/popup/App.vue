@@ -10,10 +10,8 @@
             <template v-if="isUnlocked !== true">
                 <UnlockPage />
             </template>
-            <q-page v-else padding>
+            <q-page v-else padding style="padding-top: 66px">
                 <div class="q-gutter-y-sm">
-                    <q-btn @click="handleLockAsync">Lock</q-btn>
-
                     <q-list bordered class="rounded-borders">
                         <q-expansion-item
                             label="Password update"
@@ -34,7 +32,7 @@
                         >
                             <q-input v-model="newWalletMnemonic" label="Mnemonic" filled dense />
                             <q-input v-model="newWalletPassword" label="Password" filled dense />
-                            <q-btn @click="handleAddWalletAsync">Add</q-btn>
+                            <q-btn :icon="mdiPlus" @click="handleAddWalletAsync">Add</q-btn>
                         </q-expansion-item>
                     </q-list>
                     <q-select
@@ -53,6 +51,14 @@
                         Remove
                     </q-btn>
                 </div>
+
+                <q-page-sticky expand position="top">
+                    <q-toolbar class1="bg-primary text-white">
+                        <!-- <q-toolbar-title class="text-subtitle1"> </q-toolbar-title> -->
+                        <q-space />
+                        <q-btn label="Lock" :icon="mdiLock" flat @click="handleLockAsync" />
+                    </q-toolbar>
+                </q-page-sticky>
             </q-page>
         </q-page-container>
     </q-layout>
@@ -61,7 +67,7 @@
 <script setup>
 import UnlockPage from "@bex/entrypoints/popup/components/UnlockPage";
 
-import { mdiAlphaFBox } from "@mdi/js";
+import { mdiAlphaFBox, mdiLock } from "@mdi/js";
 
 const password = ref("password");
 const newPassword = ref("password");
