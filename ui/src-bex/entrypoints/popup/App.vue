@@ -8,7 +8,7 @@
         </q-header> -->
         <q-page-container>
             <q-page padding>
-                <template v-if="isLocked">
+                <template v-if="isUnlocked !== true">
                     Vault is locked
                     <q-input v-model="password" type="password" label="Password" filled dense />
                     <q-btn @click="handleUnlockAsync">Unlock</q-btn>
@@ -68,8 +68,8 @@ import { mdiAlphaFBox } from "@mdi/js";
 const password = ref("password");
 const newPassword = ref("password");
 
-import { useTryCatchWrapper } from "./utils/useTryCatchWrapper";
-const tryCatchWrapper = useTryCatchWrapper();
+import { useTryCatchWrapperAsync } from "./utils/useTryCatchWrapperAsync";
+const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
@@ -80,15 +80,15 @@ const walletsOptions = computed(() => {
 });
 
 const handleUnlockAsync = async () => {
-    await tryCatchWrapper(() => vaultStore.unlockAsync({ password: password.value }));
+    await tryCatchWrapperAsync(() => vaultStore.unlockAsync({ password: password.value }));
 };
 
 const handleLockAsync = async () => {
-    await tryCatchWrapper(() => vaultStore.lockAsync());
+    await tryCatchWrapperAsync(() => vaultStore.lockAsync());
 };
 
 const handleUpdatePasswordAsync = async () => {
-    await tryCatchWrapper(() =>
+    await tryCatchWrapperAsync(() =>
         vaultStore.updatePasswordAsync({ password: password.value, newPassword: newPassword.value })
     );
 };
@@ -96,13 +96,13 @@ const handleUpdatePasswordAsync = async () => {
 const newWalletMnemonic = ref("");
 const newWalletPassword = ref("");
 const handleAddWalletAsync = async () => {
-    await tryCatchWrapper(() =>
+    await tryCatchWrapperAsync(() =>
         vaultStore.addWalletAsync({ mnemonic: newWalletMnemonic.value, password: newWalletPassword.value })
     );
 };
 
 const handleRemoveWalletAsync = async (address) => {
-    await tryCatchWrapper(() => vaultStore.removeWalletAsync({ address }));
+    await tryCatchWrapperAsync(() => vaultStore.removeWalletAsync({ address }));
 };
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";

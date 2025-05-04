@@ -1,6 +1,6 @@
-export const useTryCatchWrapper = () => {
+export const useTryCatchWrapperAsync = () => {
     const $q = useQuasar();
-    const tryCatchWrapper = async (fn) => {
+    const tryCatchWrapperAsync = async (fn) => {
         try {
             return await fn();
         } catch (error) {
@@ -8,5 +8,5 @@ export const useTryCatchWrapper = () => {
         }
     };
 
-    return tryCatchWrapper;
+    return tryCatchWrapperAsync;
 };
