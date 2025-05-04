@@ -10,29 +10,56 @@
     >
         <q-card class="q-dialog-plugin column">
             <div class="column" style="height: 100%">
-                <q-toolbar class="bg-primary text-white col-1">
-                    <q-toolbar-title class="text-subtitle1">
-                        <b>Accept request: {{ props.data.method }}</b>
-                    </q-toolbar-title>
-                </q-toolbar>
+                <q-layout view="lHh Lpr lFf" class="col-11">
+                    <q-page-container>
+                        <q-page padding style="padding-top: 66px">
+                            <div class="col">
+                                {{ url }}
+                                {{ isUnlocked }}
+                                {{ props.data }}
+                            </div>
 
-                <q-card-section class="col-11 column">
-                    <div class="col">
-                        {{ url }}
-                        {{ isUnlocked }}
-                        {{ props.data }}
-                    </div>
-                    <div class="row justify-between q-gutter-x-sm col-1">
-                        <q-btn label="Accept" :icon="mdiCheck" outline rounded color="positive" @click="handleAccept" />
-                        <q-btn label="Reject" :icon="mdiClose" outline rounded color="negative" @click="handleReject" />
-                    </div>
-                </q-card-section>
+                            <q-page-sticky expand position="top">
+                                <q-toolbar class="bg-primary text-white">
+                                    <q-toolbar-title class="text-subtitle1">
+                                        <b>Accept request: {{ props.data.method }}</b>
+                                    </q-toolbar-title>
+                                </q-toolbar>
+                            </q-page-sticky>
+
+                            <q-page-sticky expand position="bottom" class="q-pa-md">
+                                <div class="col">
+                                    <div class="row justify-between q-gutter-x-sm">
+                                        <q-btn
+                                            label="Accept"
+                                            :icon="mdiCheck"
+                                            outline
+                                            rounded
+                                            color="positive"
+                                            @click="handleAccept"
+                                        />
+
+                                        <q-btn
+                                            label="Reject"
+                                            :icon="mdiClose"
+                                            outline
+                                            rounded
+                                            color="negative"
+                                            @click="handleReject"
+                                        />
+                                    </div>
+                                </div>
+                            </q-page-sticky>
+                        </q-page>
+                    </q-page-container>
+                </q-layout>
             </div>
         </q-card>
     </q-dialog>
 </template>
 
 <script setup>
+const leftDrawerOpen = ref(false);
 import { mdiCheck, mdiClose } from "@mdi/js";
 
 const props = defineProps({
