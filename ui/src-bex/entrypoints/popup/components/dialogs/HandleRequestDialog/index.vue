@@ -86,7 +86,7 @@ const handleReject = () => {
     onDialogCancel();
 };
 
-import { vaultService } from "../../../vaultService";
+import { vaultService } from "@bex/entrypoints/popup/vaultService";
 
 import { useTryCatchWrapper } from "@bex/entrypoints/popup/utils/useTryCatchWrapper";
 const tryCatchWrapper = useTryCatchWrapper();
