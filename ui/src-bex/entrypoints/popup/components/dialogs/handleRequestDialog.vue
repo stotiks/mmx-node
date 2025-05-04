@@ -9,7 +9,7 @@
         @hide="onDialogHide"
     >
         <q-card class="q-dialog-plugin column">
-            <div class="column" style="height: 100vw">
+            <div class="column" style="height: 100%">
                 <q-toolbar class="bg-primary text-white col-1">
                     <q-toolbar-title class="text-subtitle1">
                         <b>Accept request: {{ props.data.method }}</b>
@@ -24,26 +24,10 @@
                     </div>
                 </q-card-section>
 
-                <q-card-section class="col">
-                    <div class="col">
-                        <div class="row justify-between q-gutter-x-sm">
-                            <q-btn
-                                label="Accept"
-                                :icon="mdiCheck"
-                                outline
-                                rounded
-                                color="positive"
-                                @click="handleAccept"
-                            />
-                            <q-btn
-                                label="Reject"
-                                :icon="mdiClose"
-                                outline
-                                rounded
-                                color="negative"
-                                @click="handleReject"
-                            />
-                        </div>
+                <q-card-section class="col-1">
+                    <div class="row justify-between q-gutter-x-sm">
+                        <q-btn label="Accept" :icon="mdiCheck" outline rounded color="positive" @click="handleAccept" />
+                        <q-btn label="Reject" :icon="mdiClose" outline rounded color="negative" @click="handleReject" />
                     </div>
                 </q-card-section>
             </div>
