@@ -11,7 +11,12 @@
         <q-card class="q-dialog-plugin">
             <q-layout view="lHh Lpr lFf">
                 <q-page-container>
-                    <component :is="pageComponent.component" v-bind="pageComponent.props" v-on="pageComponent.events" />
+                    <component
+                        :is="pageComponent.component"
+                        v-if="pageComponent"
+                        v-bind="pageComponent.props"
+                        v-on="pageComponent.events"
+                    />
                 </q-page-container>
             </q-layout>
         </q-card>
@@ -84,10 +89,6 @@ const RequestPermissionsPageComponent = {
             if (result.granted === true) {
                 await tryCatchWrapperASync(async () => await vaultStore.allowUrlAsync(props.url));
                 await refreshHasPermissionsAsync();
-
-                if (props.isAcceptRequired !== true) {
-                    onDialogOK();
-                }
             }
         },
         cancel: () => {
@@ -120,6 +121,20 @@ const pageComponent = computed(() => {
         return RequestPermissionsPageComponent;
     }
 
-    return AcceptPageComponent;
+    if (props.isAcceptRequired === true) {
+        return AcceptPageComponent;
+    }
+
+    return null;
 });
+
+watch(
+    () => pageComponent.value,
+    () => {
+        if (pageComponent.value === null) {
+            onDialogCancel();
+        }
+    },
+    { immediate: true }
+);
 </script>
