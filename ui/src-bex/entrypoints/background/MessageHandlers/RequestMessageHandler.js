@@ -31,10 +31,10 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
         if (isAcceptRequired === true || _hasPermissions === false) {
             const requestPermissionsResponse = await notificationMessenger.sendMessage({
                 method: "requestPermissions",
-                params: { message, url },
+                params: { data: message.data, url, isAcceptRequired },
             });
             console.log("requestPermissionsResponse:", requestPermissionsResponse);
-            accepted = requestPermissionsResponse.data.accepted === true;
+            accepted = requestPermissionsResponse.data?.accepted === true;
         }
 
         const hasPermissions = await checkVaultPermissionsAsync();

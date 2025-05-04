@@ -12,27 +12,27 @@ export const useNotificationMessageHandler = () => {
                 ),
                 componentProps: props,
             })
-                .onOk(({ accepted }) => {
-                    resolve({ accepted });
+                .onOk((data) => {
+                    resolve(data);
                 })
-                .onCancel(() => {
-                    resolve({ accepted: false });
+                .onCancel((data) => {
+                    resolve(data);
                 });
         });
     };
 
     class NotificationMessageHandlerMethods {
         static isRunning = false;
-        static requestPermissions = async ({ url: _url, message }) => {
+        static requestPermissions = async (params) => {
+            console.log("requestPermissions:", params);
             if (this.isRunning === true) {
                 throw new Error("Other request is running");
             }
 
             try {
                 this.isRunning = true;
-                const url = new URL(_url);
-                const { accepted } = await showHandleRequestDialogAsync({ url, data: message.data }).catch(() => false);
-                return { success: true, data: { accepted } };
+                const data = await showHandleRequestDialogAsync(params).catch(() => false);
+                return { success: true, data };
             } finally {
                 this.isRunning = false;
             }
