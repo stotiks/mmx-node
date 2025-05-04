@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { vaultService } from "../vaultService";
+import { vaultService } from "@bex/entrypoints/popup/vaultService";
 
 export const useVaultStore = defineStore("vault", () => {
     // State
@@ -66,6 +66,10 @@ export const useVaultStore = defineStore("vault", () => {
         await _updateWalletsAsync();
     };
 
+    const allowUrlAsync = async (url) => {
+        await vaultService.allowUrlAsync(url);
+    };
+
     const _updateCurrentWalletAddressAsync = async () => {
         if (isUnlocked.value === true) {
             currentWalletAddress.value = (await vaultService.getCurrentWalletAddressAsync()) ?? "";
@@ -92,6 +96,7 @@ export const useVaultStore = defineStore("vault", () => {
         updatePasswordAsync,
         addWalletAsync,
         removeWalletAsync,
+        allowUrlAsync,
     };
 });
 
