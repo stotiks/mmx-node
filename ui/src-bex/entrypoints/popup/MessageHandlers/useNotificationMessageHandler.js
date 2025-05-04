@@ -8,7 +8,7 @@ export const useNotificationMessageHandler = () => {
         return new Promise((resolve) => {
             $q.dialog({
                 component: defineAsyncComponent(
-                    () => import("@bex/entrypoints/popup/components/dialogs/HandleRequestDialog/index.vue")
+                    () => import("@bex/entrypoints/popup/components/dialogs/HandleRequestDialog")
                 ),
                 componentProps: props,
             })
@@ -24,7 +24,6 @@ export const useNotificationMessageHandler = () => {
     class NotificationMessageHandlerMethods {
         static isRunning = false;
         static requestPermissions = async (params) => {
-            console.log("requestPermissions:", params);
             if (this.isRunning === true) {
                 throw new Error("Other request is running");
             }
