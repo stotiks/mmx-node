@@ -68,14 +68,8 @@ import { mdiAlphaFBox } from "@mdi/js";
 const password = ref("password");
 const newPassword = ref("password");
 
-const $q = useQuasar();
-const tryCatchWrapper = async (fn) => {
-    try {
-        return await fn();
-    } catch (error) {
-        $q.notify({ type: "negative", message: error.message });
-    }
-};
+import { useTryCatchWrapper } from "./utils/useTryCatchWrapper";
+const tryCatchWrapper = useTryCatchWrapper();
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
