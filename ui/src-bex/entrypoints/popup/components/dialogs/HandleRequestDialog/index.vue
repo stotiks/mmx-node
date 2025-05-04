@@ -11,7 +11,8 @@
         <q-card class="q-dialog-plugin">
             <q-layout view="lHh Lpr lFf">
                 <q-page-container>
-                    <q-page padding style="padding-top: 66px">
+                    <UnlockPage v-if="isUnlocked !== true" />
+                    <q-page v-else padding style="padding-top: 66px">
                         <div>
                             {{ url }}
                             {{ isUnlocked }}
@@ -57,8 +58,8 @@
 </template>
 
 <script setup>
-const leftDrawerOpen = ref(false);
 import { mdiCheck, mdiClose } from "@mdi/js";
+import UnlockPage from "./pages/UnlockPage.vue";
 
 const props = defineProps({
     url: {
@@ -86,6 +87,7 @@ const handleReject = () => {
 };
 
 import { vaultService } from "../../../vaultService";
+
 const handleAccept = async () => {
     await vaultService.allowUrlAsync(props.url); // TODO move to vaultStore
     onDialogOK({ accepted: true });
