@@ -78,7 +78,7 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const onDialogShow = async () => {};
 
-import { useVaultStore } from "../../../stores/vault";
+import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { isUnlocked } = storeToRefs(vaultStore);
 
