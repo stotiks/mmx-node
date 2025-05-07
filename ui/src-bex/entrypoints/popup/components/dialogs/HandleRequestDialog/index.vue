@@ -47,10 +47,10 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 import { vaultService } from "@bex/entrypoints/popup/vaultService";
 const checkVaultPermissionsAsync = async () => await vaultService.checkPermissionsAsync(props.url).catch(() => false);
 
-const hasPermissions = ref(false);
-const refreshHasPermissionsAsync = async () => {
-    hasPermissions.value = await checkVaultPermissionsAsync();
-};
+// const hasPermissions = ref(false);
+// const refreshHasPermissionsAsync = async () => {
+//     hasPermissions.value = await checkVaultPermissionsAsync();
+// };
 
 const onDialogShow = async () => {};
 
@@ -58,15 +58,15 @@ import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { isUnlocked } = storeToRefs(vaultStore);
 
-watch(
-    isUnlocked,
-    async () => {
-        if (isUnlocked.value === true) {
-            await refreshHasPermissionsAsync();
-        }
-    },
-    { immediate: true }
-);
+// watch(
+//     isUnlocked,
+//     async () => {
+//         if (isUnlocked.value === true) {
+//             await refreshHasPermissionsAsync();
+//         }
+//     },
+//     { immediate: true }
+// );
 
 import UnlockPage from "../../UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
@@ -88,7 +88,7 @@ const RequestPermissionsPageComponent = {
         ok: async (result) => {
             if (result.granted === true) {
                 await tryCatchWrapperASync(async () => await vaultStore.allowUrlAsync(props.url));
-                await refreshHasPermissionsAsync();
+                // await refreshHasPermissionsAsync();
             }
         },
         cancel: () => {
@@ -112,21 +112,29 @@ const AcceptPageComponent = {
     },
 };
 
-const pageComponent = computed(() => {
-    if (isUnlocked.value !== true) {
-        return UnlockPageComponent;
-    }
+const pageComponent = computedAsync(
+    async () => {
+        if (isUnlocked.value !== true) {
+            return UnlockPageComponent;
+        }
 
-    if (hasPermissions.value !== true) {
-        return RequestPermissionsPageComponent;
-    }
+        if ((await checkVaultPermissionsAsync()) !== true) {
+            return RequestPermissionsPageComponent;
+        }
 
-    if (props.isAcceptRequired === true) {
-        return AcceptPageComponent;
-    }
+        if (props.isAcceptRequired === true) {
+            return AcceptPageComponent;
+        }
 
-    return null;
-});
+        return null;
+    },
+    UnlockPageComponent,
+    {
+        onError: (error) => {
+            throw error;
+        },
+    }
+);
 
 watch(
     () => pageComponent.value,

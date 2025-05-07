@@ -7,51 +7,56 @@
             </q-bar>
         </q-header> -->
         <q-page-container>
-            <template v-if="isUnlocked !== true">
-                <UnlockPage />
+            <q-inner-loading :showing="isLoading">
+                <q-spinner-radio size="50px" color="primary" />
+            </q-inner-loading>
+            <template v-if="!isLoading">
+                <template v-if="isUnlocked !== true">
+                    <UnlockPage />
+                </template>
+                <q-page v-else padding style="padding-top: 66px">
+                    <div class="q-gutter-y-sm">
+                        <q-list bordered class="rounded-borders">
+                            <q-expansion-item
+                                label="Password update"
+                                header-class="text-h6"
+                                expand-separator
+                                group="expansionGroup"
+                            >
+                                <q-input v-model="password" type="password" label="Password" filled dense />
+                                <q-input v-model="newPassword" type="password" label="New password" filled dense />
+                                <q-btn @click="handleUpdatePasswordAsync">Update</q-btn>
+                            </q-expansion-item>
+
+                            <q-expansion-item
+                                label="Add wallet"
+                                header-class="text-h6"
+                                expand-separator
+                                group="expansionGroup"
+                            >
+                                <q-input v-model="newWalletMnemonic" label="Mnemonic" filled dense />
+                                <q-input v-model="newWalletPassword" label="Password" filled dense />
+                                <q-btn @click="handleAddWalletAsync">Add</q-btn>
+                            </q-expansion-item>
+                        </q-list>
+                        <WalletSelect2 />
+                        <q-btn
+                            :disabled="currentWalletAddress === ''"
+                            @click="handleRemoveWalletAsync(currentWalletAddress)"
+                        >
+                            Remove
+                        </q-btn>
+                    </div>
+
+                    <q-page-sticky expand position="top">
+                        <q-toolbar class1="bg-primary text-white">
+                            <!-- <q-toolbar-title class="text-subtitle1"> </q-toolbar-title> -->
+                            <q-space />
+                            <q-btn label="Lock" :icon="mdiLock" flat @click="handleLockAsync" />
+                        </q-toolbar>
+                    </q-page-sticky>
+                </q-page>
             </template>
-            <q-page v-else padding style="padding-top: 66px">
-                <div class="q-gutter-y-sm">
-                    <q-list bordered class="rounded-borders">
-                        <q-expansion-item
-                            label="Password update"
-                            header-class="text-h6"
-                            expand-separator
-                            group="expansionGroup"
-                        >
-                            <q-input v-model="password" type="password" label="Password" filled dense />
-                            <q-input v-model="newPassword" type="password" label="New password" filled dense />
-                            <q-btn @click="handleUpdatePasswordAsync">Update</q-btn>
-                        </q-expansion-item>
-
-                        <q-expansion-item
-                            label="Add wallet"
-                            header-class="text-h6"
-                            expand-separator
-                            group="expansionGroup"
-                        >
-                            <q-input v-model="newWalletMnemonic" label="Mnemonic" filled dense />
-                            <q-input v-model="newWalletPassword" label="Password" filled dense />
-                            <q-btn @click="handleAddWalletAsync">Add</q-btn>
-                        </q-expansion-item>
-                    </q-list>
-                    <WalletSelect2 />
-                    <q-btn
-                        :disabled="currentWalletAddress === ''"
-                        @click="handleRemoveWalletAsync(currentWalletAddress)"
-                    >
-                        Remove
-                    </q-btn>
-                </div>
-
-                <q-page-sticky expand position="top">
-                    <q-toolbar class1="bg-primary text-white">
-                        <!-- <q-toolbar-title class="text-subtitle1"> </q-toolbar-title> -->
-                        <q-space />
-                        <q-btn label="Lock" :icon="mdiLock" flat @click="handleLockAsync" />
-                    </q-toolbar>
-                </q-page-sticky>
-            </q-page>
         </q-page-container>
     </q-layout>
 </template>
@@ -102,8 +107,5 @@ import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/u
 useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
-const isNotification = inject("isNotification");
-if (isNotification) {
-    useNotificationMessageHandler();
-}
+const { isLoading } = useNotificationMessageHandler();
 </script>

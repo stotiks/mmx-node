@@ -2,6 +2,16 @@ import { popupMessenger } from "@bex/messaging/popup";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 
 export const useNotificationMessageHandler = () => {
+    const isNotification = inject("isNotification");
+
+    const isRunning = ref(false);
+    const isLoading = ref(true);
+
+    if (!isNotification) {
+        isLoading.value = false;
+        return { isRunning, isLoading };
+    }
+
     const $q = useQuasar();
 
     const showHandleRequestDialogAsync = (props) => {
@@ -22,22 +32,33 @@ export const useNotificationMessageHandler = () => {
     };
 
     class NotificationMessageHandlerMethods {
-        static isRunning = false;
+        static dummy = () => {};
+
         static requestPermissionsAndAccept = async (params) => {
-            if (this.isRunning === true) {
+            if (isRunning.value === true) {
                 throw new Error("Other request is running");
             }
 
             try {
-                this.isRunning = true;
+                isRunning.value = true;
                 const data = await showHandleRequestDialogAsync(params).catch(() => false);
                 return { success: true, data };
             } finally {
-                this.isRunning = false;
+                isRunning.value = false;
             }
         };
     }
 
-    const notificationMessageHandler = new MessageHandlerBase(NotificationMessageHandlerMethods);
+    class MessageHandlerNotification extends MessageHandlerBase {
+        async handleAsync(message) {
+            return await super.handleAsync(message).finally(() => {
+                isLoading.value = false;
+            });
+        }
+    }
+
+    const notificationMessageHandler = new MessageHandlerNotification(NotificationMessageHandlerMethods);
     notificationMessageHandler.register(popupMessenger.onMessage, "notification");
+
+    return { isRunning, isLoading };
 };
