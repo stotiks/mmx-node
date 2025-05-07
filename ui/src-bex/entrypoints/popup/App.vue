@@ -32,7 +32,7 @@
                         >
                             <q-input v-model="newWalletMnemonic" label="Mnemonic" filled dense />
                             <q-input v-model="newWalletPassword" label="Password" filled dense />
-                            <q-btn :icon="mdiPlus" @click="handleAddWalletAsync">Add</q-btn>
+                            <q-btn @click="handleAddWalletAsync">Add</q-btn>
                         </q-expansion-item>
                     </q-list>
                     <q-select
