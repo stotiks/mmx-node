@@ -31,6 +31,8 @@ export default defineConfig({
         const configBuilder = new ConfigBuilder({
             buildTarget: BuildTargets.PLAYGROUND,
             useDefaultRollupOptions: true,
+            usePublicRPC: true,
+            usePublicRPCForDevMode: true,
         });
 
         const config = configBuilder.config;
