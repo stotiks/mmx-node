@@ -83,6 +83,10 @@ export const useVaultStore = defineStore("vault", () => {
     //Initialize
     (async () => {
         await _refreshIsUnlockedAsync();
+        if (isUnlocked.value === true) {
+            await _refreshCurrentWalletAddressAsync();
+            await _refreshWalletsAsync();
+        }
     })();
 
     return {
