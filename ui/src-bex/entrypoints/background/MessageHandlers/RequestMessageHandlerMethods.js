@@ -6,6 +6,7 @@ import { openNotification } from "../utils/openNotification";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
 
 import vault from "../storage/vault";
+import { notificationMessenger } from "../utils/notificationMessenger";
 
 const $method = (fn, metadata = {}) => {
     const method = fn;
@@ -86,7 +87,10 @@ export class RequestMessageHandlerMethods {
 
     static dev_test_openPopup = $method(
         async () => {
-            await openNotification();
+            await notificationMessenger.sendMessage({
+                method: "dummy",
+                params: {},
+            });
             return "Done!";
         },
         {
