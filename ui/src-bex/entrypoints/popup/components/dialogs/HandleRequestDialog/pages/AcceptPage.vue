@@ -1,5 +1,6 @@
 <template>
     <q-page padding style="padding-top: 66px">
+        <WalletSelect2 class="q-mb-md" />
         <div>
             <template v-if="data.params">
                 <highlightjs :code="stringify(data.params)" class="hljsCode" />
@@ -26,9 +27,10 @@
 </template>
 
 <script setup>
-const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
-
 import { mdiCheck, mdiClose } from "@mdi/js";
+import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
+
+const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
 
 const props = defineProps({
     url: {
