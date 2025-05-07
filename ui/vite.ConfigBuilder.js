@@ -32,6 +32,7 @@ export class ConfigBuilder {
     writeBuildInfo = false;
     writeRobotsTxt = false;
     usePublicRPC = false;
+    usePublicRPCForDevMode = false;
     allowCustomRPC = false;
     useDefaultRollupOptions = false;
     useSingleFile = false;
@@ -56,7 +57,7 @@ export class ConfigBuilder {
         if (this.usePublicRPC) {
             (config.define ??= {}).__WAPI_URL__ = JSON.stringify(
                 // eslint-disable-next-line no-undef
-                process.env.NODE_ENV === "production" ? this.publicRPCUrl : undefined
+                process.env.NODE_ENV === "production" || this.usePublicRPCForDevMode ? this.publicRPCUrl : undefined
             );
         }
 
