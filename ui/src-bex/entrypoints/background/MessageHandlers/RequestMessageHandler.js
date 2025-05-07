@@ -29,26 +29,18 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
 
         let accepted = false;
         if (isAcceptRequired === true || _hasPermissions === false) {
-            const requestPermissionsResponse = await notificationMessenger.sendMessage({
-                method: "requestPermissions",
+            const requestPermissionsAndAcceptResponse = await notificationMessenger.sendMessage({
+                method: "requestPermissionsAndAccept",
                 params: { data: message.data, url, isAcceptRequired },
             });
-            console.log("requestPermissionsResponse:", requestPermissionsResponse);
-            accepted = requestPermissionsResponse.data?.accepted === true;
+            console.log("requestPermissionsAndAcceptResponse:", requestPermissionsAndAcceptResponse);
+            accepted = requestPermissionsAndAcceptResponse.data?.accepted === true;
         }
 
         const hasPermissions = await checkVaultPermissionsAsync();
         const hasAccept = accepted === true || isAcceptRequired === false;
 
         console.log("requestPermissionsAndAcceptAsync:", { hasPermissions, hasAccept });
-
-        if (!hasPermissions) {
-            throw new Error("Permissions not granted");
-        }
-
-        if (!hasAccept) {
-            throw new Error("Request not accepted");
-        }
 
         return { hasPermissions, hasAccept };
     }
@@ -59,7 +51,13 @@ class MessageHandlerWithAuth extends MessageHandlerBase {
         if (hasPermissions === true && hasAccept === true) {
             return await super.handleAsync(message);
         } else {
-            throw new Error("Request not allowed");
+            if (!hasPermissions) {
+                throw new Error("Permissions not granted");
+            }
+
+            if (!hasAccept) {
+                throw new Error("Request not accepted");
+            }
         }
     }
 }
