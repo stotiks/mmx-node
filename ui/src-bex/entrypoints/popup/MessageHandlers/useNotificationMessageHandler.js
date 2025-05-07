@@ -23,7 +23,7 @@ export const useNotificationMessageHandler = () => {
 
     class NotificationMessageHandlerMethods {
         static isRunning = false;
-        static requestPermissions = async (params) => {
+        static requestPermissionsAndAccept = async (params) => {
             if (this.isRunning === true) {
                 throw new Error("Other request is running");
             }
