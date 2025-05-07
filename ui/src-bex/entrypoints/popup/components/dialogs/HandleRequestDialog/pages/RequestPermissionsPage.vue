@@ -1,17 +1,10 @@
 <template>
-    <q-page padding style="padding-top: 66px">
+    <q-page padding>
         <div>
-            {{ url }}
-            <!-- {{ data }} -->
-        </div>
+            <div class="text-h6 text-weight-bolder text-center q-ma-lg">{{ domain }}</div>
 
-        <q-page-sticky expand position="top">
-            <q-toolbar class="bg-primary text-white">
-                <q-toolbar-title class="text-subtitle1">
-                    <b>Accept request: {{ props.data.method }}</b>
-                </q-toolbar-title>
-            </q-toolbar>
-        </q-page-sticky>
+            <div>Connect this website with Fury Vault.</div>
+        </div>
 
         <q-page-sticky expand position="bottom" class="q-pa-md">
             <div class="col">
@@ -42,4 +35,6 @@ const emit = defineEmits(["ok", "cancel"]);
 
 const handleCancel = () => emit("cancel");
 const handleConnect = () => emit("ok", { granted: true });
+
+const domain = computed(() => new URL(props.url).hostname);
 </script>
