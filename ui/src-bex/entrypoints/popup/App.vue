@@ -35,15 +35,7 @@
                             <q-btn @click="handleAddWalletAsync">Add</q-btn>
                         </q-expansion-item>
                     </q-list>
-                    <q-select
-                        v-model="currentWalletAddress"
-                        :options="walletsOptions"
-                        emit-value
-                        map-options
-                        label="Wallet"
-                        filled
-                        dense
-                    />
+                    <WalletSelect2 />
                     <q-btn
                         :disabled="currentWalletAddress === ''"
                         @click="handleRemoveWalletAsync(currentWalletAddress)"
@@ -66,6 +58,7 @@
 
 <script setup>
 import UnlockPage from "@bex/entrypoints/popup/components/UnlockPage";
+import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
 
 import { mdiAlphaFBox, mdiLock } from "@mdi/js";
 
@@ -77,11 +70,7 @@ const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isUnlocked, wallets, currentWalletAddress } = storeToRefs(vaultStore);
-
-const walletsOptions = computed(() => {
-    return wallets.value.map((wallet) => ({ label: wallet.address, value: wallet.address }));
-});
+const { isUnlocked, currentWalletAddress } = storeToRefs(vaultStore);
 
 const handleUnlockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.unlockAsync({ password: password.value }));
