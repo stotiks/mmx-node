@@ -1,5 +1,5 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
-import { EncryptedStorageItem } from "./StorageItem";
+import { EncryptedStorageItem } from "../utils/StorageItem";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 
