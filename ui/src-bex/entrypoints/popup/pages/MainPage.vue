@@ -6,7 +6,4 @@
 
 <script setup>
 import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
-
-import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
-useVaultMessageHandler();
 </script>
