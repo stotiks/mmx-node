@@ -15,7 +15,7 @@
                     <UnlockPage />
                 </template>
                 <template v-else>
-                    <MainPage style="padding-top: 66px" />
+                    <RouterView style="padding-top: 66px" />
 
                     <q-page-sticky expand position="top">
                         <q-toolbar>
@@ -54,8 +54,8 @@
 <script setup>
 import { mdiAlphaFBox, mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock } from "@mdi/js";
 
-import MainPage from "@bex/entrypoints/popup/components/dialogs/HandleRequestDialog/pages/MainPage";
-import UnlockPage from "@bex/entrypoints/popup/components/UnlockPage";
+import MainPage from "@bex/entrypoints/popup/pages/MainPage";
+import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 
 import { useTryCatchWrapperAsync } from "./utils/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();

@@ -68,7 +68,7 @@ const { isUnlocked } = storeToRefs(vaultStore);
 //     { immediate: true }
 // );
 
-import UnlockPage from "../../UnlockPage";
+import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
 import AcceptPage from "./pages/AcceptPage";
 
