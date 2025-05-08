@@ -47,26 +47,11 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 import { vaultService } from "@bex/entrypoints/popup/vaultService";
 const checkVaultPermissionsAsync = async () => await vaultService.checkPermissionsAsync(props.url).catch(() => false);
 
-// const hasPermissions = ref(false);
-// const refreshHasPermissionsAsync = async () => {
-//     hasPermissions.value = await checkVaultPermissionsAsync();
-// };
-
 const onDialogShow = async () => {};
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { isUnlocked } = storeToRefs(vaultStore);
-
-// watch(
-//     isUnlocked,
-//     async () => {
-//         if (isUnlocked.value === true) {
-//             await refreshHasPermissionsAsync();
-//         }
-//     },
-//     { immediate: true }
-// );
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
@@ -88,7 +73,6 @@ const RequestPermissionsPageComponent = {
         ok: async (result) => {
             if (result.granted === true) {
                 await tryCatchWrapperASync(async () => await vaultStore.allowUrlAsync(props.url));
-                // await refreshHasPermissionsAsync();
             }
         },
         cancel: () => {
