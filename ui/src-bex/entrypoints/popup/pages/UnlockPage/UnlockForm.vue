@@ -22,7 +22,7 @@
 <script setup>
 import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
 
-const password = ref("");
+const password = ref("password");
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
