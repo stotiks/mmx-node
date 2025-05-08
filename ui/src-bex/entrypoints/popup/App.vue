@@ -54,7 +54,6 @@
 <script setup>
 import { mdiAlphaFBox, mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock } from "@mdi/js";
 
-import MainPage from "@bex/entrypoints/popup/pages/MainPage";
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 
 import { useTryCatchWrapperAsync } from "./utils/useTryCatchWrapperAsync";
@@ -67,6 +66,9 @@ const { isUnlocked } = storeToRefs(vaultStore);
 const handleLockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.lockAsync());
 };
+
+import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
+useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
 const { isLoading } = useNotificationMessageHandler();
