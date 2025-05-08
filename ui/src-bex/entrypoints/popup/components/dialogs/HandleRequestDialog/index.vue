@@ -66,6 +66,7 @@ const UnlockPageComponent = {
     events: {},
 };
 
+const permissionsGranted = ref(false);
 const RequestPermissionsPageComponent = {
     component: RequestPermissionsPage,
     props,
@@ -73,6 +74,7 @@ const RequestPermissionsPageComponent = {
         ok: async (result) => {
             if (result.granted === true) {
                 await tryCatchWrapperASync(async () => await vaultStore.allowUrlAsync(props.url));
+                permissionsGranted.value = true;
             }
         },
         cancel: () => {
@@ -96,28 +98,21 @@ const AcceptPageComponent = {
     },
 };
 
-const pageComponent = computedAsync(
+const pageComponent = ref(UnlockPageComponent);
+
+watchEffect(
     async () => {
         if (isUnlocked.value !== true) {
-            return UnlockPageComponent;
+            pageComponent.value = UnlockPageComponent;
+        } else if (permissionsGranted.value !== true && (await checkVaultPermissionsAsync()) !== true) {
+            pageComponent.value = RequestPermissionsPageComponent;
+        } else if (props.isAcceptRequired === true) {
+            pageComponent.value = AcceptPageComponent;
+        } else {
+            pageComponent.value = null;
         }
-
-        if ((await checkVaultPermissionsAsync()) !== true) {
-            return RequestPermissionsPageComponent;
-        }
-
-        if (props.isAcceptRequired === true) {
-            return AcceptPageComponent;
-        }
-
-        return null;
     },
-    UnlockPageComponent,
-    {
-        onError: (error) => {
-            throw error;
-        },
-    }
+    { immediate: true }
 );
 
 watch(
