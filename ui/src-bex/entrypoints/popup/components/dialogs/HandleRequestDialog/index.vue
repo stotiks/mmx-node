@@ -3,8 +3,8 @@
         ref="dialogRef"
         persistent
         maximized
-        transition-show="slide-up"
-        transition-hide="slide-down"
+        transition-show="scale"
+        transition-hide="scale"
         @show="onDialogShow"
         @hide="onDialogHide"
     >
