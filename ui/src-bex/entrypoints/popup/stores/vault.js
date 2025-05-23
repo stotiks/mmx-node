@@ -3,7 +3,7 @@ import { vaultService } from "@bex/entrypoints/popup/vaultService";
 
 export const useVaultStore = defineStore("vault", () => {
     // State
-    const isUnlocked = ref(true);
+    const isUnlocked = ref(false);
     const wallets = ref([]);
 
     const currentWalletAddress = ref("");
