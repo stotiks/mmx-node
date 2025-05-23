@@ -4,7 +4,7 @@ import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 export const useVaultMessageHandler = () => {
     const $q = useQuasar();
 
-    class VaultMessageHandler extends MessageHandlerBase {
+    class VaultMessageHandler {
         static unlocked = async () => {
             $q.notify({ type: "positive", message: "Vault unlocked" });
         };
