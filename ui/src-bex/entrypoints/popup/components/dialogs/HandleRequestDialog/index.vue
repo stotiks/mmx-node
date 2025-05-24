@@ -98,30 +98,23 @@ const AcceptPageComponent = {
     },
 };
 
-const pageComponent = ref(UnlockPageComponent);
+const pageComponent = shallowRef(UnlockPageComponent);
 
-watchEffect(
-    async () => {
-        if (isUnlocked.value !== true) {
-            pageComponent.value = UnlockPageComponent;
-        } else if (permissionsGranted.value !== true && (await checkVaultPermissionsAsync()) !== true) {
-            pageComponent.value = RequestPermissionsPageComponent;
-        } else if (props.isAcceptRequired === true) {
-            pageComponent.value = AcceptPageComponent;
-        } else {
-            pageComponent.value = null;
-        }
-    },
-    { immediate: true }
-);
+watchEffect(async () => {
+    if (isUnlocked.value !== true) {
+        pageComponent.value = UnlockPageComponent;
+    } else if (permissionsGranted.value !== true && (await checkVaultPermissionsAsync()) !== true) {
+        pageComponent.value = RequestPermissionsPageComponent;
+    } else if (props.isAcceptRequired === true) {
+        pageComponent.value = AcceptPageComponent;
+    } else {
+        pageComponent.value = null;
+    }
+});
 
-watch(
-    () => pageComponent.value,
-    () => {
-        if (pageComponent.value === null) {
-            onDialogCancel();
-        }
-    },
-    { immediate: true }
-);
+watchEffect(() => {
+    if (pageComponent.value === null) {
+        onDialogCancel();
+    }
+});
 </script>
