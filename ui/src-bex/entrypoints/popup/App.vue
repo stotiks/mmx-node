@@ -22,20 +22,20 @@
                             <q-space />
                             <q-btn flat :icon="mdiDotsVertical">
                                 <q-menu anchor="bottom left" self="top left">
-                                    <q-item clickable v-ripple to="/wallets">
+                                    <q-item v-ripple clickable to="/wallets">
                                         <q-item-section avatar>
                                             <q-icon :name="mdiWallet" />
                                         </q-item-section>
                                         <q-item-section>Wallets</q-item-section>
                                     </q-item>
-                                    <q-item clickable v-ripple to="/password">
+                                    <q-item v-ripple clickable to="/password">
                                         <q-item-section avatar>
                                             <q-icon :name="mdiShieldLock" />
                                         </q-item-section>
                                         <q-item-section>Password</q-item-section>
                                     </q-item>
                                     <q-separator />
-                                    <q-item clickable v-ripple @click="handleLockAsync">
+                                    <q-item v-ripple clickable @click="handleLockAsync">
                                         <q-item-section avatar>
                                             <q-icon :name="mdiLock" />
                                         </q-item-section>
