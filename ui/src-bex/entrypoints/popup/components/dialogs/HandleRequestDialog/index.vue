@@ -109,12 +109,8 @@ watchEffect(async () => {
         pageComponent.value = AcceptPageComponent;
     } else {
         pageComponent.value = null;
-    }
-});
-
-watchEffect(() => {
-    if (pageComponent.value === null) {
-        onDialogCancel();
+        // close dialog if unlocked, permissions granted and accept not required
+        onDialogOK();
     }
 });
 </script>
