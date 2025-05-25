@@ -12,5 +12,5 @@ export const useWalletStore = defineStore("wallet", {
 });
 
 if (import.meta.hot) {
-    import.meta.hot.accept(acceptHMRUpdate(useNodeStore, import.meta.hot));
+    import.meta.hot.accept(acceptHMRUpdate(useWalletStore, import.meta.hot));
 }
