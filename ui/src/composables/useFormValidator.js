@@ -40,6 +40,10 @@ export const useFormValidator = (formRef) => {
         rulesWatchers.value = [];
     };
 
+    onUnmounted(() => {
+        resetRulesWatchers();
+    });
+
     if (import.meta.hot) {
         import.meta.hot.on("vite:beforeUpdate", () => {
             resetRulesWatchers();
