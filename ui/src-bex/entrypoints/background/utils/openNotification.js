@@ -49,6 +49,7 @@ export const openNotification = async () => {
             if (tabId === tabIdUpdated) {
                 browser.tabs.onRemoved.removeListener(listener);
                 isNotificationLoaded = false;
+                notificationWindowId = null;
                 //console.log("Window closed");
             }
         });
