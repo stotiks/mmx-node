@@ -3,6 +3,34 @@ export const cost_to_fee = (cost, feeRatio) => {
     return fee;
 };
 
+/**
+ * Returns the smallest BigInt in the provided list.
+ * Throws if no arguments are supplied.
+ *
+ * @param {...bigint} args
+ * @returns {bigint}
+ */
+export const bigIntMin = (...args) => {
+    if (args.length === 0) {
+        throw new Error("bigIntMin requires at least one argument");
+    }
+    return args.reduce((min, e) => (e < min ? e : min));
+};
+
+/**
+ * Returns the largest BigInt in the provided list.
+ * Throws if no arguments are supplied.
+ *
+ * @param {...bigint} args
+ * @returns {bigint}
+ */
+export const bigIntMax = (...args) => {
+    if (args.length === 0) {
+        throw new Error("bigIntMax requires at least one argument");
+    }
+    return args.reduce((max, e) => (e > max ? e : max));
+};
+
 import { Variant } from "./Variant";
 export const get_num_bytes = (variant) => {
     if (!(variant instanceof Variant)) {
