@@ -107,21 +107,21 @@ const rowsFiltered = computed(() =>
 </script>
 
 <style scoped>
-::v-deep(.error) {
+:deep(.error) {
     background-color: rgb(198, 40, 40, 0.4);
 }
 
-::v-deep(.warning) {
+:deep(.warning) {
     background-color: rgb(255, 143, 0, 0.4);
 }
 
-::v-deep(.q-table tbody tr td:nth-of-type(3)) {
+:deep(.q-table tbody tr td:nth-of-type(3)) {
     font-family: "Roboto Mono Variable", monospace;
     letter-spacing: -0.75px;
     text-wrap: wrap;
 }
 
-::v-deep(.q-btn-group .q-btn) {
+:deep(.q-btn-group .q-btn) {
     padding-left: 1em;
     padding-right: 1em;
 }

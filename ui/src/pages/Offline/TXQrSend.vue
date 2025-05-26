@@ -39,7 +39,7 @@ const handleBroadcast = () => {
 </script>
 
 <style scoped>
-::v-deep(pre.hljsCode) {
+:deep(pre.hljsCode) {
     font-size: 0.8em;
 }
 </style>
