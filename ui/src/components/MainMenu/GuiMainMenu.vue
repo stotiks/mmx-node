@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { mdiCog, mdiLogout, mdiLock } from "@mdi/js";
+import { mdiCog, mdiLogout } from "@mdi/js";
 
 import BuildVersion from "./components/BuildVersion.vue";
 import NodeStatus from "./components/NodeStatus.vue";
