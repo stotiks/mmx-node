@@ -52,7 +52,7 @@ const defaultSlotContent = computed(() => (slots.default ? slots.default()[0].ch
     color: black;
 }
 
-::v-deep(.q-chip__content) {
+:deep(.q-chip__content) {
     white-space: unset;
 }
 </style>
