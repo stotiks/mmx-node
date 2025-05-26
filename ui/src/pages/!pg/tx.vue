@@ -16,8 +16,6 @@
 </template>
 
 <script setup>
-import { mdiLogout } from "@mdi/js";
-
 const txStr = ref("{}");
 
 import { Transaction } from "@/mmx/wallet/Transaction";
