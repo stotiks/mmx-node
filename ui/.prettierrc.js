@@ -4,6 +4,16 @@
  */
 const config = {
     trailingComma: "es5",
+    tabWidth: 4,
+    useTabs: false,
+    overrides: [
+        {
+            files: "package.json",
+            options: {
+                tabWidth: 2,
+            },
+        },
+    ],
 };
 
 export default config;
