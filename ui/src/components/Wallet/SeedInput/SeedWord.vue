@@ -60,7 +60,7 @@ const inWordList = (word) => props.wordList?.includes(word) || "Invalid word";
 </script>
 
 <style scoped>
-::v-deep(.q-field__bottom) {
+:deep(.q-field__bottom) {
     display: none;
 }
 </style>
