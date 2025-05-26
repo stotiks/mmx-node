@@ -29,10 +29,10 @@ export class ECDSA_Wallet_Keys {
 
     #fingerPrintCache = null;
     getFingerPrintAsync = async () =>
-        (this.#fingerPrintCache ??= getFingerPrintAsync(this.#seed_value, this.#passphrase));
+        (this.#fingerPrintCache ??= await getFingerPrintAsync(this.#seed_value, this.#passphrase));
 
     #farmerKeyCache = null;
-    getFarmerKeyAsync = async () => (this.#farmerKeyCache ??= getFarmerKeyAsync(this.#seed_value));
+    getFarmerKeyAsync = async () => (this.#farmerKeyCache ??= await getFarmerKeyAsync(this.#seed_value));
 
     #addressCache = new Map();
     getAddressAsync = async (index) =>
