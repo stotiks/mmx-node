@@ -40,7 +40,7 @@ const setI18nLanguage = (i18n, locale) => {
     document.querySelector("html").setAttribute("lang", locale);
 };
 
-export const loadAndSetI18nLanguage = async (i18n, _locale) => {
+export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
     const locale = toValue(validateLocale(_locale));
     try {
         langList[`/node_modules/quasar/lang/${locale}.js`]().then((lang) => {

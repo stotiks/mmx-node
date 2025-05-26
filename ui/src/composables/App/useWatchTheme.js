@@ -1,13 +1,20 @@
-let interval;
-
-export const useWatchTheme = () => {
+export const useWatchTheme = (pollInterval = 500) => {
     const $q = useQuasar();
     const appStore = useAppStore();
+    let interval;
+
     watchEffect(() => $q.dark.set(appStore.isDarkTheme));
 
     if (window.mmx?.theme_dark !== undefined && !interval) {
         interval = setInterval(() => {
             appStore.isDarkTheme = window.mmx.theme_dark;
-        }, 500);
+        }, pollInterval);
     }
+
+    onUnmounted(() => {
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
+        }
+    });
 };
