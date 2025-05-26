@@ -93,7 +93,6 @@ const explorerRoutes = [
         },
     },
     txQrSendRoute,
-    ...catchAll,
 ];
 
 const playgroundRoutes = [
