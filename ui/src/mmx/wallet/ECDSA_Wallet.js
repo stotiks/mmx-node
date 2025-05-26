@@ -61,8 +61,9 @@ export class ECDSA_Wallet extends ECDSA_Wallet_Keys {
             });
 
             return solution;
+        } else {
+            throw new Error("Invalid address");
         }
-        return null;
     };
 
     signOfAsync = async (tx, options) => {
