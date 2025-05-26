@@ -4,7 +4,7 @@ import { getFingerPrintAsync, getFarmerKeyAsync, getAddressAsync, getKeysAsync, 
 
 import { PubKey } from "./common/PubKey";
 import { txin_t } from "./common/txio_t";
-import { cost_to_fee } from "./common/utils";
+import { cost_to_fee, bigIntMin, bigIntMax } from "./common/utils";
 
 import { getChainParamsAsync } from "./utils/getChainParamsAsync";
 import { spend_options_t } from "./common/spend_options_t";
@@ -143,9 +143,6 @@ export class ECDSA_Wallet extends ECDSA_Wallet_Keys {
         if (options.note) {
             tx.note = options.note;
         }
-
-        const bigIntMin = (...args) => args.reduce((m, e) => (e < m ? e : m));
-        const bigIntMax = (...args) => args.reduce((m, e) => (e > m ? e : m));
 
         if (options.expire_at) {
             tx.expires = bigIntMin(tx.expires, options.expire_at);
