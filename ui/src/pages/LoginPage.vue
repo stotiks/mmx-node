@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { mdiLock, mdiAlertOctagon, mdiLogin } from "@mdi/js";
+import { mdiLock, mdiLogin } from "@mdi/js";
 
 const passwdPlain = ref("");
 const autoLogin = ref(false);
