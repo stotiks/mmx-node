@@ -1,16 +1,29 @@
 import { u8 } from "@noble/hashes/utils";
 
-const concatenateUint8Arrays = (uint8arrays) => {
-    const totalLength = uint8arrays.reduce((total, uint8array) => total + uint8array.byteLength, 0);
+/**
+ * Concatenate an existing buffer with an array of chunks
+ *
+ * @param {Uint8Array[]} chunks  New chunks produced since last flush.
+ * @param {Uint8Array}   baseBuf Previously flushed buffer.
+ * @returns {Uint8Array} New contiguous buffer.
+ */
+const concatUint8Arrays = (chunks, baseBuf) => {
+    // Compute exact result length
+    let totalLength = baseBuf.byteLength;
+    for (const c of chunks) totalLength += c.byteLength;
 
+    // Allocate once
     const result = new Uint8Array(totalLength);
 
-    let offset = 0;
-    uint8arrays.forEach((uint8array) => {
-        result.set(uint8array, offset);
-        offset += uint8array.byteLength;
-    });
+    // Copy existing buffer first
+    result.set(baseBuf, 0);
 
+    // Copy chunks sequentially
+    let offset = baseBuf.byteLength;
+    for (const chunk of chunks) {
+        result.set(chunk, offset);
+        offset += chunk.byteLength;
+    }
     return result;
 };
 
@@ -24,8 +37,7 @@ export class WriteBuffer {
 
     flush() {
         if (this.#chunks.length > 0) {
-            const tmp = this.#chunks.flat();
-            this.#buffer = concatenateUint8Arrays([this.#buffer, ...tmp]);
+            this.#buffer = concatUint8Arrays(this.#chunks, this.#buffer);
             this.#chunks = [];
         }
     }
