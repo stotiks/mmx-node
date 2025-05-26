@@ -189,7 +189,6 @@ class Transaction {
 
     calc_cost(_params) {
         const params = new ChainParams(_params);
-
         const hp = this.getHashProxy();
 
         let cost = BigInt(params.min_txfee);
@@ -199,25 +198,10 @@ class Transaction {
             cost += hp.exec_result.valueOf().calc_cost(params);
         }
 
-        cost += hp.inputs.reduce((acc, input) => {
-            acc += input.calc_cost(params);
-            return acc;
-        }, 0n);
-
-        cost += hp.outputs.reduce((acc, output) => {
-            acc += output.calc_cost(params);
-            return acc;
-        }, 0n);
-
-        cost += hp.execute.reduce((acc, op) => {
-            acc += op.calc_cost(params);
-            return acc;
-        }, 0n);
-
-        cost += hp.solutions.reduce((acc, solution) => {
-            acc += solution.calc_cost(params);
-            return acc;
-        }, 0n);
+        for (const input of hp.inputs) cost += input.calc_cost(params);
+        for (const output of hp.outputs) cost += output.calc_cost(params);
+        for (const op of hp.execute) cost += op.calc_cost(params);
+        for (const sol of hp.solutions) cost += sol.calc_cost(params);
 
         if (hp.deploy) {
             cost += BigInt(params.min_txfee_deploy) + hp.deploy.calc_cost(params);
