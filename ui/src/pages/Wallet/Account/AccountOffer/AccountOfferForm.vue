@@ -129,7 +129,7 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-::v-deep(.price .q-field__suffix) {
+:deep(.price .q-field__suffix) {
     font-weight: bold;
 }
 </style>

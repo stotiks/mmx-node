@@ -73,12 +73,12 @@ const isHex = (value) => value && value.length > 68 && value.length % 2 == 0 && 
     /* font-size: 0.8em; */
 }
 
-::v-deep(.hljs) {
+:deep(.hljs) {
     background: transparent !important;
     padding: 0px !important;
 }
 
-::v-deep(pre.hljsCode) {
+:deep(pre.hljsCode) {
     margin: 0px !important;
 }
 

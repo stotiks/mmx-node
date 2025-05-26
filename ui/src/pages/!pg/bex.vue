@@ -101,7 +101,7 @@ const handleRequest = async (request) => {
 </script>
 
 <style scoped>
-::v-deep(pre.hljsCode) {
+:deep(pre.hljsCode) {
     margin: 0px !important;
 }
 </style>

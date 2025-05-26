@@ -200,9 +200,3 @@ const handleAccept = (offer) => {
     });
 };
 </script>
-
-<style scoped>
-/* ::v-deep(td) {
-    padding: 8px;
-} */
-</style>
