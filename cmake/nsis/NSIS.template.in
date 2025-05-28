@@ -500,6 +500,53 @@ Function ConditionalAddToRegistry
     DetailPrint "Set install registry entry: '$1' to '$0'"
   ConditionalAddToRegistry_EmptyString:
 FunctionEnd
+;--------------------------------
+; CheckProcessesInInstallDir - Returns "1" if any process is running from the given directory, else "0"
+; Requires nsProcess plugin (nsProcess.dll)
+Function CheckProcessesInInstallDir
+  Exch $0 ; $0 = directory to check (e.g. $INSTDIR)
+  Push $1
+  Push $2
+  Push $3
+  Push $4
+  Push $5
+
+  ; Initialize result to "0" (no process found)
+  StrCpy $5 "0"
+
+  ; Enumerate all processes
+  nsProcess::FindProcesses "" ; get all processes
+  Pop $1 ; $1 = number of processes found
+
+  StrCpy $2 "0"
+  loop_processes:
+    IntCmp $2 $1 end_check 0 0
+    nsProcess::GetProcessExePath $2
+    Pop $3 ; $3 = exe path
+    ; Check if $3 starts with $0
+    StrCpy $4 $3 ${NSIS_MAX_STRLEN} 0
+    StrCpy $4 $4 ${NSIS_MAX_STRLEN} 0
+    Push $3
+    Push $0
+    Call StrStr
+    Pop $4
+    StrCmp $4 "" next_process
+      ; $3 contains $0 as prefix, so process is running from install dir
+      StrCpy $5 "1"
+      Goto end_check
+    next_process:
+    IntOp $2 $2 + 1
+    Goto loop_processes
+
+  end_check:
+    Pop $5
+    Exch $5 ; return result ("1" if found, "0" otherwise)
+    Pop $4
+    Pop $3
+    Pop $2
+    Pop $1
+    Pop $0
+FunctionEnd
 
 ;--------------------------------
 
@@ -960,6 +1007,35 @@ uninst:
 
   StrLen $2 "\@CPACK_NSIS_UNINSTALL_NAME@.exe"
   StrCpy $3 $0 -$2 # remove "\@CPACK_NSIS_UNINSTALL_NAME@.exe" from UninstallString to get path
+; Check for running processes in the installation directory before uninstalling
+  ; Requires nsProcess plugin (nsProcess::FindProcesses)
+  Push $3
+  Call CheckProcessesInInstallDir
+  Pop $R0
+  StrCmp $R0 "1" running_process_found 0
+
+  ; No running process found, proceed with uninstall
+
+  Goto continue_uninstall
+
+running_process_found:
+  MessageBox MB_RETRYCANCEL|MB_ICONSTOP "Uninstallation aborted: One or more files are still running from the installation directory ($3).$\n$\nPlease close all related applications and click Retry, or click Cancel to abort the installation."
+  Pop $R1
+  StrCmp $R1 "4" retry_process_check  ; 4 = Retry
+  Abort
+
+retry_process_check:
+  ; Re-run the process check
+  Push $3
+  Call CheckProcessesInInstallDir
+  Pop $R0
+  StrCmp $R0 "1" running_process_found 0
+
+  ; No running process found, proceed with uninstall
+
+  Goto continue_uninstall
+
+continue_uninstall:
   ExecWait '"$0" /S _?=$3' ;Do not copy the uninstaller to a temp file
 
   IfErrors uninst_failed inst
