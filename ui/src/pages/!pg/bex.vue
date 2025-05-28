@@ -1,7 +1,7 @@
 <template>
     <q-page-container>
         <q-page padding>
-            <h6>BEX Playground</h6>
+            <h6>{{ $t("bex.playground_title") }}</h6>
             <div v-if="isBexLoaded" class="q-gutter-y-sm">
                 <template v-for="request in requests" :key="request.method">
                     <q-card flat>
@@ -19,7 +19,7 @@
                     </q-card>
                 </template>
             </div>
-            <div v-else>Extension is not loaded</div>
+            <div v-else>{{ $t("bex.extension_not_loaded") }}</div>
         </q-page>
     </q-page-container>
 </template>

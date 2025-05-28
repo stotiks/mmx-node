@@ -34,7 +34,7 @@ export const useKickPeer = () => {
         onSuccess: (data, address) => {
             queryClient.invalidateQueries({ queryKey: ["peers"] });
             pushSuccess({
-                message: "Peer kicked: " + address, //TODO i18n
+                message: t("notifications.peer_kicked", { address }),
             });
         },
     });
@@ -93,8 +93,8 @@ export const useAddTokens = () => {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ["walletCfg", "tokens"] });
             pushSuccess({
-                message: "Added token to whitelist: " + variables,
-            }); //TODO i18n
+                message: t("notifications.token_added", { token: variables }),
+            });
         },
         onError,
     });
@@ -110,7 +110,7 @@ export const useRemoveTokens = () => {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ["walletCfg", "tokens"] });
             pushSuccess({
-                message: "Removed token from whitelist: " + variables, //TODO i18n
+                message: t("notifications.token_removed", { token: variables }),
             });
         },
         onError,
@@ -125,7 +125,7 @@ export const useHarvesterReload = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["farm"] });
             pushSuccess({
-                message: "Plots reloaded", //TODO i18n
+                message: t("notifications.plots_reloaded"),
             });
         },
     });
@@ -149,7 +149,7 @@ export const useCreateWallet = () => {
             queryClient.invalidateQueries({ queryKey: ["accounts"] });
             //prefetchWalletAccounts(queryClient);
             pushSuccess({
-                message: "Wallet created", //TODO i18n
+                message: t("notifications.wallet_created"),
             });
         },
         onError,
@@ -165,7 +165,7 @@ export const useRemoveAccount = () => {
             queryClient.invalidateQueries({ queryKey: ["accounts"] });
             //prefetchWalletAccounts(queryClient);
             pushSuccess({
-                message: "Wallet removed", //TODO i18n
+                message: t("notifications.wallet_removed"),
             });
         },
         onError,
@@ -179,7 +179,7 @@ export const useResetCache = () => {
         mutationFn: (index) => resetCache(index),
         onSuccess: () => {
             pushSuccess({
-                message: "Cache reset successfully", //TODO i18n
+                message: t("notifications.cache_reset"),
             });
         },
         onError,
@@ -195,7 +195,7 @@ export const useSetAddressCount = () => {
         onSuccess: (result) => {
             queryClient.invalidateQueries({ queryKey: ["wallet"] });
             pushSuccess({
-                message: "Updated successfully", //TODO i18n
+                message: t("notifications.updated_success"),
             });
         },
         onError,
@@ -233,7 +233,7 @@ export const useWalletLock = (params) => {
                 queryKey: ["wallet", "is_locked", params],
             });
             pushSuccess({
-                message: `Wallet #${params.index} locked`, // TODO i18n
+                message: t("notifications.wallet_locked", { index: params.index }),
             });
         },
         onError,
@@ -250,7 +250,7 @@ export const useWalletUnlock = (params) => {
                 queryKey: ["wallet", "is_locked", params],
             });
             pushSuccess({
-                message: `Wallet #${params.index} unlocked`, // TODO i18n
+                message: t("notifications.wallet_unlocked", { index: params.index }),
             });
         },
         onError,

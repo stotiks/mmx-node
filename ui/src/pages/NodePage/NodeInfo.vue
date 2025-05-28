@@ -45,7 +45,7 @@ const tiles = computed(() => [
     },
     {
         field: "average_txfee",
-        label: "Avg. TX Fee", //TODO i18n
+        label: t("node_info.avg_tx_fee"),
         format: (item) => (item.value > 1 ? item.value.toPrecision(6) : item.value),
     },
     {

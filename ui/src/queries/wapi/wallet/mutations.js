@@ -38,7 +38,7 @@ export const usePassphraseValidate = () => {
         mutationFn: (payload) => passphraseValidate(payload),
         onError: (error) => {
             pushError({
-                message: `Wrong passphrase!`, // TODO i18n
+                message: t("wallet.errors.wrong_passphrase"),
             });
         },
     });

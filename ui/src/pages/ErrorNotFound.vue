@@ -2,8 +2,8 @@
     <q-card class="fullscreen text-center q-pa-md flex flex-center">
         <div>
             <div class="error-code">404</div>
-            <div class="error-message">Oops. Nothing here...</div>
-            <q-btn class="q-mt-xl" outline unelevated to="/" label="Go Home" no-caps />
+            <div class="error-message">{{ $t("error_not_found.nothing_here") }}</div>
+            <q-btn class="q-mt-xl" outline unelevated to="/" :label="$t('common.go_home')" no-caps />
         </div>
     </q-card>
 </template>

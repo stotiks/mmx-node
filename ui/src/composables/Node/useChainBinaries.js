@@ -6,19 +6,19 @@ export const useChainBinaries = () => {
     const { t } = useI18n();
     const optionsList = {
         token_binary: {
-            name: "Token", // TODO i18n
+            name: t("common.token"),
         },
         offer_binary: {
-            name: "Offer",
+            name: t("common.offer"),
         },
         swap_binary: {
-            name: "Swap",
+            name: t("common.swap"),
         },
         nft_binary: {
-            name: "NFT",
+            name: t("common.nft"),
         },
         plot_nft_binary: {
-            name: "Plot NFT",
+            name: t("common.plot_nft"),
         },
 
         // TODO

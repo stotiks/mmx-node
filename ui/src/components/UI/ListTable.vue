@@ -28,7 +28,9 @@
                                         class="q-ml-sm q-pa-none"
                                         @click="copy(item.value)"
                                     >
-                                        <q-tooltip :model-value="copied === true" no-parent-event>Copied!</q-tooltip>
+                                        <q-tooltip :model-value="copied === true" no-parent-event>{{
+                                            $t("common.copied")
+                                        }}</q-tooltip>
                                     </q-btn>
                                 </UseClipboard>
                             </template>

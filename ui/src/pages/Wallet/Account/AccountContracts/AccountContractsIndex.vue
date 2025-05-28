@@ -50,7 +50,7 @@ const filterChips = computed(() => {
 
     if (hasOthers) {
         result.others = {
-            name: "Others", // TODO i18n
+            name: $t("account_contracts.others"),
             address: "others",
             key: "others",
         };

@@ -46,7 +46,7 @@
                         <IterSelect v-model="formData.numIter" class="col" />
                         <q-input
                             :model-value="estTradePrice"
-                            label="Trade Price (average, including fee)"
+                            :label="$t('swap.trade_price_avg_fee')"
                             :suffix="`${data?.symbols[index]} / ${data?.symbols[indexInv]}`"
                             input-class="amount-input"
                             readonly
@@ -75,7 +75,7 @@
                         <div class="col-11">
                             <div class="row justify-end q-gutter-x-sm">
                                 <WToggleConfirmed />
-                                <WBtnSubmit label="Swap" :icon="mdiBankTransfer" />
+                                <WBtnSubmit :label="$t('swap.swap')" :icon="mdiBankTransfer" />
                             </div>
                         </div>
                     </div>
@@ -167,7 +167,7 @@ const { data: walletBalance } = useWalletBalance(
     () => !!data.value?.tokens[index.value]
 );
 
-const hasFunds = (value) => value <= walletBalance.value || "Insufficient funds";
+const hasFunds = (value) => value <= walletBalance.value || $t("swap.insufficient_funds");
 
 import { useWalletSwapTrade, useWalletSwapTradeFeeEstimate } from "@/queries/wapi";
 const {

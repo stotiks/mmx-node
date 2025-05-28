@@ -4,7 +4,7 @@
             <div class="row q-gutter-x-none">
                 <m-chip>{{ $t("swap.swap") }}</m-chip>
                 <m-chip v-if="data">
-                    {{ data.price ? parseFloat(data.price.toPrecision(6)) : "N/A" }}
+                    {{ data.price ? parseFloat(data.price.toPrecision(6)) : $t("common.na") }}
                     {{ data.symbols[1] }} / {{ data.symbols[0] }}
                 </m-chip>
                 <m-chip>{{ address }}</m-chip>
@@ -60,7 +60,7 @@
             <TrRouterView :address="address" />
         </div>
         <div v-else>
-            <EmptyState title="No such swap" :icon="mdiBankTransfer" />
+            <EmptyState :title="$t('swap.no_such_swap')" :icon="mdiBankTransfer" />
         </div>
     </div>
 </template>

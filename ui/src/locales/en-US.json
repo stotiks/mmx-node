@@ -12,6 +12,7 @@
         "token": "Token",
         "currency": "Currency",
         "symbol": "Symbol",
+        "plot_nft": "Plot NFT",
         "price": "Price",
         "hash": "Hash",
         "reward": "Reward",
@@ -40,7 +41,65 @@
         "manage": "Manage",
         "harvester": "Harvester",
         "deposit": "Deposit",
-        "user": "User"
+        "user": "User",
+        "in_mojos": "in mojos",
+        "qr_link": "QR Link",
+        "size_bytes": "Size: {size} bytes",
+        "offer_link": "Offer",
+        "tx_link": "TX",
+        "go_home": "Go Home",
+        "copied": "Copied!",
+        "copy": "Copy",
+        "ok": "Ok",
+        "unlock": "Unlock",
+        "offline": "offline",
+        "terabytes": "TB",
+        "update": "Update",
+        "na": "N/A",
+        "set_key_to_value": "Set '{key}' to '{value}'"
+    },
+    "route": {
+        "wallets": "Wallets",
+        "create_wallet": "Create wallet",
+        "balance": "Balance",
+        "nfts": "NFTs",
+        "contracts": "Contracts",
+        "send": "Send",
+        "history": "History",
+        "log": "Log",
+        "offer": "Offer",
+        "offers": "Offers",
+        "liquidity": "Liquidity",
+        "plot_nfts": "Plot NFTs",
+        "info": "Info",
+        "options": "Options",
+        "swap": "Swap",
+        "trade": "Trade",
+        "liquid": "Liquid",
+        "pool": "Pool",
+        "node": "Node",
+        "peers": "Peers",
+        "blocks": "Blocks",
+        "netspace": "Netspace",
+        "vdf_speed": "VDF Speed",
+        "block_reward": "Block Reward",
+        "market": "Market",
+        "login": "Login",
+        "settings": "Settings",
+        "qr_tx_send": "QR TX Send",
+        "offline_wallet": "Offline wallet",
+        "web_wallet": "Web Wallet",
+        "tx_test": "TX Test",
+        "bex_playground": "BEX PLAYGROUND",
+        "tx_playground": "TX PLAYGROUND",
+        "explore": "Explore",
+        "transactions": "Transactions",
+        "farmers": "Farmers",
+        "block_with_id": "Block #{id}",
+        "transaction_with_id": "Transaction #{id}",
+        "farmer_with_id": "Farmer #{id}",
+        "address_with_id": "Address #{id}",
+        "page_not_found": "Page not found"
     },
     "main_menu": {
         "explore": "Explore",
@@ -72,13 +131,27 @@
     "node_info": {
         "synced": "Synced",
         "supply": "Supply",
-        "no_addresses": "No. Addresses"
+        "no_addresses": "No. Addresses",
+        "avg_tx_fee": "Avg. TX Fee"
     },
     "farmer_info": {
         "virtual_balance": "Virtual Balance",
         "virtual_size": "Virtual Size",
         "physical_size": "Physical Size",
-        "total_farm_size": "Total Farm Size"
+        "total_farm_size": "Total Farm Size",
+        "effective_size": "Effective Size",
+        "no_blocks": "No. Blocks",
+        "total_rewards": "Total Rewards"
+    },
+    "farmer_rewards": {
+        "no_blocks": "No. Blocks",
+        "last_height": "Last Height",
+        "total_rewards": "Total Rewards",
+        "time_to_win": "Time to win",
+        "reward": "Reward"
+    },
+    "farmer_proofs": {
+        "vdf_height": "VDF height"
     },
     "node_log": {
         "terminal": "Terminal",
@@ -101,7 +174,8 @@
         "connection": "Connection",
         "outbound": "outbound",
         "inbound": "inbound",
-        "kick": "Kick"
+        "kick": "Kick",
+        "action": "Action"
     },
     "wallet_summary": {
         "new": "New"
@@ -112,6 +186,7 @@
         "addresses": "Addresses",
         "send": "Send",
         "plots": "Plots",
+        "plotnfts": "PlotNFTs",
         "offer": "Offer",
         "history": "History",
         "liquidity": "Liquidity",
@@ -126,14 +201,17 @@
         "last_spend": "Last Spend"
     },
     "wallet_common": {
-        "enter_passphrase": "Passphrase required"
+        "enter_passphrase": "Passphrase required",
+        "unlock_wallet": "Unlock wallet"
     },
     "account_send_form": {
         "source_address": "Source Address",
         "destination": "Destination",
         "destination_address": "Destination Address",
         "address_input": "Address Input",
-        "send": "Send"
+        "send": "Send",
+        "memo": "Memo",
+        "destination_placeholder": "mmx1..."
     },
     "balance_table": {
         "locked": "Locked",
@@ -193,25 +271,42 @@
     },
     "explore_farmers": {
         "no_blocks": "No. Blocks",
+        "total_rewards": "Total Rewards",
         "farmer_key": "Farmer Key"
     },
     "block_view": {
-        "previous": "Previous",
-        "next": "Next",
+        "avg_tx_fee": "Avg. TX Fee",
+        "base_reward": "Base Reward",
         "block": "Block",
-        "no_such_block": "No such block!",
-        "time_diff": "Time Diff",
-        "space_diff": "Space Diff",
-        "vdf_iterations": "VDF Iterations",
-        "tx_base": "TX Base",
-        "tx_count": "TX Count",
-        "k_size": "K Size",
-        "proof_score": "Proof Score",
-        "plot_id": "Plot ID",
+        "block_reward": "Block Reward",
+        "challenge": "Challenge",
+        "farmer_address": "Farmer Address",
         "farmer_key": "Farmer Key",
         "inputs": "Inputs",
+        "k_size": "K Size",
+        "next": "Next",
+        "no_proofs": "No. Proofs",
+        "no_such_block": "No such block!",
+        "operations": "Operations",
         "outputs": "Outputs",
-        "operations": "Operations"
+        "plot_id": "Plot ID",
+        "previous": "Previous",
+        "proof_score": "Proof Score",
+        "reward_address": "Reward Address",
+        "reward_contract": "Reward Contract",
+        "reward_vote": "Reward Vote",
+        "reward_vote_sum": "Reward Vote Sum",
+        "space_diff": "Space Diff",
+        "space_fork": "Space Fork",
+        "timelord": "Timelord",
+        "timelord_reward": "Timelord Reward",
+        "time_diff": "Time Diff",
+        "tx_base": "TX Base",
+        "tx_count": "TX Count",
+        "tx_fees": "TX Fees",
+        "vdf_count": "VDF Count",
+        "vdf_height": "VDF Height",
+        "vdf_iterations": "VDF Iterations"
     },
     "transaction_view": {
         "transaction": "Transaction",
@@ -231,6 +326,9 @@
     "account_contract_summary": {
         "deposit": "Deposit",
         "withdraw": "Withdraw"
+    },
+    "account_contracts": {
+        "others": "Others"
     },
     "node_settings": {
         "ui": "User interface",
@@ -275,7 +373,9 @@
         "reward_address": "Reward Address (optional, for pooling)"
     },
     "account_details": {
-        "copy_keys_to_plotter": "Copy keys to plotter"
+        "copy_keys_to_plotter": "Copy keys to plotter",
+        "index": "Index",
+        "address": "Address"
     },
     "account_actions": {
         "reset_cache": "Reset Cache",
@@ -295,7 +395,8 @@
         "seed_words": "Mnemonic Seed Words (optional, 24 words)",
         "passphrase": "Passphrase (secure password, 10+ characters)",
         "placeholder": "<random>",
-        "create_wallet": "Create Wallet"
+        "create_wallet": "Create Wallet",
+        "fingerprint_label": "Fingerprint (optional, to validate passphrase)"
     },
     "market_menu": {
         "they_offer": "They Offer",
@@ -314,8 +415,11 @@
         "trade": "Trade"
     },
     "login": {
+        "title": "Login",
         "password_label": "Password (see PASSWD file)",
-        "login": "Login"
+        "login": "Login",
+        "save_in_browser": "Save in Browser (until Logout)",
+        "login_failed": "Login failed!"
     },
     "account_history_form": {
         "spend": "Spend",
@@ -366,6 +470,109 @@
         "trade_fee_estimated": "Trade Fee (estimated)",
         "you_receive_estimated": "You receive (estimated)",
         "sell": "Sell",
-        "buy": "Buy"
+        "buy": "Buy",
+        "trade_price_avg_fee": "Trade Price (average, including fee)",
+        "insufficient_funds": "Insufficient funds",
+        "price": "Price",
+        "no_such_swap": "No such swap"
+    },
+    "account_view": {
+        "no_such_wallet": "No such wallet!",
+        "account_options": {
+            "update": "Update",
+            "remove": "Remove",
+            "remove_wallet_title": "Remove Wallet",
+            "remove_wallet_message": "To recover any funds you will need to re-create the wallet from a stored backup!",
+            "wallet_removed_title": "Wallet removed",
+            "wallet_removed_message": "Wallet file {keyFile} needs to be deleted manually"
+        },
+        "account_plotnfts_create": {
+            "new_plotnft_name": "New PlotNFT Name"
+        }
+    },
+    "error_not_found": {
+        "nothing_here": "Oops. Nothing here..."
+    },
+    "bex": {
+        "playground_title": "BEX Playground",
+        "extension_not_loaded": "Extension is not loaded"
+    },
+    "wallet": {
+        "unlock_to_see_fee": "Unlock wallet to see estimated fee",
+        "errors": {
+            "wrong_passphrase": "Wrong passphrase!"
+        }
+    },
+    "account_history": {
+        "pending": "pending",
+        "memo": "Memo"
+    },
+    "account_tx_history": {
+        "confirmed": "Confirmed",
+        "fee": "Fee",
+        "height": "Height",
+        "status": "Status",
+        "time": "Time",
+        "transaction_id": "Transaction ID",
+        "type": "Type"
+    },
+    "account_plotnfts": {
+        "pool_server": "Pool Server",
+        "solo_farming_na": "N/A (solo farming)"
+    },
+    "swap_trade_form": {
+        "max_slippage": "Max Slippage",
+        "slippage_0_5": "0.5 %",
+        "slippage_1": "1 %",
+        "slippage_2": "2 %",
+        "slippage_5": "5 %",
+        "slippage_10": "10 %",
+        "iterations": "Iterations"
+    },
+    "account_nft": {
+        "nft": "NFT"
+    },
+    "account_history_form": {
+        "vdf_reward": "VDF Reward"
+    },
+    "transactions": {
+        "validated_success": "Transaction validated successfully",
+        "broadcasted_success": "Transaction broadcasted successfully"
+    },
+    "validation": {
+        "invalid_number": "Invalid number",
+        "invalid_address": "Invalid address",
+        "required": "Field is required",
+        "invalid_amount": "Invalid amount",
+        "max_length_64": "Maximum length is 64",
+        "plot_nft_info": {
+            "address": "Address",
+            "pool_server": "Pool Server",
+            "solo_farming_na": "N/A (solo farming)",
+            "pool_target": "Pool Target",
+            "partial_difficulty": "Partial Difficulty",
+            "plot_count": "Plot Count",
+            "farmer_plotnfts_index": {
+                "no_nft_plots": "No NFT plots found",
+                "need_create_plotnft": "Need to create a PlotNFT in Wallet first to plot NFT plots"
+            },
+            "app_update": {
+                "title": "An update is available",
+                "message": "Please refresh the page to apply the update",
+                "refresh": "Refresh"
+            }
+        }
+    },
+    "notifications": {
+        "peer_kicked": "Peer kicked: {address}",
+        "token_added": "Added token to whitelist: {token}",
+        "token_removed": "Removed token from whitelist: {token}",
+        "plots_reloaded": "Plots reloaded",
+        "wallet_created": "Wallet created",
+        "wallet_removed": "Wallet removed",
+        "cache_reset": "Cache reset successfully",
+        "updated_success": "Updated successfully",
+        "wallet_locked": "Wallet #{index} locked",
+        "wallet_unlocked": "Wallet #{index} unlocked"
     }
 }

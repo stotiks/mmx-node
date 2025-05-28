@@ -42,7 +42,12 @@
             <template v-slot:body-cell="bcProps">
                 <q-td :props="bcProps">
                     <div :class="getXClasses(bcProps)">
-                        {{ bcProps.value }}
+                        <template v-if="bcProps.col.field === 'size_bytes'">
+                            {{ bcProps.value }} {{ t("common.terabytes") }}
+                        </template>
+                        <template v-else>
+                            {{ bcProps.value }}
+                        </template>
                     </div>
                 </q-td>
             </template>
@@ -130,8 +135,8 @@ const handleWithdraw = (address, owner) => {
 .physical-size {
     font-weight: bold;
 }
-.physical-size:after {
+/* .physical-size:after {
     content: " TB";
     font-weight: normal;
-}
+} */
 </style>

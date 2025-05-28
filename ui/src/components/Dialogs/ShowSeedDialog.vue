@@ -7,7 +7,7 @@
                     <q-input
                         v-if="withPassphrase"
                         :model-value="fingerPrint"
-                        label="Fingerprint (needed to verify passphrase)"
+                        :label="$t('create_wallet.fingerprint_needed')"
                         input-class="text-bold"
                         readonly
                     />
@@ -15,11 +15,11 @@
             </q-card-section>
             <q-card-actions align="right">
                 <UseClipboard v-slot="{ copy, copied }">
-                    <q-btn label="Copy" flat :icon="mdiContentCopy" @click="copy(seed)">
-                        <q-tooltip :model-value="copied === true" no-parent-event>Copied!</q-tooltip>
+                    <q-btn :label="$t('common.copy')" flat :icon="mdiContentCopy" @click="copy(seed)">
+                        <q-tooltip :model-value="copied === true" no-parent-event>{{ $t("common.copied") }}</q-tooltip>
                     </q-btn>
                 </UseClipboard>
-                <q-btn label="Ok" flat @click="onDialogOK" />
+                <q-btn :label="$t('common.ok')" flat @click="onDialogOK" />
             </q-card-actions>
         </q-card>
     </q-dialog>

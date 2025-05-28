@@ -17,7 +17,13 @@
                         />
                     </div>
                     <div class="q-mt-md row justify-end">
-                        <q-btn label="Update" type="submit" color="positive" outline class="col-2" />
+                        <q-btn
+                            :label="t('account_options.update')"
+                            type="submit"
+                            color="positive"
+                            outline
+                            class="col-2"
+                        />
                     </div>
                 </q-form>
             </q-card-section>
@@ -28,7 +34,13 @@
                 <q-btn :label="$t('account_actions.reset_cache')" color="secondary" outline @click="handleResetCache" />
 
                 <q-btn :label="$t('account_actions.show_seed')" color="secondary" outline @click="handleShowSeed" />
-                <q-btn v-if="index >= 100" color="negative" outline @click="handleRemove">Remove</q-btn>
+                <q-btn
+                    v-if="index >= 100"
+                    :label="t('account_options.remove')"
+                    color="negative"
+                    outline
+                    @click="handleRemove"
+                />
             </q-card-section>
         </q-card>
     </div>
@@ -90,12 +102,12 @@ const handleShowSeed = async () => {
 
 const handleRemove = () => {
     $q.dialog({
-        title: "Remove Wallet", //TODO i18n
-        message: "To recover any funds you will need to re-create the wallet from a stored backup!", //TODO i18n
+        title: t("account_options.remove_wallet_title"),
+        message: t("account_options.remove_wallet_message"),
         cancel: true,
         persistent: true,
         ok: {
-            label: "Remove", //TODO i18n
+            label: t("account_options.remove"),
             color: "negative",
         },
     }).onOk(() => {
@@ -110,8 +122,8 @@ const handleRemove = () => {
 const showRemoveWarning = (keyFile) => {
     $q.dialog({
         type: "warning",
-        title: "Wallet removed", //TODO i18n
-        message: `Wallet file ${keyFile} needs to be deleted manually`, //TODO i18n
+        title: t("account_options.wallet_removed_title"),
+        message: t("account_options.wallet_removed_message", { keyFile }),
         persistent: true,
         cancel: false,
     }).onOk(() => {

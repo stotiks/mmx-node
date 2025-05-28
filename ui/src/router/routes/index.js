@@ -1,3 +1,6 @@
+import i18n from "@/plugins/i18n";
+const t = i18n.global.t;
+
 import node from "./node";
 import wallet from "./wallet";
 import farmer from "./farmer";
@@ -23,7 +26,7 @@ const guiRoutes = [
         name: "login",
         component: () => import("@/pages/LoginPage"),
         meta: {
-            title: "Login",
+            title: t("route.login"),
             layout: false,
             requiresAuth: false,
         },
@@ -32,14 +35,14 @@ const guiRoutes = [
         path: "/settings",
         component: () => import("@/pages/SettingsPage"),
         meta: {
-            title: "Settings",
+            title: t("route.settings"),
         },
     },
     // {
     //     path: "/tx/test",
     //     component: () => import("@/pages/!tests/tx.vue"),
     //     meta: {
-    //         title: "TX Test",
+    //         title: t("route.tx_test"),
     //     },
     // },
 ];
@@ -50,7 +53,7 @@ const txQrSendRoute = {
     component: () => import("@/pages/Offline/TXQrSend.vue"),
     props: (route) => ({ txData: route.params.txData }),
     meta: {
-        title: "QR TX Send",
+        title: t("route.qr_tx_send"),
     },
 };
 
@@ -63,7 +66,7 @@ const offlineRoutes = [
         path: "/tx/qr",
         component: () => import("@/pages/Offline/TxQrGen.vue"),
         meta: {
-            title: "Offline wallet",
+            title: t("route.offline_wallet"),
         },
     },
     // eslint-disable-next-line no-undef
@@ -82,14 +85,14 @@ const explorerRoutes = [
         path: "/wallet",
         component: () => import("@/pages/WebWalletPage"),
         meta: {
-            title: "Web Wallet",
+            title: t("route.web_wallet"),
         },
     },
     {
         path: "/pg/tx",
         component: () => import("@/pages/!pg/tx.vue"),
         meta: {
-            title: "TX Test",
+            title: t("route.tx_test"),
         },
     },
     txQrSendRoute,
@@ -104,14 +107,14 @@ const playgroundRoutes = [
         path: "/pg/bex",
         component: () => import("@/pages/!pg/bex.vue"),
         meta: {
-            title: "BEX PLAYGROUND",
+            title: t("route.bex_playground"),
         },
     },
     {
         path: "/pg/tx",
         component: () => import("@/pages/!pg/tx.vue"),
         meta: {
-            title: "TX PLAYGROUND",
+            title: t("route.tx_playground"),
         },
     },
     txQrSendRoute,

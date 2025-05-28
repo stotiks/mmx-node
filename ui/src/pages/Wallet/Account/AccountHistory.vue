@@ -39,7 +39,7 @@
                     />
                 </div>
                 <div class="row q-mt-xs">
-                    <q-input v-model="memo" label="Memo" class="col" clearable />
+                    <q-input v-model="memo" :label="$t('account_history.memo')" class="col" clearable />
                 </div>
             </q-card-section>
         </q-card>
@@ -83,7 +83,7 @@ const typeOptions = computed(() => [
     { label: t("account_history_form.spend"), value: "SPEND" },
     { label: t("account_history_form.receive"), value: "RECEIVE" },
     { label: t("account_history_form.reward"), value: "REWARD" },
-    { label: "VDF " + t("account_history_form.reward"), value: "VDF_REWARD" },
+    { label: t("account_history_form.vdf_reward"), value: "VDF_REWARD" },
     { label: t("account_history_form.tx_fee"), value: "TXFEE" },
 ]);
 </script>

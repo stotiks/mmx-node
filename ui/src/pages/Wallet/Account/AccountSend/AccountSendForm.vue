@@ -71,7 +71,7 @@
 
                     <q-input
                         v-model="formData.memo"
-                        label="Memo"
+                        :label="$t('account_send_form.memo')"
                         :rules="[rules.memo]"
                         _hide-bottom-space
                         :clearable="formData.memo != null"

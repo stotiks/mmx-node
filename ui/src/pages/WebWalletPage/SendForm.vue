@@ -6,7 +6,7 @@
                     <q-input
                         v-model="formData.destination"
                         :label="$t('account_send_form.destination_address')"
-                        placeholder="mmx1..."
+                        :placeholder="$t('account_send_form.destination_placeholder')"
                         :rules="[rules.required, rules.address]"
                         hide-bottom-space
                         input-class="text-bold"
@@ -33,7 +33,7 @@
                     </div>
                     <q-input
                         v-model="formData.memo"
-                        label="Memo"
+                        :label="$t('account_send_form.memo')"
                         :rules="[rules.memo]"
                         _hide-bottom-space
                         :clearable="formData.memo != null"

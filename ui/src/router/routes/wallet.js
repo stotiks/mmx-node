@@ -7,14 +7,14 @@ export default [
                 path: "",
                 component: () => import("@/pages/Wallet/AccountIndex"),
                 meta: {
-                    title: "Wallets",
+                    title: t("route.wallets"),
                 },
             },
             {
                 path: "create",
                 component: () => import("@/pages/Wallet/WalletCreate"),
                 meta: {
-                    title: "Create wallet",
+                    title: t("route.create_wallet"),
                 },
             },
             {
@@ -29,21 +29,21 @@ export default [
                         path: "",
                         component: () => import("@/pages/Wallet/Account/AccountHome"),
                         meta: {
-                            title: "Balance",
+                            title: t("route.balance"),
                         },
                     },
                     {
                         path: "nfts",
                         component: () => import("@/pages/Wallet/Account/AccountNFT"),
                         meta: {
-                            title: "NFTs",
+                            title: t("route.nfts"),
                         },
                     },
                     {
                         path: "contracts",
                         component: () => import("@/pages/Wallet/Account/AccountContracts"),
                         meta: {
-                            title: "Contracts",
+                            title: t("route.contracts"),
                         },
                     },
                     {
@@ -51,7 +51,7 @@ export default [
                         component: () => import("@/pages/Wallet/Account/AccountSend"),
                         props: (route) => ({ target: route.params.target }),
                         meta: {
-                            title: "Send",
+                            title: t("route.send"),
                         },
                     },
                     {
@@ -59,56 +59,56 @@ export default [
                         component: () => import("@/pages/Wallet/Account/AccountSend"),
                         props: (route) => ({ source: route.params.source }),
                         meta: {
-                            title: "Send",
+                            title: t("route.send"),
                         },
                     },
                     {
                         path: "history",
                         component: () => import("@/pages/Wallet/Account/AccountHistory"),
                         meta: {
-                            title: "History",
+                            title: t("route.history"),
                         },
                     },
                     {
                         path: "log",
                         component: () => import("@/pages/Wallet/Account/AccountLog"),
                         meta: {
-                            title: "Log",
+                            title: t("route.log"),
                         },
                     },
                     {
                         path: "offer",
                         component: () => import("@/pages/Wallet/Account/AccountOffer"),
                         meta: {
-                            title: "Offer",
+                            title: t("route.offer"),
                         },
                     },
                     {
                         path: "liquid",
                         component: () => import("@/pages/Wallet/Account/AccountLiquid"),
                         meta: {
-                            title: "Liquidity",
+                            title: t("route.liquidity"),
                         },
                     },
                     {
                         path: "plotnfts",
                         component: () => import("@/pages/Wallet/Account/AccountPlotNFTs"),
                         meta: {
-                            title: "Plot NFTs",
+                            title: t("route.plot_nfts"),
                         },
                     },
                     {
                         path: "details",
                         component: () => import("@/pages/Wallet/Account/AccountDetails"),
                         meta: {
-                            title: "Info",
+                            title: t("route.info"),
                         },
                     },
                     {
                         path: "options",
                         component: () => import("@/pages/Wallet/Account/AccountOptions"),
                         meta: {
-                            title: "Options",
+                            title: t("route.options"),
                         },
                     },
                 ],

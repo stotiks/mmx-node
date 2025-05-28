@@ -2,7 +2,7 @@
     <div class="fullscreen row justify-center">
         <q-card flat class="self-center col-xl-4 col-lg-6 col-md-8 col-sm-10 col-xs-12">
             <q-toolbar>
-                <q-toolbar-title> Login </q-toolbar-title>
+                <q-toolbar-title>{{ $t("login.title") }}</q-toolbar-title>
             </q-toolbar>
             <q-card-section>
                 <q-form class="q-gutter-sm" @submit="handleLogin">
@@ -12,8 +12,14 @@
                         </template>
                     </q-input>
                     <div class="row justify-between">
-                        <q-checkbox v-model="autoLogin" label="Save in Browser (until Logout)" />
-                        <q-btn label="Login" :icon="mdiLogin" type="submit" color="primary" :disable="!passwdPlain" />
+                        <q-checkbox v-model="autoLogin" :label="$t('login.save_in_browser')" />
+                        <q-btn
+                            :label="$t('login.login')"
+                            :icon="mdiLogin"
+                            type="submit"
+                            color="primary"
+                            :disable="!passwdPlain"
+                        />
                     </div>
                 </q-form>
             </q-card-section>
@@ -33,7 +39,7 @@ const $q = useQuasar();
 
 const onError = () => {
     $q.notify({
-        message: "Login failed!", //TODO i18n
+        message: $t("login.login_failed"),
         type: "negative",
     });
 };

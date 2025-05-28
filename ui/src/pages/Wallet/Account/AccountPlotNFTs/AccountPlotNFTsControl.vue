@@ -23,18 +23,18 @@ const { data, loading } = usePlotnft(reactive({ id: props.address }));
 
 const rows = computed(() => [
     {
-        label: "Address", //TODO i18n
+        label: $t("common.address"),
         field: (data) => data.address,
         to: (data) => `/explore/address/${data.address}`,
         classes: "mono",
         copyToClipboard: true,
     },
     {
-        label: "Pool Server", //TODO i18n
-        field: (data) => data.server_url ?? "N/A (solo farming)",
+        label: $t("account_plotnfts.pool_server"),
+        field: (data) => data.server_url ?? $t("account_plotnfts.solo_farming_na"),
     },
     {
-        label: "Unlock Height", //TODO i18n
+        label: $t("swap.unlock_height"),
         field: (data) => data.unlock_height,
         visible: (data) => data.is_locked,
     },

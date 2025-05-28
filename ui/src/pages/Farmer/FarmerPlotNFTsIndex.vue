@@ -11,16 +11,14 @@
                     <template v-slot:avatar>
                         <q-icon :name="mdiAlert" color="warning" />
                     </template>
-                    <!-- // TODO i18n -->
-                    No NFT plots found
+                    {{ t("farmer_plotnfts_index.no_nft_plots") }}
                 </q-banner>
 
                 <q-banner rounded>
                     <template v-slot:avatar>
                         <q-icon :name="mdiInformation" color="info" />
                     </template>
-                    <!-- // TODO i18n -->
-                    Need to create a PlotNFT in Wallet first to plot NFT plots
+                    {{ t("farmer_plotnfts_index.need_create_plotnft") }}
                 </q-banner>
             </template>
         </div>
@@ -30,6 +28,8 @@
 <script setup>
 import { mdiAlert, mdiInformation } from "@mdi/js";
 import FarmerMenu from "../FarmerPage/FarmerMenu";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 import PlotNFTInfo from "./PlotNFTInfo.vue";
 

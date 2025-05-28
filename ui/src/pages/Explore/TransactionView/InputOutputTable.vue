@@ -82,7 +82,7 @@ const in_out_columns = computed(() => [
         align: "left",
     },
     {
-        label: "Memo", //TODO i18n
+        label: t("transaction_view.memo"),
         field: (row) => row.memo,
         headerStyle: "width: 50%",
         align: "left",

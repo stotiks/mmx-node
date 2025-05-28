@@ -18,7 +18,7 @@
                                 style="border-style: none !important"
                             >
                                 <q-btn
-                                    label="Logout"
+                                    :label="$t('main_menu.logout')"
                                     :icon="mdiLogout"
                                     color="secondary"
                                     size="sm"
@@ -35,7 +35,7 @@
                                     <q-input
                                         v-model="formData.destination"
                                         :label="$t('account_send_form.destination_address')"
-                                        placeholder="mmx1..."
+                                        :placeholder="$t('account_send_form.destination_placeholder')"
                                         :rules="[rules.required, rules.address]"
                                         hide-bottom-space
                                         input-class="text-bold"
@@ -45,7 +45,7 @@
                                     <div class="row q-gutter-x-sm">
                                         <q-input
                                             v-model.number="formData.amount"
-                                            :label="$t('account_send_form.amount') + ' in mojos'"
+                                            :label="`${$t('account_send_form.amount')} (${$t('common.in_mojos')})`"
                                             :rules="[rules.required, rules.amount]"
                                             hide-bottom-space
                                             input-class="amount-input"
@@ -64,7 +64,7 @@
                                 </div>
                                 <q-input
                                     v-model="formData.memo"
-                                    label="Memo"
+                                    :label="$t('account_send_form.memo')"
                                     :rules="[rules.memo]"
                                     hide-bottom-space
                                     :clearable="formData.memo != null"
@@ -104,8 +104,10 @@
                                 readonly
                             />
                             <img :src="qrCode" alt="QR Code" /><br />
-                            <a :href="qrData" target="_blank" rel="noopener noreferrer" class="text-primary">QR Link</a>
-                            <div>Size: {{ qrDataSize }} bytes</div>
+                            <a :href="qrData" target="_blank" rel="noopener noreferrer" class="text-primary">{{
+                                $t("common.qr_link")
+                            }}</a>
+                            <div>{{ $t("common.size_bytes", { size: qrDataSize }) }}</div>
                         </q-card-section>
                     </q-card>
 

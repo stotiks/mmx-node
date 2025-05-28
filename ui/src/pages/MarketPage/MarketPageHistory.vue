@@ -28,12 +28,16 @@
 
         <template v-slot:body-cell-offer="bcProps">
             <q-td :props="bcProps">
-                <RouterLink :to="`/explore/address/${bcProps.value}`" class="text-primary">Offer</RouterLink>
+                <RouterLink :to="`/explore/address/${bcProps.value}`" class="text-primary">{{
+                    $t("common.offer_link")
+                }}</RouterLink>
             </q-td>
         </template>
         <template v-slot:body-cell-txid="bcProps">
             <q-td :props="bcProps">
-                <RouterLink :to="`/explore/transaction/${bcProps.value}`" class="text-primary">TX</RouterLink>
+                <RouterLink :to="`/explore/transaction/${bcProps.value}`" class="text-primary">{{
+                    $t("common.tx_link")
+                }}</RouterLink>
             </q-td>
         </template>
     </q-table>

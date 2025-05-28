@@ -95,6 +95,8 @@
 <script setup>
 import { mdiTransferUp } from "@mdi/js";
 import rules from "@/helpers/rules";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 const props = defineProps({
     index: {
@@ -183,7 +185,7 @@ const { data: walletBalance } = useWalletBalance(
     (data) => (data ? data.spendable : 0)
 );
 
-const hasFunds = (value) => value <= walletBalance.value || "Insufficient funds";
+const hasFunds = (value) => value <= walletBalance.value || t("swap.insufficient_funds");
 
 const isValidTrade = computed(() => {
     const bidAmount = tradeEstimateData.value ? parseFloat(tradeEstimateData.value.trade.amount) : 0;

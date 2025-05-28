@@ -22,7 +22,7 @@ export const useTransactionValidate = () => {
                 });
             } else {
                 Notify.create({
-                    message: "Transaction validated successfully", // TODO i18n
+                    message: t("transactions.validated_success"),
                     type: "positive",
                 });
             }
@@ -46,7 +46,7 @@ export const useTransactionBroadcast = () => {
                 });
             } else {
                 Notify.create({
-                    message: "Transaction broadcasted successfully", // TODO i18n
+                    message: t("transactions.broadcasted_success"),
                     type: "positive",
                 });
             }

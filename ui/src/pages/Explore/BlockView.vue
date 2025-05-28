@@ -88,33 +88,33 @@ const rows = computed(() => [
         format: (item) => new Date(item).toLocaleString(),
     },
     {
-        label: "Reward Address", //TODO i18n
+        label: t("block_view.reward_address"),
         field: (data) => data.reward_addr,
         to: (data) => `/explore/address/${data.reward_addr}`,
         classes: "mono",
         visible: (data) => data.reward_addr,
     },
     {
-        label: "Reward Contract", //TODO i18n
+        label: t("block_view.reward_contract"),
         field: (data) => data.reward_contract,
         to: (data) => `/explore/address/${data.reward_contract}`,
         classes: "mono",
         visible: (data) => data.reward_contract,
     },
     {
-        label: "Farmer Address", //TODO i18n
+        label: t("block_view.farmer_address"),
         field: (data) => data.reward_account,
         to: (data) => `/explore/address/${data.reward_account}`,
         classes: "mono",
         visible: (data) => data.reward_account,
     },
     {
-        label: "Block Reward", //TODO i18n
+        label: t("block_view.block_reward"),
         field: (data) => data.reward_amount.value,
         classes: "main-currency",
     },
     {
-        label: "TX Fees", //TODO i18n
+        label: t("block_view.tx_fees"),
         field: (data) => data.tx_fees.value,
         classes: "main-currency",
     },
@@ -133,32 +133,32 @@ const rows = computed(() => [
     },
 
     {
-        label: "Reward Vote", //TODO i18n
+        label: t("block_view.reward_vote"),
         field: "reward_vote",
     },
     {
-        label: "Reward Vote Sum", //TODO i18n
+        label: t("block_view.reward_vote_sum"),
         field: (data) => data,
         format: (data) =>
             `${data.reward_vote_sum} / ${data.reward_vote_count} (${((data.reward_vote_count / ((data.height % 8640) + 1)) * 100).toFixed(1)} %)`,
     },
     {
-        label: "Base Reward", //TODO i18n
+        label: t("block_view.base_reward"),
         field: (data) => data.base_reward.value,
         classes: "main-currency",
     },
     {
-        label: "Avg. TX Fee", //TODO i18n
+        label: t("block_view.avg_tx_fee"),
         field: (data) => data.average_txfee.value,
         classes: "main-currency",
     },
 
     {
-        label: "VDF Height", //TODO i18n
+        label: t("block_view.vdf_height"),
         field: "vdf_height",
     },
     {
-        label: "VDF Count", //TODO i18n
+        label: t("block_view.vdf_count"),
         field: "vdf_count",
     },
     {
@@ -167,11 +167,11 @@ const rows = computed(() => [
     },
     {
         name: "vdf_reward_addr",
-        label: "Timelord", //TODO i18n
+        label: t("block_view.timelord"),
         field: (data) => data.vdf_reward_addr,
     },
     {
-        label: "Timelord Reward", //TODO i18n
+        label: t("block_view.timelord_reward"),
         field: "vdf_reward_payout",
         to: (data) => `/explore/address/${data.vdf_reward_payout}`,
         visible: (data) => data.vdf_reward_payout,
@@ -188,12 +188,12 @@ const rows = computed(() => [
     },
 
     {
-        label: "No. Proofs", //TODO i18n
+        label: t("block_view.no_proofs"),
         field: (data) => data.proof.length,
     },
 
     {
-        label: "Space Fork", //TODO i18n
+        label: t("block_view.space_fork"),
         field: (data) => data,
         format: (data) => `${data.space_fork_proofs} / ${data.space_fork_len}`,
     },
@@ -205,7 +205,7 @@ const rows = computed(() => [
         classes: "mono",
     },
     {
-        label: "Challenge", //TODO i18n
+        label: t("block_view.challenge"),
         field: (data) => data.proof[0].challenge,
         visible: (data) => data.proof[0],
     },

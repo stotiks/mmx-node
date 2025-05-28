@@ -14,7 +14,7 @@
 
         <q-inner-loading :showing="locked">
             <q-icon :name="mdiLockOpenAlert" size="sm" class="text-warning">
-                <q-tooltip>Unlock wallet to see estimated fee</q-tooltip>
+                <q-tooltip>{{ $t("wallet.unlock_to_see_fee") }}</q-tooltip>
             </q-icon>
         </q-inner-loading>
 

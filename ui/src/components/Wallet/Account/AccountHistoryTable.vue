@@ -15,7 +15,7 @@
         <template v-slot:body-cell-height="bcProps">
             <q-td :props="bcProps">
                 <template v-if="bcProps.row.is_pending">
-                    <i>pending</i>
+                    <i>{{ $t("account_history.pending") }}</i>
                 </template>
                 <template v-else>
                     <RouterLink :to="`/explore/block/height/${bcProps.value}`" class="text-primary">
@@ -141,7 +141,7 @@ const columns = computed(() => [
         align: "left",
     },
     {
-        label: "Memo", // TODO i18n
+        label: t("account_history.memo"), // TODO i18n
         field: "memo",
         style: "word-break: break-all;",
         align: "left",

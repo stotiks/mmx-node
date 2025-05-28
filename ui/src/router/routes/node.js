@@ -1,9 +1,12 @@
+import i18n from "@/plugins/i18n";
+const t = i18n.global.t;
+
 export default [
     {
         path: "/node",
         component: () => import("@/pages/NodePage"),
         meta: {
-            title: "Node",
+            title: t("route.node"),
         },
         children: [
             {
@@ -18,7 +21,7 @@ export default [
                 path: "peers",
                 component: () => import("@/pages/Node/PeersIndex"),
                 meta: {
-                    title: "Peers",
+                    title: t("route.peers"),
                 },
             },
             {
@@ -26,21 +29,21 @@ export default [
                 component: () => import("@/pages/Explore/BlocksIndex"),
                 props: { limit: 20 },
                 meta: {
-                    title: "Blocks",
+                    title: t("route.blocks"),
                 },
             },
             {
                 path: "netspace",
                 component: () => import("@/pages/Node/NetspaceChart"),
                 meta: {
-                    title: "Netspace",
+                    title: t("route.netspace"),
                 },
             },
             {
                 path: "vdf_speed",
                 component: () => import("@/pages/Node/VdfSpeedChart"),
                 meta: {
-                    title: "VDF Speed",
+                    title: t("route.vdf_speed"),
                 },
                 alias: [],
             },
@@ -48,7 +51,7 @@ export default [
                 path: "reward",
                 component: () => import("@/pages/Node/RewardChart"),
                 meta: {
-                    title: "Block Reward",
+                    title: t("route.block_reward"),
                 },
                 alias: [],
             },

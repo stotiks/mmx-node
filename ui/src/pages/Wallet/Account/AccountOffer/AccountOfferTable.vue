@@ -50,7 +50,7 @@
                     <q-separator vertical inset />
 
                     <q-btn
-                        label="Update"
+                        :label="t('common.update')"
                         :_icon="mdiBankTransferIn"
                         color="primary"
                         outline

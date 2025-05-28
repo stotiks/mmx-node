@@ -30,14 +30,14 @@ export const useAppUpdateChecker = () => {
             dialogShowing.value = true;
             $q.dialog({
                 type: "warning",
-                title: "An update is available", //TODO i18n
-                message: "Please refresh the page to apply the update", //TODO i18n
+                title: t("app_update.title"),
+                message: t("app_update.message"),
                 persistent: true,
                 cancel: true,
                 ok: {
                     push: true,
                     color: "negative",
-                    label: "Refresh", //TODO i18n
+                    label: t("app_update.refresh"),
                     //icon: mdiRefresh,
                     tabIndex: 0,
                 },

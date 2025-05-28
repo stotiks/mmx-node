@@ -1,9 +1,12 @@
+import i18n from "@/plugins/i18n";
+const t = i18n.global.t;
+
 export default [
     {
         path: "/swap",
         component: () => import("@/pages/SwapPage"),
         meta: {
-            title: "Swap",
+            title: t("route.swap"),
         },
         children: [
             {
@@ -26,28 +29,28 @@ export default [
                         path: "trade",
                         component: () => import("@/pages/Swap/SwapTrade"),
                         meta: {
-                            title: "Trade",
+                            title: t("route.trade"),
                         },
                     },
                     {
                         path: "history",
                         component: () => import("@/pages/Swap/SwapHistory"),
                         meta: {
-                            title: "History",
+                            title: t("route.history"),
                         },
                     },
                     {
                         path: "liquid",
                         component: () => import("@/pages/Swap/SwapLiquid"),
                         meta: {
-                            title: "Liquid",
+                            title: t("route.liquid"),
                         },
                     },
                     {
                         path: "pool",
                         component: () => import("@/pages/Swap/SwapPool"),
                         meta: {
-                            title: "Pool",
+                            title: t("route.pool"),
                         },
                     },
                 ],
