@@ -45,6 +45,21 @@ const requests = [
     { method: "mmx_signMessage", params: { message: "test123" } },
 
     {
+        method: "mmx_send",
+        params: {
+            amount: 1,
+            dst_addr: "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6",
+            // currency: "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev",
+            options: {
+                memo: "test",
+                expire_at: -1,
+                network: "mainnet",
+                nonce: 1,
+            },
+        },
+    },
+
+    {
         method: "mmx_signTransaction",
         params: {
             tx: {
@@ -73,9 +88,6 @@ const requests = [
             options: { fee_ratio: 1024, expire_at: -1, nonce: "8425803021051778044", network: "mainnet" },
         },
     },
-
-    // dummy method for testing
-    { method: "dummy" },
 ];
 
 const $q = useQuasar();

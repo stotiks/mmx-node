@@ -3,8 +3,13 @@ import { Transaction } from "@/mmx/wallet/Transaction";
 import { sha256 } from "@noble/hashes/sha2";
 import { getNodeInfoAsync } from "../queries";
 
-import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
-
+import {
+    getCurrentWallet,
+    getPubKeyAsync,
+    getSendTxAsync,
+    signMessageAsync,
+    signTransactionAsync,
+} from "../utils/walletHelpers";
 
 import vault from "../stores/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
@@ -67,6 +72,16 @@ export class RequestMessageHandlerMethods {
         const msgWithPrefix = `MMX/sign_message/${message}`;
         const msgHash = sha256(msgWithPrefix);
         return await signMessageAsync(msgHash);
+    }, {});
+
+    static mmx_send = $method(async ({ amount, dst_addr, currency, options: _options }) => {
+        if (typeof _options !== "object") {
+            throw new Error("Invalid options format");
+        }
+        const options = new spend_options_t(_options);
+
+        const tx = await getSendTxAsync(amount, dst_addr, currency, options);
+        return tx;
     }, {});
 
     static mmx_signTransaction = $method(async ({ tx: _tx, options: _options }) => {
