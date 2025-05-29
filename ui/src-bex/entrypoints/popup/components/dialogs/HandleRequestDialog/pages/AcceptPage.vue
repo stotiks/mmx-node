@@ -62,7 +62,7 @@ const { currentWalletAddress } = storeToRefs(vaultStore);
 </script>
 
 <style scoped>
-::v-deep(pre.hljsCode) {
+:deep(pre.hljsCode) {
     margin: 0px !important;
     font-size: 0.6em;
 }
