@@ -1,11 +1,5 @@
 <template>
     <q-layout view="hHh lpR fFf">
-        <!-- <q-header elevated>
-            <q-bar>
-                <q-btn dense flat :icon="mdiAlphaFBox" />
-                <div class="text-weight-bold">Furry Vault</div>
-            </q-bar>
-        </q-header> -->
         <q-page-container>
             <q-inner-loading :showing="isLoading">
                 <q-spinner-radio size="50px" color="primary" />
