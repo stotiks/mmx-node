@@ -5,7 +5,7 @@ import { getNodeInfo } from "../queries";
 import { openNotification } from "../utils/openNotification";
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
 
-import vault from "../storage/vault";
+import vault from "../stores/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
 
 const $method = (fn, metadata = {}) => {

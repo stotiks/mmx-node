@@ -1,5 +1,5 @@
 import { bytesToHex } from "@noble/hashes/utils";
-import vault from "../storage/vault";
+import vault from "../stores/vault";
 
 const getWalletByAddress = async (address) => {
     return vault.getWallets().find((wallet) => wallet.address === address);
