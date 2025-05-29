@@ -1,7 +1,14 @@
 <template>
     <q-page padding>
         <div class="q-gutter-y-sm">
-            <q-table :rows="wallets" :columns="columns" :pagination="{ rowsPerPage: 0 }" hide-pagination hide-header>
+            <q-table
+                :rows="wallets"
+                :columns="columns"
+                :pagination="{ rowsPerPage: 0 }"
+                hide-pagination
+                hide-header
+                flat
+            >
                 <template v-slot:body-cell-actions="bcProps">
                     <q-td :props="bcProps">
                         <q-btn flat :icon="mdiDelete" @click="handleRemoveWalletAsync(bcProps.row.address)" />
@@ -29,6 +36,7 @@ const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { wallets, currentWalletAddress } = storeToRefs(vaultStore);
+
 const columns = computed(() => [
     { name: "height", label: "Wallet", field: "address", align: "left" },
     { name: "actions", label: "", align: "left" },
