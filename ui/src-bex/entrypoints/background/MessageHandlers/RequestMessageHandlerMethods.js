@@ -1,9 +1,10 @@
 import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 import { Transaction } from "@/mmx/wallet/Transaction";
 import { sha256 } from "@noble/hashes/sha2";
-import { getNodeInfo } from "../queries";
-import { openNotification } from "../utils/openNotification";
+import { getNodeInfoAsync } from "../queries";
+
 import { getCurrentWallet, getPubKeyAsync, signMessageAsync, signTransactionAsync } from "../utils/walletHelpers";
+
 
 import vault from "../stores/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
@@ -17,7 +18,7 @@ const $method = (fn, metadata = {}) => {
 export class RequestMessageHandlerMethods {
     static mmx_blockNumber = $method(
         async () => {
-            const info = await getNodeInfo();
+            const info = await getNodeInfoAsync();
             return info.height;
         },
         {
