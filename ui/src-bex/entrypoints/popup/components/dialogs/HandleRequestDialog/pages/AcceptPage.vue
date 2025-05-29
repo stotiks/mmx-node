@@ -19,7 +19,15 @@
             <div class="col">
                 <div class="row justify-between q-gutter-x-sm">
                     <q-btn label="Reject" :icon="mdiClose" outline rounded color="negative" @click="handleCancel" />
-                    <q-btn label="Accept" :icon="mdiCheck" outline rounded color="positive" @click="handleAccept" />
+                    <q-btn
+                        label="Accept"
+                        :icon="mdiCheck"
+                        outline
+                        rounded
+                        color="positive"
+                        :disable="!currentWalletAddress"
+                        @click="handleAccept"
+                    />
                 </div>
             </div>
         </q-page-sticky>
@@ -47,6 +55,10 @@ const emit = defineEmits(["ok", "cancel"]);
 
 const handleCancel = () => emit("cancel");
 const handleAccept = () => emit("ok", { accepted: true });
+
+import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
+const vaultStore = useVaultStore();
+const { currentWalletAddress } = storeToRefs(vaultStore);
 </script>
 
 <style scoped>
