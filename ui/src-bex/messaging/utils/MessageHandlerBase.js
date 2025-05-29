@@ -16,6 +16,10 @@ export class MessageHandlerBase {
         const hm = this.#handlerMethods;
         const handler = hm[method] ?? hm[methodCC] ?? hm[methodCC + "Async"] ?? hm[methodCC.replace(/Async$/, "")];
 
+        if (!handler) {
+            throw new Error(`No handler found for method: ${method}`);
+        }
+
         const callFnAsync =
             handler &&
             (async () => {
