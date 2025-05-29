@@ -85,7 +85,8 @@ export class RequestMessageHandlerMethods {
         return tx;
     }, {});
 
-    static dev_test_openPopup = $method(
+    // dummy method for testing
+    static dummy = $method(
         async () => {
             await notificationMessenger.sendMessage({
                 method: "dummy",

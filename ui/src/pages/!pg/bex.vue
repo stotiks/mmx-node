@@ -72,8 +72,8 @@ const requests = [
         },
     },
 
-    // dev test
-    { method: "dev_test_openPopup" },
+    // dummy method for testing
+    { method: "dummy" },
 ];
 
 const $q = useQuasar();
