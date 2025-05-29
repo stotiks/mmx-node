@@ -33,7 +33,9 @@ const vault = computed(() => isBexLoaded.value && window.mmx);
 const requestResults = ref([]);
 
 const requests = [
-    //
+    // dummy method for testing
+    { method: "dummy" },
+
     { method: "mmx_blockNumber" },
     { method: "mmx_requestWallets" },
     { method: "mmx_getCurrentWallet" },
