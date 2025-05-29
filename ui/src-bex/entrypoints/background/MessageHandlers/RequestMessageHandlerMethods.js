@@ -75,7 +75,20 @@ export class RequestMessageHandlerMethods {
     }, {});
 
     static mmx_send = $method(async ({ amount, dst_addr, currency, options: _options }) => {
-        if (typeof _options !== "object") {
+        // Validate amount
+        if (typeof amount !== "number" || !isFinite(amount) || amount <= 0) {
+            throw new Error("Invalid amount: must be a positive number");
+        }
+        // Validate dst_addr
+        if (typeof dst_addr !== "string" || !dst_addr.trim()) {
+            throw new Error("Invalid dst_addr: must be a non-empty string");
+        }
+        // Validate currency
+        if (typeof currency !== "string" || !currency.trim()) {
+            throw new Error("Invalid currency: must be a non-empty string");
+        }
+        // Validate options
+        if (typeof _options !== "object" || _options === null) {
             throw new Error("Invalid options format");
         }
         const options = new spend_options_t(_options);
