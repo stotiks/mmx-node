@@ -2,7 +2,7 @@ import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { RequestMessageHandlerMethods } from "./RequestMessageHandlerMethods";
 
-import vault from "../storage/vault";
+import vault from "../stores/vault";
 
 /* global browser */
 const getTabUrl = async (tabId) => {
