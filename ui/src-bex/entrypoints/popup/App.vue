@@ -50,7 +50,7 @@
         </q-page-container>
     </q-layout>
 
-    <VueQueryDevtools />
+    <!-- <VueQueryDevtools /> -->
 </template>
 
 <script setup>
