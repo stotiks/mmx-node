@@ -160,13 +160,19 @@ class Vault {
     }
 
     async getECDSAWalletAsync(address = this.getCurrentWalletAddress()) {
+        if (!address) {
+            throw new Error("No wallet selected");
+        }
+
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
+
         const wallet = this.#wallets$$sensitive.find((wallet) => wallet.address === address);
         if (!wallet) {
             throw new Error(`Wallet not found for address: ${address}`);
         }
+
         const seed = hexToBytes(wallet.seed);
         const ecdsaWallet = new ECDSA_Wallet(seed, wallet.password);
         return ecdsaWallet;
