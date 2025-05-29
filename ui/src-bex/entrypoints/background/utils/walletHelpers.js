@@ -13,7 +13,7 @@ export const getCurrentWallet = () => {
     return getWalletByAddress(address);
 };
 
-export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) => {
+export const getPubKeyAsync = async (address) => {
     if (!address) {
         throw new Error("No wallet selected");
     }
@@ -23,7 +23,7 @@ export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) 
     return bytesToHex(pubKey).toUpperCase();
 };
 
-export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddress()) => {
+export const signMessageAsync = async (msg, address) => {
     if (!address) {
         throw new Error("No wallet selected");
     }
@@ -31,7 +31,7 @@ export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddr
     return await ecdsaWallet.signMsgAsync(address, msg);
 };
 
-export const signTransactionAsync = async (tx, options, address = vault.getCurrentWalletAddress()) => {
+export const signTransactionAsync = async (tx, options, address) => {
     if (!address) {
         throw new Error("No wallet selected");
     }

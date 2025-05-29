@@ -159,7 +159,7 @@ class Vault {
         //this.emit("current-wallet-updated");
     }
 
-    async getECDSAWalletAsync(address) {
+    async getECDSAWalletAsync(address = this.getCurrentWalletAddress()) {
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
