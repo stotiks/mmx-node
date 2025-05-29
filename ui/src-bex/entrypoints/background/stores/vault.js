@@ -3,6 +3,20 @@ import { EncryptedStorageItem } from "../utils/StorageItem";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 
+/**
+ * Constant-time string comparison to prevent timing attacks.
+ * Returns true if a and b are equal, false otherwise.
+ */
+function timingSafeEqual(a, b) {
+    if (typeof a !== "string" || typeof b !== "string") return false;
+    if (a.length !== b.length) return false;
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+}
+
 class Vault {
     #password;
 
@@ -66,7 +80,7 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
-        if (password !== this.#password) {
+        if (!timingSafeEqual(password, this.#password)) {
             throw new Error("Wrong password");
         }
 
