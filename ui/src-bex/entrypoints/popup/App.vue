@@ -49,6 +49,8 @@
             </template>
         </q-page-container>
     </q-layout>
+
+    <VueQueryDevtools />
 </template>
 
 <script setup>
@@ -72,4 +74,6 @@ useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
 const { isLoading } = useNotificationMessageHandler();
+
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 </script>
