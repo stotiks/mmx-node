@@ -1,5 +1,6 @@
 export default [
     {
+        name: "home",
         path: "/",
         component: () => import("@bex/entrypoints/popup/pages/MainPage"),
     },
