@@ -13,6 +13,9 @@
 
                     <q-page-sticky expand position="top">
                         <q-toolbar>
+                            <template v-if="route.path !== '/'">
+                                <q-btn flat :icon="mdiArrowLeft" :to="{ name: 'home' }" />
+                            </template>
                             <q-space />
                             <q-btn flat :icon="mdiDotsVertical">
                                 <q-menu anchor="bottom left" self="top left">
