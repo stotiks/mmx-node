@@ -48,7 +48,11 @@
 </template>
 
 <script setup>
-import { mdiAlphaFBox, mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock } from "@mdi/js";
+import { mdiAlphaFBox, mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock, mdiArrowLeft } from "@mdi/js";
+import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
+
+import { useRoute } from "vue-router";
+const route = useRoute();
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 
@@ -68,6 +72,4 @@ useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
 const { isLoading } = useNotificationMessageHandler();
-
-import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 </script>
