@@ -63,7 +63,6 @@ const requests = [
         method: "mmx_signTransaction",
         params: {
             tx: {
-                static_cost: 60000,
                 max_fee_amount: 5050000,
                 note: "TRANSFER",
                 network: "mainnet",
