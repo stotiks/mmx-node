@@ -56,9 +56,6 @@ export const getSendTxAsync = async (amount, dst_addr, currency, options, addres
 };
 
 export const signTransactionAsync = async (tx, options, address) => {
-    if (!address) {
-        throw new Error("No wallet selected");
-    }
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
     await ecdsaWallet.signOfAsync(tx, options);
 };
