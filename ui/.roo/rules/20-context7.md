@@ -1,0 +1,1 @@
+Use context7 mcp server to find any relevant documentation pieces you will need for this process, ensure to feed any relevant knowledge to any relevant subtasks - use context7 mcp server at all times to do research on important documentation if you're unsure of something.
