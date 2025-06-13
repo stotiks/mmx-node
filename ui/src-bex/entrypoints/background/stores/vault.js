@@ -155,8 +155,17 @@ class Vault {
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
+
+        // Validate that the wallet exists
+        const wallets = this.getWallets();
+        const walletExists = wallets.some((wallet) => wallet.address === address);
+
+        if (!walletExists) {
+            throw new Error(`Wallet with address ${address} not found`);
+        }
+
         this.#currentWalletAddress = address;
-        //this.emit("current-wallet-updated");
+        this.emit("current-wallet-changed", { address });
     }
 
     async getECDSAWalletAsync(address = this.getCurrentWalletAddress()) {
