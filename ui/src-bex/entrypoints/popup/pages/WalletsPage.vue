@@ -39,7 +39,7 @@ const { wallets, currentWalletAddress } = storeToRefs(vaultStore);
 
 const columns = computed(() => [
     { name: "height", label: "Wallet", field: "address", align: "left" },
-    { name: "actions", label: "", align: "left" },
+    { name: "actions", label: "", align: "right" },
 ]);
 
 const newWalletMnemonic = ref("");
