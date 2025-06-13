@@ -195,20 +195,23 @@ class Vault {
     // permissions
     #allowedOriginsSet = new Set();
 
+    #checkUrl(url) {
+        const urlObj = new URL(url);
+        // Security check: don't allow file:// or other potentially unsafe protocols
+        if (!["http:", "https:"].includes(urlObj.protocol)) {
+            throw new Error(`Unsafe protocol not allowed: ${urlObj.protocol}`);
+        }
+        return urlObj;
+    }
+
     async checkPermissionsAsync(url) {
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
 
         try {
-            const urlObj = new URL(url);
+            const urlObj = this.#checkUrl(url);
             const origin = urlObj.origin;
-
-            // Security check: don't allow file:// or other potentially unsafe protocols
-            if (!["http:", "https:"].includes(urlObj.protocol)) {
-                console.warn(`Vault: Unsafe protocol detected: ${urlObj.protocol}`);
-                return false;
-            }
 
             return this.#allowedOriginsSet.has(origin);
         } catch (error) {
@@ -223,13 +226,8 @@ class Vault {
         }
 
         try {
-            const urlObj = new URL(url);
+            const urlObj = this.#checkUrl(url);
             const origin = urlObj.origin;
-
-            // Security check: don't allow file:// or other potentially unsafe protocols
-            if (!["http:", "https:"].includes(urlObj.protocol)) {
-                throw new Error(`Unsafe protocol not allowed: ${urlObj.protocol}`);
-            }
 
             this.#allowedOriginsSet.add(origin);
             this.emit("permission-granted", { origin });
@@ -245,7 +243,7 @@ class Vault {
         }
 
         try {
-            const urlObj = new URL(url);
+            const urlObj = this.#checkUrl(url);
             const origin = urlObj.origin;
 
             this.#allowedOriginsSet.delete(origin);
