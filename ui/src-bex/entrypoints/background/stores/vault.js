@@ -194,23 +194,73 @@ class Vault {
 
     // permissions
     #allowedOriginsSet = new Set();
+
     async checkPermissionsAsync(url) {
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
-        const origin = new URL(url).origin;
-        if (this.#allowedOriginsSet.has(origin)) {
-            return true;
+
+        try {
+            const urlObj = new URL(url);
+            const origin = urlObj.origin;
+
+            // Security check: don't allow file:// or other potentially unsafe protocols
+            if (!["http:", "https:"].includes(urlObj.protocol)) {
+                console.warn(`Vault: Unsafe protocol detected: ${urlObj.protocol}`);
+                return false;
+            }
+
+            return this.#allowedOriginsSet.has(origin);
+        } catch (error) {
+            console.error("Vault: Invalid URL provided to checkPermissionsAsync:", error);
+            return false;
         }
-        return false;
     }
 
     async allowUrlAsync(url) {
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
         }
-        const origin = new URL(url).origin;
-        this.#allowedOriginsSet.add(origin);
+
+        try {
+            const urlObj = new URL(url);
+            const origin = urlObj.origin;
+
+            // Security check: don't allow file:// or other potentially unsafe protocols
+            if (!["http:", "https:"].includes(urlObj.protocol)) {
+                throw new Error(`Unsafe protocol not allowed: ${urlObj.protocol}`);
+            }
+
+            this.#allowedOriginsSet.add(origin);
+            this.emit("permission-granted", { origin });
+        } catch (error) {
+            console.error("Vault: Failed to allow URL:", error);
+            throw new Error(`Invalid URL: ${error.message}`);
+        }
+    }
+
+    async revokeUrlAsync(url) {
+        if (this.isUnlocked !== true) {
+            throw new Error("Vault is locked");
+        }
+
+        try {
+            const urlObj = new URL(url);
+            const origin = urlObj.origin;
+
+            this.#allowedOriginsSet.delete(origin);
+            this.emit("permission-revoked", { origin });
+        } catch (error) {
+            console.error("Vault: Failed to revoke URL:", error);
+            throw new Error(`Invalid URL: ${error.message}`);
+        }
+    }
+
+    getAllowedOrigins() {
+        if (this.isUnlocked !== true) {
+            throw new Error("Vault is locked");
+        }
+        return Array.from(this.#allowedOriginsSet);
     }
 
     // events
