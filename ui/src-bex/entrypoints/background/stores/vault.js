@@ -80,6 +80,11 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
+        // Validate inputs
+        if (typeof password !== "string" || typeof newPassword !== "string") {
+            throw new Error("Passwords must be strings");
+        }
+
         if (!timingSafeEqual(password, this.#password)) {
             throw new Error("Wrong password");
         }
