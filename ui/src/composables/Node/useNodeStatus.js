@@ -21,9 +21,10 @@ export const useNodeStatus = () => {
     const syncFails = ref(1);
 
     const isQueryTakingLong = useIsQueryTakingLong(1000);
+
     const connectedToNode = computed(() => sessionFails.value < 1);
-    const connectedToNetwork = computed(() => peerFails.value < 1 || !isLocalNode.value);
-    const synced = computed(() => syncFails.value < 1);
+    const connectedToNetwork = computed(() => (connectedToNode.value && peerFails.value < 1) || !isLocalNode.value);
+    const synced = computed(() => connectedToNetwork.value && syncFails.value < 1);
 
     // --- Session
     const session = useSessionMutation();
@@ -45,7 +46,7 @@ export const useNodeStatus = () => {
     };
 
     const sessionInterval = computed(() => {
-        let interval = connectedToNode.value && connectedToNetwork.value ? 5000 : 1000;
+        let interval = connectedToNode.value ? 5000 : 1000;
         if (!sessionStore.isLoggedIn) {
             interval = -1;
         }
@@ -70,11 +71,10 @@ export const useNodeStatus = () => {
             },
         });
 
-    const syncing = ref(false);
     const peerInfoInterval = computed(() => {
         let interval = connectedToNetwork.value ? 5000 : 1000;
 
-        if (!connectedToNode.value || syncing.value) {
+        if (!connectedToNode.value) {
             interval = -1;
         }
         return interval;
@@ -83,6 +83,7 @@ export const useNodeStatus = () => {
     useIntervalFn2(peerInfoIntervalFn, peerInfoInterval);
 
     // --- Sync
+    const syncing = ref(false);
     const nodeInfoMutation = useNodeInfoMutation();
     const nodeInfoIntervalFn = () =>
         nodeInfoMutation.mutate(null, {
