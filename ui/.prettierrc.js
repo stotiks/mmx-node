@@ -6,6 +6,7 @@ const config = {
     trailingComma: "es5",
     tabWidth: 4,
     useTabs: false,
+    singleQuote: false,
     overrides: [
         {
             files: "package.json",
