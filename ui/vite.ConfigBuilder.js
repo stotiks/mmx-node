@@ -152,6 +152,7 @@ export class ConfigBuilder {
                 dirs: ["src/utils/**/*", "src/composables/**/*", "src/stores/**/*"],
                 eslintrc: {
                     enabled: true,
+                    filepath: fileURLToPath(new URL("./.eslintrc-auto-import.json", import.meta.url)),
                 },
                 vueTemplate: true,
             }),
