@@ -22,7 +22,8 @@
 <script setup>
 import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
 
-const password = ref("password");
+const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
+const password = ref(test_password || "");
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
