@@ -1,4 +1,4 @@
-import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+import { MessageHandler } from "@bex/messaging/MessageHandler";
 import vault from "../stores/vault";
 
-export const vaultMessageHandler = new MessageHandlerBase(vault);
+export const vaultMessageHandler = new MessageHandler(vault);

@@ -1,5 +1,5 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
-import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+import { MessageHandler } from "@bex/messaging/MessageHandler";
 
 export const useVaultMessageHandler = () => {
     const $q = useQuasar();
@@ -29,6 +29,6 @@ export const useVaultMessageHandler = () => {
             console.log("currentWalletChanged");
         };
     }
-    const vaultMessageHandler = new MessageHandlerBase(VaultMessageHandlerMethods);
+    const vaultMessageHandler = new MessageHandler(VaultMessageHandlerMethods);
     vaultMessageHandler.register(popupMessenger.onMessage, "vault");
 };
