@@ -2,6 +2,10 @@
     <q-page-container>
         <q-page padding>
             <h6>BEX Playground</h6>
+
+            <q-chip v-if="isBexLoaded" color="positive" :icon="mdiCheck" label="Extension Loaded" />
+            <q-chip v-else color="negative" :icon="mdiCheck" label="Extension Not Loaded" />
+
             <div v-if="isBexLoaded" class="q-gutter-y-sm">
                 <template v-for="request in requests" :key="request">
                     <q-card flat>
@@ -19,12 +23,13 @@
                     </q-card>
                 </template>
             </div>
-            <div v-else>Extension is not loaded</div>
         </q-page>
     </q-page-container>
 </template>
 
 <script setup>
+import { mdiCheck } from "@mdi/js";
+
 const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
 
 const isBexLoaded = computed(() => window.mmx && window.mmx.isFurryVault);
