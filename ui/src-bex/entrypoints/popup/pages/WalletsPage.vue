@@ -42,7 +42,8 @@ const columns = computed(() => [
     { name: "actions", label: "", align: "right" },
 ]);
 
-const newWalletMnemonic = ref("");
+const test_mnemonic = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_MNEMONIC;
+const newWalletMnemonic = ref(test_mnemonic || "");
 const newWalletPassword = ref("");
 
 const handleAddWalletAsync = async () => {
