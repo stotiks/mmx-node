@@ -11,12 +11,12 @@
                     <q-card flat>
                         <q-card-section>
                             <q-btn outline no-caps :label="request.method" @click="handleRequest(request)" />
-                            <template v-if="requestResults[request.method]">
-                                <template v-if="typeof requestResults[request.method] == 'object'">
-                                    <highlightjs :code="stringify(requestResults[request.method])" class="hljsCode" />
+                            <template v-if="requestResults.get(request)">
+                                <template v-if="typeof requestResults.get(request) == 'object'">
+                                    <highlightjs :code="stringify(requestResults.get(request))" class="hljsCode" />
                                 </template>
                                 <template v-else>
-                                    <highlightjs :code="requestResults[request.method].toString()" class="hljsCode" />
+                                    <highlightjs :code="requestResults.get(request).toString()" class="hljsCode" />
                                 </template>
                             </template>
                         </q-card-section>
@@ -35,7 +35,7 @@ const stringify = (value) => (value instanceof Object ? JSON.stringify(value, nu
 const isBexLoaded = computed(() => window.mmx && window.mmx.isFurryVault);
 const vault = computed(() => isBexLoaded.value && window.mmx);
 
-const requestResults = ref([]);
+const requestResults = ref(new Map());
 
 const requests = [
     // dummy method for testing
@@ -108,7 +108,8 @@ const doRequest = async (payload) => {
 };
 
 const handleRequest = async (request) => {
-    requestResults.value[request.method] = await doRequest({ method: request.method, params: request.params });
+    const result = await doRequest({ method: request.method, params: request.params });
+    requestResults.value.set(request, result);
 };
 // window.addEventListener("message", function (event) {
 //     // Handle all incoming messages
