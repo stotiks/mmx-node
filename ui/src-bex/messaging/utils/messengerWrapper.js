@@ -26,28 +26,15 @@ const sendMessageWrapper = (sendMessage) => async (messageID, payload, target) =
             throw new Error(error || "Unknown error occurred");
         }
     } else {
-        return response;
+        //console.error("Invalid response:", response);
+        throw new Error("Invalid response: " + response);
     }
 };
 
-export const messengerWrapper = (messenger) => {
-    const sendMessageAsync = sendMessageWrapper(messenger.sendMessage);
-    const onMessage = (messageID, callback) => messenger.onMessage(messageID, callbackGuard(callback));
-    const onWindowMessage = messenger.onMessage;
-
-    const messengerWrapped = {
-        sendMessageAsync,
-        onMessage,
-        onWindowMessage,
-    };
-
-    if (messenger.allowWindowMessaging) {
-        messengerWrapped.allowWindowMessaging = () => messenger.allowWindowMessaging(namespace);
-    }
-
-    if (messenger.setNamespace) {
-        messengerWrapped.setNamespace = () => messenger.setNamespace(namespace);
-    }
-
-    return messengerWrapped;
-};
+export const messengerWrapper = (messenger) => ({
+    sendMessageAsync: sendMessageWrapper(messenger.sendMessage),
+    onMessage: (messageID, callback) => messenger.onMessage(messageID, callbackGuard(callback)),
+    onWindowMessage: messenger.onMessage,
+    allowWindowMessaging: messenger.allowWindowMessaging?.bind(null, namespace),
+    setNamespace: messenger.setNamespace?.bind(null, namespace),
+});
