@@ -1,5 +1,5 @@
 import { defineBackground } from "#imports";
-import { backgroundMessenger } from "@bex/messaging/background";
+import { backgroundMessenger } from "@bex/messaging/entrypointMessengers/background";
 import { vaultMessageHandler } from "./MessageHandlers/VaultMessageHandler";
 import { requestMessageHandler } from "./MessageHandlers/RequestMessageHandler";
 import vault from "./stores/vault";

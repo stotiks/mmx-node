@@ -1,5 +1,5 @@
 import { defineContentScript, injectScript } from "#imports";
-import { contentScriptMessenger } from "@bex/messaging/content-script";
+import { contentScriptMessenger } from "@bex/messaging/entrypointMessengers/content-script";
 
 export default defineContentScript({
     matches: ["<all_urls>"],
