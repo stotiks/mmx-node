@@ -1,4 +1,4 @@
-import { windowMessenger } from "@bex/messaging/window";
+import { windowMessenger } from "@bex/messaging/entrypointMessengers/window";
 windowMessenger.setNamespace();
 
 const proxify = (obj) =>
