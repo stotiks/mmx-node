@@ -20,11 +20,7 @@ export class MessageHandlerBase {
             throw new Error(`No handler found for method: ${method}`);
         }
 
-        const callFnAsync =
-            handler &&
-            (async () => {
-                return await handler.call(hm, params);
-            });
+        const callFnAsync = handler && (() => handler.call(this.#handlerMethods, params));
 
         return {
             callFnAsync,
