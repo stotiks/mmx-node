@@ -10,7 +10,6 @@ import VueDevTools from "vite-plugin-vue-devtools";
 
 import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
 import vue from "@vitejs/plugin-vue";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
@@ -109,9 +108,6 @@ export class ConfigBuilder {
     initConfig = {
         base: "./",
         plugins: [
-            nodePolyfills({
-                include: ["buffer"],
-            }),
             VueDevTools(),
             vue({
                 template: { transformAssetUrls },
