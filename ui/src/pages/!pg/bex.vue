@@ -28,9 +28,7 @@
                                     @click="handleRequest(request)"
                                 />
                                 <q-space />
-                                <q-chip v-if="request.params" size="sm" color="info" text-color="white">
-                                    Has Params
-                                </q-chip>
+                                <q-chip v-if="request.params" size="sm" color="info" outline> Has Params </q-chip>
                             </div>
 
                             <template v-if="request.params">
@@ -142,6 +140,7 @@ const requests = [
             options: { fee_ratio: 1024, expire_at: -1, nonce: "8425803021051778044", network: "mainnet" },
         },
     },
+
     // Error testing
     {
         method: "mmx_send",
@@ -164,6 +163,7 @@ const doRequest = async (payload) => {
 };
 
 const handleRequest = async (request) => {
+    requestResults.value.delete(request);
     const result = await doRequest({ method: request.method, params: request.params });
     requestResults.value.set(request, result);
 };
