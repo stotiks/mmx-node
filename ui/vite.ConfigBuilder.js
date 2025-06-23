@@ -109,7 +109,9 @@ export class ConfigBuilder {
     initConfig = {
         base: "./",
         plugins: [
-            nodePolyfills(),
+            nodePolyfills({
+                include: ["buffer"],
+            }),
             VueDevTools(),
             vue({
                 template: { transformAssetUrls },
