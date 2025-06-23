@@ -173,13 +173,13 @@ class Vault {
         this.emit("current-wallet-changed", { address });
     }
 
-    async getECDSAWalletAsync(address = this.getCurrentWalletAddress()) {
-        if (!address) {
-            throw new Error("No wallet selected");
-        }
-
+    async getECDSAWalletAsync(address) {
         if (this.isUnlocked !== true) {
             throw new Error("Vault is locked");
+        }
+
+        if (!address) {
+            throw new Error("No wallet selected");
         }
 
         const wallet = this.#wallets$$sensitive.find((wallet) => wallet.address === address);
