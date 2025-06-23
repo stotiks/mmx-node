@@ -3,6 +3,8 @@ import { BuildTargets, ConfigBuilder } from "./vite.ConfigBuilder";
 
 import { fileURLToPath, URL } from "node:url";
 
+import { nodePolyfills } from "vite-plugin-node-polyfills";
+
 // See https://wxt.dev/api/config.html
 export default defineConfig({
     srcDir: "src",
@@ -36,6 +38,13 @@ export default defineConfig({
         });
 
         const config = configBuilder.config;
+
+        (config.plugins ??= []).push(
+            nodePolyfills({
+                include: ["buffer"],
+            })
+        );
+
         (config.build ??= {}).sourcemap = false;
         delete config.server?.hmr;
 
