@@ -47,7 +47,7 @@ export class MessageHandler {
         return foundHandler;
     }
 
-    getHandlerData(message) {
+    getContext(message) {
         const { method, params } = message.data;
         const handler = this.#findHandler(method);
 
@@ -57,6 +57,7 @@ export class MessageHandler {
         }
 
         return {
+            message,
             handler,
             method,
             params,
@@ -64,8 +65,8 @@ export class MessageHandler {
     }
 
     async handleAsync(message) {
-        const { handler, method, params } = this.getHandlerData(message);
-        const context = { message, handler, method, params };
+        const context = this.getContext(message);
+        const { handler, method, params } = context;
 
         try {
             await this.#runHooks(context);
