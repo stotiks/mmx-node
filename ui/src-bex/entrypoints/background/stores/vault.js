@@ -161,6 +161,12 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
+        if (!address) {
+            this.#currentWalletAddress = null;
+            this.emit("current-wallet-changed", { address });
+            return;
+        }
+
         // Validate that the wallet exists
         const wallets = this.getWallets();
         const walletExists = wallets.some((wallet) => wallet.address === address);
