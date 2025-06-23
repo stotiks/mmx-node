@@ -3,7 +3,7 @@
         <q-card flat>
             <q-card-section class="q-gutter-y-sm">
                 <div>Update password</div>
-                <q-input v-model="password" type="password" label="Password" filled dense />
+                <q-input v-model="password" type="password" label="Old password" filled dense />
                 <q-input v-model="newPassword" type="password" label="New password" filled dense />
                 <q-btn flat @click="handleUpdatePasswordAsync">Update</q-btn>
             </q-card-section>
