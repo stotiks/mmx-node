@@ -3,7 +3,7 @@
         <q-page padding>
             <h6>BEX Playground</h6>
             <div v-if="isBexLoaded" class="q-gutter-y-sm">
-                <template v-for="request in requests" :key="request.method">
+                <template v-for="request in requests" :key="request">
                     <q-card flat>
                         <q-card-section>
                             <q-btn outline no-caps :label="request.method" @click="handleRequest(request)" />
