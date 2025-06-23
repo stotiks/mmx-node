@@ -41,14 +41,17 @@ const requests = [
     // dummy method for testing
     { method: "dummy" },
 
+    // Basic wallet information
     { method: "mmx_blockNumber" },
     { method: "mmx_requestWallets" },
     { method: "mmx_getCurrentWallet" },
     { method: "mmx_getPubKey" },
     { method: "mmx_getNetwork" },
 
+    // Message signing
     { method: "mmx_signMessage", params: { message: "test123" } },
 
+    // Transaction sending
     {
         method: "mmx_send",
         params: {
@@ -64,6 +67,7 @@ const requests = [
         },
     },
 
+    // Transaction signing
     {
         method: "mmx_signTransaction",
         params: {
