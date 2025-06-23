@@ -4,6 +4,7 @@
             <q-card-section class="q-gutter-y-sm">
                 <div>Update password</div>
                 <q-input v-model="password" type="password" label="Old password" filled dense />
+
                 <q-input v-model="newPassword" type="password" label="New password" filled dense />
                 <q-btn flat @click="handleUpdatePasswordAsync">Update</q-btn>
             </q-card-section>
@@ -18,8 +19,9 @@ const vaultStore = useVaultStore();
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-const password = ref("password");
-const newPassword = ref("password");
+const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
+const password = ref(test_password || "");
+const newPassword = ref(test_password || "");
 
 const handleUpdatePasswordAsync = async () => {
     await tryCatchWrapperAsync(() =>
