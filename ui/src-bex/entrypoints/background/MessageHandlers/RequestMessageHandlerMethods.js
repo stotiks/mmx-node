@@ -83,10 +83,6 @@ export class RequestMessageHandlerMethods {
         if (typeof dst_addr !== "string" || !dst_addr.trim()) {
             throw new Error("Invalid dst_addr: must be a non-empty string");
         }
-        // Validate currency
-        if (typeof currency !== "string" || !currency.trim()) {
-            throw new Error("Invalid currency: must be a non-empty string");
-        }
         // Validate options
         if (typeof _options !== "object" || _options === null) {
             throw new Error("Invalid options format");
