@@ -24,6 +24,10 @@ export const useVaultMessageHandler = () => {
         static walletRemoved = async () => {
             $q.notify({ type: "positive", message: "Wallet removed" });
         };
+
+        static currentWalletChanged = async () => {
+            console.log("currentWalletChanged");
+        };
     }
     const vaultMessageHandler = new MessageHandlerBase(VaultMessageHandlerMethods);
     vaultMessageHandler.register(popupMessenger.onMessage, "vault");
