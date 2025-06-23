@@ -4,9 +4,8 @@
             <q-card-section class="q-gutter-y-sm">
                 <div>Update password</div>
                 <q-form class="q-gutter-y-sm" @submit="handleUpdatePasswordAsync" @reset="handleReset">
-                    <q-input
+                    <WPasswordInput
                         v-model="password"
-                        :type="showPassword ? 'text' : 'password'"
                         label="Old password"
                         filled
                         dense
@@ -14,9 +13,8 @@
                         :rules="[rules.required]"
                     />
 
-                    <q-input
+                    <WPasswordInput
                         v-model="newPassword"
-                        type="password"
                         label="New password"
                         filled
                         dense
@@ -24,9 +22,8 @@
                         :rules="[rules.required]"
                         class="q-mt-md"
                     />
-                    <q-input
+                    <WPasswordInput
                         v-model="newPasswordConfirm"
-                        type="password"
                         label="Confirm new password"
                         filled
                         dense
@@ -45,6 +42,8 @@
 </template>
 
 <script setup>
+import WPasswordInput from "@/components/UI/WPasswordInput.vue";
+
 import rules from "@/helpers/rules";
 const match = (value, message) => (v) => v === value || message;
 
@@ -59,15 +58,13 @@ import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-const test_password = process.env.NODE_ENV === "development1" && import.meta.env.VITE_TEST_PASSWORD;
+const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
 const password = ref(test_password || "");
 const newPassword = ref(test_password || "");
 const newPasswordConfirm = ref(test_password || "");
-
-const showPassword = ref(false);
-const toggleShowPassword = () => (showPassword.value = !showPassword.value);
 
 const handleUpdatePasswordAsync = async () => {
     await tryCatchWrapperAsync(() =>

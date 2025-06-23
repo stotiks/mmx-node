@@ -1,10 +1,10 @@
 <template>
     <q-form class="q-gutter-sm" @submit="handleUnlockAsync">
-        <q-input v-model="password" type="password" required filled label="Password">
+        <WPasswordInput v-model="password" required filled label="Password">
             <template v-slot:prepend>
                 <q-icon :name="mdiShieldLockOpen" />
             </template>
-        </q-input>
+        </WPasswordInput>
         <div class="row justify-center">
             <q-btn
                 label="Unlock"
@@ -21,6 +21,7 @@
 
 <script setup>
 import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
+import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 
 const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
 const password = ref(test_password || "");
