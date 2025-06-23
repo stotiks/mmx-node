@@ -17,14 +17,14 @@ export const getCurrentWallet = () => {
     return getWalletByAddress(address);
 };
 
-export const getPubKeyAsync = async (address) => {
+export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) => {
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
     const { pubKey } = await ecdsaWallet.getKeysAsync(0);
 
     return bytesToHex(pubKey).toUpperCase();
 };
 
-export const signMessageAsync = async (msg, address) => {
+export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddress()) => {
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
     return await ecdsaWallet.signMsgAsync(address, msg);
 };
@@ -45,7 +45,13 @@ export const signMessageAsync = async (msg, address) => {
 //     return mojoAmount;
 // };
 
-export const getSendTxAsync = async (amount, dst_addr, currency, options, address) => {
+export const getSendTxAsync = async (
+    amount,
+    dst_addr,
+    currency,
+    options,
+    address = vault.getCurrentWalletAddress()
+) => {
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
     if (!currency) {
         currency = new addr_t().toString();
@@ -55,7 +61,7 @@ export const getSendTxAsync = async (amount, dst_addr, currency, options, addres
     return tx;
 };
 
-export const signTransactionAsync = async (tx, options, address) => {
+export const signTransactionAsync = async (tx, options, address = vault.getCurrentWalletAddress()) => {
     const ecdsaWallet = await vault.getECDSAWalletAsync(address);
     await ecdsaWallet.signOfAsync(tx, options);
 };
