@@ -1,4 +1,4 @@
-import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+import { MessageHandler } from "@bex/messaging/MessageHandler";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { RequestMessageHandlerMethods } from "./RequestMessageHandlerMethods";
 
@@ -11,7 +11,7 @@ const getTabUrl = async (tabId) => {
     return url;
 };
 
-class MessageHandlerWithAuth extends MessageHandlerBase {
+class MessageHandlerWithAuth extends MessageHandler {
     async requestPermissionsAndAcceptAsync(message) {
         console.log("Checking permissions...");
 

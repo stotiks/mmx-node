@@ -2,7 +2,7 @@ const toCamelCase = (str) => {
     return str.replace(/-([a-zA-Z])/g, (match, group1) => group1.toUpperCase());
 };
 
-export class MessageHandlerBase {
+export class MessageHandler {
     #handlerMethods;
 
     constructor(handlerMethods) {

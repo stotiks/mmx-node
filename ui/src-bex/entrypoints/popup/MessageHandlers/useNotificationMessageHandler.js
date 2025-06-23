@@ -1,5 +1,5 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
-import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
+import { MessageHandler } from "@bex/messaging/MessageHandler";
 
 export const useNotificationMessageHandler = () => {
     const isRunning = ref(false);
@@ -45,7 +45,7 @@ export const useNotificationMessageHandler = () => {
             };
         }
 
-        class MessageHandlerNotification extends MessageHandlerBase {
+        class MessageHandlerNotification extends MessageHandler {
             async handleAsync(message) {
                 return await super.handleAsync(message).finally(() => {
                     isLoading.value = false;
