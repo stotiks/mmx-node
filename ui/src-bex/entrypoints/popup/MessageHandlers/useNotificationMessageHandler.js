@@ -1,4 +1,4 @@
-import { popupMessenger } from "@bex/messaging/popup";
+import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandlerBase } from "@bex/messaging/utils/MessageHandlerBase";
 
 export const useNotificationMessageHandler = () => {
