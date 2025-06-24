@@ -38,7 +38,13 @@ const vaultStore = useVaultStore();
 const { wallets, currentWalletAddress } = storeToRefs(vaultStore);
 
 const columns = computed(() => [
-    { name: "height", label: "Wallet", field: "address", align: "left" },
+    {
+        name: "height",
+        label: "Wallet",
+        field: "address",
+        align: "left",
+        format: (val) => getShortAddr(val, 25),
+    },
     { name: "actions", label: "", align: "right" },
 ]);
 
