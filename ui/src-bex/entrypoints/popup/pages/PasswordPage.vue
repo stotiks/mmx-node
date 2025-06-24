@@ -1,56 +1,56 @@
 <template>
-    <q-page padding>
-        <q-card flat>
-            <q-card-section class="q-gutter-y-sm">
-                <div>Update password</div>
-                <q-form class="q-gutter-y-sm" @submit="handleUpdatePasswordAsync" @reset="handleReset">
-                    <WPasswordInput
-                        v-model="password"
-                        label="Old password"
-                        filled
-                        dense
-                        hide-bottom-space
-                        :rules="[rules.required]"
-                    />
+    <q-page padding style="padding-top: 66px">
+        <div class="row justify-center">
+            <q-card flat class="self-center col-xl-4 col-lg-6 col-md-8 col-sm-10 col-xs-10">
+                <q-card-section class="q-gutter-y-sm">
+                    <div class="text-h6 text-center">Update password</div>
+                    <q-form class="q-gutter-y-md" @submit="handleUpdatePasswordAsync" @reset="handleReset">
+                        <WPasswordInput
+                            v-model="password"
+                            label="Old password"
+                            filled
+                            dense
+                            hide-bottom-space
+                            :rules="[rules.required]"
+                        />
 
-                    <div class="text-caption">
-                        Password must contain at least:
-                        <ul style="list-style-type: none; padding-left: 0">
-                            <li
+                        <WPasswordInput
+                            v-model="newPassword"
+                            label="New password"
+                            filled
+                            dense
+                            hide-bottom-space
+                            :rules="[rules.required, passwordRule]"
+                        />
+
+                        <!-- <div class="text-caption q-gutter-xs">
+                            <div
                                 v-for="(rule, index) in passwordRules"
                                 :key="index"
-                                :class="{ 'text-positive': rule.valid }"
+                                :class="['row', 'items-center', { 'text-positive': rule.valid }]"
                             >
-                                <q-icon :name="rule.valid ? mdiCheck : mdiClose" />
-                                {{ rule.label }}
-                            </li>
-                        </ul>
-                    </div>
-                    <WPasswordInput
-                        v-model="newPassword"
-                        label="New password"
-                        filled
-                        dense
-                        hide-bottom-space
-                        :rules="[rules.required, passwordRule]"
-                        class="q-mt-md"
-                    />
-                    <WPasswordInput
-                        v-model="newPasswordConfirm"
-                        label="Confirm new password"
-                        filled
-                        dense
-                        hide-bottom-space
-                        reactive-rules
-                        :rules="[rules.required, match(newPassword, 'Passwords do not match.')]"
-                    />
-                    <div>
-                        <q-btn label="Update" type="submit" color="primary" />
-                        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
-                    </div>
-                </q-form>
-            </q-card-section>
-        </q-card>
+                                <q-icon size="xs" :name="rule.valid ? mdiCheck : mdiClose" />
+                                <div>{{ rule.label }}</div>
+                            </div>
+                        </div> -->
+
+                        <WPasswordInput
+                            v-model="newPasswordConfirm"
+                            label="Confirm new password"
+                            filled
+                            dense
+                            hide-bottom-space
+                            reactive-rules
+                            :rules="[rules.required, match(newPassword, 'Passwords do not match.')]"
+                        />
+                        <div class="row justify-between">
+                            <q-btn label="Reset" type="reset" color="primary" flat />
+                            <q-btn label="Update" type="submit" color="primary" />
+                        </div>
+                    </q-form>
+                </q-card-section>
+            </q-card>
+        </div>
     </q-page>
 </template>
 
