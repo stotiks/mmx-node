@@ -3,7 +3,7 @@
         <slot />
         <UseClipboard v-if="copy && defaultSlotContent" v-slot="{ copy: copyX, copied }">
             <q-btn
-                :icon-right="mdiContentCopy"
+                :icon-right="copied ? mdiCheck : mdiContentCopy"
                 flat
                 size="sm"
                 class="q-ml-sm q-pa-none"
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { mdiContentCopy } from "@mdi/js";
+import { mdiCheck, mdiContentCopy } from "@mdi/js";
 import { UseClipboard } from "@vueuse/components";
 
 const props = defineProps({
