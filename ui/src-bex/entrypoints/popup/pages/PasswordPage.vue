@@ -32,7 +32,6 @@
 <script setup>
 import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 import PasswordForm from "@bex/entrypoints/popup/components/PasswordForm.vue";
-import { ref } from "vue";
 import rules from "@/helpers/rules";
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
