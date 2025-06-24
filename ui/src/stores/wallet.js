@@ -1,14 +1,16 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
 
-export const useWalletStore = defineStore("wallet", {
-    state: () => ({
-        wallet: null,
-    }),
-    actions: {
-        doLogout() {
-            this.wallet = null;
-        },
-    },
+export const useWalletStore = defineStore("wallet", () => {
+    const wallet = ref(null);
+
+    const doLogout = () => {
+        wallet.value = null;
+    };
+
+    return {
+        wallet,
+        doLogout,
+    };
 });
 
 if (import.meta.hot) {

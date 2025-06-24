@@ -1,36 +1,44 @@
-import { defaultLocale, validateLocale } from "@/plugins/i18n";
+import { defaultLocale } from "@/plugins/i18n";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { useLocalStorage /*, useSessionStorage */ } from "@vueuse/core";
+import { useLocalStorage } from "@vueuse/core";
 
-const _isWinGUI = typeof window.mmx !== "undefined";
-const _isQtGUI = typeof window.mmx_qtgui !== "undefined";
+export const useAppStore = defineStore("app", () => {
+    const isDarkTheme = useLocalStorage("isDarkTheme", true);
+    const locale = useLocalStorage("locale", defaultLocale);
+    const _wapiBaseUrl = useLocalStorage("wapiBaseUrl", null);
 
-export const useAppStore = defineStore("app", {
-    state: () => ({
-        isDarkTheme: useLocalStorage("isDarkTheme", true),
-        locale: useLocalStorage("locale", defaultLocale),
-        _wapiBaseUrl: useLocalStorage("wapiBaseUrl", null),
-    }),
-    getters: {
-        isWinGUI: () => _isWinGUI,
-        isQtGUI: () => _isQtGUI,
-        isGUI: () => _isWinGUI || _isQtGUI,
-        wapiBaseUrl: (state) => {
+    const _isWinGUI = ref(typeof window.mmx !== "undefined");
+    const _isQtGUI = ref(typeof window.mmx_qtgui !== "undefined");
+
+    const isWinGUI = computed(() => _isWinGUI.value);
+    const isQtGUI = computed(() => _isQtGUI.value);
+    const isGUI = computed(() => isWinGUI.value || isQtGUI.value);
+
+    const wapiBaseUrl = computed(() => {
+        // eslint-disable-next-line no-undef
+        if (typeof __ALLOW_CUSTOM_RPC__ !== "undefined" && __ALLOW_CUSTOM_RPC__ === true) {
+            if (!isEmpty(_wapiBaseUrl.value)) {
+                return _wapiBaseUrl.value;
+            }
+        }
+
+        if (typeof __WAPI_URL__ !== "undefined") {
             // eslint-disable-next-line no-undef
-            if (typeof __ALLOW_CUSTOM_RPC__ !== "undefined" && __ALLOW_CUSTOM_RPC__ === true) {
-                if (!isEmpty(state._wapiBaseUrl)) {
-                    return state._wapiBaseUrl;
-                }
-            }
+            return __WAPI_URL__;
+        }
 
-            if (typeof __WAPI_URL__ !== "undefined") {
-                // eslint-disable-next-line no-undef
-                return __WAPI_URL__;
-            }
+        return null;
+    });
 
-            return null;
-        },
-    },
+    return {
+        isDarkTheme,
+        locale,
+        _wapiBaseUrl,
+        isWinGUI,
+        isQtGUI,
+        isGUI,
+        wapiBaseUrl,
+    };
 });
 
 if (import.meta.hot) {
