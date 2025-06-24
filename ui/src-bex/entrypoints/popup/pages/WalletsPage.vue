@@ -4,7 +4,7 @@
             <q-list bordered separator>
                 <q-item-label header>Wallets</q-item-label>
 
-                <q-item v-for="wallet in wallets" :key="wallet.address" tag="label" v-ripple>
+                <q-item v-for="wallet in wallets" :key="wallet.address">
                     <!-- <q-item-section avatar>
                         <q-radio v-model="currentWalletAddress" :val="wallet.address" />
                     </q-item-section> -->
@@ -12,14 +12,26 @@
                         <q-item-label>{{ getShortAddr(wallet.address, 25) }}</q-item-label>
                     </q-item-section>
                     <q-item-section side>
-                        <q-btn
-                            v-if="wallets.length > 1"
-                            flat
-                            dense
-                            round
-                            :icon="mdiDelete"
-                            @click.stop="handleRemoveWalletAsync(wallet.address)"
-                        />
+                        <div class="row">
+                            <UseClipboard v-slot="{ copy: copyX, copied }">
+                                <q-btn
+                                    flat
+                                    dense
+                                    round
+                                    :icon="copied ? mdiCheck : mdiContentCopy"
+                                    @click.stop="copyX(wallet.address)"
+                                >
+                                    <q-tooltip :model-value="copied === true" no-parent-event>Copied!</q-tooltip>
+                                </q-btn>
+                            </UseClipboard>
+                            <q-btn
+                                flat
+                                dense
+                                round
+                                :icon="mdiDelete"
+                                @click.stop="handleRemoveWalletAsync(wallet.address)"
+                            />
+                        </div>
                     </q-item-section>
                 </q-item>
 
@@ -49,7 +61,9 @@
 </template>
 
 <script setup>
-import { mdiDelete, mdiPlus } from "@mdi/js";
+import { mdiCheck, mdiContentCopy, mdiDelete, mdiPlus } from "@mdi/js";
+
+import { UseClipboard } from "@vueuse/components";
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
