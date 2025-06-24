@@ -19,7 +19,7 @@
                         filled
                         dense
                         hide-bottom-space
-                        :rules="[rules.required]"
+                        :rules="[rules.required, rules.password]"
                         class="q-mt-md"
                     />
                     <WPasswordInput
@@ -46,13 +46,6 @@ import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 
 import rules from "@/helpers/rules";
 const match = (value, message) => (v) => v === value || message;
-
-const newPasswordConfirmRules = computed(() => {
-    const np = newPassword.value;
-    return [rules.required, (val) => val === np || "Passwords do not match"];
-});
-
-const passwordMatch = (v) => v === newPassword.value || "Passwords do not match.";
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
