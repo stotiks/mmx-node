@@ -19,25 +19,6 @@ const rules = {
         }
         return true;
     },
-
-    password: (value) => {
-        if (value.length < 12) {
-            return "Password must be at least 12 characters long"; //TODO i18n
-        }
-        if (!/\d/.test(value)) {
-            return "Password must contain at least one digit"; //TODO i18n
-        }
-        if (!/[a-z]/.test(value)) {
-            return "Password must contain at least one lowercase letter"; //TODO i18n
-        }
-        if (!/[A-Z]/.test(value)) {
-            return "Password must contain at least one uppercase letter"; //TODO i18n
-        }
-        if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-            return "Password must contain at least one special character"; //TODO i18n
-        }
-        return true;
-    },
 };
 
 export default rules;
