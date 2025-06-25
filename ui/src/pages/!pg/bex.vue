@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { mdiCheck, mdiDeleteEmpty } from "@mdi/js";
+import { mdiCheck, mdiClose, mdiDeleteEmpty } from "@mdi/js";
 
 const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
 
