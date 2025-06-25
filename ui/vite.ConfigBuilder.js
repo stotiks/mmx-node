@@ -115,7 +115,7 @@ export class ConfigBuilder {
             // @quasar/plugin-vite options list:
             // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
             quasar({
-                sassVariables: "/src/css/quasar.variables.scss",
+                sassVariables: fileURLToPath(new URL("./src/css/quasar.variables.scss", import.meta.url)),
             }),
             Components({ dts: true }),
             Fonts({
