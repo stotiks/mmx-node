@@ -5,6 +5,7 @@
         filled
         dense
         hide-bottom-space
+        reactive-rules
         :rules="[rules.required, passwordRule]"
     />
 
@@ -26,19 +27,20 @@
         dense
         hide-bottom-space
         reactive-rules
-        :rules="[rules.required, match(newPassword, 'Passwords do not match.')]"
+        :rules="[rules.required, matchRule]"
     />
 </template>
 
 <script setup>
 import { mdiCheck, mdiClose } from "@mdi/js";
-import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 import rules from "@/helpers/rules";
+
+import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 
 const newPassword = defineModel("newPassword", { type: String });
 const newPasswordConfirm = defineModel("newPasswordConfirm", { type: String });
 
-const match = (value, message) => (v) => v === value || message;
+const matchRule = computed(() => (v) => v === newPassword.value || "Passwords do not match.");
 
 const passwordRules = computed(() => {
     const value = newPassword.value || "";
