@@ -2,8 +2,8 @@ import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
 
 export const useNotificationMessageHandler = () => {
-    const isRunning = ref(false);
-    const isLoading = ref(true);
+    const isLoading = ref(false);
+    const isMounted = ref(false);
 
     const isNotification = inject("isNotification");
     if (isNotification) {
@@ -31,16 +31,16 @@ export const useNotificationMessageHandler = () => {
             static dummy = async () => {};
 
             static requestPermissionsAndAccept = async (params) => {
-                if (isRunning.value === true) {
+                if (isLoading.value === true) {
                     throw new Error("Other request is running");
                 }
 
                 try {
-                    isRunning.value = true;
+                    isLoading.value = true;
                     const data = await showHandleRequestDialogAsync(params).catch(() => false);
                     return { success: true, data };
                 } finally {
-                    isRunning.value = false;
+                    isLoading.value = false;
                 }
             };
         }
@@ -48,7 +48,7 @@ export const useNotificationMessageHandler = () => {
         class MessageHandlerNotification extends MessageHandler {
             async handleAsync(message) {
                 return await super.handleAsync(message).finally(() => {
-                    isLoading.value = false;
+                    isMounted.value = true;
                 });
             }
         }
@@ -56,8 +56,8 @@ export const useNotificationMessageHandler = () => {
         const notificationMessageHandler = new MessageHandlerNotification(NotificationMessageHandlerMethods);
         notificationMessageHandler.register(popupMessenger.onMessage, "notification");
     } else {
-        isLoading.value = false;
+        isMounted.value = true;
     }
 
-    return { isRunning, isLoading };
+    return { isLoading, isMounted };
 };
