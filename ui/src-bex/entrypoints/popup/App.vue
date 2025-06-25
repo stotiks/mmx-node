@@ -1,10 +1,11 @@
 <template>
     <q-layout view="hHh lpR fFf">
         <q-page-container>
-            <q-inner-loading :showing="isLoading">
+            <q-inner-loading :showing="!isMounted">
                 <q-spinner-radio size="50px" color="primary" />
             </q-inner-loading>
-            <template v-if="!isLoading">
+
+            <template v-if="isMounted">
                 <template v-if="isUnlocked !== true">
                     <UnlockPage />
                 </template>
@@ -74,5 +75,5 @@ import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/u
 useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
-const { isLoading } = useNotificationMessageHandler();
+const { isMounted } = useNotificationMessageHandler();
 </script>
