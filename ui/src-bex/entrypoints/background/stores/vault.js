@@ -2,41 +2,47 @@ import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { EncryptedStorageItem } from "../utils/StorageItem";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
-
-/**
- * Constant-time string comparison to prevent timing attacks.
- * Returns true if a and b are equal, false otherwise.
- */
-function timingSafeEqual(a, b) {
-    if (typeof a !== "string" || typeof b !== "string") return false;
-    if (a.length !== b.length) return false;
-    let result = 0;
-    for (let i = 0; i < a.length; i++) {
-        result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    }
-    return result === 0;
-}
+import { sha256 } from "@noble/hashes/sha2";
 
 class Vault {
-    #password;
-
     #walletStorage = new EncryptedStorageItem("local:wallets");
     #wallets$$sensitive;
 
-    #currentWalletAddress;
-    getCurrentWalletAddress() {
-        return this.#currentWalletAddress;
-    }
-
-    getNetwork() {
-        return "mainnet";
-    }
-
+    #_isUnlocked = false;
     get isUnlocked() {
-        return this.#password != null;
+        return this.#_isUnlocked || false;
     }
 
     getIsUnlocked() {
+        return this.isUnlocked;
+    }
+
+    #setIsUnlocked(value) {
+        if (value !== this.#_isUnlocked) {
+            this.#_isUnlocked = value;
+            this.emit(value ? "unlocked" : "locked");
+        }
+    }
+
+    #encryptionKey = null;
+
+    async #generateEncryptionKey(password) {
+        const salt = "7YvAn2bkuXwWoF";
+        return bytesToHex(sha256(`${salt}${password}${salt}`)).toUpperCase();
+    }
+
+    async unlockAsync({ password }) {
+        if (this.isUnlocked === true) {
+            //throw new Error("Vault is unlocked already");
+            return this.isUnlocked;
+        }
+
+        const encryptionKey = await this.#generateEncryptionKey(password);
+        await this.#loadAsync(encryptionKey);
+
+        this.#encryptionKey = encryptionKey;
+
+        this.#setIsUnlocked(true);
         return this.isUnlocked;
     }
 
@@ -46,33 +52,41 @@ class Vault {
         }
         await this.saveAsync();
         await this.#unloadAsync();
-        this.emit("locked");
+        this.#setIsUnlocked(false);
         return this.isUnlocked;
     }
 
-    async unlockAsync({ password }) {
-        if (this.isUnlocked === true) {
-            //throw new Error("Vault is unlocked already");
-            return this.isUnlocked;
-        }
-
-        await this.#loadAsync(password);
-        this.#password = password;
-        this.emit("unlocked");
-        return this.isUnlocked;
+    async #getIsInitializedAsync() {
+        console.log("Vault: getIsInitializedAsync", await this.#walletStorage.exists());
+        return await this.#walletStorage.exists();
     }
 
-    async #loadAsync(password) {
-        if (await this.#walletStorage.exists()) {
-            this.#wallets$$sensitive = await this.#walletStorage.get(password);
-        } else {
-            this.#wallets$$sensitive = [];
+    async #loadAsync(encryptionKey) {
+        if (!(await this.#getIsInitializedAsync())) {
+            //throw new Error("Vault is not initialized");
+            await this.#initVaultAsync(encryptionKey);
         }
+
+        this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
     }
 
     async #unloadAsync() {
         this.#wallets$$sensitive = null;
-        this.#password = null;
+        this.#encryptionKey = null;
+    }
+
+    async saveAsync() {
+        if (this.isUnlocked !== true) {
+            throw new Error("Vault is locked");
+        }
+        await this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey);
+    }
+
+    async #initVaultAsync(encryptionKey) {
+        this.#wallets$$sensitive = [];
+        this.#encryptionKey = encryptionKey;
+        this.#setIsUnlocked(true);
+        await this.saveAsync();
     }
 
     async updatePasswordAsync({ password, newPassword }) {
@@ -85,15 +99,23 @@ class Vault {
             throw new Error("Passwords must be strings");
         }
 
-        if (!timingSafeEqual(password, this.#password)) {
+        const encryptionKey = await this.#generateEncryptionKey(password);
+        const newEncryptionKey = await this.#generateEncryptionKey(newPassword);
+
+        console.log("Vault: updatePasswordAsync", encryptionKey, this.#encryptionKey, newEncryptionKey);
+        if (encryptionKey !== this.#encryptionKey) {
             throw new Error("Wrong password");
         }
 
-        this.#password = newPassword;
+        this.#encryptionKey = newEncryptionKey;
         await this.saveAsync();
         this.emit("password-updated");
         return true;
     }
+
+    /*
+
+
 
     async removeDataAsync() {
         if (this.isUnlocked === true) {
@@ -101,12 +123,16 @@ class Vault {
         }
         await this.#walletStorage.remove();
     }
+*/
 
-    async saveAsync() {
-        if (this.isUnlocked !== true) {
-            throw new Error("Vault is locked");
-        }
-        await this.#walletStorage.set(this.#wallets$$sensitive, this.#password);
+    // Wallet
+    getNetwork() {
+        return "mainnet";
+    }
+
+    #currentWalletAddress;
+    getCurrentWalletAddress() {
+        return this.#currentWalletAddress;
     }
 
     #walletCleanup = ({ seed, password, ...wallet }) => wallet;
