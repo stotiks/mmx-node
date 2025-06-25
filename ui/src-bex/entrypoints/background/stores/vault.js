@@ -8,62 +8,52 @@ class Vault {
     #walletStorage = new EncryptedStorageItem("local:wallets");
     #wallets$$sensitive;
 
-    #_isUnlocked = false;
+    #isUnlocked = false;
     get isUnlocked() {
-        return this.#_isUnlocked || false;
-    }
-
-    getIsUnlocked() {
-        return this.isUnlocked;
-    }
-
-    #setIsUnlocked(value) {
-        if (value !== this.#_isUnlocked) {
-            this.#_isUnlocked = value;
-            this.emit(value ? "unlocked" : "locked");
-        }
+        return this.#isUnlocked;
     }
 
     #encryptionKey = null;
 
-    async #generateEncryptionKey(password) {
+    #generateEncryptionKey(password) {
         const salt = "7YvAn2bkuXwWoF";
         return bytesToHex(sha256(`${salt}${password}${salt}`)).toUpperCase();
     }
 
     async unlockAsync({ password }) {
-        if (this.isUnlocked === true) {
-            //throw new Error("Vault is unlocked already");
-            return this.isUnlocked;
+        if (this.isUnlocked) {
+            return true;
         }
 
-        const encryptionKey = await this.#generateEncryptionKey(password);
+        const encryptionKey = this.#generateEncryptionKey(password);
         await this.#loadAsync(encryptionKey);
-
         this.#encryptionKey = encryptionKey;
+        this.#isUnlocked = true;
+        this.emit("unlocked");
 
-        this.#setIsUnlocked(true);
-        return this.isUnlocked;
+        return true;
     }
 
     async lockAsync() {
-        if (this.isUnlocked !== true) {
-            throw new Error("Vault is locked already");
+        if (!this.isUnlocked) {
+            //throw new Error("Vault is locked already");
+            await this.#unloadAsync();
+            return false;
         }
         await this.saveAsync();
         await this.#unloadAsync();
-        this.#setIsUnlocked(false);
-        return this.isUnlocked;
+        this.#isUnlocked = false;
+        this.emit("locked");
+
+        return false;
     }
 
-    async #getIsInitializedAsync() {
-        console.log("Vault: getIsInitializedAsync", await this.#walletStorage.exists());
-        return await this.#walletStorage.exists();
+    async #checkIsInitializedAsync() {
+        return this.#walletStorage.exists();
     }
 
     async #loadAsync(encryptionKey) {
-        if (!(await this.#getIsInitializedAsync())) {
-            //throw new Error("Vault is not initialized");
+        if (!(await this.#checkIsInitializedAsync())) {
             await this.#initVaultAsync(encryptionKey);
         }
 
@@ -76,7 +66,7 @@ class Vault {
     }
 
     async saveAsync() {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
         await this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey);
@@ -85,39 +75,45 @@ class Vault {
     async #initVaultAsync(encryptionKey) {
         this.#wallets$$sensitive = [];
         this.#encryptionKey = encryptionKey;
-        this.#setIsUnlocked(true);
+        this.#isUnlocked = true;
         await this.saveAsync();
     }
 
     async updatePasswordAsync({ password, newPassword }) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
-        // Validate inputs
-        if (typeof password !== "string" || typeof newPassword !== "string") {
-            throw new Error("Passwords must be strings");
+        if (typeof password !== "string" || !password || typeof newPassword !== "string" || !newPassword) {
+            throw new Error("Passwords must be non-empty strings");
         }
 
-        const encryptionKey = await this.#generateEncryptionKey(password);
-        const newEncryptionKey = await this.#generateEncryptionKey(newPassword);
+        // This comparison is not a security risk because it does not involve a secret value.
+        // It's a simple validation check to ensure the new password is not the same as the old one.
+        // The actual credential check is performed later by comparing derived encryption keys, which is safe.
+        // eslint-disable-next-line security/detect-possible-timing-attacks
+        if (password === newPassword) {
+            throw new Error("New password must be different from the old password.");
+        }
 
-        console.log("Vault: updatePasswordAsync", encryptionKey, this.#encryptionKey, newEncryptionKey);
-        if (encryptionKey !== this.#encryptionKey) {
+        const currentEncryptionKey = this.#generateEncryptionKey(password);
+
+        if (currentEncryptionKey !== this.#encryptionKey) {
             throw new Error("Wrong password");
         }
 
-        this.#encryptionKey = newEncryptionKey;
+        this.#encryptionKey = this.#generateEncryptionKey(newPassword);
         await this.saveAsync();
         this.emit("password-updated");
         return true;
     }
 
     async removeVaultAsync() {
-        if (this.isUnlocked === true) {
-            throw new Error("Vault is unlocked, cannot remove data");
+        if (this.isUnlocked) {
+            throw new Error("Cannot remove vault while it is unlocked.");
         }
         await this.#walletStorage.remove();
+        this.emit("vault-removed");
     }
 
     // Wallet
