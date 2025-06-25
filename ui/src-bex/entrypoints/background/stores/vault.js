@@ -7,13 +7,13 @@ import { sha256 } from "@noble/hashes/sha2";
 class Vault {
     #walletStorage = new EncryptedStorageItem("local:wallets");
     #wallets$$sensitive;
-
     #isUnlocked = false;
+    #encryptionKey = null;
+    #currentWalletAddress = null;
+
     get isUnlocked() {
         return this.#isUnlocked;
     }
-
-    #encryptionKey = null;
 
     #generateEncryptionKey(password) {
         const salt = "7YvAn2bkuXwWoF";
@@ -44,7 +44,6 @@ class Vault {
         await this.#unloadAsync();
         this.#isUnlocked = false;
         this.emit("locked");
-
         return false;
     }
 
@@ -56,7 +55,6 @@ class Vault {
         if (!(await this.#checkIsInitializedAsync())) {
             await this.#initVaultAsync(encryptionKey);
         }
-
         this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
     }
 
@@ -97,7 +95,6 @@ class Vault {
         }
 
         const currentEncryptionKey = this.#generateEncryptionKey(password);
-
         if (currentEncryptionKey !== this.#encryptionKey) {
             throw new Error("Wrong password");
         }
@@ -121,12 +118,12 @@ class Vault {
         return "mainnet";
     }
 
-    #currentWalletAddress;
     getCurrentWalletAddress() {
         return this.#currentWalletAddress;
     }
 
     #walletCleanup = ({ seed, password, ...wallet }) => wallet;
+
     getWallets() {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
@@ -135,24 +132,19 @@ class Vault {
     }
 
     async addWalletAsync({ mnemonic, password = "" }) {
-        if (!this.isUnlocked) {
-            throw new Error("Vault is locked");
-        }
+        if (!this.isUnlocked) throw new Error("Vault is locked");
 
         const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
         const address = await ecdsaWallet.getAddressAsync(0);
         const seed = bytesToHex(mnemonicToSeed(mnemonic)).toUpperCase();
-
         const newWallet$$sensitive = { address, seed, password };
 
-        const wallets = this.getWallets();
-        if (wallets.some((wallet) => wallet.address === address)) {
+        if (this.getWallets().some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
         this.#wallets$$sensitive.push(newWallet$$sensitive);
         await this.saveAsync();
-
         this.emit("wallet-added", { address });
         return this.#walletCleanup(newWallet$$sensitive);
     }
@@ -169,7 +161,6 @@ class Vault {
 
         this.#wallets$$sensitive.splice(index, 1);
         await this.saveAsync();
-
         this.emit("wallet-removed");
     }
 
@@ -178,17 +169,7 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
-        if (!address) {
-            this.#currentWalletAddress = null;
-            this.emit("current-wallet-changed", { address });
-            return;
-        }
-
-        // Validate that the wallet exists
-        const wallets = this.getWallets();
-        const walletExists = wallets.some((wallet) => wallet.address === address);
-
-        if (!walletExists) {
+        if (address && !this.getWallets().some((wallet) => wallet.address === address)) {
             throw new Error(`Wallet with address ${address} not found`);
         }
 
@@ -210,9 +191,7 @@ class Vault {
             throw new Error(`Wallet not found for address: ${address}`);
         }
 
-        const seed = hexToBytes(wallet.seed);
-        const ecdsaWallet = new ECDSA_Wallet(seed, wallet.password);
-        return ecdsaWallet;
+        return new ECDSA_Wallet(hexToBytes(wallet.seed), wallet.password);
     }
 
     // permissions
@@ -233,9 +212,7 @@ class Vault {
         }
 
         try {
-            const urlObj = this.#checkUrl(url);
-            const origin = urlObj.origin;
-
+            const origin = this.#checkUrl(url).origin;
             return this.#allowedOriginsSet.has(origin);
         } catch (error) {
             console.error("Vault: Invalid URL provided to checkPermissionsAsync:", error);
@@ -249,9 +226,7 @@ class Vault {
         }
 
         try {
-            const urlObj = this.#checkUrl(url);
-            const origin = urlObj.origin;
-
+            const origin = this.#checkUrl(url).origin;
             this.#allowedOriginsSet.add(origin);
             this.emit("permission-granted", { origin });
         } catch (error) {
@@ -266,9 +241,7 @@ class Vault {
         }
 
         try {
-            const urlObj = this.#checkUrl(url);
-            const origin = urlObj.origin;
-
+            const origin = this.#checkUrl(url).origin;
             this.#allowedOriginsSet.delete(origin);
             this.emit("permission-revoked", { origin });
         } catch (error) {
@@ -329,9 +302,5 @@ class Vault {
     }
 }
 
-let vault;
-if (!vault) {
-    vault = new Vault();
-}
-
+const vault = new Vault();
 export default vault;
