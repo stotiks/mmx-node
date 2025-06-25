@@ -113,17 +113,12 @@ class Vault {
         return true;
     }
 
-    /*
-
-
-
-    async removeDataAsync() {
+    async removeVaultAsync() {
         if (this.isUnlocked === true) {
             throw new Error("Vault is unlocked, cannot remove data");
         }
         await this.#walletStorage.remove();
     }
-*/
 
     // Wallet
     getNetwork() {
