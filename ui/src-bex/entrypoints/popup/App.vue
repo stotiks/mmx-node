@@ -11,7 +11,9 @@
                 </template>
                 <template v-else>
                     <RouterView style="padding-top: 66px" />
-
+                    <q-inner-loading :showing="isActionRunning">
+                        <q-spinner-gears size="50px" color="primary" />
+                    </q-inner-loading>
                     <q-page-sticky expand position="top">
                         <q-toolbar>
                             <template v-if="route.path !== '/'">
@@ -76,4 +78,15 @@ useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
 const { isMounted } = useNotificationMessageHandler();
+
+const isActionRunning = ref(false);
+vaultStore.$onAction(({ name, after, onError }) => {
+    isActionRunning.value = true;
+    after(() => {
+        isActionRunning.value = false;
+    });
+    onError(() => {
+        isActionRunning.value = false;
+    });
+});
 </script>
