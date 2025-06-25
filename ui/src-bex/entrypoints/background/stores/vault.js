@@ -128,14 +128,14 @@ class Vault {
 
     #walletCleanup = ({ seed, password, ...wallet }) => wallet;
     getWallets() {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
         return this.#wallets$$sensitive.map((wallet) => this.#walletCleanup(wallet));
     }
 
     async addWalletAsync({ mnemonic, password = "" }) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -158,7 +158,7 @@ class Vault {
     }
 
     async removeWalletAsync({ address }) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -174,7 +174,7 @@ class Vault {
     }
 
     setCurrentWallet({ address }) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -197,7 +197,7 @@ class Vault {
     }
 
     async getECDSAWalletAsync(address) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -228,7 +228,7 @@ class Vault {
     }
 
     async checkPermissionsAsync(url) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -244,7 +244,7 @@ class Vault {
     }
 
     async allowUrlAsync(url) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -261,7 +261,7 @@ class Vault {
     }
 
     async revokeUrlAsync(url) {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
 
@@ -278,7 +278,7 @@ class Vault {
     }
 
     getAllowedOrigins() {
-        if (this.isUnlocked !== true) {
+        if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
         return Array.from(this.#allowedOriginsSet);
