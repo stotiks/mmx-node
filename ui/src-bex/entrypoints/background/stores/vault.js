@@ -15,6 +15,11 @@ class Vault {
         return this.#isUnlocked;
     }
 
+    // method for message handler
+    getIsUnlocked() {
+        return this.isUnlocked;
+    }
+
     #generateEncryptionKey(password) {
         const salt = "7YvAn2bkuXwWoF";
         return bytesToHex(sha256(`${salt}${password}${salt}`)).toUpperCase();
