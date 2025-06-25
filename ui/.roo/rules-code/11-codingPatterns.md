@@ -12,6 +12,10 @@ It is optional, but recommended to be updated as the project evolves.
 
 *   Prefer arrow functions
 
+## Code Refactoring
+
+*   When refactoring or rewriting code, avoid deleting useful comments that explain complex logic, the reasoning behind a specific implementation, or other important context.
+
 ## UI Patterns
 
 *   Use `@mdi/js` for icons.
@@ -36,4 +40,4 @@ The following are auto-imported across the application via `unplugin-auto-import
 
 ## BEX Custom Store
 
-*   The file [`src-bex/entrypoints/background/stores/vault.js`](src-bex/entrypoints/background/stores/vault.js) is a custom store for the browser extension's background script. Pinia cannot be used in this context, so it uses a custom singleton class for state management, storage, and events.
+*   The file `src-bex/entrypoints/background/stores/vault.js` is a custom store for the browser extension's background script. Pinia cannot be used in this context, so it uses a custom singleton class for state management, storage, and events.
