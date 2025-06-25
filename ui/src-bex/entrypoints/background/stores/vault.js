@@ -1,8 +1,9 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
-import { EncryptedStorageItem } from "../utils/StorageItem";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
-import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 import { sha256 } from "@noble/hashes/sha2";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
+
+import { EncryptedStorageItem } from "../utils/StorageItem";
 
 class Vault {
     #walletStorage = new EncryptedStorageItem("local:wallets");
