@@ -46,15 +46,7 @@ export const useNotificationMessageHandler = () => {
             };
         }
 
-        class MessageHandlerNotification extends MessageHandler {
-            async handleAsync(message) {
-                return await super.handleAsync(message).finally(() => {
-                    isMounted.value = true;
-                });
-            }
-        }
-
-        const notificationMessageHandler = new MessageHandlerNotification(NotificationMessageHandlerMethods);
+        const notificationMessageHandler = new MessageHandler(NotificationMessageHandlerMethods);
         notificationMessageHandler.register(popupMessenger.onMessage, "notification");
         useTimeoutFn(() => {
             isMounted.value = true;
