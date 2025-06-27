@@ -1,14 +1,24 @@
 <template>
-    <div class="q-pa-md q-gutter-y-md">
-        <q-form class="q-gutter-y-md" @submit="handleInitAsync" @reset="handleReset">
-            <PasswordForm v-model:new-password="newPassword" v-model:new-password-confirm="newPasswordConfirm" />
+    <q-page padding style="padding-top: 66px">
+        <div class="row justify-center">
+            <q-card flat class="self-center col-xl-4 col-lg-6 col-md-8 col-sm-10 col-xs-10">
+                <q-card-section class="q-gutter-y-sm">
+                    <div class="text-h6 text-center">Create password</div>
+                    <q-form class="q-gutter-y-md" @submit="handleInitAsync" @reset="handleReset">
+                        <PasswordForm
+                            v-model:new-password="newPassword"
+                            v-model:new-password-confirm="newPasswordConfirm"
+                        />
 
-            <div class="row justify-between">
-                <q-btn label="Reset" type="reset" color="primary" flat />
-                <q-btn label="Create" type="submit" color="primary" />
-            </div>
-        </q-form>
-    </div>
+                        <div class="row justify-between">
+                            <q-btn label="Reset" type="reset" color="primary" flat />
+                            <q-btn label="Create" type="submit" color="primary" />
+                        </div>
+                    </q-form>
+                </q-card-section>
+            </q-card>
+        </div>
+    </q-page>
 </template>
 
 <script setup>
