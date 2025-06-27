@@ -19,6 +19,9 @@ It is optional, but recommended to be updated as the project evolves.
 ## UI Patterns
 
 *   Use `@mdi/js` for icons.
+*    
+## Internationalization (i18n) Patterns
+read the file: `.roo/optional/i18n-patterns.md`
 
 ## Auto-imports
 
@@ -41,3 +44,5 @@ The following are auto-imported across the application via `unplugin-auto-import
 ## BEX Custom Store
 
 *   The file `src-bex/entrypoints/background/stores/vault.js` is a custom store for the browser extension's background script. Pinia cannot be used in this context, so it uses a custom singleton class for state management, storage, and events.
+*   
+
