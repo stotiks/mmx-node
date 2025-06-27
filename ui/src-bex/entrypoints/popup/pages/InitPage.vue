@@ -28,8 +28,9 @@ import WBtnSubmit from "@/components/Wallet/WalletForm/WBtnSubmit.vue";
 import { useTryCatchWrapperAsync } from "../utils/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-const newPassword = ref("");
-const newPasswordConfirm = ref("");
+const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
+const newPassword = ref(test_password || "");
+const newPasswordConfirm = ref(test_password || "");
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
