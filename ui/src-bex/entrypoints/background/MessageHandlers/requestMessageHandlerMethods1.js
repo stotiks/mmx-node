@@ -19,7 +19,7 @@ const $method = (fn, metadata = {}) => {
     return fn;
 };
 
-export const RequestMessageHandlerMethods = {
+export const requestMessageHandlerMethods = {
     mmx_blockNumber: $method(
         async () => {
             const info = await getNodeInfoAsync();
