@@ -12,7 +12,7 @@
     />
     <template v-else>
         <div class="row justify-center">
-            <q-btn outline color="primary" @click="router.push('/wallets')"> Add Wallets </q-btn>
+            <q-btn outline color="primary" @click="router.push('/wallets')"> Add Wallet </q-btn>
         </div>
     </template>
 </template>
