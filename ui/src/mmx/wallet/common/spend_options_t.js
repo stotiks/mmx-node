@@ -20,6 +20,10 @@ export class spend_options_t {
             throw new Error("options is required");
         }
 
+        if (typeof options !== "object") {
+            throw new Error("options must be an object");
+        }
+
         if (!options.network) {
             throw new Error("network is required");
         }
