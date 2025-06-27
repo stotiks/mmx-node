@@ -6,6 +6,7 @@ export const useVaultStore = defineStore("vault", () => {
     const isInitialized = ref(false);
     const isUnlocked = ref(false);
     const wallets = ref([]);
+    const isActionRunning = ref(false);
 
     const currentWalletAddress = ref("");
 
@@ -99,12 +100,13 @@ export const useVaultStore = defineStore("vault", () => {
         }
     })();
 
-    return {
+    const store = {
         // State
         isInitialized,
         isUnlocked,
         wallets,
         currentWalletAddress,
+        isActionRunning,
         // Actions
         lockAsync,
         unlockAsync,
@@ -114,6 +116,18 @@ export const useVaultStore = defineStore("vault", () => {
         allowUrlAsync,
         removeVaultDataAsync,
     };
+
+    useVaultStore(store).$onAction(({ after, onError }) => {
+        isActionRunning.value = true;
+        after(() => {
+            isActionRunning.value = false;
+        });
+        onError(() => {
+            isActionRunning.value = false;
+        });
+    });
+
+    return store;
 });
 
 if (import.meta.hot) {
