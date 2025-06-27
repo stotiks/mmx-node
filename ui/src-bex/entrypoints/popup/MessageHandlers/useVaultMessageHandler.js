@@ -4,31 +4,35 @@ import { MessageHandler } from "@bex/messaging/MessageHandler";
 export const useVaultMessageHandler = () => {
     const $q = useQuasar();
 
-    class VaultMessageHandlerMethods {
-        static unlocked = async () => {
-            $q.notify({ type: "positive", message: "Vault unlocked" });
-        };
+    const showSuccessNotification = (message) => {
+        $q.notify({ type: "positive", message });
+    };
 
-        static locked = async () => {
-            $q.notify({ type: "positive", message: "Vault locked" });
-        };
+    const vaultMessageHandlerMethods = {
+        unlocked: async () => {
+            showSuccessNotification("Vault unlocked");
+        },
 
-        static passwordUpdated = async () => {
-            $q.notify({ type: "positive", message: "Password updated" });
-        };
+        locked: async () => {
+            showSuccessNotification("Vault locked");
+        },
 
-        static walletAdded = async () => {
-            $q.notify({ type: "positive", message: "Wallet added" });
-        };
+        passwordUpdated: async () => {
+            showSuccessNotification("Password updated");
+        },
 
-        static walletRemoved = async () => {
-            $q.notify({ type: "positive", message: "Wallet removed" });
-        };
+        walletAdded: async () => {
+            showSuccessNotification("Wallet added");
+        },
 
-        static currentWalletChanged = async () => {
+        walletRemoved: async () => {
+            showSuccessNotification("Wallet removed");
+        },
+
+        currentWalletChanged: async () => {
             console.log("currentWalletChanged");
-        };
-    }
-    const vaultMessageHandler = new MessageHandler(VaultMessageHandlerMethods);
+        },
+    };
+    const vaultMessageHandler = new MessageHandler(vaultMessageHandlerMethods);
     vaultMessageHandler.register(popupMessenger.onMessage, "vault");
 };
