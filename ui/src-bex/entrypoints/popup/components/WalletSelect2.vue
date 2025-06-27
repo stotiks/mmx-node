@@ -12,7 +12,7 @@
     />
     <template v-else>
         <div class="row justify-center">
-            <q-btn flat color="primary" @click="router.push('/wallets')"> Add Wallet </q-btn>
+            <q-btn flat color="primary" @click="handleAddWallet()"> Add Wallet </q-btn>
         </div>
     </template>
 </template>
@@ -31,4 +31,12 @@ const walletsOptions = computed(() =>
         value: wallet.address,
     }))
 );
+
+const $q = useQuasar();
+const handleAddWallet = () => {
+    $q.dialog({
+        component: defineAsyncComponent(() => import("@bex/entrypoints/popup/components/dialogs/AddWalletDialog")),
+        componentProps: {},
+    }).onOk(() => {});
+};
 </script>
