@@ -3,6 +3,7 @@ import { vaultService } from "@bex/entrypoints/popup/vaultService";
 
 export const useVaultStore = defineStore("vault", () => {
     // State
+    const isInitialized = ref(false);
     const isUnlocked = ref(false);
     const wallets = ref([]);
 
@@ -76,21 +77,22 @@ export const useVaultStore = defineStore("vault", () => {
         }
     };
 
-    const _refreshIsUnlockedAsync = async () => {
-        isUnlocked.value = await vaultService.getIsUnlockedAsync();
-    };
+    const _refreshIsInitializedAsync = async () => (isInitialized.value = await vaultService.getIsInitializedAsync());
+    const _refreshIsUnlockedAsync = async () => (isUnlocked.value = await vaultService.getIsUnlockedAsync());
 
     //Initialize
     (async () => {
-        await _refreshIsUnlockedAsync();
-        if (isUnlocked.value === true) {
-            await _refreshCurrentWalletAddressAsync();
-            await _refreshWalletsAsync();
+        if ((await _refreshIsInitializedAsync()) === true) {
+            if ((await _refreshIsUnlockedAsync()) === true) {
+                await _refreshCurrentWalletAddressAsync();
+                await _refreshWalletsAsync();
+            }
         }
     })();
 
     return {
         // State
+        isInitialized,
         isUnlocked,
         wallets,
         currentWalletAddress,
