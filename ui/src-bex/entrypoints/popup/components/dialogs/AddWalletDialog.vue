@@ -2,13 +2,9 @@
     <q-dialog ref="dialogRef" persistent @show="onDialogShow" @hide="onDialogHide">
         <q-card lass="q-dialog-plugin" style="min-width: 350px">
             <q-form ref="formRef" @submit="handleSubmit">
-                <q-card-section>
-                    <div class="text-h6">Add Wallet</div>
-                </q-card-section>
-
                 <q-card-section class="q-pt-none q-gutter-y-sm">
-                    <q-input v-model="mnemonic" label="Mnemonic" filled dense />
-                    <q-input v-model="password" label="Password" filled dense type="password" />
+                    <SeedInput v-model="mnemonic" :debounce="200" dense />
+                    <q-input v-model="password" label="Password" dense outlined type="password" />
                 </q-card-section>
 
                 <q-card-actions align="right" class="text-primary">
