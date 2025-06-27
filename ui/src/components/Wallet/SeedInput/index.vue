@@ -7,6 +7,7 @@
                     :word-list="wordList"
                     :label="(index + 1).toString()"
                     :readonly="readonly"
+                    :dense="dense"
                     class="col-md-2 col-sm-3 col-xs-4"
                     @update:model-value="(value) => handleWordUpdate(value, index)"
                 />
@@ -21,8 +22,14 @@ const seedString = defineModel({
     required: false,
     default: "",
 });
+
 const props = defineProps({
     readonly: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
+    dense: {
         type: Boolean,
         required: false,
         default: false,
@@ -34,7 +41,6 @@ const wordCount = 24;
 const words = ref(new Array(wordCount).fill(""));
 
 const handleWordUpdate = (value, index) => {
-    //console.log(value, index);
     value = value.trim();
     const _wordCount = value.split(" ").length;
     if (_wordCount == 1) {
