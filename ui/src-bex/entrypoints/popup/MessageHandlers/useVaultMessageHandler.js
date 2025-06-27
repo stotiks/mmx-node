@@ -32,6 +32,12 @@ export const useVaultMessageHandler = () => {
         currentWalletChanged: async () => {
             console.log("currentWalletChanged");
         },
+        permissionGranted: async () => {
+            console.log("permissionGranted");
+        },
+        permissionRevoked: async () => {
+            console.log("permissionRevoked");
+        },
     };
     const vaultMessageHandler = new MessageHandler(vaultMessageHandlerMethods);
     vaultMessageHandler.register(popupMessenger.onMessage, "vault");
