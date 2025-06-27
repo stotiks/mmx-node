@@ -37,7 +37,6 @@ const password = ref("");
 
 const handleSubmit = async () => {
     await handleAddWalletAsync();
-    onDialogOK();
 };
 const onDialogShow = () => {};
 
@@ -51,6 +50,7 @@ const { isActionRunning } = storeToRefs(vaultStore);
 const handleAddWalletAsync = async () => {
     await tryCatchWrapperAsync(async () => {
         await vaultStore.addWalletAsync({ mnemonic: mnemonic.value, password: password.value });
+        onDialogOK();
     });
 };
 </script>
