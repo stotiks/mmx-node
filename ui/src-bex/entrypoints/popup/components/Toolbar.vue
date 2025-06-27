@@ -44,30 +44,16 @@ import { mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock, mdiArrowLeft, mdiTr
 
 const route = useRoute();
 
-import { useTryCatchWrapperAsync } from "../utils/useTryCatchWrapperAsync";
-const tryCatchWrapperAsync = useTryCatchWrapperAsync();
-
 import { useVaultStore } from "../stores/vault";
 const vaultStore = useVaultStore();
 
+import { useTryCatchWrapperAsync } from "../utils/useTryCatchWrapperAsync";
+const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+
+import { useRemoveVaultData } from "../utils/useRemoveVaultData";
+const { handleRemoveVaultDataAsync } = useRemoveVaultData();
+
 const handleLockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.lockAsync());
-};
-
-const $q = useQuasar();
-const handleRemoveVaultDataAsync = async () => {
-    await tryCatchWrapperAsync(async () => {
-        $q.dialog({
-            title: "Confirm",
-            message: "Are you sure you want to remove the vault data? This action cannot be undone.",
-            cancel: true,
-            persistent: true,
-            ok: {
-                color: "negative",
-            },
-        }).onOk(async () => {
-            await vaultStore.removeVaultDataAsync();
-        });
-    });
 };
 </script>
