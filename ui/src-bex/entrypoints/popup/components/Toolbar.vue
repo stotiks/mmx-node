@@ -22,9 +22,9 @@
                     <q-separator />
                     <q-item v-ripple clickable @click="handleLockAsync">
                         <q-item-section avatar>
-                            <q-icon :name="mdiLock" />
+                            <q-icon :name="mdiLock" color="warning" />
                         </q-item-section>
-                        <q-item-section>Lock</q-item-section>
+                        <q-item-section class="text-warning"> Lock </q-item-section>
                     </q-item>
                     <q-separator />
                     <q-item v-ripple clickable @click="handleRemoveVaultDataAsync">
