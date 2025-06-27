@@ -17,6 +17,10 @@ export const useVaultMessageHandler = () => {
             showSuccessNotification("Vault locked");
         },
 
+        initialized: async () => {
+            showSuccessNotification("Vault initialized");
+        },
+
         passwordUpdated: async () => {
             showSuccessNotification("Password updated");
         },
