@@ -1,7 +1,7 @@
 import { MessageHandler } from "@bex/messaging/MessageHandler";
-import { RequestMessageHandlerMethods } from "./RequestMessageHandlerMethods";
+import { requestMessageHandlerMethods } from "./requestMessageHandlerMethods";
 import { createAuthHook } from "./createAuthHook";
 
-const requestMessageHandler = new MessageHandler(RequestMessageHandlerMethods);
+const requestMessageHandler = new MessageHandler(requestMessageHandlerMethods);
 requestMessageHandler.addHook(createAuthHook());
 export { requestMessageHandler };
