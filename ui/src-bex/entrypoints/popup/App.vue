@@ -6,7 +6,10 @@
             </q-inner-loading>
 
             <template v-if="isMounted">
-                <template v-if="isUnlocked !== true">
+                <template v-if="!isInitialized">
+                    <InitPage />
+                </template>
+                <template v-else-if="isUnlocked !== true">
                     <UnlockPage />
                 </template>
                 <template v-else>
@@ -27,6 +30,7 @@
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
+import InitPage from "@bex/entrypoints/popup/pages/InitPage.vue";
 import Toolbar from "./components/Toolbar.vue";
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
