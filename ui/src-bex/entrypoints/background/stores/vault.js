@@ -119,7 +119,7 @@ class Vault {
         return true;
     }
 
-    async removeVaultAsync() {
+    async removeVaultDataAsync() {
         if (this.isUnlocked) {
             throw new Error("Cannot remove vault while it is unlocked.");
         }
