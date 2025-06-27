@@ -42,11 +42,13 @@
                                         <q-item-section>Lock</q-item-section>
                                     </q-item>
                                     <q-separator />
-                                    <q-item v-ripple clickable @click="handleRemoveVaultAsync">
+                                    <q-item v-ripple clickable @click="handleRemoveVaultDataAsync">
                                         <q-item-section avatar>
                                             <q-icon :name="mdiTrashCanOutline" color="negative" />
                                         </q-item-section>
-                                        <q-item-section class="text-negative text-no-wrap">Remove Vault</q-item-section>
+                                        <q-item-section class="text-negative text-no-wrap">
+                                            Remove Vault Data
+                                        </q-item-section>
                                     </q-item>
                                 </q-menu>
                             </q-btn>
@@ -88,11 +90,20 @@ const handleLockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.lockAsync());
 };
 
-const handleRemoveVaultAsync = async () => {
+const $q = useQuasar();
+const handleRemoveVaultDataAsync = async () => {
     await tryCatchWrapperAsync(async () => {
-        if (confirm("Are you sure you want to remove the vault? This action cannot be undone.")) {
-            await vaultStore.removeVaultAsync();
-        }
+        $q.dialog({
+            title: "Confirm",
+            message: "Are you sure you want to remove the vault data? This action cannot be undone.",
+            cancel: true,
+            persistent: true,
+            ok: {
+                color: "negative",
+            },
+        }).onOk(async () => {
+            await vaultStore.removeVaultDataAsync();
+        });
     });
 };
 
