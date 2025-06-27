@@ -67,7 +67,7 @@ const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isUnlocked } = storeToRefs(vaultStore);
+const { isInitialized, isUnlocked } = storeToRefs(vaultStore);
 
 const handleLockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.lockAsync());
