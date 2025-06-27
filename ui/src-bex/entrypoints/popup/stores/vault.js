@@ -67,6 +67,15 @@ export const useVaultStore = defineStore("vault", () => {
         await _refreshWalletsAsync();
     };
 
+    const removeVaultDataAsync = async () => {
+        if (isUnlocked.value) {
+            await lockAsync();
+        }
+        await vaultService.removeVaultDataAsync();
+        await _refreshIsInitializedAsync();
+        isUnlocked.value = false;
+    };
+
     const allowUrlAsync = async (url) => {
         await vaultService.allowUrlAsync(url);
     };
@@ -103,6 +112,7 @@ export const useVaultStore = defineStore("vault", () => {
         addWalletAsync,
         removeWalletAsync,
         allowUrlAsync,
+        removeVaultDataAsync,
     };
 });
 
