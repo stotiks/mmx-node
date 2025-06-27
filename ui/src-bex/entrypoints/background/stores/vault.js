@@ -53,12 +53,12 @@ class Vault {
         return false;
     }
 
-    async #checkIsInitializedAsync() {
-        return this.#walletStorage.exists();
+    async getIsInitializedAsync() {
+        return await this.#walletStorage.exists();
     }
 
     async #loadAsync(encryptionKey) {
-        if (!(await this.#checkIsInitializedAsync())) {
+        if (!(await this.getIsInitializedAsync())) {
             await this.#initVaultAsync(encryptionKey);
         }
         this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
