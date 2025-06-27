@@ -31,7 +31,7 @@ import Toolbar from "./components/Toolbar.vue";
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isInitialized, isUnlocked } = storeToRefs(vaultStore);
+const { isInitialized, isUnlocked, isActionRunning } = storeToRefs(vaultStore);
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
 useVaultMessageHandler();
