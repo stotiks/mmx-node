@@ -106,6 +106,18 @@ export const useVaultStore = defineStore("vault", () => {
         }
     })();
 
+    const vaultStore = useVaultStore();
+
+    vaultStore.$onAction(({ after, onError }) => {
+        isActionRunning.value = true;
+        after(() => {
+            isActionRunning.value = false;
+        });
+        onError(() => {
+            isActionRunning.value = false;
+        });
+    });
+
     const store = {
         // State
         isInitialized,
@@ -123,16 +135,6 @@ export const useVaultStore = defineStore("vault", () => {
         removeVaultDataAsync,
         initVaultAsync,
     };
-
-    useVaultStore(store).$onAction(({ after, onError }) => {
-        isActionRunning.value = true;
-        after(() => {
-            isActionRunning.value = false;
-        });
-        onError(() => {
-            isActionRunning.value = false;
-        });
-    });
 
     return store;
 });
