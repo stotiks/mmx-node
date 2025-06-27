@@ -5,6 +5,7 @@ export const useTryCatchWrapperAsync = () => {
             return await fn();
         } catch (error) {
             $q.notify({ type: "negative", message: error.message });
+            throw error;
         }
     };
 
