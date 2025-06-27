@@ -9,6 +9,16 @@
         :rules="[rules.required, passwordRule]"
     />
 
+    <WPasswordInput
+        v-model="newPasswordConfirm"
+        label="Confirm new password"
+        filled
+        dense
+        hide-bottom-space
+        reactive-rules
+        :rules="[rules.required, matchRule]"
+    />
+
     <div class="text-caption q-gutter-xs">
         <div
             v-for="(rule, index) in passwordRules"
@@ -19,16 +29,6 @@
             <div>{{ rule.label }}</div>
         </div>
     </div>
-
-    <WPasswordInput
-        v-model="newPasswordConfirm"
-        label="Confirm new password"
-        filled
-        dense
-        hide-bottom-space
-        reactive-rules
-        :rules="[rules.required, matchRule]"
-    />
 </template>
 
 <script setup>
