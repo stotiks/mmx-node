@@ -5,6 +5,16 @@
                 <q-card-section>
                     <UnlockForm />
                 </q-card-section>
+                <q-card-section>
+                    <q-btn
+                        no-caps
+                        label="Remove Vault Data"
+                        color="negative"
+                        size="sm"
+                        flat
+                        dense
+                        @click="handleRemoveVaultDataAsync"
+                /></q-card-section>
             </q-card>
         </div>
     </q-page>
@@ -12,4 +22,27 @@
 
 <script setup>
 import UnlockForm from "./UnlockForm";
+
+import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
+const vaultStore = useVaultStore();
+
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+
+const $q = useQuasar();
+const handleRemoveVaultDataAsync = async () => {
+    await tryCatchWrapperAsync(async () => {
+        $q.dialog({
+            title: "Confirm",
+            message: "Are you sure you want to remove the vault data? This action cannot be undone.",
+            cancel: true,
+            persistent: true,
+            ok: {
+                color: "negative",
+            },
+        }).onOk(async () => {
+            await vaultStore.removeVaultDataAsync();
+        });
+    });
+};
 </script>
