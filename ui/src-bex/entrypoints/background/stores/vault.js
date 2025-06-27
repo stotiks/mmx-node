@@ -59,7 +59,7 @@ class Vault {
 
     async #loadAsync(encryptionKey) {
         if (!(await this.getIsInitializedAsync())) {
-            await this.#initVaultAsync(encryptionKey);
+            throw new Error("Vault is not initialized");
         }
         this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
     }
@@ -76,11 +76,19 @@ class Vault {
         await this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey);
     }
 
-    async #initVaultAsync(encryptionKey) {
+    async initVaultAsync({ password }) {
+        if (await this.getIsInitializedAsync()) {
+            throw new Error("Vault is already initialized.");
+        }
+        const encryptionKey = this.#generateEncryptionKey(password);
         this.#wallets$$sensitive = [];
         this.#encryptionKey = encryptionKey;
         this.#isUnlocked = true;
         await this.saveAsync();
+        this.#isUnlocked = false;
+
+        this.emit("initialized");
+        return true;
     }
 
     async updatePasswordAsync({ password, newPassword }) {
