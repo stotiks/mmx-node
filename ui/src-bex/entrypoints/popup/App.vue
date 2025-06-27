@@ -41,6 +41,13 @@
                                         </q-item-section>
                                         <q-item-section>Lock</q-item-section>
                                     </q-item>
+                                    <q-separator />
+                                    <q-item v-ripple clickable @click="handleRemoveVaultAsync">
+                                        <q-item-section avatar>
+                                            <q-icon :name="mdiTrashCanOutline" color="negative" />
+                                        </q-item-section>
+                                        <q-item-section class="text-negative text-no-wrap">Remove Vault</q-item-section>
+                                    </q-item>
                                 </q-menu>
                             </q-btn>
                         </q-toolbar>
@@ -54,7 +61,15 @@
 </template>
 
 <script setup>
-import { mdiAlphaFBox, mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock, mdiArrowLeft } from "@mdi/js";
+import {
+    mdiAlphaFBox,
+    mdiLock,
+    mdiDotsVertical,
+    mdiWallet,
+    mdiShieldLock,
+    mdiArrowLeft,
+    mdiTrashCanOutline,
+} from "@mdi/js";
 import { VueQueryDevtools } from "@tanstack/vue-query-devtools";
 
 import { useRoute } from "vue-router";
@@ -71,6 +86,14 @@ const { isInitialized, isUnlocked } = storeToRefs(vaultStore);
 
 const handleLockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.lockAsync());
+};
+
+const handleRemoveVaultAsync = async () => {
+    await tryCatchWrapperAsync(async () => {
+        if (confirm("Are you sure you want to remove the vault? This action cannot be undone.")) {
+            await vaultStore.removeVaultAsync();
+        }
+    });
 };
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
