@@ -76,7 +76,13 @@ export const requestMessageHandlerMethods = {
     mmx_send: $method(async ({ amount, dst_addr, currency, options: _options }) => {
         const options = new spend_options_t(_options);
         const tx = await getSendTxAsync(amount, dst_addr, currency, options);
-        return tx;
+        //TODO send tx
+        return {
+            id: tx.id,
+            dev: {
+                tx,
+            },
+        };
     }, {}),
 
     mmx_signTransaction: $method(async ({ tx: _tx, options: _options }) => {
