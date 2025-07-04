@@ -4,6 +4,7 @@
         <div>
             <template v-if="data.params">
                 <SignMessage v-if="isSignMessage" :params="data.params" />
+                <Send v-else-if="isSend" :params="data.params" />
                 <highlightjs v-else :code="stringify(data.params)" class="hljsCode" />
             </template>
         </div>
@@ -39,6 +40,7 @@
 import { mdiCheck, mdiClose } from "@mdi/js";
 import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
 import SignMessage from "./custom/SignMessage";
+import Send from "./custom/Send.vue";
 
 const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
 
@@ -54,6 +56,7 @@ const props = defineProps({
 });
 
 const isSignMessage = computed(() => props.data.method === "mmx_signMessage");
+const isSend = computed(() => props.data.method === "mmx_send");
 
 const emit = defineEmits(["ok", "cancel"]);
 
