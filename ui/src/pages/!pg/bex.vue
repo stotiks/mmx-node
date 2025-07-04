@@ -101,7 +101,7 @@ const requests = [
         params: {
             amount: 1,
             dst_addr: "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6",
-            // currency: "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev",
+            currency: "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev",
             options: {
                 memo: "test",
                 expire_at: -1,
@@ -157,7 +157,7 @@ const doRequest = async (payload) => {
     try {
         return await vault.value.request(payload);
     } catch (e) {
-        $q.notify({ type: "negative", message: e.message || "Unknown error" });
+        // $q.notify({ type: "negative", message: e.message || "Unknown error" });
         return { error: e.message || "Unknown error" };
     }
 };
@@ -166,6 +166,14 @@ const handleRequest = async (request) => {
     requestResults.value.delete(request);
     const result = await doRequest({ method: request.method, params: request.params });
     requestResults.value.set(request, result);
+
+    if (request.method === "mmx_send" && !result.error) {
+        $q.notify({ type: "positive", message: `Transaction sent successfully: ${result.id}` });
+    }
+
+    if (result.error) {
+        $q.notify({ type: "negative", message: result.error });
+    }
 };
 
 const handleClearResults = () => {
