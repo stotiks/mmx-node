@@ -14,9 +14,16 @@
 
         <template v-slot:body-cell-contract="bcProps">
             <q-td :props="bcProps">
-                <RouterLink :to="`/explore/address/${bcProps.value}`" class="text-primary mono">
-                    {{ bcProps.row.is_native ? "" : bcProps.value }}
+                <RouterLink
+                    v-if="colPropToValue(bcProps.col.url, bcProps.row)"
+                    :to="colPropToValue(bcProps.col.url, bcProps.row)"
+                    class="text-primary mono"
+                >
+                    {{ colPropToValue(bcProps.col.value, bcProps.row) }}
                 </RouterLink>
+                <template v-else>
+                    {{ colPropToValue(bcProps.col.value, bcProps.row) }}
+                </template>
             </q-td>
         </template>
     </q-table>
@@ -33,9 +40,25 @@ const props = defineProps({
         default: false,
         required: false,
     },
+
+    useShortAddr: {
+        type: Boolean,
+        default: false,
+        required: false,
+    },
+
+    useContractLink: {
+        type: Boolean,
+        default: true,
+        required: false,
+    },
 });
 
 const { t } = useI18n();
+
+const colPropToValue = (colProp, row) => {
+    return typeof colProp === "function" ? colProp(row) : colProp;
+};
 
 const columns = computed(() => {
     return [
@@ -68,6 +91,8 @@ const columns = computed(() => {
             name: "contract",
             label: t("balance_table.contract"),
             field: "contract",
+            url: (row) => props.useContractLink && `/explore/address/${row.contract}`,
+            value: (row) => (row.is_native ? "" : props.useShortAddr ? getShortAddr(row.contract) : row.contract),
             align: "left",
         },
     ];
