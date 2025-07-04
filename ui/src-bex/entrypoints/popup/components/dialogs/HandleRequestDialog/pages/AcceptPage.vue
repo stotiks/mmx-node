@@ -3,7 +3,8 @@
         <WalletSelect2 class="q-mb-md" />
         <div>
             <template v-if="data.params">
-                <highlightjs :code="stringify(data.params)" class="hljsCode" />
+                <SignMessage v-if="isSignMessage" :params="data.params" />
+                <highlightjs v-else :code="stringify(data.params)" class="hljsCode" />
             </template>
         </div>
 
@@ -37,6 +38,7 @@
 <script setup>
 import { mdiCheck, mdiClose } from "@mdi/js";
 import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
+import SignMessage from "./custom/SignMessage";
 
 const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
 
@@ -50,6 +52,8 @@ const props = defineProps({
         required: true,
     },
 });
+
+const isSignMessage = computed(() => props.data.method === "mmx_signMessage");
 
 const emit = defineEmits(["ok", "cancel"]);
 
