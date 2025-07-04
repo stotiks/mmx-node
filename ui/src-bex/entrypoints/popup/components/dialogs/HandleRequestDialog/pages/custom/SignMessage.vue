@@ -1,7 +1,8 @@
 <template>
     <div>
         <p class="text-subtitle1">Message to sign:</p>
-        <q-input :model-value="params.message" type="textarea" readonly autogrow outlined class="message" />
+
+        <q-input :model-value="params.message" type="textarea" readonly autogrow outlined class="mono" />
     </div>
 </template>
 
@@ -15,8 +16,7 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
-:deep(.message textarea) {
-    font-family: monospace !important;
+:deep(textarea) {
     color: $positive !important;
 }
 </style>
