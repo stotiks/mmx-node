@@ -7,11 +7,11 @@ export default [
 
     {
         path: "/password",
-        component: () => import("@bex/entrypoints/popup/pages/PasswordPage"),
+        component: () => import("@bex/entrypoints/popup/pages/Settings/PasswordPage"),
     },
 
     {
         path: "/wallets",
-        component: () => import("@bex/entrypoints/popup/pages/WalletsPage"),
+        component: () => import("@bex/entrypoints/popup/pages/Settings/WalletsPage"),
     },
 ];
