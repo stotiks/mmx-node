@@ -15,14 +15,6 @@ Usually around 0.5 MMX + transaction fees.
 
 To get the full picture. Read about Dynamic Supply, Reward Control Loop and Minimum Block Reward in [whitepaper](../../../articles/general/mmx-whitepaper/).
 
-### Can I farm MMX with Chia plots?
-
-No.
-
-MMX was written from scratch by Max. He also reworked plot format to make it orders of magnitude more resistant to compression techniques that hit Chia.
-
-For an introduction to MMX plot format, read this [article](../../../articles/plotting/plot-format/).
-
 ### How much MMX for a given TB farm?
 
 Formula (simplified):\
@@ -37,6 +29,30 @@ Formula (expanded):\
 :::note[Note]
 Find current Netspace in [MMXplorer](https://mmxplorer.com/dashboard). Calculations above gives average blocks won per day, multiplied by 0.5 MMX. That [block reward](#how-much-mmx-per-block-reward) can vary.
 :::
+
+### Is MMX a fork of Chia?
+
+No.
+
+More info in light [article](../../../articles/general/mmx-tldr/), technical [reference](../../../reference/blockchain/), or [whitepaper](../../../articles/general/mmx-whitepaper/). Most Chia forks copies nearly 100% of its codebase, with a few edits. In contrast, MMX is written from scratch by Max in C++ code.
+
+Both are Proof of Space blockchains. And yes, MMX reuse and enhance some core logic from Chia. Everything else is programming and design choices by Max to create MMX as the most performant and feature rich Proof of Space blockchain.
+
+### Can I farm MMX with Chia plots?
+
+No.
+
+MMX was written from scratch by Max. He also reworked plot format to make it orders of magnitude more resistant to compression techniques that hit Chia.
+
+For an introduction to MMX plot format, read this [article](../../../articles/plotting/plot-format/).
+
+### Will Chia's new plot format affect MMX?
+
+No.
+
+Chia is planning a future hard fork with a new plot format. Making current Chia plots incompatible over time, forcing a replot.
+
+Will not affect MMX plots. MMX already made a similar move with a [new plot format](../../../articles/plotting/plot-format/) in testnet11. Every plot created after that is compatible with current mainnet. MMX plots have their own design, unaffected by changes in Chia.
 
 ### Is there a pre-farm?
 

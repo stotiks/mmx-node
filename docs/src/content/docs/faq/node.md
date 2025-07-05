@@ -137,3 +137,25 @@ To force a 100% sync from scratch. Stop the node, delete following directory:
 - Linux: `~/mmx-node/mainnet/db/`
 
 Start the node again. A clean sync will start from height 0.
+
+### "Warning! UnhandledException" in Windows
+
+If starting MMX Node fails with a `Warning! UnhandledException` dialog box, containing `user.config`, `value 0x00`, `invalid character`, `Line 9`, `position 1`. Try the following:
+- Restart Windows, to make sure no hanging MMX Node processes
+- Navigate to: `C:\Users\<user>\AppData\Local\madMAx43v3r\MmxGui.exe_Url_xxx\0.0.0.0\`
+- Rename `user.config` file to `_backup01_user.config` (just in case)
+- Start MMX Node, new `user.config` created
+
+File only contains Windows GUI app specific configuration. If fixed, go through Windows specific options in MMX Node and check that ok. Probable cause for this looks to be unclean shutdown of MMX Node, corrupting file. Maybe a Windows bluescreen.
+
+### "CUDA failed" messages
+
+If you get `CUDA failed` in logs, maybe with `Proof verification failed`. MMX Node has problems interfacing with the Nvidia CUDA library on your OS.
+
+MMX Node will try to use CUDA (Nvidia GPU) for farming and proof verify, if present. For VDF verify it tries to use OpenCL (NVidia/AMD/Intel GPU). Both will fallback to CPU if not present.
+
+If problems with CUDA, try to disable it under SETTINGS in WebGUI (CUDA / Enable CUDA compute). Or set `"enable": false,` in `config/local/cuda.json` file.
+
+You can also try to update or match other versions of CUDA platform on your OS. The interface between compiled programs and CUDA versions are fickle.
+
+In most cases farming and proof verify is light work for a CPU. Unless you have a very large farm, or too high compression on your plots.
