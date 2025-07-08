@@ -2,10 +2,10 @@
     <q-page padding style="padding-top: 66px">
         <WalletSelect2 class="q-mb-md" />
         <div>
-            <template v-if="data.params">
-                <SignMessage v-if="isSignMessage" :params="data.params" />
-                <Send v-else-if="isSend" :params="data.params" />
-                <highlightjs v-else :code="stringify(data.params)" class="hljsCode" />
+            <template v-if="params">
+                <SignMessage v-if="isSignMessage" :params="params" />
+                <Send v-else-if="isSend" :params="params" />
+                <highlightjs v-else :code="stringify(params)" class="hljsCode" />
             </template>
         </div>
 
@@ -55,6 +55,7 @@ const props = defineProps({
     },
 });
 
+const params = computed(() => props.data.params);
 const isSignMessage = computed(() => props.data.method === "mmx_signMessage");
 const isSend = computed(() => props.data.method === "mmx_send");
 
