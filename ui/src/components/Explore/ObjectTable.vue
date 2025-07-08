@@ -62,7 +62,7 @@ const handleToggleExpand = (key) => {
 const isHex = (value) => value && value.length > 68 && value.length % 2 == 0 && /^[0-9a-fA-F]+$/.test(value);
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .textwarp {
     text-wrap: wrap;
     overflow-wrap: anywhere;
@@ -82,8 +82,9 @@ const isHex = (value) => value && value.length > 68 && value.length % 2 == 0 && 
     margin: 0px !important;
 }
 
+@import "@/css/app.scss";
 .hex {
-    font-family: monospace;
+    font-family: $mono-font;
     font-size: 0.8em;
 }
 </style>
