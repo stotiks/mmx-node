@@ -25,7 +25,13 @@
                                 </RouterLink>
                             </template>
                             <template v-else-if="isHex(value)">
-                                <div class="hex">{{ value }}</div>
+                                <q-btn
+                                    :icon="!expanded[key] ? mdiArrowExpand : mdiArrowCollapse"
+                                    fab-mini
+                                    class="float-right"
+                                    @click="handleToggleExpand(key)"
+                                />
+                                <HexDump :data="value" :expanded="!!expanded[key]" />
                             </template>
                             <template v-else>
                                 {{ value }}
@@ -40,6 +46,7 @@
 
 <script setup>
 import { mdiArrowExpand, mdiArrowCollapse } from "@mdi/js";
+import HexDump from "@/components/UI/HexDump.vue";
 
 const props = defineProps({
     data: {
@@ -80,11 +87,5 @@ const isHex = (value) => value && value.length > 68 && value.length % 2 == 0 && 
 
 :deep(pre.hljsCode) {
     margin: 0px !important;
-}
-
-@import "@/css/app.scss";
-.hex {
-    font-family: $mono-font;
-    font-size: 0.8em;
 }
 </style>
