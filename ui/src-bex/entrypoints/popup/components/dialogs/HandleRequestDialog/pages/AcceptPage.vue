@@ -41,8 +41,7 @@ import { mdiCheck, mdiClose } from "@mdi/js";
 import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
 import SignMessage from "./custom/SignMessage";
 import Send from "./custom/Send.vue";
-
-const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
+import { stringify } from "@/utils/dataFormatters";
 
 const props = defineProps({
     url: {
