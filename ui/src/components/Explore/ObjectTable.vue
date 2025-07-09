@@ -8,14 +8,15 @@
                         <template v-if="value instanceof Object || key == 'source'">
                             <q-btn
                                 v-if="isExpandable(value, key)"
-                                :icon="!expanded[key] ? mdiArrowExpand : mdiArrowCollapse"
+                                :icon="!isExpanded(key) ? mdiArrowExpand : mdiArrowCollapse"
                                 fab-mini
                                 class="float-right"
                                 @click="handleToggleExpand(key)"
+                                :aria-label="isExpanded(key) ? 'Collapse' : 'Expand'"
                             />
                             <highlightjs
                                 :code="stringify(value)"
-                                :class="{ hljsCode: true, collapsed: !expanded[key] }"
+                                :class="{ hljsCode: true, collapsed: !isExpanded(key) }"
                             />
                         </template>
                         <template v-else>
@@ -26,12 +27,13 @@
                             </template>
                             <template v-else-if="isHex(value)">
                                 <q-btn
-                                    :icon="!expanded[key] ? mdiArrowExpand : mdiArrowCollapse"
+                                    :icon="!isExpanded(key) ? mdiArrowExpand : mdiArrowCollapse"
                                     fab-mini
                                     class="float-right"
                                     @click="handleToggleExpand(key)"
+                                    :aria-label="isExpanded(key) ? 'Collapse hex dump' : 'Expand hex dump'"
                                 />
-                                <HexDump :data="value" :expanded="!!expanded[key]" />
+                                <HexDump :data="value" :expanded="isExpanded(key)" />
                             </template>
                             <template v-else>
                                 {{ value }}
@@ -47,26 +49,28 @@
 <script setup>
 import { mdiArrowExpand, mdiArrowCollapse } from "@mdi/js";
 import HexDump from "@/components/UI/HexDump.vue";
+import { stringify, isMMXAddress, isHexString, isExpandable } from "@/utils/dataFormatters";
+import { useObjectTableExpansion } from "@/composables/useObjectTableExpansion";
 
 const props = defineProps({
     data: {
         type: Object,
         default: null,
+        validator: (value) => value === null || typeof value === "object",
     },
 });
-const expanded = ref({});
-const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
-const isAddress = (value) => typeof value === "string" && value.startsWith("mmx1") && value.length == 62;
-const isExpandable = (value, key) => (value instanceof Object && Object.keys(value).length > 0) || key == "source";
 
+// Use the expansion composable
+const { expanded, toggleExpansion, isExpanded } = useObjectTableExpansion();
+
+// Wrapper function to maintain component API
 const handleToggleExpand = (key) => {
-    if (!expanded.value[key]) {
-        expanded.value[key] = false;
-    }
-    expanded.value[key] = !expanded.value[key];
+    toggleExpansion(key);
 };
 
-const isHex = (value) => value && value.length > 68 && value.length % 2 == 0 && /^[0-9a-fA-F]+$/.test(value);
+// Use utility functions
+const isAddress = isMMXAddress;
+const isHex = isHexString;
 </script>
 
 <style lang="scss" scoped>

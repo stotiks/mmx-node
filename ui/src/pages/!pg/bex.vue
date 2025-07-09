@@ -66,8 +66,7 @@
 
 <script setup>
 import { mdiCheck, mdiClose, mdiDeleteEmpty } from "@mdi/js";
-
-const stringify = (value) => (value instanceof Object ? JSON.stringify(value, null, 4) : value);
+import { stringify } from "@/utils/dataFormatters";
 
 const isBexLoaded = computed(() => window.mmx && window.mmx.isFurryVault);
 
