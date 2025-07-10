@@ -19,7 +19,7 @@ It is optional, but recommended to be updated as the project evolves.
 ## UI Patterns
 
 *   Use `@mdi/js` for icons.
-*    
+
 ## Internationalization (i18n) Patterns
 read the file: `.roo/optional/i18n-patterns.md`
 
@@ -44,6 +44,10 @@ The following are auto-imported across the application via `unplugin-auto-import
 ## Testing Patterns
 
 *   Use `vitest` for unit and integration testing
+
+## Package Manager
+
+*   Use `bun` instead of `npm` for package management.
 
 ## BEX Custom Store
 
