@@ -36,9 +36,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     watch(isUnlocked, async () => {
         if (isUnlocked.value === true) {
-            await _refreshCurrentWalletAddressAsync();
-            await _refreshWalletsAsync();
-            await updateHistoryAsync();
+            await _refresh();
         }
     });
 
@@ -75,14 +73,12 @@ export const useVaultStore = defineStore("vault", () => {
             await lockAsync();
         }
         await vaultService.removeVaultDataAsync();
-        await _refreshIsInitializedAsync();
-        await _refreshIsUnlockedAsync();
+        await _refresh();
     };
 
     const initVaultAsync = async ({ password }) => {
         await vaultService.initVaultAsync({ password });
-        await _refreshIsInitializedAsync();
-        await _refreshIsUnlockedAsync();
+        await _refresh();
     };
 
     const allowUrlAsync = async (url) => {
@@ -90,8 +86,10 @@ export const useVaultStore = defineStore("vault", () => {
     };
 
     const updateHistoryAsync = async () => {
-        const h = await vaultService.getHistoryAsync();
-        history.value = h.sort((a, b) => b.time - a.time);
+        if (isUnlocked.value) {
+            const h = await vaultService.getHistoryAsync();
+            history.value = h.sort((a, b) => b.time - a.time);
+        }
     };
 
     const _refreshCurrentWalletAddressAsync = async () => {
@@ -103,13 +101,17 @@ export const useVaultStore = defineStore("vault", () => {
     const _refreshIsInitializedAsync = async () => (isInitialized.value = await vaultService.getIsInitializedAsync());
     const _refreshIsUnlockedAsync = async () => (isUnlocked.value = await vaultService.getIsUnlockedAsync());
 
+    const _refresh = async () => {
+        await _refreshIsInitializedAsync();
+        await _refreshIsUnlockedAsync();
+        await updateHistoryAsync();
+    };
+
     //Initialize
     (async () => {
         if ((await _refreshIsInitializedAsync()) === true) {
             if ((await _refreshIsUnlockedAsync()) === true) {
-                await _refreshCurrentWalletAddressAsync();
-                await _refreshWalletsAsync();
-                await updateHistoryAsync();
+                await _refresh();
             }
         }
     })();
