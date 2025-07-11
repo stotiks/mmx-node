@@ -335,7 +335,7 @@ class Vault {
             throw new Error("Vault is locked");
         }
 
-        const history = this.getHistoryAsync();
+        const history = await this.getHistoryAsync();
         history.push({ ...entry, time: Date.now() });
         if (history.length > this.#MAX_HISTORY_ENTRIES) {
             history.splice(0, history.length - this.#MAX_HISTORY_ENTRIES);
