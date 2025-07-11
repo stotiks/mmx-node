@@ -63,8 +63,6 @@ const tryCatchWrapperASync = useTryCatchWrapperAsync();
 
 const UnlockPageComponent = {
     component: UnlockPage,
-    props,
-    events: {},
 };
 
 const permissionsGranted = ref(false);
@@ -101,8 +99,6 @@ const AcceptPageComponent = {
 
 const InitPageComponent = {
     component: InitPage,
-    props,
-    events: {},
 };
 
 const pageComponent = shallowRef(UnlockPageComponent);
@@ -110,9 +106,9 @@ const pageComponent = shallowRef(UnlockPageComponent);
 watchEffect(async () => {
     if (!isInitialized.value) {
         pageComponent.value = InitPageComponent;
-    } else if (isUnlocked.value !== true) {
+    } else if (!isUnlocked.value) {
         pageComponent.value = UnlockPageComponent;
-    } else if (permissionsGranted.value !== true && (await checkVaultPermissionsAsync()) !== true) {
+    } else if (!permissionsGranted.value && (await checkVaultPermissionsAsync()) !== true) {
         pageComponent.value = RequestPermissionsPageComponent;
     } else if (props.isAcceptRequired === true) {
         pageComponent.value = AcceptPageComponent;
