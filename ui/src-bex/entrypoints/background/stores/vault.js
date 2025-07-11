@@ -7,9 +7,11 @@ import { EncryptedStorageItem } from "../utils/StorageItem";
 
 class Vault {
     #MAX_HISTORY_ENTRIES = 10;
+
     #walletStorage = new EncryptedStorageItem("local:wallets");
-    #wallets$$sensitive = [];
     #historyStorage = new EncryptedStorageItem("local:history");
+
+    #wallets$$sensitive = [];
     #history = [];
     #isUnlocked = false;
     #encryptionKey = null;
@@ -80,26 +82,30 @@ class Vault {
         this.#encryptionKey = null;
     }
 
+    async #saveAsync(encryptionKey) {
+        await this.#historyStorage.set(this.#history, encryptionKey);
+        await this.#walletStorage.set(this.#wallets$$sensitive, encryptionKey);
+    }
+
     async saveAsync() {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-
-        await this.#historyStorage.set(this.#history, this.#encryptionKey);
-        await this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey);
+        await this.#saveAsync(this.#encryptionKey);
     }
 
     async initVaultAsync({ password }) {
         if (await this.getIsInitializedAsync()) {
             throw new Error("Vault is already initialized.");
         }
-        const encryptionKey = this.#generateEncryptionKey(password);
+
         this.#wallets$$sensitive = [];
         this.#history = [];
-        this.#encryptionKey = encryptionKey;
-        this.#isUnlocked = true;
-        await this.saveAsync();
         this.#isUnlocked = false;
+
+        const encryptionKey = this.#generateEncryptionKey(password);
+
+        await this.#saveAsync(encryptionKey);
 
         this.emit("initialized");
         return true;
@@ -329,6 +335,7 @@ class Vault {
             });
         }
     }
+
     // history
     async addHistoryAsync(entry) {
         if (!this.isUnlocked) {
