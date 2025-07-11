@@ -35,9 +35,7 @@ export const useVaultStore = defineStore("vault", () => {
     });
 
     watch(isUnlocked, async () => {
-        if (isUnlocked.value === true) {
-            await _refresh();
-        }
+        await _refresh();
     });
 
     // Actions
@@ -86,10 +84,8 @@ export const useVaultStore = defineStore("vault", () => {
     };
 
     const updateHistoryAsync = async () => {
-        if (isUnlocked.value) {
-            const h = await vaultService.getHistoryAsync();
-            history.value = h.sort((a, b) => b.time - a.time);
-        }
+        const h = await vaultService.getHistoryAsync();
+        history.value = h.sort((a, b) => b.time - a.time);
     };
 
     const _refreshCurrentWalletAddressAsync = async () => {
@@ -104,7 +100,10 @@ export const useVaultStore = defineStore("vault", () => {
     const _refresh = async () => {
         await _refreshIsInitializedAsync();
         await _refreshIsUnlockedAsync();
-        await updateHistoryAsync();
+        if (isUnlocked.value === true) {
+            _refreshWalletsAsync();
+            await updateHistoryAsync();
+        }
     };
 
     //Initialize
