@@ -51,13 +51,14 @@ const onDialogShow = async () => {};
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isUnlocked } = storeToRefs(vaultStore);
+const { isUnlocked, isInitialized } = storeToRefs(vaultStore);
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
 import AcceptPage from "./pages/AcceptPage";
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import InitPage from "@bex/entrypoints/popup/pages/InitPage.vue";
 const tryCatchWrapperASync = useTryCatchWrapperAsync();
 
 const UnlockPageComponent = {
@@ -98,10 +99,18 @@ const AcceptPageComponent = {
     },
 };
 
+const InitPageComponent = {
+    component: InitPage,
+    props,
+    events: {},
+};
+
 const pageComponent = shallowRef(UnlockPageComponent);
 
 watchEffect(async () => {
-    if (isUnlocked.value !== true) {
+    if (!isInitialized.value) {
+        pageComponent.value = InitPageComponent;
+    } else if (isUnlocked.value !== true) {
         pageComponent.value = UnlockPageComponent;
     } else if (permissionsGranted.value !== true && (await checkVaultPermissionsAsync()) !== true) {
         pageComponent.value = RequestPermissionsPageComponent;
