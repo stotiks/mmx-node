@@ -8,7 +8,7 @@
         @show="onDialogShow"
         @hide="onDialogHide"
     >
-        <q-card class="q-dialog-plugin">
+        <q-card class="q-dialog-plugin" style="background: var(--q-dark-page)">
             <q-layout view="lHh Lpr lFf">
                 <q-page-container>
                     <component
