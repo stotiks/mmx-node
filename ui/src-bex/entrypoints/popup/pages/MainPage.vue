@@ -2,7 +2,13 @@
     <q-page padding>
         <div class="q-gutter-y-md">
             <WalletSelect2 />
-            <BalanceTable :address="currentWalletAddress" use-short-addr :use-contract-link="false" show-empty />
+            <BalanceTable
+                v-if="currentWalletAddress"
+                :address="currentWalletAddress"
+                use-short-addr
+                :use-contract-link="false"
+                show-empty
+            />
         </div>
     </q-page>
 </template>
