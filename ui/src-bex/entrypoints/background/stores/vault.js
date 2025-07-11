@@ -53,7 +53,6 @@ class Vault {
         }
         await this.saveAsync();
         await this.#unloadAsync();
-        this.#isUnlocked = false;
         this.emit("locked");
         return false;
     }
@@ -80,6 +79,8 @@ class Vault {
         this.#wallets$$sensitive = [];
         this.#history = [];
         this.#encryptionKey = null;
+
+        this.#isUnlocked = false;
     }
 
     async #saveAsync(encryptionKey) {
