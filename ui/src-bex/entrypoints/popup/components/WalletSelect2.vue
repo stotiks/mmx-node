@@ -12,7 +12,14 @@
     />
     <template v-else>
         <div class="row justify-center">
-            <q-btn flat color="primary" @click="handleAddWallet()"> Add Wallet </q-btn>
+            <q-btn
+                flat
+                color="primary"
+                class="animate__animated animate__pulse animate__infinite"
+                @click="handleAddWallet()"
+            >
+                Add Wallet
+            </q-btn>
         </div>
     </template>
 </template>
