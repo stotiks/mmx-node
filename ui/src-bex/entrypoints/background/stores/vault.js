@@ -6,6 +6,7 @@ import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
 import { EncryptedStorageItem } from "../utils/StorageItem";
 
 class Vault {
+    #MAX_HISTORY_ENTRIES = 10;
     #walletStorage = new EncryptedStorageItem("local:wallets");
     #historyStorage = new EncryptedStorageItem("local:history");
     #wallets$$sensitive;
@@ -330,6 +331,9 @@ class Vault {
             throw new Error("Vault is locked");
         }
         this.#history.push({ ...entry, time: Date.now() });
+        if (this.#history.length > this.#MAX_HISTORY_ENTRIES) {
+            this.#history.splice(0, this.#history.length - this.#MAX_HISTORY_ENTRIES);
+        }
         this.saveAsync();
     }
 
@@ -340,13 +344,13 @@ class Vault {
         return this.#history;
     }
 
-    clearHistory() {
-        if (!this.isUnlocked) {
-            throw new Error("Vault is locked");
-        }
-        this.#history = [];
-        this.saveAsync();
-    }
+    // clearHistory() {
+    //     if (!this.isUnlocked) {
+    //         throw new Error("Vault is locked");
+    //     }
+    //     this.#history = [];
+    //     this.saveAsync();
+    // }
 }
 
 const vault = new Vault();
