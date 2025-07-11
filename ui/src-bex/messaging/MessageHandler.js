@@ -5,6 +5,7 @@ const toCamelCase = (str) => {
 export class MessageHandler {
     #methods;
     #hooks = [];
+    #afterHooks = [];
 
     constructor(methods) {
         this.#methods = methods;
@@ -14,8 +15,18 @@ export class MessageHandler {
         this.#hooks.push(hook);
     }
 
+    addAfterHook(hook) {
+        this.#afterHooks.push(hook);
+    }
+
     async #runHooks(context) {
         for (const hook of this.#hooks) {
+            await hook(context);
+        }
+    }
+
+    async #runAfterHooks(context) {
+        for (const hook of this.#afterHooks) {
             await hook(context);
         }
     }
@@ -68,17 +79,20 @@ export class MessageHandler {
         const context = this.getContext(message);
         const { handler, method, params } = context;
 
+        let result;
         try {
             await this.#runHooks(context);
-            const result = await handler.call(this.#methods, params);
-            return { success: true, data: result };
+            const callResult = await handler.call(this.#methods, params);
+            result = { success: true, data: callResult };
         } catch (error) {
             // eslint-disable-next-line no-undef
             if (process.env.NODE_ENV === "development") {
                 console.log(`Error handling method [${method}]:`, error);
             }
-            return { success: false, error: error.message };
+            result = { success: false, error: error.message };
         }
+        await this.#runAfterHooks({ ...context, result });
+        return result;
     }
 
     register(onWindowMessage, messageID) {
