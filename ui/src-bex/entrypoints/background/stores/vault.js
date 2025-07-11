@@ -339,6 +339,7 @@ class Vault {
             this.#history.splice(0, this.#history.length - this.#MAX_HISTORY_ENTRIES);
         }
         await this.saveAsync();
+        this.emit("history-updated");
     }
 
     getHistory() {

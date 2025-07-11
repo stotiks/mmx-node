@@ -1,8 +1,11 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
 
+import { useVaultStore } from "../stores/vault";
+
 export const useVaultMessageHandler = () => {
     const $q = useQuasar();
+    const vault = useVaultStore();
 
     const showSuccessNotification = (message) => {
         $q.notify({ type: "positive", message });
@@ -41,6 +44,9 @@ export const useVaultMessageHandler = () => {
         },
         permissionRevoked: async () => {
             console.log("permissionRevoked");
+        },
+        historyUpdated: async () => {
+            await vault.updateHistoryAsync();
         },
     };
     const vaultMessageHandler = new MessageHandler(vaultMessageHandlerMethods);

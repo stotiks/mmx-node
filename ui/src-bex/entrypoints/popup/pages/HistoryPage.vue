@@ -19,11 +19,7 @@
 </template>
 
 <script setup>
-import { vaultService } from "../vaultService";
-
-const history = ref([]);
-
-onMounted(async () => {
-    history.value = (await vaultService.getHistoryAsync()) ?? [];
-});
+import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
+const vaultStore = useVaultStore();
+const { history } = storeToRefs(vaultStore);
 </script>
