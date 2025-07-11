@@ -7,6 +7,12 @@
             <q-space />
             <q-btn flat :icon="mdiDotsVertical">
                 <q-menu anchor="bottom left" self="top left">
+                    <q-item v-ripple clickable to="/history">
+                        <q-item-section avatar>
+                            <q-icon :name="mdiHistory" />
+                        </q-item-section>
+                        <q-item-section>History</q-item-section>
+                    </q-item>
                     <q-item v-ripple clickable to="/wallets">
                         <q-item-section avatar>
                             <q-icon :name="mdiWallet" />
@@ -40,7 +46,15 @@
 </template>
 
 <script setup>
-import { mdiLock, mdiDotsVertical, mdiWallet, mdiShieldLock, mdiArrowLeft, mdiTrashCanOutline } from "@mdi/js";
+import {
+    mdiLock,
+    mdiDotsVertical,
+    mdiWallet,
+    mdiShieldLock,
+    mdiArrowLeft,
+    mdiTrashCanOutline,
+    mdiHistory,
+} from "@mdi/js";
 
 const route = useRoute();
 

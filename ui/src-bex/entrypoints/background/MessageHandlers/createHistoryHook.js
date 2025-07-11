@@ -5,11 +5,6 @@ export const createHistoryHook = () => {
         if (!vault.isUnlocked) {
             return;
         }
-
-        vault.addHistory({
-            method,
-            params,
-            context,
-        });
+        await vault.addHistoryAsync(context);
     };
 };
