@@ -8,9 +8,9 @@ import { EncryptedStorageItem } from "../utils/StorageItem";
 class Vault {
     #MAX_HISTORY_ENTRIES = 10;
     #walletStorage = new EncryptedStorageItem("local:wallets");
+    #wallets$$sensitive = [];
     #historyStorage = new EncryptedStorageItem("local:history");
-    #wallets$$sensitive;
-    #history;
+    #history = [];
     #isUnlocked = false;
     #encryptionKey = null;
     #currentWalletAddress = null;
@@ -64,15 +64,19 @@ class Vault {
         if (!(await this.getIsInitializedAsync())) {
             throw new Error("Vault is not initialized");
         }
-        [this.#wallets$$sensitive, this.#history] = await Promise.all([
-            this.#walletStorage.get(encryptionKey),
-            this.#historyStorage.get(encryptionKey),
-        ]);
+
+        if (await this.#walletStorage.exists()) {
+            this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
+        }
+
+        if (await this.#historyStorage.exists()) {
+            this.#history = await this.#historyStorage.get(encryptionKey);
+        }
     }
 
     async #unloadAsync() {
-        this.#wallets$$sensitive = null;
-        this.#history = null;
+        this.#wallets$$sensitive = [];
+        this.#history = [];
         this.#encryptionKey = null;
     }
 
@@ -80,10 +84,9 @@ class Vault {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-        await Promise.all([
-            this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey),
-            this.#historyStorage.set(this.#history, this.#encryptionKey),
-        ]);
+
+        await this.#historyStorage.set(this.#history, this.#encryptionKey);
+        await this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey);
     }
 
     async initVaultAsync({ password }) {
@@ -134,7 +137,8 @@ class Vault {
         if (this.isUnlocked) {
             throw new Error("Cannot remove vault while it is unlocked.");
         }
-        await Promise.all([this.#walletStorage.remove(), this.#historyStorage.remove()]);
+        await this.#historyStorage.remove();
+        await this.#walletStorage.remove();
         this.emit("vault-removed");
     }
 
@@ -326,7 +330,7 @@ class Vault {
         }
     }
     // history
-    addHistory(entry) {
+    async addHistoryAsync(entry) {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
@@ -334,7 +338,7 @@ class Vault {
         if (this.#history.length > this.#MAX_HISTORY_ENTRIES) {
             this.#history.splice(0, this.#history.length - this.#MAX_HISTORY_ENTRIES);
         }
-        this.saveAsync();
+        await this.saveAsync();
     }
 
     getHistory() {
@@ -343,14 +347,6 @@ class Vault {
         }
         return this.#history;
     }
-
-    // clearHistory() {
-    //     if (!this.isUnlocked) {
-    //         throw new Error("Vault is locked");
-    //     }
-    //     this.#history = [];
-    //     this.saveAsync();
-    // }
 }
 
 const vault = new Vault();
