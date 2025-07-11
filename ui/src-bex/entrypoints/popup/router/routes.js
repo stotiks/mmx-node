@@ -14,4 +14,9 @@ export default [
         path: "/wallets",
         component: () => import("@bex/entrypoints/popup/pages/Settings/WalletsPage"),
     },
+
+    {
+        path: "/history",
+        component: () => import("@bex/entrypoints/popup/pages/HistoryPage"),
+    },
 ];
