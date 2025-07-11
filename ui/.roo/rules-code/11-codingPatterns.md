@@ -40,14 +40,14 @@ The following are auto-imported across the application via `unplugin-auto-import
 *   `src/composables/**/*`
 *   `src/stores/**/*`
 
-
-## Testing Patterns
-
-*   Use `vitest` for unit and integration testing
-
 ## Package Manager
 
 *   Use `bun` instead of `npm` for package management.
+
+## Testing Patterns
+
+*   Use [`vitest`](https://vitest.dev/) for unit testing
+*   Test files should use [`.test.js`](src/mmx/wallet/ECDSA_Wallet.js.test.js) extension and be placed adjacent to source files
 
 ## BEX Custom Store
 
