@@ -6,6 +6,7 @@ export const useVaultStore = defineStore("vault", () => {
     const isInitialized = ref(false);
     const isUnlocked = ref(false);
     const wallets = ref([]);
+    const history = ref([]);
     const isActionRunning = ref(false);
 
     const currentWalletAddress = ref("");
@@ -37,6 +38,7 @@ export const useVaultStore = defineStore("vault", () => {
         if (isUnlocked.value === true) {
             await _refreshCurrentWalletAddressAsync();
             await _refreshWalletsAsync();
+            await updateHistoryAsync();
         }
     });
 
@@ -87,6 +89,11 @@ export const useVaultStore = defineStore("vault", () => {
         await vaultService.allowUrlAsync(url);
     };
 
+    const updateHistoryAsync = async () => {
+        const h = await vaultService.getHistoryAsync();
+        history.value = h.sort((a, b) => b.time - a.time);
+    };
+
     const _refreshCurrentWalletAddressAsync = async () => {
         if (isUnlocked.value === true) {
             currentWalletAddress.value = (await vaultService.getCurrentWalletAddressAsync()) ?? "";
@@ -102,6 +109,7 @@ export const useVaultStore = defineStore("vault", () => {
             if ((await _refreshIsUnlockedAsync()) === true) {
                 await _refreshCurrentWalletAddressAsync();
                 await _refreshWalletsAsync();
+                await updateHistoryAsync();
             }
         }
     })();
@@ -123,6 +131,7 @@ export const useVaultStore = defineStore("vault", () => {
         isInitialized,
         isUnlocked,
         wallets,
+        history,
         currentWalletAddress,
         isActionRunning,
         // Actions
@@ -134,6 +143,7 @@ export const useVaultStore = defineStore("vault", () => {
         allowUrlAsync,
         removeVaultDataAsync,
         initVaultAsync,
+        updateHistoryAsync,
     };
 
     return store;
