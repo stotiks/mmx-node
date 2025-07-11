@@ -12,7 +12,6 @@ class Vault {
     #historyStorage = new EncryptedStorageItem("local:history");
 
     #wallets$$sensitive = [];
-    #history = [];
     #isUnlocked = false;
     #encryptionKey = null;
     #currentWalletAddress = null;
@@ -69,10 +68,6 @@ class Vault {
         if (await this.#walletStorage.exists()) {
             this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
         }
-
-        if (await this.#historyStorage.exists()) {
-            this.#history = await this.#historyStorage.get(encryptionKey);
-        }
     }
 
     async #unloadAsync() {
@@ -84,7 +79,6 @@ class Vault {
     }
 
     async #saveAsync(encryptionKey) {
-        await this.#historyStorage.set(this.#history, encryptionKey);
         await this.#walletStorage.set(this.#wallets$$sensitive, encryptionKey);
     }
 
@@ -101,7 +95,6 @@ class Vault {
         }
 
         this.#wallets$$sensitive = [];
-        this.#history = [];
         this.#isUnlocked = false;
 
         const encryptionKey = this.#generateEncryptionKey(password);
@@ -342,19 +335,27 @@ class Vault {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-        this.#history.push({ ...entry, time: Date.now() });
-        if (this.#history.length > this.#MAX_HISTORY_ENTRIES) {
-            this.#history.splice(0, this.#history.length - this.#MAX_HISTORY_ENTRIES);
+
+        const history = this.getHistoryAsync();
+        history.push({ ...entry, time: Date.now() });
+        if (history.length > this.#MAX_HISTORY_ENTRIES) {
+            history.splice(0, history.length - this.#MAX_HISTORY_ENTRIES);
         }
-        await this.saveAsync();
+
+        await this.#historyStorage.set(history, this.#encryptionKey);
         this.emit("history-updated");
     }
 
-    getHistory() {
+    async getHistoryAsync() {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-        return this.#history;
+
+        let history = [];
+        if (await this.#historyStorage.exists()) {
+            history = await this.#historyStorage.get(this.#encryptionKey);
+        }
+        return history;
     }
 }
 
