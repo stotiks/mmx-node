@@ -72,7 +72,6 @@ class Vault {
 
     async #unloadAsync() {
         this.#wallets$$sensitive = [];
-        this.#history = [];
         this.#encryptionKey = null;
 
         this.#isUnlocked = false;
