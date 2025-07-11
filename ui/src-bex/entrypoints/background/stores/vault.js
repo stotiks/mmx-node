@@ -7,7 +7,9 @@ import { EncryptedStorageItem } from "../utils/StorageItem";
 
 class Vault {
     #walletStorage = new EncryptedStorageItem("local:wallets");
+    #historyStorage = new EncryptedStorageItem("local:history");
     #wallets$$sensitive;
+    #history;
     #isUnlocked = false;
     #encryptionKey = null;
     #currentWalletAddress = null;
@@ -61,11 +63,15 @@ class Vault {
         if (!(await this.getIsInitializedAsync())) {
             throw new Error("Vault is not initialized");
         }
-        this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
+        [this.#wallets$$sensitive, this.#history] = await Promise.all([
+            this.#walletStorage.get(encryptionKey),
+            this.#historyStorage.get(encryptionKey),
+        ]);
     }
 
     async #unloadAsync() {
         this.#wallets$$sensitive = null;
+        this.#history = null;
         this.#encryptionKey = null;
     }
 
@@ -73,7 +79,10 @@ class Vault {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-        await this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey);
+        await Promise.all([
+            this.#walletStorage.set(this.#wallets$$sensitive, this.#encryptionKey),
+            this.#historyStorage.set(this.#history, this.#encryptionKey),
+        ]);
     }
 
     async initVaultAsync({ password }) {
@@ -82,6 +91,7 @@ class Vault {
         }
         const encryptionKey = this.#generateEncryptionKey(password);
         this.#wallets$$sensitive = [];
+        this.#history = [];
         this.#encryptionKey = encryptionKey;
         this.#isUnlocked = true;
         await this.saveAsync();
@@ -123,7 +133,7 @@ class Vault {
         if (this.isUnlocked) {
             throw new Error("Cannot remove vault while it is unlocked.");
         }
-        await this.#walletStorage.remove();
+        await Promise.all([this.#walletStorage.remove(), this.#historyStorage.remove()]);
         this.emit("vault-removed");
     }
 
@@ -313,6 +323,29 @@ class Vault {
                 }
             });
         }
+    }
+    // history
+    addHistory(entry) {
+        if (!this.isUnlocked) {
+            throw new Error("Vault is locked");
+        }
+        this.#history.push({ ...entry, time: Date.now() });
+        this.saveAsync();
+    }
+
+    getHistory() {
+        if (!this.isUnlocked) {
+            throw new Error("Vault is locked");
+        }
+        return this.#history;
+    }
+
+    clearHistory() {
+        if (!this.isUnlocked) {
+            throw new Error("Vault is locked");
+        }
+        this.#history = [];
+        this.saveAsync();
     }
 }
 
