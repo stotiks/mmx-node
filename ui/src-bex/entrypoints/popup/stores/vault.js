@@ -114,7 +114,11 @@ export const useVaultStore = defineStore("vault", () => {
 
     const vaultStore = useVaultStore();
 
-    vaultStore.$onAction(({ after, onError }) => {
+    vaultStore.$onAction(({ name, after, onError }) => {
+        if (name == "updateHistoryAsync") {
+            return;
+        }
+
         isActionRunning.value = true;
         after(() => {
             isActionRunning.value = false;
