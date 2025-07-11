@@ -2,10 +2,11 @@ import vault from "../stores/vault";
 
 export const createHistoryHook = () => {
     return async (context) => {
-        const { handler } = context;
+        const { handler, result } = context;
         const isAcceptRequired = handler.metadata?.isAcceptRequired ?? true;
         if (isAcceptRequired) {
-            await vault.addHistoryAsync(context);
+            const { data, ...restResult } = result;
+            vault.addHistoryAsync({ ...context, result: restResult });
         }
     };
 };
