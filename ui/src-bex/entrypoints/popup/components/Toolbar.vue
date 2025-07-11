@@ -1,6 +1,6 @@
 <template>
     <q-page-sticky expand position="top">
-        <q-toolbar>
+        <q-toolbar style="background: var(--q-dark-page)">
             <template v-if="route.path !== '/'">
                 <q-btn flat :icon="mdiArrowLeft" :to="{ name: 'home' }" />
             </template>
