@@ -98,22 +98,19 @@ export const useVaultStore = defineStore("vault", () => {
     const _refreshIsUnlockedAsync = async () => (isUnlocked.value = await vaultService.getIsUnlockedAsync());
 
     const _refresh = async () => {
-        await _refreshIsInitializedAsync();
-        await _refreshIsUnlockedAsync();
-        if (isUnlocked.value === true) {
-            _refreshWalletsAsync();
-            await updateHistoryAsync();
+        if ((await _refreshIsInitializedAsync()) === true) {
+            if ((await _refreshIsUnlockedAsync()) === true) {
+                if (isUnlocked.value === true) {
+                    await _refreshWalletsAsync();
+                    await updateHistoryAsync();
+                }
+            }
         }
     };
 
-    //Initialize
-    (async () => {
-        if ((await _refreshIsInitializedAsync()) === true) {
-            if ((await _refreshIsUnlockedAsync()) === true) {
-                await _refresh();
-            }
-        }
-    })();
+    onMounted(async () => {
+        await _refresh();
+    });
 
     const vaultStore = useVaultStore();
 
