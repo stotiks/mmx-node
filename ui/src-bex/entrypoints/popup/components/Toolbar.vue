@@ -7,17 +7,17 @@
             <q-space />
             <q-btn flat :icon="mdiDotsVertical">
                 <q-menu anchor="bottom left" self="top left">
-                    <q-item v-ripple clickable to="/history">
-                        <q-item-section avatar>
-                            <q-icon :name="mdiHistory" />
-                        </q-item-section>
-                        <q-item-section>History</q-item-section>
-                    </q-item>
                     <q-item v-ripple clickable to="/wallets">
                         <q-item-section avatar>
                             <q-icon :name="mdiWallet" />
                         </q-item-section>
                         <q-item-section>Wallets</q-item-section>
+                    </q-item>
+                    <q-item v-ripple clickable to="/history">
+                        <q-item-section avatar>
+                            <q-icon :name="mdiHistory" />
+                        </q-item-section>
+                        <q-item-section>History</q-item-section>
                     </q-item>
                     <q-item v-ripple clickable to="/password">
                         <q-item-section avatar>
