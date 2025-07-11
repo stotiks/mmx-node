@@ -1,10 +1,6 @@
 <template>
     <q-layout view="hHh lpR fFf">
         <q-page-container>
-            <q-inner-loading :showing="!isMounted">
-                <q-spinner-radio size="50px" color="primary" />
-            </q-inner-loading>
-
             <template v-if="isMounted">
                 <template v-if="!isInitialized">
                     <InitPage />
@@ -14,12 +10,17 @@
                 </template>
                 <template v-else>
                     <RouterView style="padding-top: 66px" />
-                    <q-inner-loading :showing="isActionRunning">
-                        <q-spinner-gears size="50px" color="primary" />
-                    </q-inner-loading>
                     <Toolbar />
                 </template>
+
+                <q-inner-loading :showing="isActionRunning" class="fullscreen">
+                    <q-spinner-gears size="50px" color="primary" />
+                </q-inner-loading>
             </template>
+
+            <q-inner-loading :showing="!isMounted" class="fullscreen">
+                <q-spinner-radio size="50px" color="primary" />
+            </q-inner-loading>
         </q-page-container>
     </q-layout>
 
