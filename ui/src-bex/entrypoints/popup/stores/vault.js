@@ -3,6 +3,7 @@ import { vaultService } from "@bex/entrypoints/popup/vaultService";
 
 export const useVaultStore = defineStore("vault", () => {
     // State
+    const isLoaded = ref(false);
     const isInitialized = ref(false);
     const isUnlocked = ref(false);
     const wallets = ref([]);
@@ -110,6 +111,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     onMounted(async () => {
         await _refresh();
+        isLoaded.value = true;
     });
 
     const vaultStore = useVaultStore();
@@ -130,6 +132,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     const store = {
         // State
+        isLoaded,
         isInitialized,
         isUnlocked,
         wallets,
