@@ -5,7 +5,7 @@
                 <template v-if="!isInitialized">
                     <InitPage />
                 </template>
-                <template v-else-if="isUnlocked !== true">
+                <template v-else-if="!isUnlocked">
                     <UnlockPage />
                 </template>
                 <template v-else>
@@ -18,7 +18,7 @@
                 </q-inner-loading>
             </template>
 
-            <q-inner-loading :showing="!isMounted" class="fullscreen">
+            <q-inner-loading :showing="!isMounted || !isLoaded" class="fullscreen">
                 <q-spinner-radio size="50px" color="primary" />
             </q-inner-loading>
         </q-page-container>
@@ -36,7 +36,7 @@ import Toolbar from "./components/Toolbar.vue";
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isInitialized, isUnlocked, isActionRunning } = storeToRefs(vaultStore);
+const { isLoaded, isInitialized, isUnlocked, isActionRunning } = storeToRefs(vaultStore);
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
 useVaultMessageHandler();
