@@ -1,7 +1,6 @@
 import { describe, it, assert, expect } from "vitest";
 
-import * as secp256k1 from "@noble/secp256k1";
-const { randomBytes } = secp256k1.etc;
+import { randomBytes } from "@noble/hashes/utils";
 
 import "./Uint8ArrayUtils";
 
