@@ -1,27 +1,22 @@
+import { sha256 } from "@noble/hashes/sha2";
+import { bytesToHex, hexToBytes, isBytes, u8, utf8ToBytes } from "@noble/hashes/utils";
 import { bech32m } from "@scure/base";
-import { hexToBytes, isBytes, u8 } from "@noble/hashes/utils";
 
-export class bytes_t {
-    #bytes = new Uint8Array();
+export class bytes_t extends Uint8Array {
     constructor(bytes) {
-        if (isBytes(bytes)) {
-            this.#setBytes(bytes);
+        if (bytes == undefined) {
+            super();
+        } else if (isBytes(bytes)) {
+            super(bytes);
         } else if (typeof bytes == "string") {
-            this.#setBytes(hexToBytes(bytes));
+            super(hexToBytes(bytes));
+        } else {
+            throw new Error(`Invalid bytes type ${typeof bytes}`);
         }
     }
 
-    #setBytes(_bytes) {
-        const bytes = u8(_bytes);
-        this.#bytes = bytes;
-    }
-
-    valueOf() {
-        return this.#bytes;
-    }
-
     toString() {
-        return this.valueOf().toHex();
+        return bytesToHex(this.valueOf());
     }
 }
 
@@ -46,17 +41,15 @@ export class addr_t extends bytes_t {
     }
 
     toString() {
-        return bech32m.encodeFromBytes(addr_t.prefix, this.valueOf().toReversed());
+        return bech32m.encodeFromBytes(addr_t.prefix, this.toReversed());
     }
 }
-
-import { sha256 } from "@noble/hashes/sha256";
 export class hash_t extends bytes_t {
     constructor(data) {
         if (data == undefined) {
             super(new Uint8Array(32));
         } else {
-            super(sha256(data));
+            super(typeof data == "string" ? sha256(utf8ToBytes(data)) : sha256(data));
         }
     }
 }
