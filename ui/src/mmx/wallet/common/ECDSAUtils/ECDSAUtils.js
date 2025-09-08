@@ -1,11 +1,14 @@
-import { u8, u32 } from "@noble/hashes/utils";
-import { sha512, sha256 } from "@noble/hashes/sha2";
 import { hmac } from "@noble/hashes/hmac";
+import { sha256, sha512 } from "@noble/hashes/sha2";
+import { hexToBytes, isBytes, u32, u8 } from "@noble/hashes/utils";
 
 import * as secp256k1 from "@noble/secp256k1";
-secp256k1.etc.hmacSha256Sync = (k, ...m) => hmac(sha256, k, secp256k1.etc.concatBytes(...m));
+secp256k1.hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
+secp256k1.hashes.sha256 = sha256;
+secp256k1.hashes.hmacSha256Async = async (key, msg) => hmac(sha256, key, msg);
+secp256k1.hashes.sha256Async = async (msg) => sha256(msg);
 
-import { addr_t } from "@/mmx/wallet/common/addr_t";
+import { addr_t, hash_t } from "@/mmx/wallet/common/addr_t";
 import "@/mmx/wallet/utils/Uint8ArrayUtils";
 
 const KDF_ITERS = 4096;
@@ -25,7 +28,7 @@ const hmac_sha512_n = (message, key, index) => {
 };
 
 const getFarmerKey = (seed_value) => {
-    const master = kdf_hmac_sha512(seed_value, sha256("MMX/farmer_keys"), KDF_ITERS);
+    const master = kdf_hmac_sha512(seed_value, new hash_t("MMX/farmer_keys"), KDF_ITERS);
 
     const tmp = hmac_sha512_n(master.first, master.second, 0);
     const pubKey = secp256k1.getPublicKey(tmp.first);
@@ -33,7 +36,7 @@ const getFarmerKey = (seed_value) => {
 };
 
 const getKeys = (seed_value, passphrase, index) => {
-    const master = kdf_hmac_sha512(seed_value, sha256("MMX/seed/" + passphrase), KDF_ITERS);
+    const master = kdf_hmac_sha512(seed_value, new hash_t("MMX/seed/" + passphrase), KDF_ITERS);
 
     const chain = hmac_sha512_n(master.first, master.second, 11337);
     const account = hmac_sha512_n(chain.first, chain.second, 0);
@@ -46,7 +49,7 @@ const getKeys = (seed_value, passphrase, index) => {
 
 const getAddress = (seed_value, passphrase, index) => {
     const { pubKey } = getKeys(seed_value, passphrase, index);
-    const addr = sha256(pubKey);
+    const addr = new hash_t(pubKey);
 
     const addrStr = new addr_t(addr).toString();
     return addrStr;
@@ -55,26 +58,30 @@ const getAddress = (seed_value, passphrase, index) => {
 const getFingerPrint = (seed_value, passphrase) => {
     let pass_hash = new Uint8Array(32);
     if (passphrase) {
-        pass_hash = sha256("MMX/fingerprint/" + passphrase);
+        pass_hash = new hash_t("MMX/fingerprint/" + passphrase);
     }
 
     let hash = new Uint8Array(32);
     for (let i = 0; i < 16384; ++i) {
-        hash = sha256(new Uint8Array([...hash, ...seed_value, ...pass_hash]));
+        hash = new hash_t(new Uint8Array([...hash, ...seed_value, ...pass_hash]));
     }
 
     const fingerPrint = u32(hash)[0];
     return fingerPrint;
 };
 
+const ensureBytes = (hex) => (isBytes(hex) ? Uint8Array.from(hex) : hexToBytes(hex));
+
 const sign = (privKey, msg) => {
-    return secp256k1.sign(msg, privKey).toCompactRawBytes();
+    const bytes = ensureBytes(msg);
+    return secp256k1.sign(bytes, privKey, { prehash: false });
 };
 
 const signAsync = async (privKey, msg) => {
-    return (await secp256k1.signAsync(msg, privKey)).toCompactRawBytes();
+    const bytes = ensureBytes(msg);
+    return await secp256k1.signAsync(bytes, privKey, { prehash: false });
 };
 
 const syncFunctionList = { getFarmerKey, getAddress, getFingerPrint, getKeys };
 
-export { getFarmerKey, getKeys, getAddress, getFingerPrint, sign, signAsync, syncFunctionList };
+export { getAddress, getFarmerKey, getFingerPrint, getKeys, sign, signAsync, syncFunctionList };
