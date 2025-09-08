@@ -1,5 +1,4 @@
-import * as secp256k1 from "@noble/secp256k1";
-const { randomBytes, bytesToNumberBE } = secp256k1.etc;
+import { randomBytes, bytesToNumberBE } from "@noble/hashes/utils";
 
 import { JSONbigNativeString } from "./utils/JSONbigNative";
 
