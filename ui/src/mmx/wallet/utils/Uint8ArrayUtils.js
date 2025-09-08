@@ -1,5 +1,4 @@
-import { bytesToHex } from "@noble/hashes/utils";
-import { abytes } from "@noble/hashes/_assert";
+import { bytesToHex, abytes } from "@noble/hashes/utils";
 
 Object.defineProperty(Uint8Array.prototype, "first", {
     get() {
