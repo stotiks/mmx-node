@@ -70,16 +70,19 @@ const getFingerPrint = (seed_value, passphrase) => {
     return fingerPrint;
 };
 
-const ensureBytes = (hex) => (isBytes(hex) ? Uint8Array.from(hex) : hexToBytes(hex));
+const ensureBytes = (hex) => (isBytes(hex) ? hex : hexToBytes(hex));
 
-const sign = (privKey, msg) => {
+const _prepareSignArgs = (privKey, msg) => {
     const bytes = ensureBytes(msg);
-    return secp256k1.sign(bytes, privKey, { prehash: false });
+    return [bytes, privKey, { prehash: false }];
 };
 
-const signAsync = async (privKey, msg) => {
-    const bytes = ensureBytes(msg);
-    return await secp256k1.signAsync(bytes, privKey, { prehash: false });
+const sign = (privKey, msg) => {
+    return secp256k1.sign(..._prepareSignArgs(privKey, msg));
+};
+
+const signAsync = (privKey, msg) => {
+    return secp256k1.signAsync(..._prepareSignArgs(privKey, msg));
 };
 
 const syncFunctionList = { getFarmerKey, getAddress, getFingerPrint, getKeys };
