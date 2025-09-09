@@ -1,5 +1,5 @@
 import { sha256 } from "@noble/hashes/sha2";
-import { bytesToHex, hexToBytes, isBytes, u8, utf8ToBytes } from "@noble/hashes/utils";
+import { bytesToHex, hexToBytes, isBytes, utf8ToBytes } from "@noble/hashes/utils";
 import { bech32m } from "@scure/base";
 
 export class bytes_t extends Uint8Array {
