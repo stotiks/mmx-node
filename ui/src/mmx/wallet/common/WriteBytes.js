@@ -9,8 +9,6 @@ import { WriteBuffer } from "./WriteBuffer";
 import { pair } from "./pair";
 import { vnxObject } from "./vnxObject";
 
-import "../utils/Uint8ArrayUtils";
-
 export class WriteBytes extends WriteBuffer {
     write_bytes_cstr(str) {
         const tmp = new TextEncoder().encode(str);
