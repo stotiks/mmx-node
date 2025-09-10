@@ -18,6 +18,7 @@
         "opencl",
         "pinia",
         "prefetcher",
+        "prehash",
         "roboto",
         "scure",
         "secp",
