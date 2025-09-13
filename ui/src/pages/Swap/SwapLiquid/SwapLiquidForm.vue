@@ -76,28 +76,28 @@
                             :label="$t('swap.switch_fee')"
                             outline
                             :disable="switchFeeDisable"
-                            @click="handleSwitchFee"
+                            @click="handleSwitchFeeClick"
                         />
                         <q-btn
                             :label="$t('swap.add_liquidity')"
                             outline
                             :disable="addLiquidityDisable"
                             class="text-positive"
-                            @click="handleAddLiquidity"
+                            @click="handleAddLiquidityClick"
                         />
                         <q-btn
                             :label="$t('swap.remove_liquidity')"
                             outline
                             :disable="removeLiquidityDisable"
                             class="text-negative"
-                            @click="handleRemoveLiquidity"
+                            @click="handleRemoveLiquidityClick"
                         />
                         <q-btn
                             :label="$t('swap.remove_all')"
                             outline
                             :disable="removeAllDisable"
                             class="text-negative"
-                            @click="handleRemoveAll"
+                            @click="handleRemoveAllClick"
                         />
                     </div>
                 </q-card-actions>
@@ -270,7 +270,7 @@ const handlePayout = async () => {
     });
 };
 const walletSwapSwitchPool = useWalletSwapSwitchPool();
-const handleSwitchFee = async () => {
+const _switchFee = async () => {
     const payload = {
         index: activeWalletIndex.value,
         address: props.address,
@@ -287,7 +287,7 @@ const handleSwitchFee = async () => {
 };
 
 const walletSwapAddLiquidity = useWalletSwapAddLiquidity();
-const handleAddLiquidity = async () => {
+const _addLiquidity = async () => {
     const payload = {
         index: activeWalletIndex.value,
         address: props.address,
@@ -309,7 +309,7 @@ const handleAddLiquidity = async () => {
 };
 
 const walletSwapRemoveLiquidity = useWalletSwapRemoveLiquidity();
-const handleRemoveLiquidity = async () => {
+const _removeLiquidity = async () => {
     const payload = {
         index: activeWalletIndex.value,
         address: props.address,
@@ -331,7 +331,7 @@ const handleRemoveLiquidity = async () => {
 };
 
 const walletSwapRemoveAllLiquidity = useWalletSwapRemoveAllLiquidity();
-const handleRemoveAll = async () => {
+const _removeAll = async () => {
     const payload = {
         index: activeWalletIndex.value,
         address: props.address,
@@ -345,4 +345,14 @@ const handleRemoveAll = async () => {
 
     await walletSwapRemoveAllLiquidity.mutateAsync(payloadWithPassphrase);
 };
+
+const { t } = useI18n();
+
+import { useConfirmation } from "@/composables/useConfirmation";
+const { withConfirmation } = useConfirmation();
+
+const handleRemoveAllClick = withConfirmation(t("swap.remove_all"), null, _removeAll);
+const handleRemoveLiquidityClick = withConfirmation(t("swap.remove_liquidity"), null, _removeLiquidity);
+const handleAddLiquidityClick = withConfirmation(t("swap.add_liquidity"), null, _addLiquidity);
+const handleSwitchFeeClick = withConfirmation(t("swap.switch_fee"), null, _switchFee);
 </script>
