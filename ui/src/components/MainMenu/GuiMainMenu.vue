@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { mdiCog, mdiLogout } from "@mdi/js";
+import { mdiCog, mdiLogout, mdiFinance, mdiSwapHorizontal } from "@mdi/js";
 
 import BuildVersion from "./components/BuildVersion.vue";
 import NodeStatus from "./components/NodeStatus.vue";
@@ -21,8 +21,9 @@ const tabs = computed(() => [
     { to: "/wallet", label: t("main_menu.wallet"), visible: isWallet.value },
     { to: "/farmer", label: t("main_menu.farmer"), visible: isFarmer.value },
     { to: "/explore", label: t("main_menu.explore") },
-    { to: "/market", label: t("main_menu.market"), visible: isWallet.value },
-    { to: "/swap", label: t("main_menu.swap"), visible: isWallet.value },
+    { space: true },
+    { to: "/market", label: t("main_menu.market"), visible: isWallet.value, icon: mdiFinance },
+    { to: "/swap", label: t("main_menu.swap"), visible: isWallet.value, icon: mdiSwapHorizontal },
     { space: true },
     { component: BuildVersion, visible: !appStore.isWinGUI },
     { component: NodeStatus },
