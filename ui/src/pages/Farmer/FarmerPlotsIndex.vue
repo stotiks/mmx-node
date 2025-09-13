@@ -1,6 +1,6 @@
 <template>
     <div class="q-gutter-y-sm">
-        <q-card flat>
+        <q-card flat style="background-color: transparent">
             <FarmerMenu />
             <div class="row q-gutter-x-xs">
                 <q-table
