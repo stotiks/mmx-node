@@ -1,5 +1,5 @@
 <template>
-    <q-tabs indicator-color="primary" outside-arrows class="q-mx-xs">
+    <q-tabs indicator-color="primary" inline-label outside-arrows class="q-mx-xs">
         <template v-for="(item, key) in tabs" :key="key">
             <template v-if="item.separator">
                 <q-separator vertical inset class="q-mx-md" />
