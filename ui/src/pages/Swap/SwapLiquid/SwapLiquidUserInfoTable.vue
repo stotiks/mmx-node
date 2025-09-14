@@ -19,6 +19,14 @@
                     </div>
                 </q-td>
             </template>
+
+            <template v-slot:body-cell-unlock_height="bcProps">
+                <q-td :props="bcProps">
+                    <div v-if="bcProps.row.unlock_height" :class="getXClasses(bcProps)">
+                        {{ bcProps.value }}
+                    </div>
+                </q-td>
+            </template>
         </q-table>
     </div>
 </template>
@@ -99,9 +107,10 @@ const columns = computed(() => [
 
     //
     {
+        name: "unlock_height",
         label: t("swap.unlock_height"),
         field: "unlock_height",
-        classes: (item) => (item.unlock_height > nodeStore.height ? "text-negative" : ""),
+        xclasses: (item) => (item > nodeStore.height ? "text-negative locked" : ""),
         align: "left",
     },
 ]);
@@ -133,3 +142,9 @@ const tableData = computed(() => {
     return res;
 });
 </script>
+
+<style scoped>
+.locked::after {
+    content: " 🔒";
+}
+</style>
