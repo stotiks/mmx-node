@@ -31,6 +31,8 @@ const props = defineProps({
     },
 });
 
+const nodeStore = useNodeStore();
+
 const { t } = useI18n();
 const columns = computed(() => [
     //
@@ -99,6 +101,7 @@ const columns = computed(() => [
     {
         label: t("swap.unlock_height"),
         field: "unlock_height",
+        classes: (item) => (item.unlock_height > nodeStore.height ? "text-negative" : ""),
         align: "left",
     },
 ]);
