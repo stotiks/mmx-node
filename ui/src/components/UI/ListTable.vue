@@ -22,13 +22,15 @@
                             <template v-if="item.copyToClipboard">
                                 <UseClipboard v-slot="{ copy, copied }">
                                     <q-btn
-                                        :icon-right="mdiContentCopy"
+                                        :icon-right="copied ? mdiCheck : mdiContentCopy"
                                         flat
                                         size="sm"
                                         class="q-ml-sm q-pa-none"
                                         @click="copy(item.value)"
                                     >
-                                        <q-tooltip :model-value="copied === true" no-parent-event>Copied!</q-tooltip>
+                                        <q-tooltip :model-value="copied === true" no-parent-event>{{
+                                            $t("common.copied")
+                                        }}</q-tooltip>
                                     </q-btn>
                                 </UseClipboard>
                             </template>
@@ -41,7 +43,7 @@
 </template>
 
 <script setup>
-import { mdiContentCopy } from "@mdi/js";
+import { mdiContentCopy, mdiCheck } from "@mdi/js";
 import { UseClipboard } from "@vueuse/components";
 
 const props = defineProps({

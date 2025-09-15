@@ -61,6 +61,8 @@
 
 <script setup>
 import rules from "@/helpers/rules";
+import { useI18n } from "vue-i18n";
+const { t } = useI18n();
 
 const props = defineProps({
     index: {
@@ -136,5 +138,5 @@ const { data: walletBalance } = useWalletBalance(
     (data) => (data ? data.spendable : 0)
 );
 
-const hasFunds = (value) => value <= walletBalance.value || "Insufficient funds";
+const hasFunds = (value) => value <= walletBalance.value || t("common.insufficient_funds");
 </script>
