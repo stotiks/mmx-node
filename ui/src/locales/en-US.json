@@ -384,5 +384,18 @@
         "you_receive_estimated": "You receive (estimated)",
         "sell": "Sell",
         "buy": "Buy"
+    },
+
+    "notifications": {
+        "peer_kicked": "Peer kicked: {address}",
+        "token_added": "Added token to whitelist: {token}",
+        "token_removed": "Removed token from whitelist: {token}",
+        "plots_reloaded": "Plots reloaded",
+        "wallet_created": "Wallet created",
+        "wallet_removed": "Wallet removed",
+        "cache_reset": "Cache reset successfully",
+        "updated_success": "Updated successfully",
+        "wallet_locked": "Wallet #{index} locked",
+        "wallet_unlocked": "Wallet #{index} unlocked"
     }
 }

@@ -28,13 +28,14 @@ export const usePeerInfoMutation = () => {
 
 const kickPeer = (address) => axios.post("/api/router/kick_peer", { address }).then((response) => response.data);
 export const useKickPeer = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (address) => kickPeer(address),
         onSuccess: (data, address) => {
             queryClient.invalidateQueries({ queryKey: ["peers"] });
             pushSuccess({
-                message: "Peer kicked: " + address, //TODO i18n
+                message: t("notifications.peer_kicked", { address }),
             });
         },
     });
@@ -85,6 +86,7 @@ export const useRemovePlotDir = () => {
 
 const addTokens = (address) => axios.post("/api/wallet/add_token", { address }).then((response) => response.data);
 export const useAddTokens = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (address) => {
@@ -93,8 +95,8 @@ export const useAddTokens = () => {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ["walletCfg", "tokens"] });
             pushSuccess({
-                message: "Added token to whitelist: " + variables,
-            }); //TODO i18n
+                message: t("notifications.token_added", { token: variables }),
+            });
         },
         onError,
     });
@@ -102,6 +104,7 @@ export const useAddTokens = () => {
 
 const removeTokens = (address) => axios.post("/api/wallet/rem_token", { address }).then((response) => response.data);
 export const useRemoveTokens = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (address) => {
@@ -110,7 +113,7 @@ export const useRemoveTokens = () => {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ["walletCfg", "tokens"] });
             pushSuccess({
-                message: "Removed token from whitelist: " + variables, //TODO i18n
+                message: t("notifications.token_removed", { token: variables }),
             });
         },
         onError,
@@ -119,13 +122,14 @@ export const useRemoveTokens = () => {
 
 const harvesterReload = () => axios.post("/api/harvester/reload").then((response) => response.data);
 export const useHarvesterReload = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: () => harvesterReload(),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["farm"] });
             pushSuccess({
-                message: "Plots reloaded", //TODO i18n
+                message: t("notifications.plots_reloaded"),
             });
         },
     });
@@ -142,6 +146,7 @@ export const useMnemonicWordList = () => {
 
 const createWallet = (payload) => axios.post("/api/wallet/create_wallet", payload).then((response) => response.data);
 export const useCreateWallet = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (payload) => createWallet(payload),
@@ -149,7 +154,7 @@ export const useCreateWallet = () => {
             queryClient.invalidateQueries({ queryKey: ["accounts"] });
             //prefetchWalletAccounts(queryClient);
             pushSuccess({
-                message: "Wallet created", //TODO i18n
+                message: t("notifications.wallet_created"),
             });
         },
         onError,
@@ -158,6 +163,7 @@ export const useCreateWallet = () => {
 
 const removeAccount = (params) => axios.get("/api/wallet/remove_account", { params }).then((response) => response.data);
 export const useRemoveAccount = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (params) => removeAccount(params),
@@ -165,7 +171,7 @@ export const useRemoveAccount = () => {
             queryClient.invalidateQueries({ queryKey: ["accounts"] });
             //prefetchWalletAccounts(queryClient);
             pushSuccess({
-                message: "Wallet removed", //TODO i18n
+                message: t("notifications.wallet_removed"),
             });
         },
         onError,
@@ -174,12 +180,13 @@ export const useRemoveAccount = () => {
 
 const resetCache = (index) => axios.post("/api/wallet/reset_cache", { index }).then((response) => response.data);
 export const useResetCache = () => {
+    const { t } = useI18n();
     //const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (index) => resetCache(index),
         onSuccess: () => {
             pushSuccess({
-                message: "Cache reset successfully", //TODO i18n
+                message: t("notifications.cache_reset"),
             });
         },
         onError,
@@ -189,13 +196,14 @@ export const useResetCache = () => {
 const setAddressCount = (payload) =>
     axios.post("/api/wallet/set_address_count", payload).then((response) => response.data);
 export const useSetAddressCount = () => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (payload) => setAddressCount(payload),
         onSuccess: (result) => {
             queryClient.invalidateQueries({ queryKey: ["wallet"] });
             pushSuccess({
-                message: "Updated successfully", //TODO i18n
+                message: t("notifications.updated_success"),
             });
         },
         onError,
@@ -225,6 +233,7 @@ export const ensureWalletIsLocked = async (queryClient, params) => {
 
 const walletLock = (params) => axios.post("/api/wallet/lock", params).then((response) => response.data);
 export const useWalletLock = (params) => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: () => walletLock(params),
@@ -233,7 +242,7 @@ export const useWalletLock = (params) => {
                 queryKey: ["wallet", "is_locked", params],
             });
             pushSuccess({
-                message: `Wallet #${params.index} locked`, // TODO i18n
+                message: t("notifications.wallet_locked", { index: params.index }),
             });
         },
         onError,
@@ -242,6 +251,7 @@ export const useWalletLock = (params) => {
 
 const walletUnlock = (payload) => axios.post("/api/wallet/unlock", payload).then((response) => response.data);
 export const useWalletUnlock = (params) => {
+    const { t } = useI18n();
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (passphrase) => walletUnlock({ ...params, passphrase }),
@@ -250,7 +260,7 @@ export const useWalletUnlock = (params) => {
                 queryKey: ["wallet", "is_locked", params],
             });
             pushSuccess({
-                message: `Wallet #${params.index} unlocked`, // TODO i18n
+                message: t("notifications.wallet_unlocked", { index: params.index }),
             });
         },
         onError,
