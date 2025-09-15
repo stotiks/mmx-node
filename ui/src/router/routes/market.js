@@ -1,9 +1,12 @@
+import i18n from "@/plugins/i18n";
+const t = i18n.global.t;
+
 export default [
     {
         path: "/market",
         component: () => import("@/pages/MarketPage"),
         meta: {
-            title: "Market",
+            title: () => t("route.market"),
         },
         children: [
             {
@@ -14,14 +17,14 @@ export default [
                 path: "offers",
                 component: () => import("@/pages/MarketPage/MarketPageOffers"),
                 meta: {
-                    title: "Offers",
+                    title: () => t("route.offers"),
                 },
             },
             {
                 path: "history",
                 component: () => import("@/pages/MarketPage/MarketPageHistory"),
                 meta: {
-                    title: "History",
+                    title: () => t("route.history"),
                 },
             },
         ],
