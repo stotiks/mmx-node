@@ -1,9 +1,12 @@
+import i18n from "@/plugins/i18n";
+const t = i18n.global.t;
+
 export default [
     {
         path: "/farmer",
         component: () => import("@/pages/FarmerPage"),
         meta: {
-            title: "Farmer",
+            title: () => t("route.farmer"),
         },
         children: [
             {
@@ -14,28 +17,28 @@ export default [
                 path: "plots",
                 component: () => import("@/pages/Farmer/FarmerPlotsIndex"),
                 meta: {
-                    title: "Plots",
+                    title: () => t("route.plots"),
                 },
             },
             {
                 path: "plotnfts",
                 component: () => import("@/pages/Farmer/FarmerPlotNFTsIndex"),
                 meta: {
-                    title: "PlotNFTs",
+                    title: () => t("route.plotnfts"),
                 },
             },
             {
                 path: "blocks",
                 component: () => import("@/pages/Farmer/FarmerBlocksIndex"),
                 meta: {
-                    title: "Blocks",
+                    title: () => t("route.blocks"),
                 },
             },
             {
                 path: "proofs",
                 component: () => import("@/pages/Farmer/FarmerProofsIndex"),
                 meta: {
-                    title: "Proofs",
+                    title: () => t("route.proofs"),
                 },
             },
         ],

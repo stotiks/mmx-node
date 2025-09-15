@@ -46,7 +46,7 @@ const appStore = useAppStore();
 const { data, isLocalNode, isFarmer } = useConfigData();
 
 const { t } = useI18n();
-const panels = [
+const panels = computed(() => [
     {
         name: "ui",
         label: t("node_settings.ui"),
@@ -56,14 +56,14 @@ const panels = [
     },
     {
         name: "node",
-        label: "Node",
+        label: t("common.node"),
         icon: mdiTools,
         component: NodeSettings,
         visible: isLocalNode.value,
     },
     {
         name: "reward",
-        label: "Reward",
+        label: t("common.reward"),
         icon: mdiCashMultiple,
         component: RewardSettings,
         visible: isLocalNode.value || isFarmer.value,
@@ -96,9 +96,9 @@ const panels = [
         component: WalletSettings,
         visible: true,
     },
-];
+]);
 
-const firstVisiblePanel = computed(() => panels.find((panel) => panel.visible));
+const firstVisiblePanel = computed(() => panels.value.find((panel) => panel.visible));
 
 const router = useRouter();
 const route = useRoute();
