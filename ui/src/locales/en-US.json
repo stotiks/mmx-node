@@ -40,7 +40,23 @@
         "manage": "Manage",
         "harvester": "Harvester",
         "deposit": "Deposit",
-        "user": "User"
+        "user": "User",
+        "insufficient_funds": "Insufficient funds",
+        "in_mojos": "in mojos",
+        "qr_link": "QR Link",
+        "size_bytes": "Size: {size} bytes",
+        "offer_link": "Offer",
+        "tx_link": "TX",
+        "go_home": "Go Home",
+        "copied": "Copied!",
+        "copy": "Copy",
+        "ok": "Ok",
+        "unlock": "Unlock",
+        "offline": "offline",
+        "terabytes": "TB",
+        "update": "Update",
+        "na": "N/A",
+        "set_key_to_value": "Set '{key}' to '{value}'"
     },
     "main_menu": {
         "explore": "Explore",
@@ -126,7 +142,8 @@
         "last_spend": "Last Spend"
     },
     "wallet_common": {
-        "enter_passphrase": "Passphrase required"
+        "enter_passphrase": "Passphrase required",
+        "unlock_wallet": "Unlock wallet"
     },
     "account_send_form": {
         "source_address": "Source Address",

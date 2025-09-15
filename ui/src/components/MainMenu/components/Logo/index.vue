@@ -2,7 +2,7 @@
     <div class="logo">
         <SvgLogo height="18" :color="logoColor" />
         <div class="mono node-height">
-            <div v-if="isOffline" class="text-negative">offline</div>
+            <div v-if="isOffline" class="text-negative">{{ $t("common.offline") }}</div>
             <template v-else>
                 {{ height }}
             </template>
