@@ -420,5 +420,18 @@
 
         "sell": "Продать",
         "buy": "Kупить"
+    },
+
+    "notifications": {
+        "peer_kicked": "Пир отключен: {address}",
+        "token_added": "Токен добавлен в белый список: {token}",
+        "token_removed": "Токен удален из белого списка: {token}",
+        "plots_reloaded": "Плоты перезагружены",
+        "wallet_created": "Кошелек создан",
+        "wallet_removed": "Кошелек удален",
+        "cache_reset": "Кэш успешно сброшен",
+        "updated_success": "Успешно обновлено",
+        "wallet_locked": "Кошелек #{index} заблокирован",
+        "wallet_unlocked": "Кошелек #{index} разблокирован"
     }
 }
