@@ -1,3 +1,6 @@
+import i18n from "@/plugins/i18n";
+const t = i18n.global.t;
+
 import node from "./node";
 import wallet from "./wallet";
 import farmer from "./farmer";
@@ -23,7 +26,7 @@ const guiRoutes = [
         name: "login",
         component: () => import("@/pages/LoginPage"),
         meta: {
-            title: "Login",
+            title: () => t("route.login"),
             layout: false,
             requiresAuth: false,
         },
@@ -32,7 +35,7 @@ const guiRoutes = [
         path: "/settings",
         component: () => import("@/pages/SettingsPage"),
         meta: {
-            title: "Settings",
+            title: () => t("route.settings"),
         },
     },
     // {
@@ -63,7 +66,7 @@ const offlineRoutes = [
         path: "/tx/qr",
         component: () => import("@/pages/Offline/TxQrGen.vue"),
         meta: {
-            title: "Offline wallet",
+            title: () => t("route.offline_wallet"),
         },
     },
     // eslint-disable-next-line no-undef
@@ -82,7 +85,7 @@ const explorerRoutes = [
         path: "/wallet",
         component: () => import("@/pages/WebWalletPage"),
         meta: {
-            title: "Web Wallet",
+            title: () => t("route.web_wallet"),
         },
     },
     {
