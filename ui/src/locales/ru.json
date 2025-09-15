@@ -45,7 +45,21 @@
         "harvester": "Комбайн",
         "deposit": "Вклад",
 
-        "user": "Пользователь"
+        "user": "Пользователь",
+
+        "insufficient_funds": "Недостаточно средств",
+        "in_mojos": "в моджо",
+        "--qr_link": "QR Link",
+        "size_bytes": "Размер: {size} байт",
+        "offer_link": "Оффер",
+        "go_home": "Go Home",
+        "copied": "Скопировано!",
+        "copy": "Скопировать",
+        "ok": "Ok",
+        "unlock": "Разблокировать",
+        "offline": "offline",
+        "update": "Обновить",
+        "set_key_to_value": "Значение '{key}' установлено на '{value}'"
     },
 
     "main_menu": {
@@ -132,7 +146,10 @@
         "info": "Информация",
         "details": "Подробности"
     },
-
+    "wallet_common": {
+        "enter_passphrase": "Введите парольную фразу",
+        "unlock_wallet": "Разблокировать кошелек"
+    },
     "account_send_form": {
         "source_address": "Исходный адрес",
         "destination": "Получатель",
