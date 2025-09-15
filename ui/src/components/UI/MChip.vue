@@ -9,7 +9,7 @@
                 class="q-ml-sm q-pa-none"
                 @click="copyX(defaultSlotContent)"
             >
-                <q-tooltip :model-value="copied === true" no-parent-event>Copied!</q-tooltip>
+                <q-tooltip :model-value="copied === true" no-parent-event>{{ $t("common.copied") }}</q-tooltip>
             </q-btn>
         </UseClipboard>
     </q-chip>

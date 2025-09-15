@@ -4,7 +4,7 @@
             <q-card-section>
                 <div class="q-gutter-y-sm">
                     <!-- // TODO i18n -->
-                    <div class="text-h6">Unlock wallet</div>
+                    <div class="text-h6">{{ $t("wallet_common.unlock_wallet") }}</div>
                     <q-input
                         ref="inputRef"
                         v-model="passphrase"
@@ -25,8 +25,8 @@
                 </div>
             </q-card-section>
             <q-card-actions align="right">
-                <q-btn label="Cancel" flat @click="onDialogCancel" />
-                <q-btn label="Unlock" flat :icon="mdiLockOpenVariant" @click="onOKClick" />
+                <q-btn :label="$t('common.cancel')" flat @click="onDialogCancel" />
+                <q-btn :label="$t('common.unlock')" flat :icon="mdiLockOpenVariant" @click="onOKClick" />
             </q-card-actions>
         </q-card>
     </q-dialog>
