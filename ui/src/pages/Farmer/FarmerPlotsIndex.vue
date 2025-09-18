@@ -2,7 +2,7 @@
     <div class="q-gutter-y-sm">
         <q-card flat style="background-color: transparent">
             <FarmerMenu />
-            <div class="row q-gutter-x-xs">
+            <div class="row q-gutter-x-xs q-mt-sm">
                 <q-table
                     :rows="rows?.plot_count ?? []"
                     :columns="columns"
