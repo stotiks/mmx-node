@@ -25,7 +25,7 @@ env:
 
 jobs:
   msvc:
-    runs-on: windows-2022
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,6 +48,10 @@ jobs:
       - uses: lukka/get-cmake@latest
         with:
           cmakeVersion: "~3"
+          
+      - uses: repolevedavaj/install-nsis@v1.0.1
+        with:
+          nsis-version: '3.10'
 
       - name: Restore artifacts, or setup vcpkg (do not install any package)
         uses: lukka/run-vcpkg@v11
