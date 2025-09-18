@@ -89,7 +89,7 @@ const columns = computed(() => [
         field: "is_outbound",
         format: (item) => (item ? t("node_peers.outbound") : t("node_peers.inbound")),
     },
-    { name: "action", label: "Action", field: "action", align: "right" }, // TODO i18n
+    { name: "action", label: t("node_peers.action"), field: "action", align: "right" },
 ]);
 
 import { usePeers, useKickPeer } from "@/queries/api";
