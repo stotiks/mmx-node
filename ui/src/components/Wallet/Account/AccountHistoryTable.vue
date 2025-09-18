@@ -57,7 +57,7 @@
             <q-btn
                 color="primary"
                 :icon-right="mdiArchiveArrowDown"
-                label="Export to csv"
+                label="Export to CSV"
                 outline
                 rounded
                 no-caps
@@ -126,7 +126,7 @@ const columns = computed(() => [
     },
     {
         name: "token",
-        label: t("account_history.token"),
+        //label: t("account_history.token"),
         field: "symbol",
         headerClasses: "dense-symbol",
         classes: "dense-symbol",
