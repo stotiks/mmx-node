@@ -158,7 +158,9 @@
         "tx_gas": "TX Газ",
         "connection": "Соединение",
         "outbound": "исходящее",
-        "inbound": "входящее"
+        "inbound": "входящее",
+        "kick": "Исключить",
+        "action": "Действие"
     },
     "wallet_summary": {
         "new": "Новый"

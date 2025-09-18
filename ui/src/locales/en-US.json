@@ -166,7 +166,8 @@
         "connection": "Connection",
         "outbound": "outbound",
         "inbound": "inbound",
-        "kick": "Kick"
+        "kick": "Kick",
+        "action": "Action"
     },
     "wallet_summary": {
         "new": "New"
