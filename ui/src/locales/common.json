@@ -92,8 +92,10 @@
         "amount": "@:common.amount",
         "token": "@:common.token",
         "address": "@:common.address",
+        "memo": "@:common.memo",
         "time": "@:common.time",
-        "link": "@:common.link"
+        "link": "@:common.link",
+        "pending": "@:common.pending"
     },
     "account_tx_history": {
         "height": "@:common.height",
@@ -103,7 +105,9 @@
         "status": "@:common.status",
         "pending": "@:common.pending",
         "expired": "@:common.expired",
-        "failed": "@:common.failed"
+        "failed": "@:common.failed",
+        "type": "@:common.type",
+        "fee": "@:common.fee"
     },
     "account_offers": {
         "any": "@:common.any",
