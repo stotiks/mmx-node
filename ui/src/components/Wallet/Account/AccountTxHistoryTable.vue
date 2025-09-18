@@ -51,12 +51,12 @@ const columns = computed(() => [
         headerStyle: "width: 7%",
     },
     {
-        label: "Type", // TODO i18n
+        label: t("account_tx_history.type"),
         field: "note",
         headerStyle: "width: 11%",
     },
     {
-        label: "Fee", // TODO i18n
+        label: t("account_tx_history.fee"),
         field: (row) => row.height && row.fee && row.fee.value,
         format: (item) => (item ? item.toFixed(3) : "..."),
         headerStyle: "width: 12%",

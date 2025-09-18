@@ -22,6 +22,7 @@
         "time": "Time",
         "fee": "Fee",
         "status": "Status",
+        "memo": "Memo",
         "pending": "pending",
         "expired": "expired",
         "failed": "failed",
@@ -55,6 +56,7 @@
         "offline": "offline",
         "terabytes": "TB",
         "update": "Update",
+        "confirmed": "Confirmed",
         "na": "N/A",
         "set_key_to_value": "Set '{key}' to '{value}'",
         "nothing_here": "Oops. Nothing here..."
@@ -345,6 +347,7 @@
         "reset_cache": "Reset Cache",
         "show_seed": "Show Seed"
     },
+
     "create_account": {
         "account_index": "Account Index",
         "account_name": "Account Name",
