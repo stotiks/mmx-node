@@ -1,4 +1,4 @@
-import { bytesToHex } from "@noble/hashes/utils";
+import { bytesToHex } from "@noble/hashes/utils.js";
 import vault from "../stores/vault";
 import { addr_t } from "@/mmx/wallet/common/addr_t";
 import { Wallet } from "@/mmx/wallet/Wallet";

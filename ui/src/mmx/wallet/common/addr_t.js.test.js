@@ -1,5 +1,5 @@
 import { describe, it, assert, expect } from "vitest";
-import { hexToBytes } from "@noble/hashes/utils";
+import { hexToBytes } from "@noble/hashes/utils.js";
 import { addr_t } from "./addr_t";
 
 import "../utils/Uint8ArrayUtils";

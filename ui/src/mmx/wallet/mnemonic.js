@@ -1,7 +1,7 @@
 import { mnemonicToEntropy, entropyToMnemonic } from "@scure/bip39";
-import { wordlist as wordlistEnglish } from "@scure/bip39/wordlists/english";
+import { wordlist as wordlistEnglish } from "@scure/bip39/wordlists/english.js";
 
-import { randomBytes } from "@noble/hashes/utils";
+import { randomBytes } from "@noble/hashes/utils.js";
 
 export const mnemonicToSeed = (mnemonic, wordlist) => {
     if (!wordlist) {

@@ -1,4 +1,4 @@
-import { hexToBytes, isBytes, u8 } from "@noble/hashes/utils";
+import { hexToBytes, isBytes, u8 } from "@noble/hashes/utils.js";
 
 import { uint128 } from "./uint128";
 import { bytes_t } from "./addr_t";
