@@ -1,4 +1,4 @@
-import { bytesToHex, abytes } from "@noble/hashes/utils";
+import { bytesToHex, abytes } from "@noble/hashes/utils.js";
 
 Object.defineProperty(Uint8Array.prototype, "first", {
     get() {

@@ -60,5 +60,5 @@ const updateWords = () => {
 };
 
 watchEffect(() => updateWords());
-import { wordlist as wordList } from "@scure/bip39/wordlists/english";
+import { wordlist as wordList } from "@scure/bip39/wordlists/english.js";
 </script>

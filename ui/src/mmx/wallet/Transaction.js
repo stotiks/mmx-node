@@ -1,4 +1,4 @@
-import { randomBytes, bytesToNumberBE } from "@noble/hashes/utils";
+import { randomBytes, bytesToNumberBE } from "@noble/hashes/utils.js";
 
 import { JSONbigNativeString } from "./utils/JSONbigNative";
 

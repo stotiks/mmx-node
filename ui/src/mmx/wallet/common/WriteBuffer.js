@@ -1,4 +1,4 @@
-import { u8 } from "@noble/hashes/utils";
+import { u8 } from "@noble/hashes/utils.js";
 
 /**
  * Concatenate an existing buffer with an array of chunks
