@@ -1,7 +1,7 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
-import { sha256 } from "@noble/hashes/sha2";
-import { bytesToHex, hexToBytes } from "@noble/hashes/utils";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
 
 import { EncryptedStorageItem } from "../utils/StorageItem";
 

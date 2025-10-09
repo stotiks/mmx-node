@@ -3,7 +3,7 @@ import { mnemonicToSeed, seedToWords, randomWords } from "./mnemonic";
 
 import "./utils/Uint8ArrayUtils";
 import { hash_t } from "./common/addr_t";
-import { hexToBytes } from "@noble/hashes/utils";
+import { hexToBytes } from "@noble/hashes/utils.js";
 
 describe("mnemonic #1", async () => {
     const mnemonic =

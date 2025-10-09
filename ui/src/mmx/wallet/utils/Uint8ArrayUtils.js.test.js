@@ -1,6 +1,6 @@
 import { describe, it, assert, expect } from "vitest";
 
-import { randomBytes } from "@noble/hashes/utils";
+import { randomBytes } from "@noble/hashes/utils.js";
 
 import "./Uint8ArrayUtils";
 

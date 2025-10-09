@@ -1,6 +1,6 @@
 import { describe, it, assert, expect } from "vitest";
 
-import { hexToBytes } from "@noble/hashes/utils";
+import { hexToBytes } from "@noble/hashes/utils.js";
 
 import { mnemonicToSeed } from "./mnemonic";
 import { ECDSA_Wallet } from "./ECDSA_Wallet";
