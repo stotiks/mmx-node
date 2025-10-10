@@ -47,6 +47,13 @@ txs.forEach((item, key) => {
             assert.equal(tx.id, id);
         });
 
+        it("empty nonce", () => {
+            const tx = Transaction.parse(json);
+            tx.nonce = 0n;
+            tx.finalize();
+            assert.notEqual(tx.nonce, 0n);
+        });
+
         it("static_cost", async () => {
             const tx = Transaction.parse(json);
             const chainParams = await getChainParamsAsync(tx.network);
