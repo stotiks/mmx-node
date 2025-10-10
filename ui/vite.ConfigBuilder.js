@@ -80,10 +80,15 @@ export class ConfigBuilder {
         }
 
         if (this.writeRobotsTxt) {
+            const dataArray = [
+                //
+                "User-agent: *",
+                "Disallow: /",
+            ];
             generateFileOptions.push({
                 type: "raw",
                 output: "./robots.txt",
-                data: "User-agent: * \nDisallow: /\n",
+                data: dataArray.join("\n"),
             });
         }
 
