@@ -1,4 +1,7 @@
-import { randomBytes, bytesToNumberBE } from "@noble/hashes/utils.js";
+import { randomBytes } from "@noble/hashes/utils.js";
+
+import { etc } from "@noble/secp256k1";
+const bytesToNumberBE = etc.bytesToNumberBE;
 
 import { JSONbigNativeString } from "./utils/JSONbigNative";
 
