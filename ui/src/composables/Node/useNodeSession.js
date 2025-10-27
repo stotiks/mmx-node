@@ -28,7 +28,6 @@ export const useNodeSession = () => {
         }
     });
 
-    // eslint-disable-next-line no-undef
     // if (process.env.NODE_ENV === "production") {
     //     watch(isError, (isError) => {
     //         if (isError) {

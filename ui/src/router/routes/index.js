@@ -69,7 +69,7 @@ const offlineRoutes = [
             title: () => t("route.offline_wallet"),
         },
     },
-    // eslint-disable-next-line no-undef
+
     ...(process.env.NODE_ENV === "production" ? [] : [txQrSendRoute]),
     ...catchAll,
 ];
@@ -122,16 +122,13 @@ const playgroundRoutes = [
 ];
 
 let routes;
-// eslint-disable-next-line no-undef
+
 if (__BUILD_TARGET__ === "GUI") {
     routes = guiRoutes;
-    // eslint-disable-next-line no-undef
 } else if (__BUILD_TARGET__ === "EXPLORER") {
     routes = explorerRoutes;
-    // eslint-disable-next-line no-undef
 } else if (__BUILD_TARGET__ === "OFFLINE") {
     routes = offlineRoutes;
-    // eslint-disable-next-line no-undef
 } else if (__BUILD_TARGET__ === "PLAYGROUND") {
     routes = playgroundRoutes;
 } else {
