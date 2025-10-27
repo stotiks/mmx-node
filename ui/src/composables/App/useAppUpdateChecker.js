@@ -8,7 +8,6 @@ export const useAppUpdateChecker = () => {
         };
     }
 
-    // eslint-disable-next-line no-undef
     const localBuildId = __BUILD_ID__;
 
     const updated = ref(false);

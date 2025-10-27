@@ -36,11 +36,11 @@ const useNodeInfoWatch = (query) => {
             queryClient.invalidateQueries({ queryKey: ["block", { height: height - 1 }] });
             queryClient.invalidateQueries({ queryKey: ["block", { height }] });
 
-            queryClient.invalidateQueries({ queryKey: ["transaction"] }), { cancelRefetch: false };
+            (queryClient.invalidateQueries({ queryKey: ["transaction"] }), { cancelRefetch: false });
 
-            queryClient.invalidateQueries({ queryKey: ["wallet"] }), { cancelRefetch: false };
-            queryClient.invalidateQueries({ queryKey: ["market"] }), { cancelRefetch: false };
-            queryClient.invalidateQueries({ queryKey: ["swap"] }), { cancelRefetch: false };
+            (queryClient.invalidateQueries({ queryKey: ["wallet"] }), { cancelRefetch: false });
+            (queryClient.invalidateQueries({ queryKey: ["market"] }), { cancelRefetch: false });
+            (queryClient.invalidateQueries({ queryKey: ["swap"] }), { cancelRefetch: false });
 
             queryClient.invalidateQueries({ queryKey: ["farm", "info"] }, { cancelRefetch: false });
             if (height % 3 == 0) {
