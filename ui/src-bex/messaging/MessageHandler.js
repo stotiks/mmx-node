@@ -85,7 +85,6 @@ export class MessageHandler {
             const callResult = await handler.call(this.#methods, params);
             result = { success: true, data: callResult };
         } catch (error) {
-            // eslint-disable-next-line no-undef
             if (process.env.NODE_ENV === "development") {
                 console.log(`Error handling method [${method}]:`, error);
             }
