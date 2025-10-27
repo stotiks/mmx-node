@@ -11,8 +11,8 @@
                                 :icon="!isExpanded(key) ? mdiArrowExpand : mdiArrowCollapse"
                                 fab-mini
                                 class="float-right"
-                                @click="handleToggleExpand(key)"
                                 :aria-label="isExpanded(key) ? 'Collapse' : 'Expand'"
+                                @click="handleToggleExpand(key)"
                             />
                             <highlightjs
                                 :code="stringify(value)"
@@ -30,8 +30,8 @@
                                     :icon="!isExpanded(key) ? mdiArrowExpand : mdiArrowCollapse"
                                     fab-mini
                                     class="float-right"
-                                    @click="handleToggleExpand(key)"
                                     :aria-label="isExpanded(key) ? 'Collapse hex dump' : 'Expand hex dump'"
+                                    @click="handleToggleExpand(key)"
                                 />
                                 <HexDump :data="value" :expanded="isExpanded(key)" />
                             </template>

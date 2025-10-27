@@ -14,7 +14,6 @@
 const nodeStore = useNodeStore();
 const height = computed(() => nodeStore.height && nodeStore.height.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
 
-// eslint-disable-next-line no-undef
 const isOffline = __BUILD_TARGET__ === "OFFLINE";
 
 const appStore = useAppStore();

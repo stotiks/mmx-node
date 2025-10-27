@@ -213,7 +213,6 @@ const qrData = computed(() => {
     const txData = tx.value?.toCompressedBase64();
     if (!txData) return;
 
-    // eslint-disable-next-line no-undef
     const baseUrl = __TX_QR_SEND_BASE_URL__ || window.location.origin;
 
     const route = router.resolve({ name: "tx-qr-send", params: { txData } });

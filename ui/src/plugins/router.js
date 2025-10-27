@@ -13,7 +13,6 @@ import { authMiddleware } from "@/router/middleware/authMiddleware";
 router.beforeEach(loadLayoutMiddleware);
 router.afterEach(setTitleMiddleware);
 
-// eslint-disable-next-line no-undef
 if (__BUILD_TARGET__ == "GUI") {
     router.beforeEach(authMiddleware);
 }

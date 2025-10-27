@@ -5,7 +5,6 @@ import { Variant } from "./Variant";
 import { ChainParams } from "../utils/ChainParams";
 
 class Contract {
-    // eslint-disable-next-line no-unused-private-class-members
     #type_hash = BigInt("0x26b896ae8c415285");
     __type = "mmx.Contract";
 
@@ -28,7 +27,6 @@ class Contract {
 }
 
 export class TokenBase extends Contract {
-    // eslint-disable-next-line no-unused-private-class-members
     #type_hash = BigInt("0x5aeed4c96d232b5e");
     __type = "mmx.contract.TokenBase";
 

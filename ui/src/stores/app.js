@@ -15,7 +15,6 @@ export const useAppStore = defineStore("app", () => {
     const isGUI = computed(() => isWinGUI.value || isQtGUI.value);
 
     const wapiBaseUrl = computed(() => {
-        // eslint-disable-next-line no-undef
         if (typeof __ALLOW_CUSTOM_RPC__ !== "undefined" && __ALLOW_CUSTOM_RPC__ === true) {
             if (!isEmpty(_wapiBaseUrl.value)) {
                 return _wapiBaseUrl.value;
@@ -23,7 +22,6 @@ export const useAppStore = defineStore("app", () => {
         }
 
         if (typeof __WAPI_URL__ !== "undefined") {
-            // eslint-disable-next-line no-undef
             return __WAPI_URL__;
         }
 
