@@ -148,8 +148,8 @@ export class WriteBytes extends WriteBuffer {
                 this.write_bytes_map(value);
             } else if (value.constructor?.name && isBytes(value)) {
                 this.write_bytes_bytes(value);
-            } else if (value instanceof bytes_t) {
-                this.write_bytes_bytes(value.valueOf());
+                // } else if (value instanceof bytes_t) {
+                //     this.write_bytes_bytes(value.valueOf());
             } else if (value instanceof txin_t) {
                 this.write_bytes_txin_t(value, full_hash);
             } else if (value instanceof txout_t) {
