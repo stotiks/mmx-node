@@ -4,6 +4,11 @@ import { WriteBytes } from "./WriteBytes";
 import "../utils/Uint8ArrayUtils";
 
 describe("WriteBuffer", () => {
+    it("empty", () => {
+        const wb = new WriteBytes();
+        assert.equal(wb.buffer.toHex(), "");
+    });
+
     it("field without value", () => {
         const wb = new WriteBytes();
         wb.write_field("field");
