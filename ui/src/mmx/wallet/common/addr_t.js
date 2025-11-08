@@ -16,7 +16,7 @@ export class bytes_t extends Uint8Array {
     }
 
     toString() {
-        return bytesToHex(this.valueOf());
+        return bytesToHex(this.valueOf()).toUpperCase();
     }
 }
 
@@ -48,8 +48,12 @@ export class hash_t extends bytes_t {
     constructor(data) {
         if (data == undefined) {
             super(new Uint8Array(32));
+        } else if (isBytes(data)) {
+            super(sha256(data));
+        } else if (typeof data == "string") {
+            super(sha256(utf8ToBytes(data)));
         } else {
-            super(typeof data == "string" ? sha256(utf8ToBytes(data)) : sha256(data));
+            throw new Error(`Invalid data type ${typeof data}`);
         }
     }
 }
