@@ -6,6 +6,10 @@ describe("spend_options_t", () => {
         expect(() => new spend_options_t()).toThrowError();
     });
 
+    it("invalid init param type", () => {
+        expect(() => new spend_options_t(666)).toThrowError();
+    });
+
     it("no network", () => {
         const params = {
             expire_at: -1,
