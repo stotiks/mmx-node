@@ -61,7 +61,7 @@ const props = defineProps({
 });
 
 // Use the expansion composable
-const { expanded, toggleExpansion, isExpanded } = useObjectTableExpansion();
+const { toggleExpansion, isExpanded } = useObjectTableExpansion();
 
 // Wrapper function to maintain component API
 const handleToggleExpand = (key) => {
