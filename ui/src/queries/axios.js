@@ -3,12 +3,10 @@ import axiosLib from "axios";
 //axiosLib.defaults.timeout = 10000;
 
 axiosLib.defaults.paramsSerializer = (params) => {
-    let result = "";
-    Object.keys(params).forEach((key) => {
-        if (params[key] === undefined || params[key] === null) return;
-        result += `${key}=${encodeURIComponent(params[key])}&`;
-    });
-    return result.substring(0, result.length - 1);
+    return Object.entries(params)
+        .filter(([, value]) => value !== undefined && value !== null)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join("&");
 };
 
 const axios = axiosLib.create();
