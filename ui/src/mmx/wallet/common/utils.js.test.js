@@ -61,6 +61,7 @@ describe("utils get_num_bytes", () => {
     it("invalid type", () => {
         expect(() => get_num_bytes(Symbol("invalid type"))).toThrowError("Invalid type");
     });
+
     it("null", () => {
         assert.equal(get_num_bytes(new Variant(null)), 1);
     });
