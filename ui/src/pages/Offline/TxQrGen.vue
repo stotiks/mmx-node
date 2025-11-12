@@ -203,7 +203,7 @@ const handleBroadcast = async () => {
 };
 
 const handleLogout = () => {
-    wallet.value = null;
+    walletStore.doLogout();
 };
 
 import router from "@/plugins/router";
