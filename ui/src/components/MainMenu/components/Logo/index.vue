@@ -12,7 +12,11 @@
 
 <script setup>
 const nodeStore = useNodeStore();
-const height = computed(() => nodeStore.height && nodeStore.height.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
+const height = computed(() =>
+    nodeStore.height !== undefined && nodeStore.height !== null
+        ? Number(nodeStore.height).toLocaleString("en-US").replace(/,/g, " ")
+        : ""
+);
 
 const isOffline = __BUILD_TARGET__ === "OFFLINE";
 
