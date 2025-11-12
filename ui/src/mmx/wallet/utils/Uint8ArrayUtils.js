@@ -22,6 +22,8 @@ Object.defineProperty(Uint8Array.prototype, "second", {
     },
 });
 
-Uint8Array.prototype.toHex = function () {
-    return bytesToHex(this).toUpperCase();
-};
+if (!(typeof Uint8Array.from([]).toHex === "function")) {
+    Uint8Array.prototype.toHex = function () {
+        return bytesToHex(this).toUpperCase();
+    };
+}
