@@ -5,17 +5,14 @@ import { ref, computed } from "vue";
  * @returns {object} - Expansion state and methods
  */
 export const useObjectTableExpansion = () => {
-    const expanded = ref({});
+    const expanded = ref(new Map());
 
     /**
      * Toggle expansion state for a given key
      * @param {string} key - The key to toggle
      */
     const toggleExpansion = (key) => {
-        if (!(key in expanded.value)) {
-            expanded.value[key] = false;
-        }
-        expanded.value[key] = !expanded.value[key];
+        expanded.value.set(key, !expanded.value.get(key));
     };
 
     /**
@@ -24,7 +21,7 @@ export const useObjectTableExpansion = () => {
      * @param {boolean} isExpanded - The expansion state
      */
     const setExpansion = (key, isExpanded) => {
-        expanded.value[key] = isExpanded;
+        expanded.value.set(key, isExpanded);
     };
 
     /**
@@ -33,16 +30,16 @@ export const useObjectTableExpansion = () => {
      * @returns {boolean} - True if expanded
      */
     const isExpanded = (key) => {
-        return !!expanded.value[key];
+        return !!expanded.value.get(key);
     };
 
     /**
      * Collapse all expanded items
      */
     const collapseAll = () => {
-        Object.keys(expanded.value).forEach((key) => {
-            expanded.value[key] = false;
-        });
+        for (const key of expanded.value.keys()) {
+            expanded.value.set(key, false);
+        }
     };
 
     /**
@@ -54,7 +51,7 @@ export const useObjectTableExpansion = () => {
 
         Object.keys(data).forEach((key) => {
             if (key !== "__type") {
-                expanded.value[key] = true;
+                expanded.value.set(key, true);
             }
         });
     };
@@ -62,10 +59,14 @@ export const useObjectTableExpansion = () => {
     /**
      * Get expansion state for reactive use
      */
-    const expansionState = computed(() => expanded.value);
+    const expansionState = computed(() => {
+        return Array.from(expanded.value.entries())
+            .filter(([, isExpanded]) => isExpanded)
+            .map(([key]) => key);
+    });
 
     return {
-        expanded: expansionState,
+        //expanded: expansionState,
         toggleExpansion,
         setExpansion,
         isExpanded,
