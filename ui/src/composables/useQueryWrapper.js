@@ -32,5 +32,10 @@ export const useQueryWrapper = (...args) => {
         query.isFetching.value && query.errorUpdateCount.value > 0 ? isErrorPrev.value : query.isError
     );
 
-    return { ...query, loading, rows, noData, latestError, isLatestError };
+    query.loading = loading;
+    query.rows = rows;
+    query.noData = noData;
+    query.latestError = latestError;
+    query.isLatestError = isLatestError;
+    return query;
 };
