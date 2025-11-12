@@ -1,37 +1,39 @@
 import { syncFunctionList as functionList } from "@/mmx/wallet/common/ECDSAUtils/ECDSAUtils";
 import PromisifyWorker from "./worker?worker&inline";
 
-export const promisify = (fnName, ...args) => {
+export const promisify = (fnName, args) => {
     return new Promise((resolve, reject) => {
         if (typeof window !== "undefined" && window.Worker) {
             const worker = new PromisifyWorker();
-            worker.postMessage({ fnName, args });
+            worker.postMessage({ fnName: fnName, args });
             worker.onmessage = function (e) {
-                if (e.data.fnName === fnName) resolve(e.data.result);
-                if (e.data.type === "error") throw e.data.error;
+                const { success, result, error } = e.data;
+                if (success) {
+                    resolve(result);
+                } else {
+                    reject(error);
+                }
             };
             worker.onerror = reject;
         } else {
-            const fn = functionList[fnName];
-            const argsLocal = [...args];
-            if (fn) {
-                if (typeof queueMicrotask !== "undefined") {
-                    queueMicrotask(() => {
-                        try {
-                            resolve(fn(...argsLocal));
-                        } catch (error) {
-                            reject(error);
-                        }
-                    });
-                } else {
-                    setTimeout(() => {
-                        try {
-                            resolve(fn(...argsLocal));
-                        } catch (error) {
-                            reject(error);
-                        }
-                    });
+            const exec = () => {
+                try {
+                    const fn = functionList[fnName];
+                    if (fn) {
+                        const result = fn.apply(null, Object.values(args));
+                        resolve(result);
+                    } else {
+                        throw new Error(`Unknown fnName: ${fnName}`);
+                    }
+                } catch (error) {
+                    reject(error);
                 }
+            };
+
+            if (typeof queueMicrotask !== "undefined") {
+                queueMicrotask(exec);
+            } else {
+                setTimeout(exec);
             }
         }
     });
