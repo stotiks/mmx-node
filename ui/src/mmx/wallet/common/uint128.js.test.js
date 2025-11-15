@@ -27,9 +27,9 @@ describe("uint128", () => {
     });
 
     it("number", () => {
-        const value = new uint128(0x1337133713371337);
-        assert.equal(value.valueOf(), 0x1337133713371337);
-        assert.equal(value.lower(), 0x1337133713371337);
+        const value = new uint128(0x1337133713371337n);
+        assert.equal(value.valueOf(), 0x1337133713371337n);
+        assert.equal(value.lower(), 0x1337133713371337n);
         assert.equal(value.upper(), 0x0);
     });
 
