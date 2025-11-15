@@ -4,6 +4,7 @@ import pluginVue from "eslint-plugin-vue";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 import pluginSecurity from "eslint-plugin-security";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import { defineConfig } from "eslint/config";
 
 // ------------------------------------------------------------------
 // https://eslint.org/docs/latest/use/configure/migration-guide#using-eslintrc-configs-in-flat-config
@@ -23,14 +24,36 @@ const compat = new FlatCompat({
 import { includeIgnoreFile } from "@eslint/compat";
 const gitignorePath = path.resolve(__dirname, ".gitignore");
 
-export default [
+export default defineConfig([
     includeIgnoreFile(gitignorePath),
 
-    { languageOptions: { globals: globals.browser } },
+    {
+        languageOptions: {
+            globals: {
+                __BUILD_TARGET__: "readonly",
+                __BUILD_ID__: "readonly",
+                __WAPI_URL__: "readonly",
+                __ALLOW_CUSTOM_RPC__: "readonly",
+                __PUBLIC_RPC_URL__: "readonly",
+                __TX_QR_SEND_BASE_URL__: "readonly",
+                ...globals.node,
+                ...globals.browser,
+            },
+        },
+        plugins: {
+            js: pluginJs,
+            vue: pluginVue,
+            query: pluginQuery,
+        },
+        extends: [
+            //
+            "js/recommended",
+            "vue/recommended",
+            "query/recommended",
+        ],
+    },
 
     pluginSecurity.configs.recommended,
-    ...pluginVue.configs["flat/recommended"],
-    ...pluginQuery.configs["flat/recommended"],
     eslintPluginPrettierRecommended,
 
     ...compat.extends("./.eslintrc-auto-import.json"),
@@ -54,4 +77,4 @@ export default [
             ],
         },
     },
-];
+]);
