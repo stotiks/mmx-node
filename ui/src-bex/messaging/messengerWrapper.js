@@ -26,8 +26,9 @@ const sendMessageWrapper = (sendMessage) => async (messageID, payload, target) =
             throw new Error(error || "Unknown error occurred");
         }
     } else {
-        //console.error("Invalid response:", response);
-        throw new Error("Invalid response: " + response);
+        // //console.error("Invalid response:", response);
+        // throw new Error("Invalid response: " + response);
+        return response;
     }
 };
 
