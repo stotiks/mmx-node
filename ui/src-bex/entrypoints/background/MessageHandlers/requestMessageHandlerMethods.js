@@ -13,6 +13,7 @@ import {
 
 import vault from "../stores/vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
+import { utf8ToBytes } from "@noble/hashes/utils.js";
 
 const $method = (fn, metadata = {}) => {
     fn.metadata = { isAcceptRequired: true, ...metadata };
@@ -69,7 +70,7 @@ export const requestMessageHandlerMethods = {
 
     mmx_signMessage: $method(async ({ message }) => {
         const msgWithPrefix = `MMX/sign_message/${message}`;
-        const msgHash = sha256(msgWithPrefix);
+        const msgHash = sha256(utf8ToBytes(msgWithPrefix));
         return await signMessageAsync(msgHash);
     }, {}),
 
