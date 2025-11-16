@@ -1,7 +1,7 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
+import { bytesToHex, hexToBytes, utf8ToBytes } from "@noble/hashes/utils.js";
 
 import { EncryptedStorageItem } from "../utils/StorageItem";
 
@@ -27,7 +27,8 @@ class Vault {
 
     #generateEncryptionKey(password) {
         const salt = "7YvAn2bkuXwWoF";
-        return bytesToHex(sha256(`${salt}${password}${salt}`)).toUpperCase();
+        const saltedPassword = `${salt}${password}${salt}`;
+        return bytesToHex(sha256(utf8ToBytes(saltedPassword))).toUpperCase();
     }
 
     async unlockAsync({ password }) {
