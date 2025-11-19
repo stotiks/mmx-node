@@ -95,14 +95,18 @@
                         </WForm>
                     </q-card>
                     <q-card flat>
-                        <q-card-section v-if="qrData">
+                        <q-card-section v-if="tx">
                             <q-input
                                 :model-value="tx?.toString()"
                                 filled
                                 type="textarea"
-                                input-style="height: 200px"
+                                input-style="height: 220px"
                                 readonly
                             />
+                        </q-card-section>
+                    </q-card>
+                    <q-card flat>
+                        <q-card-section v-if="qrData">
                             <img :src="qrCode" alt="QR Code" /><br />
                             <a :href="qrData" target="_blank" rel="noopener noreferrer" class="text-primary">QR Link</a>
                             <div>Size: {{ qrDataSize }} bytes</div>
