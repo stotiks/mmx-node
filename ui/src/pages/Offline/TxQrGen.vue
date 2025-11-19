@@ -7,9 +7,13 @@
             <transition appear enter-active-class="animate__animated animate__fadeIn">
                 <div v-if="address" class="q-gutter-y-sm">
                     <div>
-                        <div class="row q-col-gutter-xs">
-                            <m-chip>{{ $t("common.address") }}</m-chip>
-                            <m-chip copy>{{ address }}</m-chip>
+                        <div class="row">
+                            <m-chip class="col-auto">
+                                {{ $t("common.address") }}
+                            </m-chip>
+                            <m-chip copy class="col-auto">
+                                {{ address }}
+                            </m-chip>
                             <m-chip
                                 square
                                 outline
@@ -27,73 +31,75 @@
                                 />
                             </m-chip>
                         </div>
-                    </div>
-                    <q-card flat>
-                        <WForm ref="formRef" :data="formData" :default-data="defaultFormData">
-                            <q-card-section>
-                                <div class="q-gutter-y-sm">
-                                    <q-input
-                                        v-model="formData.destination"
-                                        :label="$t('account_send_form.destination_address')"
-                                        placeholder="mmx1..."
-                                        :rules="[rules.required, rules.address]"
-                                        hide-bottom-space
-                                        input-class="text-bold"
-                                        :clearable="formData.destination != null"
-                                    />
 
-                                    <div class="row q-gutter-x-sm">
+                        <q-card flat>
+                            <WForm ref="formRef" :data="formData" :default-data="defaultFormData">
+                                <q-card-section>
+                                    <div class="q-gutter-y-sm">
                                         <q-input
-                                            v-model.number="formData.amount"
-                                            :label="$t('account_send_form.amount') + ' in mojos'"
-                                            :rules="[rules.required, rules.amount]"
-                                            hide-bottom-space
-                                            input-class="amount-input"
-                                            class="col-sm-3 col-xs-12"
-                                        />
-
-                                        <q-input
-                                            v-model="formData.currency"
+                                            v-model="formData.destination"
+                                            :label="$t('account_send_form.destination_address')"
+                                            placeholder="mmx1..."
                                             :rules="[rules.required, rules.address]"
-                                            :address="formData.currency"
-                                            :label="$t('account_send_form.currency')"
-                                            :clearable="formData.currency != null"
-                                            class="col"
+                                            hide-bottom-space
+                                            input-class="text-bold"
+                                            :clearable="formData.destination != null"
                                         />
-                                    </div>
-                                </div>
-                                <q-input
-                                    v-model="formData.memo"
-                                    label="Memo"
-                                    :rules="[rules.memo]"
-                                    hide-bottom-space
-                                    :clearable="formData.memo != null"
-                                />
 
-                                <div class="row justify-end q-col-gutter-sm">
-                                    <TxFeeSelect v-model="formData.feeRatio2" class="col-md-2 col-sm-3 col-xs-6" />
-                                    <TxFeeInput
-                                        v-model="fee"
-                                        class="col-md-2 col-sm-3 col-xs-6"
-                                        :loading="evaluating"
-                                    />
-                                </div>
-                            </q-card-section>
+                                        <div class="row q-gutter-x-sm">
+                                            <q-input
+                                                v-model.number="formData.amount"
+                                                :label="$t('account_send_form.amount') + ' in mojos'"
+                                                :rules="[rules.required, rules.amount]"
+                                                hide-bottom-space
+                                                input-class="amount-input"
+                                                class="col-sm-3 col-xs-12"
+                                            />
 
-                            <q-card-section>
-                                <div class="row">
-                                    <div class="col">
-                                        <WBtnReset />
-                                    </div>
-                                    <div class="col-11">
-                                        <div class="row justify-end q-gutter-x-sm">
-                                            <WToggleConfirmed />
+                                            <q-input
+                                                v-model="formData.currency"
+                                                :rules="[rules.required, rules.address]"
+                                                :address="formData.currency"
+                                                :label="$t('account_send_form.currency')"
+                                                :clearable="formData.currency != null"
+                                                class="col"
+                                            />
                                         </div>
                                     </div>
-                                </div>
-                            </q-card-section>
-                        </WForm>
-                    </q-card>
+                                    <q-input
+                                        v-model="formData.memo"
+                                        label="Memo"
+                                        :rules="[rules.memo]"
+                                        hide-bottom-space
+                                        :clearable="formData.memo != null"
+                                    />
+
+                                    <div class="row justify-end q-col-gutter-sm">
+                                        <TxFeeSelect v-model="formData.feeRatio2" class="col-md-2 col-sm-3 col-xs-6" />
+                                        <TxFeeInput
+                                            v-model="fee"
+                                            class="col-md-2 col-sm-3 col-xs-6"
+                                            :loading="evaluating"
+                                        />
+                                    </div>
+                                </q-card-section>
+
+                                <q-card-section>
+                                    <div class="row">
+                                        <div class="col">
+                                            <WBtnReset />
+                                        </div>
+                                        <div class="col-11">
+                                            <div class="row justify-end q-gutter-x-sm">
+                                                <WToggleConfirmed />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </q-card-section>
+                            </WForm>
+                        </q-card>
+                    </div>
+
                     <q-card flat>
                         <q-card-section v-if="tx">
                             <q-input
@@ -105,6 +111,7 @@
                             />
                         </q-card-section>
                     </q-card>
+
                     <q-card flat>
                         <q-card-section v-if="qrData">
                             <img :src="qrCode" alt="QR Code" /><br />
