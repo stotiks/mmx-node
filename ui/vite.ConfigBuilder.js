@@ -96,7 +96,7 @@ export class ConfigBuilder {
             (config.plugins ??= []).push(GenerateFile(generateFileOptions));
         }
 
-        if (this.singleFile) {
+        if (this.useSingleFile) {
             this.useDefaultRollupOptions = true;
             (config.plugins ??= []).push(viteSingleFile());
         }
