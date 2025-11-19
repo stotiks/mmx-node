@@ -1,12 +1,15 @@
 <template>
     <q-page padding>
-        <div class="q-gutter-y-sm">
-            <highlightjs :code="tx?.toString(null, 4)" class="hljsCode" />
-            <div class="q-gutter-x-xs">
-                <q-btn :disable="!tx" label="Validate" color="primary" @click="handleValidate" />
-                <q-btn :disable="!tx" label="Broadcast" color="primary" @click="handleBroadcast" />
-            </div>
-        </div>
+        <q-card flat>
+            <q-card-section v-if="tx">
+                <highlightjs :code="JSON.stringify(tx, null, 4)" class="hljsCode" />
+                <div class="q-gutter-x-xs">
+                    <q-btn :disable="!tx" label="Validate" color="positive" @click="handleValidate" />
+                    <q-btn :disable="!tx" label="Broadcast" color="negative" @click="handleBroadcast" />
+                </div>
+            </q-card-section>
+            <q-card-section v-else> No Transaction Data </q-card-section>
+        </q-card>
     </q-page>
 </template>
 
@@ -32,10 +35,13 @@ const handleValidate = () => {
     transactionValidate.mutate(payload.value);
 };
 
+import { useConfirmation } from "@/composables/useConfirmation";
+const { withConfirmation } = useConfirmation();
 const transactionBroadcast = useTransactionBroadcast();
-const handleBroadcast = () => {
+const _handleBroadcast = () => {
     transactionBroadcast.mutate(payload.value);
 };
+const handleBroadcast = withConfirmation("Broadcast Transaction", null, _handleBroadcast);
 </script>
 
 <style scoped>
