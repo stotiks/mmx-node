@@ -130,7 +130,7 @@ const tx = computedAsync(
 
 const fee = computed(() => tx.value?.aux.feeValue);
 
-const payload = computedAsync(async () => tx.value.toString());
+const payload = computedAsync(async () => tx.value?.toString());
 
 import { useTransactionValidate, useTransactionBroadcast } from "@/queries/wapi";
 

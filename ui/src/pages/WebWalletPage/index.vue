@@ -7,7 +7,7 @@
             <transition appear enter-active-class="animate__animated animate__fadeIn">
                 <div v-if="address" class="q-gutter-y-sm">
                     <div>
-                        <div class="row q-col-gutter-xs">
+                        <div class="row">
                             <m-chip class="col-auto">
                                 {{ $t("common.address") }}
                             </m-chip>
