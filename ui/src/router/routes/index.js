@@ -70,7 +70,7 @@ const offlineRoutes = [
         },
     },
 
-    ...(process.env.NODE_ENV === "production" ? [] : [txQrSendRoute]),
+    txQrSendRoute,
     ...catchAll,
 ];
 
