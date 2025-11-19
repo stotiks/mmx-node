@@ -40,20 +40,12 @@ export default defineConfig([
                 ...globals.browser,
             },
         },
-        plugins: {
-            js: pluginJs,
-            vue: pluginVue,
-            query: pluginQuery,
-        },
-        extends: [
-            //
-            "js/recommended",
-            "vue/recommended",
-            "query/recommended",
-        ],
     },
 
     pluginSecurity.configs.recommended,
+    pluginJs.configs.recommended,
+    ...pluginVue.configs["flat/recommended"],
+    ...pluginQuery.configs["flat/recommended"],
     eslintPluginPrettierRecommended,
 
     ...compat.extends("./.eslintrc-auto-import.json"),
