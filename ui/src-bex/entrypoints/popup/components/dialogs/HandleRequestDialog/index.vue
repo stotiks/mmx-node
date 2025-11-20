@@ -11,12 +11,13 @@
         <q-card class="q-dialog-plugin" style="background: var(--q-dark-page)">
             <q-layout view="lHh Lpr lFf">
                 <q-page-container>
-                    <component
-                        :is="pageComponent.component"
-                        v-if="pageComponent"
-                        v-bind="pageComponent.props"
-                        v-on="pageComponent.events"
-                    />
+                    <template v-if="pageComponent">
+                        <component
+                            :is="pageComponent.component"
+                            v-bind="pageComponent.props"
+                            v-on="pageComponent.events || {}"
+                        />
+                    </template>
                 </q-page-container>
             </q-layout>
         </q-card>
