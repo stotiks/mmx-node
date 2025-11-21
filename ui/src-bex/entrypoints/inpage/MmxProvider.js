@@ -33,6 +33,7 @@ export class MmxProvider {
         windowMessenger.onMessage("message", (message) => {
             const { eventName, data } = message.data;
             this.emit(eventName, data);
+            return { success: true };
         });
 
         return proxify(this);

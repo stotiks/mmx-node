@@ -27,8 +27,8 @@ const sendMessageWrapper = (sendMessage) => async (messageID, payload, target) =
         }
     } else {
         // //console.error("Invalid response:", response);
-        // throw new Error("Invalid response: " + response);
-        return response;
+        throw new Error("Invalid response: " + response);
+        // return response;
     }
 };
 
