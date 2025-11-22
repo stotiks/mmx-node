@@ -55,12 +55,12 @@ export const openNotification = async () => {
         });
     }
 
-    return new Promise((resolve) => {
-        const checkPopupLoaded = setInterval(() => {
-            if (isNotificationLoaded) {
-                clearInterval(checkPopupLoaded);
-                resolve();
-            }
-        }, 100);
-    });
+    const waitForCondition = async (checkFunction, interval = 100) => {
+        while (!checkFunction()) {
+            await new Promise((resolve) => setTimeout(resolve, interval));
+        }
+        return true;
+    };
+
+    return await waitForCondition(() => isNotificationLoaded === true);
 };
