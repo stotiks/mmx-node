@@ -5,7 +5,8 @@ const toCamelCase = (str) => {
 export class MessageHandler {
     #methods;
     #hooks = [];
-    #afterHooks = [];
+    #postHooks = [];
+    #successHooks = [];
 
     constructor(methods) {
         this.#methods = methods;
@@ -15,8 +16,12 @@ export class MessageHandler {
         this.#hooks.push(hook);
     }
 
-    addAfterHook(hook) {
-        this.#afterHooks.push(hook);
+    addPostHook(hook) {
+        this.#postHooks.push(hook);
+    }
+
+    addSuccessHook(hook) {
+        this.#successHooks.push(hook);
     }
 
     async #runHooks(context) {
@@ -25,8 +30,14 @@ export class MessageHandler {
         }
     }
 
-    async #runAfterHooks(context) {
-        for (const hook of this.#afterHooks) {
+    async #runPostHooks(context) {
+        for (const hook of this.#postHooks) {
+            await hook(context);
+        }
+    }
+
+    async #runSuccessHooks(context) {
+        for (const hook of this.#successHooks) {
             await hook(context);
         }
     }
@@ -84,13 +95,14 @@ export class MessageHandler {
             await this.#runHooks(context);
             const callResult = await handler.call(this.#methods, params);
             result = { success: true, data: callResult };
+            await this.#runSuccessHooks({ ...context, result });
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.log(`Error handling method [${method}]:`, error);
             }
             result = { success: false, error: error.message };
         }
-        await this.#runAfterHooks({ ...context, result });
+        await this.#runPostHooks({ ...context, result });
         return result;
     }
 

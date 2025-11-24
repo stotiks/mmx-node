@@ -47,7 +47,7 @@ export const useNotificationMessageHandler = () => {
             isRunning.value = true;
         });
 
-        notificationMessageHandler.addAfterHook(async (context) => {
+        notificationMessageHandler.addSuccessHook(async (context) => {
             isRunning.value = false;
             isLoading.value = false;
         });
