@@ -44,4 +44,6 @@ export const getNodeInfoAsync = () => getData("/node/info");
 
 export const getContractAsync = (address) => getData("/contract", { id: address });
 
-export const sendTransactionAsync = (tx) => postData("/transaction/broadcast", tx.toString());
+export const broadcastTransactionAsync = (tx) => postData("/transaction/broadcast", tx.toString());
+
+export const validateTransactionAsync = (tx) => postData("/transaction/validate", tx.toString());
