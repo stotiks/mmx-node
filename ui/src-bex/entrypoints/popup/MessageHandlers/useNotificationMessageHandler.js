@@ -1,12 +1,13 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
-import { useTimeoutFn } from "@vueuse/core";
 
 export const useNotificationMessageHandler = () => {
-    const isLoading = ref(false);
-    const isMounted = ref(false);
-
     const isNotification = inject("isNotification");
+
+    const isLoading = ref(isNotification);
+    const isMounted = ref(false);
+    const isRunning = ref(false);
+
     if (isNotification) {
         const $q = useQuasar();
 
@@ -32,28 +33,29 @@ export const useNotificationMessageHandler = () => {
             static dummy = async () => {};
 
             static requestPermissionsAndAccept = async (params) => {
-                if (isLoading.value === true) {
-                    throw new Error("Other request is running");
-                }
-
-                try {
-                    isLoading.value = true;
-                    const data = await showHandleRequestDialogAsync(params).catch(() => false);
-                    return { success: true, data };
-                } finally {
-                    isLoading.value = false;
-                }
+                const data = await showHandleRequestDialogAsync(params).catch(() => false);
+                return { success: true, data };
             };
         }
 
         const notificationMessageHandler = new MessageHandler(NotificationMessageHandlerMethods);
+        notificationMessageHandler.addHook(async (context) => {
+            if (isRunning.value === true) {
+                throw new Error("Other request is running");
+            }
+
+            isRunning.value = true;
+        });
+
+        notificationMessageHandler.addAfterHook(async (context) => {
+            isRunning.value = false;
+            isLoading.value = false;
+        });
+
         notificationMessageHandler.register(popupMessenger.onMessage, "notification");
-        useTimeoutFn(() => {
-            isMounted.value = true;
-        }, 500);
-    } else {
-        isMounted.value = true;
     }
 
-    return { isLoading, isMounted };
+    isMounted.value = true;
+
+    return { isRunning, isLoading, isMounted };
 };
