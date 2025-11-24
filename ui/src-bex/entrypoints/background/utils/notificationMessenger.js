@@ -1,14 +1,14 @@
 import { openNotification } from "@bex/entrypoints/background/utils/openNotification";
 import { backgroundMessenger } from "@bex/messaging/entrypointMessengers/background";
 
-const sendMessageAsync = async (payload) =>
+const _sendMessageAsync = async (payload) =>
     await backgroundMessenger.sendMessageAsync("notification", payload, "popup");
 
-const sendMessage = async (payload) => {
+const sendMessageAsync = async (payload) => {
     await openNotification();
-    return await sendMessageAsync(payload);
+    return await _sendMessageAsync(payload);
 };
 
 export const notificationMessenger = {
-    sendMessage,
+    sendMessageAsync,
 };

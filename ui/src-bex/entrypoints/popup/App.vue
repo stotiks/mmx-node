@@ -1,7 +1,7 @@
 <template>
     <q-layout view="hHh lpR fFf">
         <q-page-container>
-            <template v-if="isMounted">
+            <template v-if="isMounted && !isLoading">
                 <template v-if="!isInitialized">
                     <InitPage />
                 </template>
@@ -12,13 +12,9 @@
                     <RouterView style="padding-top: 66px" />
                     <Toolbar />
                 </template>
-
-                <q-inner-loading :showing="isActionRunning" class="fullscreen">
-                    <q-spinner-gears size="50px" color="primary" />
-                </q-inner-loading>
             </template>
 
-            <q-inner-loading :showing="!isMounted || !isLoaded" class="fullscreen">
+            <q-inner-loading :showing="!showContent || isRunning" class="fullscreen">
                 <q-spinner-radio size="50px" color="primary" />
             </q-inner-loading>
         </q-page-container>
@@ -42,5 +38,9 @@ import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/u
 useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
-const { isMounted } = useNotificationMessageHandler();
+const { isMounted, isRunning, isLoading } = useNotificationMessageHandler();
+
+const showContent = computed(() => {
+    return isMounted.value && !isLoading.value;
+});
 </script>

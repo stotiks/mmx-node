@@ -9,6 +9,7 @@ export const openNotification = async () => {
         if (views.length > 0) {
             // focus the window
             await browser.windows.update(notificationWindowId, { focused: true });
+            return;
         } else {
             notificationWindowId = null;
         }
@@ -62,5 +63,5 @@ export const openNotification = async () => {
         return true;
     };
 
-    return await waitForCondition(() => isNotificationLoaded === true);
+    await waitForCondition(() => isNotificationLoaded === true);
 };

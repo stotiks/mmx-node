@@ -28,7 +28,7 @@ export const createAuthHook = () => {
 
         let accepted = false;
         if (isAcceptRequired === true || _hasPermissions === false) {
-            const requestPermissionsAndAcceptResponse = await notificationMessenger.sendMessage({
+            const requestPermissionsAndAcceptResponse = await notificationMessenger.sendMessageAsync({
                 method: "requestPermissionsAndAccept",
                 params: { data: message.data, url, isAcceptRequired },
             });
