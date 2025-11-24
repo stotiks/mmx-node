@@ -1,5 +1,12 @@
 /* global browser */
 
+const waitForCondition = async (checkFunction, interval = 100) => {
+    while (!checkFunction()) {
+        await new Promise((resolve) => setTimeout(resolve, interval));
+    }
+    return true;
+};
+
 let notificationWindowId = null;
 let isNotificationLoaded = false;
 
@@ -54,14 +61,7 @@ export const openNotification = async () => {
                 //console.log("Window closed");
             }
         });
+
+        await waitForCondition(() => isNotificationLoaded === true);
     }
-
-    const waitForCondition = async (checkFunction, interval = 100) => {
-        while (!checkFunction()) {
-            await new Promise((resolve) => setTimeout(resolve, interval));
-        }
-        return true;
-    };
-
-    await waitForCondition(() => isNotificationLoaded === true);
 };
