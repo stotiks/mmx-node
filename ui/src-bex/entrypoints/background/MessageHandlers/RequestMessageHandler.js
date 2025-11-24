@@ -5,5 +5,5 @@ import { createHistoryHook } from "./createHistoryHook";
 
 const requestMessageHandler = new MessageHandler(requestMessageHandlerMethods);
 requestMessageHandler.addHook(createAuthHook());
-requestMessageHandler.addAfterHook(createHistoryHook());
+requestMessageHandler.addPostHook(createHistoryHook());
 export { requestMessageHandler };
