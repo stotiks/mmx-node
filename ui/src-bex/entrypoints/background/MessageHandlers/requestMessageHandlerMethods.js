@@ -1,7 +1,7 @@
 import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 import { Transaction } from "@/mmx/wallet/Transaction";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { getNodeInfoAsync, sendTransactionAsync } from "../queries";
+import { getNodeInfoAsync, broadcastTransactionAsync, validateTransactionAsync } from "../queries";
 
 import {
     getCurrentWallet,
@@ -77,7 +77,8 @@ export const requestMessageHandlerMethods = {
     mmx_send: $method(async ({ amount, dst_addr, currency, options: _options }) => {
         const options = new spend_options_t(_options);
         const tx = await getSendTxAsync(amount, dst_addr, currency, options);
-        await sendTransactionAsync(tx);
+        // await broadcastTransactionAsync(tx);
+        await validateTransactionAsync(tx);
 
         return {
             id: tx.id,
