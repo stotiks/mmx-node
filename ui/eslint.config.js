@@ -1,5 +1,6 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
+import pinia from "eslint-plugin-pinia";
 import pluginVue from "eslint-plugin-vue";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 import pluginSecurity from "eslint-plugin-security";
@@ -44,6 +45,7 @@ export default defineConfig([
 
     pluginSecurity.configs.recommended,
     pluginJs.configs.recommended,
+    pinia.configs["recommended-flat"],
     ...pluginVue.configs["flat/recommended"],
     ...pluginQuery.configs["flat/recommended"],
     eslintPluginPrettierRecommended,
