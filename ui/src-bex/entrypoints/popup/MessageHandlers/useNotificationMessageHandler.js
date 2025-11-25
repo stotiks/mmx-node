@@ -57,5 +57,9 @@ export const useNotificationMessageHandler = () => {
 
     isMounted.value = true;
 
-    return { isRunning, isLoading, isMounted };
+    return {
+        isRunning: readonly(isRunning),
+        isLoading: readonly(isLoading),
+        isMounted: readonly(isMounted),
+    };
 };
