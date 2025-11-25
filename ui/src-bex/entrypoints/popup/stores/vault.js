@@ -130,7 +130,7 @@ export const useVaultStore = defineStore("vault", () => {
         });
     });
 
-    const store = {
+    return {
         // State
         isLoaded,
         isInitialized,
@@ -150,8 +150,6 @@ export const useVaultStore = defineStore("vault", () => {
         initVaultAsync,
         updateHistoryAsync,
     };
-
-    return store;
 });
 
 if (import.meta.hot) {
