@@ -49,6 +49,7 @@
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "echarts": "^6.0.0",
+    "eslint-plugin-pinia": "^0.4.2",
     "fflate": "^0.8.2",
     "highlight.js": "^11.11.1",
     "json-bigint": "^1.0.0",
