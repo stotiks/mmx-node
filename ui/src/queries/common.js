@@ -50,17 +50,28 @@ export const onError = (error) => {
     });
 };
 
-const sanitize = (string) => {
-    const map = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#x27;",
-        "/": "&#x2F;",
-    };
-    const reg = /[&<>"'/]/gi;
-    return string.replace(reg, (match) => map[match]);
+const HTML_ESCAPE_MAP = new Map([
+    ["&", "&amp;"],
+    ["<", "&lt;"],
+    [">", "&gt;"],
+    ['"', "&quot;"],
+    ["'", "&#x27;"],
+    ["/", "&#x2F;"],
+]);
+const HTML_ESCAPE_REGEX = /[&<>"'/]/g;
+
+/**
+ * Escapes special characters in a string for use in HTML.
+ * Prevents XSS attacks when rendering user content.
+ *
+ * @param {unknown} input - The input to escape.
+ * @returns {string} The escaped string.
+ */
+const sanitize = (input) => {
+    if (typeof input !== "string") {
+        return input == null ? "" : String(input);
+    }
+    return input.replace(HTML_ESCAPE_REGEX, (match) => HTML_ESCAPE_MAP.get(match));
 };
 
 const notifyWithLink = (_prefixText, _href, _linkText, vars) => {
