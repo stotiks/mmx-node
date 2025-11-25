@@ -3,6 +3,7 @@ import { BuildTargets, ConfigBuilder } from "./vite.ConfigBuilder";
 
 import { fileURLToPath, URL } from "node:url";
 
+import VueDevTools from "vite-plugin-vue-devtools";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // See https://wxt.dev/api/config.html
@@ -42,6 +43,18 @@ export default defineConfig({
         (config.plugins ??= []).push(
             nodePolyfills({
                 include: ["buffer"],
+            })
+        );
+
+        config.plugins.push(
+            VueDevTools({
+                appendTo: "/entrypoints/notification/main.js",
+            })
+        );
+
+        config.plugins.push(
+            VueDevTools({
+                appendTo: "/entrypoints/popup/main.js",
             })
         );
 
