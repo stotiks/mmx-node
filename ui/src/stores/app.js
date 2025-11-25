@@ -2,14 +2,22 @@ import { defaultLocale } from "@/plugins/i18n";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useLocalStorage } from "@vueuse/core";
 
+const useWindowStore = defineStore("window", () => {
+    const _isWinGUI = ref(typeof window.mmx !== "undefined");
+    const _isQtGUI = ref(typeof window.mmx_qtgui !== "undefined");
+
+    return {
+        _isWinGUI,
+        _isQtGUI,
+    };
+});
+
 export const useAppStore = defineStore("app", () => {
     const isDarkTheme = useLocalStorage("isDarkTheme", true);
     const locale = useLocalStorage("locale", defaultLocale);
     const _wapiBaseUrl = useLocalStorage("wapiBaseUrl", null);
 
-    const _isWinGUI = ref(typeof window.mmx !== "undefined");
-    const _isQtGUI = ref(typeof window.mmx_qtgui !== "undefined");
-
+    const { _isWinGUI, _isQtGUI } = useWindowStore();
     const isWinGUI = computed(() => _isWinGUI.value);
     const isQtGUI = computed(() => _isQtGUI.value);
     const isGUI = computed(() => isWinGUI.value || isQtGUI.value);
