@@ -5,7 +5,7 @@ import { Variant } from "./Variant";
 import { ChainParams } from "../utils/ChainParams";
 
 class Contract {
-    #type_hash = BigInt("0x26b896ae8c415285");
+    //#type_hash = BigInt("0x26b896ae8c415285");
     __type = "mmx.Contract";
 
     version = 0;
@@ -27,7 +27,7 @@ class Contract {
 }
 
 export class TokenBase extends Contract {
-    #type_hash = BigInt("0x5aeed4c96d232b5e");
+    //#type_hash = BigInt("0x5aeed4c96d232b5e");
     __type = "mmx.contract.TokenBase";
 
     name = "";
