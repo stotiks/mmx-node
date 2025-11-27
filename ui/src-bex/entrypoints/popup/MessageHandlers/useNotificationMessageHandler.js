@@ -1,11 +1,12 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
+import { useTimeoutFn } from "@vueuse/core";
 
 export const useNotificationMessageHandler = () => {
     const isNotification = inject("isNotification");
 
     const isLoading = ref(isNotification);
-    const isMounted = ref(false);
+    const isMounted = ref(true);
     const isRunning = ref(false);
 
     if (isNotification) {
@@ -53,9 +54,11 @@ export const useNotificationMessageHandler = () => {
         });
 
         notificationMessageHandler.register(popupMessenger.onMessage, "notification");
+        //isMounted.value = true;
+        useTimeoutFn(() => {
+            isLoading.value = false;
+        }, 500);
     }
-
-    isMounted.value = true;
 
     return {
         isRunning: readonly(isRunning),
