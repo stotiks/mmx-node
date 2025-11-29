@@ -61,27 +61,75 @@ describe("WriteBuffer", () => {
         assert.equal(jsHex, cppHex);
     });
 
-    it("int64_t", () => {
+    it("uint32_t", () => {
         const wb = new WriteBytes();
-        wb.write_field("field_name", 1337n);
+        wb.write_field("field_name", 1337);
         const jsHex = wb.buffer.toHex();
         const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D653905000000000000";
         assert.equal(jsHex, cppHex);
     });
 
-    it("int64_t min", () => {
+    it("uint32_t min", () => {
         const wb = new WriteBytes();
-        wb.write_field("field_name", -9223372036854775808n);
+        wb.write_field("field_name", 0);
         const jsHex = wb.buffer.toHex();
-        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D650000000000000080";
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D650000000000000000";
         assert.equal(jsHex, cppHex);
     });
 
-    it("int64_t max", () => {
+    it("uint32_t max", () => {
         const wb = new WriteBytes();
-        wb.write_field("field_name", 9223372036854775807n);
+        wb.write_field("field_name", 4294967295);
         const jsHex = wb.buffer.toHex();
-        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D65FFFFFFFFFFFFFF7F";
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D65FFFFFFFF00000000";
+        assert.equal(jsHex, cppHex);
+    });
+
+    it("uint16_t", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", 1337);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D653905000000000000";
+        assert.equal(jsHex, cppHex);
+    });
+
+    it("uint16_t min", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", 0);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D650000000000000000";
+        assert.equal(jsHex, cppHex);
+    });
+
+    it("uint16_t max", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", 65535);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D65FFFF000000000000";
+        assert.equal(jsHex, cppHex);
+    });
+
+    it("uint8_t", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", 77);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D654D00000000000000";
+        assert.equal(jsHex, cppHex);
+    });
+
+    it("uint8_t min", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", 0);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D650000000000000000";
+        assert.equal(jsHex, cppHex);
+    });
+
+    it("uint8_t max", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", 255);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D65FF00000000000000";
         assert.equal(jsHex, cppHex);
     });
 
