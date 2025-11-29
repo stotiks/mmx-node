@@ -13,6 +13,14 @@ import { WriteBytes } from "./WriteBytes";
 import "../utils/Uint8ArrayUtils";
 
 describe("WriteBuffer", () => {
+    it("nullptr", () => {
+        const wb = new WriteBytes();
+        wb.write_field("field_name", null);
+        const jsHex = wb.buffer.toHex();
+        const cppHex = "6669656C643C3E737472696E673C3E0A000000000000006669656C645F6E616D6500";
+        assert.equal(jsHex, cppHex);
+    });
+
     it("bool true", () => {
         const wb = new WriteBytes();
         wb.write_field("field_name", true);
