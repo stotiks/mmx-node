@@ -79,6 +79,7 @@ export class WriteBytes extends WriteBuffer {
         this.write_bytes_cstr("vector<>");
         this.write_bytes(value.length);
         for (let i = 0; i < value.length; i++) {
+            // eslint-disable-next-line security/detect-object-injection
             this.write_bytes(value[i], full_hash);
         }
     }
