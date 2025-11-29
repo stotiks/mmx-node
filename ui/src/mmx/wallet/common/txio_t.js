@@ -13,18 +13,17 @@ export class txio_t {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "address":
-                    return new addr_t(value);
+                    return new addr_t(target.address);
                 case "contract":
-                    return new addr_t(value);
+                    return new addr_t(target.contract);
                 case "amount":
-                    return BigInt(value);
+                    return BigInt(target.amount);
                 case "memo":
-                    return new optional(value);
+                    return new optional(target.memo);
                 default:
-                    return value;
+                    return Reflect.get(target, prop);
             }
         },
     };
@@ -33,10 +32,10 @@ export class txio_t {
         return new Proxy(this, txio_t.hashHandler);
     }
 
-    constructor({ address, contract, amount, memo }) {
-        this.address = address;
-        this.contract = contract;
-        this.amount = amount.toString() ?? this.amount;
+    constructor({ address, contract, amount, memo } = {}) {
+        this.address = address ?? this.address;
+        this.contract = contract ?? this.contract;
+        this.amount = amount?.toString() ?? this.amount;
         this.memo = memo ?? this.memo;
     }
 
@@ -58,7 +57,7 @@ export class txin_t extends txio_t {
     solution = -1;
     flags = 0;
 
-    constructor({ address, contract, amount, memo, solution, flags }) {
+    constructor({ address, contract, amount, memo, solution, flags } = {}) {
         super({ address, contract, amount, memo });
         this.solution = solution ?? this.solution;
         this.flags = flags ?? this.flags;

@@ -12,14 +12,13 @@ class PubKey {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "pubkey":
-                    return new bytes_t(value);
+                    return new bytes_t(target.pubkey);
                 case "signature":
-                    return new bytes_t(value);
+                    return new bytes_t(target.signature);
                 default:
-                    return value;
+                    return Reflect.get(target, prop);
             }
         },
     };

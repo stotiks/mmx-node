@@ -85,26 +85,25 @@ class Transaction {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "note":
-                    return tx_note_e[value];
+                    return tx_note_e[target.note];
                 case "sender":
-                    return new optional(value ? new addr_t(value) : null);
+                    return new optional(target.sender ? new addr_t(target.sender) : null);
                 case "inputs":
-                    return value.map((i) => new txin_t(i));
+                    return target.inputs.map((i) => new txin_t(i));
                 case "outputs":
-                    return value.map((i) => new txout_t(i));
+                    return target.outputs.map((i) => new txout_t(i));
                 case "execute":
-                    return value.map((i) => new Operation(i));
+                    return target.execute.map((i) => new Operation(i));
                 case "solutions":
-                    return value.map((i) => new PubKey(i));
+                    return target.solutions.map((i) => new PubKey(i));
                 case "deploy":
-                    return value ? new Executable(value) : null;
+                    return target.deploy ? new Executable(target.deploy) : null;
                 case "exec_result":
-                    return new optional(value !== null ? new exec_result_t(value) : null);
+                    return new optional(target.exec_result !== null ? new exec_result_t(target.exec_result) : null);
                 default:
-                    return value;
+                    return Reflect.get(target, prop);
             }
         },
     };

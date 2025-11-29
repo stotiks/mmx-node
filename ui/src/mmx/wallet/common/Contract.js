@@ -37,12 +37,11 @@ export class TokenBase extends Contract {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "meta_data":
-                    return new Variant(value);
+                    return new Variant(target.meta_data);
                 default:
-                    return value;
+                    return Reflect.get(target, prop);
             }
         },
     };
@@ -86,14 +85,13 @@ export class Executable extends TokenBase {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "binary":
-                    return new addr_t(value);
+                    return new addr_t(target.binary);
                 case "init_args":
-                    return value.map((i) => new Variant(i));
+                    return target.init_args.map((i) => new Variant(i));
                 case "depends":
-                    if (value.length > 0) {
+                    if (target.depends.length > 0) {
                         throw new Error("Not implemented");
                     }
                     return new Map();

@@ -59,16 +59,15 @@ export class Execute extends Operation {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "address":
-                    return new addr_t(value);
+                    return new addr_t(target.address);
                 case "args":
-                    return value.map((i) => new Variant(i));
+                    return target.args.map((i) => new Variant(i));
                 case "user":
-                    return new optional(value ? new addr_t(value) : null);
+                    return new optional(target.user ? new addr_t(target.user) : null);
                 default:
-                    return value;
+                    return Reflect.get(target, prop);
             }
         },
     };
@@ -145,12 +144,11 @@ export class Deposit extends Execute {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "currency":
-                    return new addr_t(value);
+                    return new addr_t(target.currency);
                 case "amount":
-                    return new uint128(value);
+                    return new uint128(target.amount);
                 default:
                     return Execute.hashHandler.get(target, prop);
             }
