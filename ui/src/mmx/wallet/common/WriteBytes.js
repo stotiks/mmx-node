@@ -130,7 +130,9 @@ export class WriteBytes extends WriteBuffer {
 
     write_bytes(_value, full_hash) {
         let value = _value;
-        if (typeof value === "boolean") {
+        if (value == null) {
+            this.write_bytes_boolean(false);
+        } else if (typeof value === "boolean") {
             this.write_bytes_boolean(value);
         } else if (typeof value === "string") {
             this.write_bytes_string(value);
@@ -175,7 +177,7 @@ export class WriteBytes extends WriteBuffer {
     write_field(field_name, field_value, full_hash) {
         this.write_bytes_cstr("field<>");
         this.write_bytes(field_name);
-        if (field_value != undefined) {
+        if (field_value !== undefined) {
             this.write_bytes(field_value, full_hash);
         }
     }
