@@ -1,13 +1,12 @@
 import { hexToBytes, isBytes, u8 } from "@noble/hashes/utils.js";
 
-import { uint128 } from "./uint128";
-import { bytes_t } from "./addr_t";
-import { txin_t, txout_t } from "./txio_t";
 import { optional } from "./optional";
-import { Variant } from "./Variant";
-import { WriteBuffer } from "./WriteBuffer";
 import { pair } from "./pair";
+import { txin_t, txout_t } from "./txio_t";
+import { uint128 } from "./uint128";
+import { Variant } from "./Variant";
 import { vnxObject } from "./vnxObject";
+import { WriteBuffer } from "./WriteBuffer";
 
 export class WriteBytes extends WriteBuffer {
     write_bytes_cstr(str) {
