@@ -128,8 +128,7 @@ export class WriteBytes extends WriteBuffer {
         this.write_bytes(value.upper());
     }
 
-    write_bytes(_value, full_hash) {
-        let value = _value;
+    write_bytes(value, full_hash) {
         if (value == null) {
             this.write_bytes_boolean(false);
         } else if (typeof value === "boolean") {
