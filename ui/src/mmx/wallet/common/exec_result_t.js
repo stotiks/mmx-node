@@ -1,6 +1,6 @@
 import { ChainParams } from "../utils/ChainParams";
 import { WriteBytes } from "./WriteBytes";
-import { bytes_t, hash_t } from "./addr_t";
+import { hash_t } from "./addr_t";
 import { optional } from "./optional";
 import { txin_t, txout_t } from "./txio_t";
 
@@ -17,16 +17,15 @@ class exec_result_t {
 
     static hashHandler = {
         get: (target, prop) => {
-            const value = target[prop];
             switch (prop) {
                 case "inputs":
-                    return value.map((i) => new txin_t(i));
+                    return (target.inputs || []).map((i) => new txin_t(i));
                 case "outputs":
-                    return value.map((i) => new txout_t(i));
+                    return (target.outputs || []).map((i) => new txout_t(i));
                 case "error":
-                    return new optional(value);
+                    return new optional(target.error);
                 default:
-                    return value;
+                    return Reflect.get(target, prop);
             }
         },
     };
@@ -35,7 +34,7 @@ class exec_result_t {
         return new Proxy(this, exec_result_t.hashHandler);
     }
 
-    constructor({ did_fail, total_cost, total_fee, inputs, outputs, error }) {
+    constructor({ did_fail, total_cost, total_fee, inputs, outputs, error } = {}) {
         this.did_fail = did_fail;
         this.total_cost = total_cost;
         this.total_fee = total_fee;
@@ -71,8 +70,8 @@ class exec_result_t {
         const hp = this.getHashProxy();
         let cost = 0n;
 
-        hp.inputs.map((i) => (cost += i.calc_cost(params)));
-        hp.outputs.map((i) => (cost += i.calc_cost(params)));
+        hp.inputs.forEach((i) => (cost += i.calc_cost(params)));
+        hp.outputs.forEach((i) => (cost += i.calc_cost(params)));
 
         return cost;
     }
