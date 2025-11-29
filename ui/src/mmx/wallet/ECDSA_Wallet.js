@@ -149,38 +149,42 @@ export class ECDSA_Wallet {
         tx.fee_ratio = bigIntMax(BigInt(tx.fee_ratio), BigInt(options.fee_ratio));
 
         //---
-        const missing = [];
+        const missing = new Map();
 
         tx.outputs.forEach((output) => {
-            missing[output.contract] = (missing[output.contract] ?? 0n) + BigInt(output.amount);
+            const current = missing.get(output.contract) ?? 0n;
+            missing.set(output.contract, current + BigInt(output.amount));
         });
 
         tx.execute.forEach((deposit) => {
             if (new Operation(deposit) instanceof Deposit) {
-                missing[deposit.currency] = (missing[deposit.currency] ?? 0n) + BigInt(deposit.amount);
+                const current = missing.get(deposit.currency) ?? 0n;
+                missing.set(deposit.currency, current + BigInt(deposit.amount));
             }
         });
 
         tx.inputs.forEach((input) => {
-            if (input.amount && input.amount < missing[input.contract]) {
-                missing[input.contract] -= BigInt(input.amount);
+            const current = missing.get(input.contract) ?? 0n;
+            if (input.amount && input.amount < current) {
+                missing.set(input.contract, current - BigInt(input.amount));
             } else {
-                missing[input.contract] = 0n;
+                missing.set(input.contract, 0n);
             }
         });
 
         deposit.forEach((value) => {
             const [address, amount] = value;
-            missing[address] = (missing[address] ?? 0n) + BigInt(amount);
+            const current = missing.get(address) ?? 0n;
+            missing.set(address, current + BigInt(amount));
         });
 
         const address = await this.getAddressAsync(0);
-        Object.entries(missing).forEach(([currency, amount]) => {
+        for (const [currency, amount] of missing) {
             //console.debug("missing", amount, currency);
-            if (amount) {
+            if (amount > 0n) {
                 const input = tx.inputs.find((input) => input.address === address && input.contract === currency);
                 if (input) {
-                    input.amount += amount;
+                    input.amount = BigInt(input.amount) + amount;
                 } else {
                     const obj = {
                         address: address,
@@ -193,7 +197,7 @@ export class ECDSA_Wallet {
                     tx.inputs.push(tx_in);
                 }
             }
-        });
+        }
         //---
 
         const chainParams = await getChainParamsAsync(options.network);
