@@ -28,6 +28,14 @@ void static print_test(const std::string& testname, const T& value, const std::s
 
 int main(int argc, char** argv)
 {
+
+	{
+		const auto testname = "nullptr";
+		std::nullptr_t value = nullptr;
+		const std::string jsvalue = "null";
+		print_test(testname, value, jsvalue);
+	}
+
 	{
 		const auto testname = "bool true";
 		constexpr auto value = true;
@@ -44,87 +52,171 @@ int main(int argc, char** argv)
 
 	{
 		const auto testname = "uint64_t";
-		constexpr auto value = (uint64_t)1337;
+		constexpr uint64_t value = 1337;
 		const std::string jsvalue = std::to_string(value) + "n";
 		print_test(testname, value, jsvalue);
 	}
 
 	{
 		const auto testname = "uint64_t min";
-		constexpr auto value = std::numeric_limits<uint64_t>::min();
+		constexpr uint64_t value = std::numeric_limits<uint64_t>::min();
 		const std::string jsvalue = std::to_string(value) + "n";
 		print_test(testname, value, jsvalue);
 	}
 
 	{
 		const auto testname = "uint64_t max";
-		constexpr auto value = std::numeric_limits<uint64_t>::max();
+		constexpr uint64_t value = std::numeric_limits<uint64_t>::max();
 		const std::string jsvalue = std::to_string(value) + "n";
 		print_test(testname, value, jsvalue);
 	}
 
-	//{
-	//	const auto testname = "uint32_t";
-	//	const auto value = (uint32_t)1337;
-	//	const std::string jsvalue = std::to_string(value);
-	//	print_test(testname, value, jsvalue);
-	//}
-
-	//{
-	//	const auto testname = "uint16_t";
-	//	const auto value = (uint16_t)1337;
-	//	const std::string jsvalue = std::to_string(value);
-	//	print_test(testname, value, jsvalue);
-	//}
-
-	//{
-	//	const auto testname = "uint8_t";
-	//	const auto value = (uint16_t)1337;
-	//	const std::string jsvalue = std::to_string(value);
-	//	print_test(testname, value, jsvalue);
-	//}
+	{
+		const auto testname = "uint32_t";
+		const uint32_t value = 1337;
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
 
 	{
+		const auto testname = "uint32_t min";
+		constexpr uint32_t value = std::numeric_limits<uint32_t>::min();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint32_t max";
+		constexpr uint32_t value = std::numeric_limits<uint32_t>::max();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint16_t";
+		const uint16_t value = 1337;
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint16_t min";
+		constexpr uint16_t value = std::numeric_limits<uint16_t>::min();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint16_t max";
+		constexpr uint16_t value = std::numeric_limits<uint16_t>::max();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint8_t";
+		const uint8_t value = 77;
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint8_t min";
+		constexpr uint8_t value = std::numeric_limits<uint8_t>::min();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "uint8_t max";
+		constexpr uint8_t value = std::numeric_limits<uint8_t>::max();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	/*{
 		const auto testname = "int64_t";
-		constexpr auto value = (int64_t)1337;
+		constexpr int64_t value = 1337;
 		const std::string jsvalue = std::to_string(value) + "n";
 		print_test(testname, value, jsvalue);
 	}
 
 	{
 		const auto testname = "int64_t min";
-		constexpr auto value = std::numeric_limits<int64_t>::min();
+		constexpr int64_t value = std::numeric_limits<int64_t>::min();
 		const std::string jsvalue = std::to_string(value) + "n";
 		print_test(testname, value, jsvalue);
 	}
 
 	{
 		const auto testname = "int64_t max";
-		constexpr auto value = std::numeric_limits<int64_t>::max();
+		constexpr int64_t value = std::numeric_limits<int64_t>::max();
 		const std::string jsvalue = std::to_string(value) + "n";
 		print_test(testname, value, jsvalue);
 	}
 
-	//{
-	//	const auto testname = "int32_t";
-	//	const auto value = (int32_t)1337;
-	//	const std::string jsvalue = std::to_string(value);
-	//	print_test(testname, value, jsvalue);
-	//}
+	{
+		const auto testname = "int32_t";
+		const int32_t value = 1337;
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
 
-	//{
-	//	const auto testname = "int16_t";
-	//	const auto value = (int16_t)1337;
-	//	const std::string jsvalue = std::to_string(value);
-	//	print_test(testname, value, jsvalue);
-	//}
+	{
+		const auto testname = "int32_t min";
+		constexpr int32_t value = std::numeric_limits<int32_t>::min();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
 
-	//{
-	//	const auto testname = "int8_t";
-	//	const auto value = (int16_t)1337;
-	//	const std::string jsvalue = std::to_string(value);
-	//	print_test(testname, value, jsvalue);
-	//}
+	{
+		const auto testname = "int32_t max";
+		constexpr int32_t value = std::numeric_limits<int32_t>::max();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "int16_t";
+		const int16_t value = 1337;
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "int16_t min";
+		constexpr int16_t value = std::numeric_limits<int16_t>::min();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "int16_t max";
+		constexpr int16_t value = std::numeric_limits<int16_t>::max();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "int8_t";
+		const int8_t value = 77;
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "int8_t min";
+		constexpr int8_t value = std::numeric_limits<int8_t>::min();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}
+
+	{
+		const auto testname = "int8_t max";
+		constexpr int8_t value = std::numeric_limits<int8_t>::max();
+		const std::string jsvalue = std::to_string(value);
+		print_test(testname, value, jsvalue);
+	}*/
 
 	{
 		const auto testname = "uint128";
