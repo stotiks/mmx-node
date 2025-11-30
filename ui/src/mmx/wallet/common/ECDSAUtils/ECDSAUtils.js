@@ -17,9 +17,9 @@ const secp256k1 = {
 };
 
 secp256k1.hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
-secp256k1.hashes.sha256 = sha256;
-secp256k1.hashes.hmacSha256Async = async (key, msg) => hmac(sha256, key, msg);
-secp256k1.hashes.sha256Async = async (msg) => sha256(msg);
+// secp256k1.hashes.sha256 = sha256;
+// secp256k1.hashes.hmacSha256Async = async (key, msg) => hmac(sha256, key, msg);
+// secp256k1.hashes.sha256Async = async (msg) => sha256(msg);
 
 import { addr_t, hash_t } from "@/mmx/wallet/common/addr_t";
 import "@/mmx/wallet/utils/Uint8ArrayUtils";
