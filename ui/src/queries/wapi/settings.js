@@ -13,17 +13,6 @@ export const useConfig = () => {
     });
 };
 
-/*
-const getConfigKey = (params, signal) =>
-    axios.get("/wapi/config/get", { params, signal }).then((response) => response.data);
-export const useConfigKey = (params) => {
-    return useQuery({
-        queryKey: ["config", "get", params],
-        queryFn: ({ signal }) => getConfigKey(params, signal),
-    });
-};
-*/
-
 const setConfig = (payload) => axios.post("/wapi/config/set", payload).then((response) => response.data);
 export const useSetConfig = () => {
     const queryClient = useQueryClient();
