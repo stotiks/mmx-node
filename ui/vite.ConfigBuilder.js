@@ -47,7 +47,6 @@ export class ConfigBuilder {
 
         (config.define ??= {}).__BUILD_TARGET__ = JSON.stringify(this.buildTarget);
         (config.define ??= {}).__TX_QR_SEND_BASE_URL__ = JSON.stringify(
-            // eslint-disable-next-line no-undef
             process.env.NODE_ENV === "production" ? this.txQRSendBaseUrl : undefined
         );
 
@@ -55,7 +54,6 @@ export class ConfigBuilder {
 
         if (this.usePublicRPC) {
             (config.define ??= {}).__WAPI_URL__ = JSON.stringify(
-                // eslint-disable-next-line no-undef
                 process.env.NODE_ENV === "production" || this.usePublicRPCForDevMode ? this.publicRPCUrl : undefined
             );
         }
@@ -182,12 +180,6 @@ export class ConfigBuilder {
                     api: "modern-compiler",
                 },
             },
-        },
-        test: {
-            globals: true,
-            environment: "node",
-            // setupFiles: "@testing-library/jest-dom",
-            mockReset: true,
         },
         build: {
             target: "es2020",
