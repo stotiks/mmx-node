@@ -15,14 +15,20 @@ export const getChainParamsAsync = async (network) => {
         return chainParams;
     } else {
         // get chain params
-        const path = Object.keys(chainParamsList).filter((key) => key.endsWith(`${network}/chain/params.json`));
-        const chainParamsTmp = await chainParamsList[path]();
+        const paths = Object.keys(chainParamsList).filter((key) => key.endsWith(`${network}/chain/params.json`));
+        if (paths.length === 0) {
+            throw new Error(`Chain params not found for network: ${network}`);
+        }
+        const chainParamsTmp = await chainParamsList[paths[0]]();
 
         chainParams = { ...chainParamsTmp };
         // get chain extra params
         const extraPath = Object.keys(chainExtraParamsList).filter((key) => key.includes(`${network}/chain/params/`));
         for (const key of extraPath) {
-            const param = key.match(/\/chain\/params\/(.*)$/)[1];
+            const match = key.match(/\/chain\/params\/(.*)$/);
+            if (!match) continue;
+
+            const param = match[1];
             const extraParam = chainExtraParamsList[key];
             chainParams[param] = extraParam.trim();
         }
