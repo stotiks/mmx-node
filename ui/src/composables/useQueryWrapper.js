@@ -12,7 +12,7 @@ export const useQueryWrapper = (...args) => {
         ([isErrorNew_, dataNew_, errorNew_], [isErrorPrev_, dataPrev_, errorPrev_]) => {
             if (isErrorPrev_) {
                 isErrorPrev.value = true;
-                errorPrev.value = errorPrev_?.request?.response || errorPrev_.message;
+                errorPrev.value = errorPrev_?.request?.response || errorPrev_?.message;
             }
             if (dataNew_ && !query.isPlaceholderData.value) {
                 isErrorPrev.value = false;
@@ -29,7 +29,7 @@ export const useQueryWrapper = (...args) => {
             : query.error.value?.request?.response || query.error.value?.message
     );
     const isLatestError = computed(() =>
-        query.isFetching.value && query.errorUpdateCount.value > 0 ? isErrorPrev.value : query.isError
+        query.isFetching.value && query.errorUpdateCount.value > 0 ? isErrorPrev.value : query.isError.value
     );
 
     query.loading = loading;
