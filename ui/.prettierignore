@@ -1,3 +1,6 @@
 package.json
+tsconfig.json
 .eslintrc-auto-import.json
 .vscode/*
+.roo/*
+dist
