@@ -10,6 +10,7 @@ export const useConfig = () => {
         queryKey: ["config"],
         queryFn: ({ signal }) => getConfig(signal),
         gcTime: Infinity,
+        retry: true,
     });
 };
 
@@ -36,5 +37,6 @@ export const useChainInfo = () => {
         queryKey: ["chain", "info"],
         queryFn: ({ signal }) => getChainInfo(signal),
         gcTime: Infinity,
+        retry: true,
     });
 };
