@@ -1,4 +1,4 @@
-import { describe, it, assert } from "vitest";
+import { describe, it, assert, expect } from "vitest";
 
 import { Transaction } from "./Transaction";
 import { getChainParamsAsync } from "./utils/getChainParamsAsync";
@@ -9,6 +9,8 @@ import { JSONbigNativeString } from "./utils/JSONbigNative";
 import "./utils/Uint8ArrayUtils";
 
 import { txs } from "./Transaction.js.txs.test.js";
+import { txio_t } from "./common/txio_t";
+import { addr_t } from "./common/addr_t";
 
 txs.forEach((item, key) => {
     describe(`Transaction #${key}`, () => {
@@ -92,5 +94,15 @@ describe("Transaction #nonce as string", () => {
 
         assert.equal(hash_serialize.toHex(), hex);
         assert.equal(hash.toHex(), content_hash);
+    });
+});
+
+describe("Transaction misc", () => {
+    it("memo too long", () => {
+        const tx = new Transaction();
+        const memo = "x".repeat(txio_t.MAX_MEMO_SIZE + 1);
+        expect(() => tx.add_output(new addr_t().toString(), new addr_t().toString(), 0, memo)).toThrowError(
+            "memo too long"
+        );
     });
 });
