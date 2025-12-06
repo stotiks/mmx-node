@@ -14,7 +14,7 @@ export const seedToWords = (seed, wordlist) => {
     if (!wordlist) {
         wordlist = wordlistEnglish;
     }
-    return entropyToMnemonic(seed, wordlist);
+    return entropyToMnemonic(seed.toReversed(), wordlist);
 };
 
 // 24 words
