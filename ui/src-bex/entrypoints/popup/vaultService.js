@@ -5,8 +5,14 @@ class DynamicMessageService {
         return new Proxy(this, {
             get(target, prop, receiver) {
                 // Ignore internal props
-                if (typeof target[prop] !== "undefined") {
-                    return Reflect.get(target, prop, receiver);
+                const value = Reflect.get(target, prop, receiver);
+                if (typeof value !== "undefined") {
+                    return value;
+                }
+
+                // Avoid proxying symbols or special properties like 'then'
+                if (typeof prop !== "string" || prop === "then") {
+                    return undefined;
                 }
 
                 // Return a function that calls the API dynamically
