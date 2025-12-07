@@ -94,6 +94,15 @@ describe("dataFormatters", () => {
             expect(result.isClickable).toBe(false);
         });
 
+        it("should format strings correctly", () => {
+            const str = "this is a test string";
+            const result = formatObjectForDisplay(str);
+            expect(result.type).toBe("string");
+            expect(result.displayValue).toBe(str);
+            expect(result.isExpandable).toBe(false);
+            expect(result.isClickable).toBe(false);
+        });
+
         it("should format objects correctly", () => {
             const obj = { key: "value" };
             const result = formatObjectForDisplay(obj);
@@ -106,6 +115,35 @@ describe("dataFormatters", () => {
             const result = formatObjectForDisplay(null);
             expect(result.type).toBe("null");
             expect(result.displayValue).toBe("null");
+        });
+
+        it("should handle undefined values", () => {
+            const result = formatObjectForDisplay(undefined);
+            expect(result.type).toBe("null");
+            expect(result.displayValue).toBe("null");
+        });
+
+        it("should format numbers correctly", () => {
+            const result = formatObjectForDisplay(123);
+            expect(result.type).toBe("number");
+            expect(result.displayValue).toBe("123");
+            expect(result.isExpandable).toBe(false);
+            expect(result.isClickable).toBe(false);
+        });
+
+        it("should format booleans correctly", () => {
+            const result = formatObjectForDisplay(true);
+            expect(result.type).toBe("boolean");
+            expect(result.displayValue).toBe("true");
+            expect(result.isExpandable).toBe(false);
+            expect(result.isClickable).toBe(false);
+        });
+
+        it("should handle unknown types", () => {
+            const symbol = Symbol("test");
+            const result = formatObjectForDisplay(symbol);
+            expect(result.type).toBe("unknown");
+            expect(result.displayValue).toBe("Symbol(test)");
         });
     });
 });
