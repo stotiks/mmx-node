@@ -69,10 +69,7 @@ export const formatObjectForDisplay = (value) => {
     if (value === null || value === undefined) {
         result.type = "null";
         result.displayValue = "null";
-        return result;
-    }
-
-    if (typeof value === "string") {
+    } else if (typeof value === "string") {
         if (isMMXAddress(value)) {
             result.type = "address";
             result.isClickable = true;
@@ -82,24 +79,16 @@ export const formatObjectForDisplay = (value) => {
         } else {
             result.type = "string";
         }
-        return result;
-    }
-
-    if (typeof value === "object") {
+    } else if (typeof value === "object") {
         result.type = "object";
         result.isExpandable = Object.keys(value).length > 0;
         result.displayValue = stringify(value);
-        return result;
-    }
-
-    if (typeof value === "number") {
+    } else if (typeof value === "number") {
         result.type = "number";
-        return result;
-    }
-
-    if (typeof value === "boolean") {
+    } else if (typeof value === "boolean") {
         result.type = "boolean";
-        return result;
+    } else {
+        result.type = "unknown";
     }
 
     return result;
