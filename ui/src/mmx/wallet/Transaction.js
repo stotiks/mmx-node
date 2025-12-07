@@ -56,7 +56,7 @@ class Transaction {
 
     static parse(json) {
         const obj = JSONbigNativeString.parse(json);
-        const tx = Transaction.cast(obj);
+        const tx = new Transaction(obj);
         return tx;
     }
 
