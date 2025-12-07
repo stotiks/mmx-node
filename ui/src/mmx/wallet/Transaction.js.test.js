@@ -105,4 +105,18 @@ describe("Transaction misc", () => {
             "memo too long"
         );
     });
+
+    it("Invalid transaction format", () => {
+        expect(() => new Transaction("")).toThrowError("Invalid transaction format");
+    });
+
+    // it("tx cost amount overflow", async () => {
+    //     const chainParams = await getChainParamsAsync("mainnet");
+    //     const tx = new Transaction();
+    //     const memo = "x".repeat(txio_t.MAX_MEMO_SIZE);
+    //     for (let i = 0; i < 1000000000; i++) {
+    //         tx.add_output(new addr_t().toString(), new addr_t().toString(), 0, memo);
+    //     }
+    //     expect(() => tx.calc_cost(chainParams)).toThrowError("tx cost amount overflow");
+    // });
 });
