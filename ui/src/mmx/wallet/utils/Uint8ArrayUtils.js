@@ -26,4 +26,9 @@ if (!(typeof Uint8Array.from([]).toHex === "function")) {
     Uint8Array.prototype.toHex = function () {
         return bytesToHex(this).toUpperCase();
     };
+} else {
+    const originalToHex = Uint8Array.prototype.toHex;
+    Uint8Array.prototype.toHex = function () {
+        return originalToHex.call(this).toUpperCase();
+    };
 }
