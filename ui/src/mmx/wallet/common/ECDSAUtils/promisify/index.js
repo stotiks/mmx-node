@@ -3,7 +3,7 @@ import PromisifyWorker from "./worker?worker&inline";
 
 export const promisify = (fnName, args) => {
     return new Promise((resolve, reject) => {
-        if (typeof document !== "undefined" && typeof window !== "undefined" && window.Worker) {
+        if (typeof process === "undefined" && typeof window !== "undefined" && window.Worker) {
             const onmessage = (event) => {
                 const { success, result, error } = event.data;
                 if (success === true) {
