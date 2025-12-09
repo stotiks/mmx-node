@@ -1,11 +1,12 @@
 import { syncFunctionList as functionList } from "@/mmx/wallet/common/ECDSAUtils/ECDSAUtils";
+import { callWithNamedParams } from "./callWithNamedParams";
 import PromisifyWorker from "./worker?worker&inline";
 
 export const promisify = (fnName, args) => {
     return new Promise((resolve, reject) => {
         if (typeof process === "undefined" && typeof window !== "undefined" && window.Worker) {
             const worker = new PromisifyWorker();
-            worker.postMessage({ fnName: fnName, args });
+            worker.postMessage({ fnName, args });
             worker.onmessage = function (e) {
                 const { success, result, error } = e.data;
                 if (success) {
@@ -20,7 +21,7 @@ export const promisify = (fnName, args) => {
                 try {
                     const fn = functionList[fnName];
                     if (fn) {
-                        const result = fn.apply(null, Object.values(args));
+                        const result = callWithNamedParams(fn, args);
                         resolve(result);
                     } else {
                         throw new Error(`Unknown fnName: ${fnName}`);
