@@ -50,7 +50,7 @@ The following are auto-imported across the application via `unplugin-auto-import
 *   Test files should use [`.test.js`](src/mmx/wallet/ECDSA_Wallet.js.test.js) extension and be placed adjacent to source files
 *   Use `happy-dom` environment for Vue component tests.
 *   When testing components that use Quasar UI components, stub the Quasar components (e.g., `q-select`) in the test setup to avoid complexity and warnings. Define the props in the stub to prevent Vue warnings about invalid props.
-*   Run tests using `bunx vitest`. To run a specific test file, use `bunx vitest [path/to/file]`.
+*   Run tests using `bun run test`. To run a specific test file, use `bun run test [path/to/file]`.
 
 ## BEX Custom Store
 
