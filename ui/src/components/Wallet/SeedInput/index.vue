@@ -45,18 +45,19 @@ const handleWordUpdate = (value, index) => {
     const _wordCount = value.split(" ").length;
     if (_wordCount == 1) {
         seedString.value = words.value.join(" ");
-    } else if (_wordCount == wordCount) {
+    } else {
         seedString.value = value;
         updateWords();
     }
 };
 
 const updateWords = () => {
-    if (!seedString.value) {
-        words.value = new Array(wordCount).fill("");
-    } else {
-        words.value = seedString.value.split(" ").slice(0, wordCount);
+    const seed = seedString.value ? seedString.value.split(" ") : [];
+    const paddedWords = new Array(wordCount).fill("");
+    for (let i = 0; i < seed.length; i++) {
+        paddedWords[i] = seed[i];
     }
+    words.value = paddedWords;
 };
 
 watchEffect(() => updateWords());
