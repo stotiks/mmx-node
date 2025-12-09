@@ -1,5 +1,5 @@
 import { syncFunctionList as functionList } from "@/mmx/wallet/common/ECDSAUtils/ECDSAUtils";
-import { callWithNamedParams } from "./callWithNamedParams";
+import { executeFunctionWithCallbacks } from "./utils/executeFunction";
 import PromisifyWorker from "./worker?worker&inline";
 
 export const promisify = (fnName, args) => {
@@ -17,24 +17,12 @@ export const promisify = (fnName, args) => {
             };
             worker.onerror = reject;
         } else {
-            const exec = () => {
-                try {
-                    const fn = functionList[fnName];
-                    if (fn) {
-                        const result = callWithNamedParams(fn, args);
-                        resolve(result);
-                    } else {
-                        throw new Error(`Unknown fnName: ${fnName}`);
-                    }
-                } catch (error) {
-                    reject(error);
-                }
-            };
+            const exec = () => executeFunctionWithCallbacks(fnName, args, functionList, resolve, reject);
 
             if (typeof queueMicrotask !== "undefined") {
                 queueMicrotask(exec);
             } else {
-                setTimeout(exec);
+                setTimeout(exec, 0);
             }
         }
     });
