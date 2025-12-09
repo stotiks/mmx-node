@@ -1,20 +1,9 @@
 import { syncFunctionList as functionList } from "@/mmx/wallet/common/ECDSAUtils/ECDSAUtils";
-import { callWithNamedParams } from "./callWithNamedParams";
+import { executeFunctionWithCallbacks } from "./utils/executeFunction";
 
 self.onmessage = function (e) {
     const { fnName, args } = e.data;
-    try {
-        const fn = functionList[fnName];
-        if (fn) {
-            const result = callWithNamedParams(fn, args);
-            self.postMessage({ success: true, result });
-        } else {
-            throw new Error(`Unknown fnName: ${fnName}`);
-        }
-    } catch (error) {
-        self.postMessage({
-            success: false,
-            error,
-        });
-    }
+    const resolve = (result) => self.postMessage({ success: true, result });
+    const reject = (error) => self.postMessage({ success: false, error });
+    executeFunctionWithCallbacks(fnName, args, functionList, resolve, reject);
 };
