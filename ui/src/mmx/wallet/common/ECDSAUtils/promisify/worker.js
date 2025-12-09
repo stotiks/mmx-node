@@ -1,11 +1,12 @@
 import { syncFunctionList as functionList } from "@/mmx/wallet/common/ECDSAUtils/ECDSAUtils";
+import { callWithNamedParams } from "./callWithNamedParams";
 
 self.onmessage = function (e) {
     const { fnName, args } = e.data;
     try {
         const fn = functionList[fnName];
         if (fn) {
-            const result = fn.apply(null, Object.values(args));
+            const result = callWithNamedParams(fn, args);
             self.postMessage({ success: true, result });
         } else {
             throw new Error(`Unknown fnName: ${fnName}`);
