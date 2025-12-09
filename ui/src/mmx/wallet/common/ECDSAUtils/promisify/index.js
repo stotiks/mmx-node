@@ -1,5 +1,4 @@
-import { syncFunctionList as functionList } from "@/mmx/wallet/common/ECDSAUtils/ECDSAUtils";
-import { executeFunctionWithCallbacks } from "./utils/executeFunction";
+import { executeECDSAFunctionWithCallbacks } from "./utils/execECDSAFunction";
 import PromisifyWorker from "./worker?worker&inline";
 
 export const promisify = (fnName, args) => {
@@ -17,7 +16,7 @@ export const promisify = (fnName, args) => {
             };
             worker.onerror = reject;
         } else {
-            const exec = () => executeFunctionWithCallbacks(fnName, args, functionList, resolve, reject);
+            const exec = () => executeECDSAFunctionWithCallbacks(fnName, args, resolve, reject);
 
             if (typeof queueMicrotask !== "undefined") {
                 queueMicrotask(exec);
