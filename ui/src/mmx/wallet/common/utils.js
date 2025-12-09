@@ -59,5 +59,5 @@ export const get_num_bytes = (variant) => {
 
     // unimplemented type
     //return variant.size();
-    throw new Error("unimplemented type " + variant.valueOf());
+    throw new Error("unimplemented type");
 };

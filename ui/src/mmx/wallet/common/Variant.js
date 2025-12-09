@@ -147,7 +147,7 @@ export class Variant {
                     this.#wb.write(data);
                 });
         } else {
-            throw new Error("Unsupported type", typeof value);
+            throw new Error("Unsupported type");
         }
     }
 
