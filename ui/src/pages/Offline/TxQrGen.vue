@@ -100,8 +100,8 @@
                         </q-card>
                     </div>
 
-                    <q-card flat>
-                        <q-card-section v-if="tx">
+                    <q-card v-if="tx" flat>
+                        <q-card-section>
                             <q-input
                                 :model-value="tx?.toString()"
                                 filled
@@ -112,8 +112,8 @@
                         </q-card-section>
                     </q-card>
 
-                    <q-card flat>
-                        <q-card-section v-if="qrData">
+                    <q-card v-if="qrData" flat>
+                        <q-card-section>
                             <img :src="qrCode" alt="QR Code" /><br />
                             <a :href="qrData" target="_blank" rel="noopener noreferrer" class="text-primary">QR Link</a>
                             <div>Size: {{ qrDataSize }} bytes</div>
