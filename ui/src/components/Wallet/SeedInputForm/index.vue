@@ -125,7 +125,7 @@ watchEffect(() => {
 });
 
 const { isValid: isValidForm } = useWalletFormStatusL(formRef);
-const isValid = computed(() => isValidForm.value && wallet.value != null);
+const isValid = computed(() => isValidForm.value && wallet.value != null && fingerprint.value != null);
 
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 const tmpWallet = computed(() => {
@@ -184,6 +184,8 @@ const handleSubmit = async () => {
 import { randomWords } from "@/mmx/wallet/mnemonic";
 const $q = useQuasar();
 const handleNewMnemonic = async () => {
+    handleReset();
+    nextTick();
     const mnemonic = randomWords();
     $q.dialog({
         component: defineAsyncComponent(() => import("@/components/Dialogs/ShowSeedDialog")),
