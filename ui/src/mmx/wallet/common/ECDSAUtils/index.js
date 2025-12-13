@@ -12,11 +12,11 @@ const getAddressAsync = async (seed_value, passphrase, index) =>
 const getKeysAsync = async (seed_value, passphrase, index) => promisify("getKeys", [seed_value, passphrase, index]);
 
 export {
-    getFarmerKey,
-    getKeys,
-    getAddress,
-    getFingerPrint,
-    sign,
+    // getFarmerKey,
+    // getKeys,
+    // getAddress,
+    // getFingerPrint,
+    // sign,
     // ---
     getFingerPrintAsync,
     getFarmerKeyAsync,
