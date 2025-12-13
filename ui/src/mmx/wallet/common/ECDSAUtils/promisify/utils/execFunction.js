@@ -1,3 +1,20 @@
+const isAsyncFunction = (fn) => {
+    if (typeof fn !== "function") return false;
+
+    if (fn.constructor && fn.constructor.name === "AsyncFunction") {
+        return true;
+    }
+};
+
+export const getSyncFunctions = (funcs) =>
+    Object.fromEntries(
+        Object.entries(funcs).filter(
+            ([key]) =>
+                !isAsyncFunction(funcs[key]) &&
+                Object.entries(funcs).filter(([key2]) => key2 === key + "Async").length === 0
+        )
+    );
+
 const executeFunction = (fnName, args, functionList) => {
     // Input validation
     if (typeof fnName !== "string" || !fnName) {
