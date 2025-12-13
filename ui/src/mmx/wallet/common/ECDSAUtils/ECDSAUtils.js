@@ -94,10 +94,8 @@ const sign = (privKey, msg) => {
     return secp256k1.sign(..._prepareSignArgs(privKey, msg));
 };
 
-const signAsync = (privKey, msg) => {
-    return secp256k1.signAsync(..._prepareSignArgs(privKey, msg));
+const signAsync = async (privKey, msg) => {
+    return await secp256k1.signAsync(..._prepareSignArgs(privKey, msg));
 };
 
-const syncFunctionList = { getFarmerKey, getAddress, getFingerPrint, getKeys };
-
-export { getAddress, getFarmerKey, getFingerPrint, getKeys, sign, signAsync, syncFunctionList };
+export { getAddress, getFarmerKey, getFingerPrint, getKeys, sign, signAsync };
