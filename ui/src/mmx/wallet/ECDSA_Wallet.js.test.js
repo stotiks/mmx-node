@@ -68,25 +68,25 @@ describe("ECDSA_Wallet", async () => {
         const { privKey, pubKey } = await ecdsaWallet.getKeysAsync(0);
         const msg = "65C64268B471CAF511174B7E7C3046E408EA52AB5411365488A110FC860B7ECB";
 
-        const signature = await sign(privKey, hexToBytes(msg));
+        const signature = await signAsync(privKey, hexToBytes(msg));
         assert.equal(
             signature.toHex(),
             "3D2D75E0DAA39933578855552D9629DB6A15FAE8C5539CC5DCE0F031349621433A78311E016044D8B4E98D775D7EB2947B977A076E3BB6058FC856CDE73EA0EB"
         );
     });
 
-    it("sign #2", () => {
-        const privKey = "3EA8B52A5E6E5730D802D2E4589575CA3FDEFF17DFBDFAF28145DADE4AB57621";
-        const msg = "E7FCE58848929A0D931E5981CA7FA1DDEB3C9D32D14AC38C72C28C301EAAD990";
+    // it("sign #2", () => {
+    //     const privKey = "3EA8B52A5E6E5730D802D2E4589575CA3FDEFF17DFBDFAF28145DADE4AB57621";
+    //     const msg = "E7FCE58848929A0D931E5981CA7FA1DDEB3C9D32D14AC38C72C28C301EAAD990";
 
-        const signature = sign(hexToBytes(privKey), hexToBytes(msg));
-        assert.equal(
-            signature.toHex(),
-            "024F512B1F7149662F2D7B1901A2B1A392971091263A40E6DFE415314322EDD321CFE68AA81CDAAA854EA15F5BB9891F38A37F6CDADEFA6153F8613F7B133415"
-        );
-    });
+    //     const signature = sign(hexToBytes(privKey), hexToBytes(msg));
+    //     assert.equal(
+    //         signature.toHex(),
+    //         "024F512B1F7149662F2D7B1901A2B1A392971091263A40E6DFE415314322EDD321CFE68AA81CDAAA854EA15F5BB9891F38A37F6CDADEFA6153F8613F7B133415"
+    //     );
+    // });
 
-    it("sign #2 async", async () => {
+    it("sign #2", async () => {
         const privKey = "3EA8B52A5E6E5730D802D2E4589575CA3FDEFF17DFBDFAF28145DADE4AB57621";
         const msg = "E7FCE58848929A0D931E5981CA7FA1DDEB3C9D32D14AC38C72C28C301EAAD990";
 
