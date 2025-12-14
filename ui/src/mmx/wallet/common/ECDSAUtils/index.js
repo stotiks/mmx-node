@@ -1,5 +1,4 @@
 import { promisify } from "./promisify";
-import { getFarmerKey, getKeys, getAddress, getFingerPrint, sign, signAsync } from "./ECDSAUtils";
 
 const getFingerPrintAsync = async (seed_value, passphrase) =>
     await promisify("getFingerPrint", [seed_value, passphrase]);
@@ -11,13 +10,10 @@ const getAddressAsync = async (seed_value, passphrase, index) =>
 
 const getKeysAsync = async (seed_value, passphrase, index) => promisify("getKeys", [seed_value, passphrase, index]);
 
+const signAsync = async (privKey, msg) => promisify("sign", [privKey, msg]);
+
 export {
-    // getFarmerKey,
-    // getKeys,
-    // getAddress,
-    // getFingerPrint,
-    // sign,
-    // ---
+    //
     getFingerPrintAsync,
     getFarmerKeyAsync,
     getAddressAsync,
