@@ -18,7 +18,7 @@ export const promisify = (fnName, args) => {
             worker.onerror = reject;
             worker.postMessage({ fnName, args });
         } else {
-            const exec = () => executeECDSAFunctionWithCallbacks(fnName, args, resolve, reject);
+            const exec = async () => await executeECDSAFunctionWithCallbacks(fnName, args, resolve, reject);
 
             if (typeof queueMicrotask !== "undefined") {
                 queueMicrotask(exec);
