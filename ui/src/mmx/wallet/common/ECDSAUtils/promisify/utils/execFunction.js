@@ -15,7 +15,7 @@ export const getSyncFunctions = (funcs) =>
         )
     );
 
-const executeFunction = (fnName, args, functionList) => {
+const executeFunction = async (fnName, args, functionList) => {
     // Input validation
     if (typeof fnName !== "string" || !fnName) {
         throw new Error("Function name must be a non-empty string");
@@ -41,12 +41,13 @@ const executeFunction = (fnName, args, functionList) => {
     // Safe argument handling
     const argsArray = args ? Object.values(args) : [];
 
-    return fn.apply(null, argsArray);
+    const result = await fn(...argsArray);
+    return result;
 };
 
-export const executeFunctionWithCallbacks = (fnName, args, functionList, resolve, reject) => {
+export const executeFunctionWithCallbacks = async (fnName, args, functionList, resolve, reject) => {
     try {
-        const result = executeFunction(fnName, args, functionList);
+        const result = await executeFunction(fnName, args, functionList);
         resolve(result);
     } catch (error) {
         reject(error);
