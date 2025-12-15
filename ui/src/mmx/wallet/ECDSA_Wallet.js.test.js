@@ -6,7 +6,7 @@ import { mnemonicToSeed } from "./mnemonic";
 import { ECDSA_Wallet } from "./ECDSA_Wallet";
 
 import "./utils/Uint8ArrayUtils";
-import { sign, signAsync } from "./common/ECDSAUtils";
+import { signAsync } from "./common/ECDSAUtils";
 
 describe("ECDSA_Wallet", async () => {
     const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
