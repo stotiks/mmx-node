@@ -86,7 +86,7 @@ export const useVaultStore = defineStore("vault", () => {
 
     const updateHistoryAsync = async () => {
         const h = await vaultService.getHistoryAsync();
-        history.value = h.sort((a, b) => b.time - a.time);
+        history.value = h.sort((a, b) => b.timestamp - a.timestamp);
     };
 
     const _refreshCurrentWalletAddressAsync = async () => {

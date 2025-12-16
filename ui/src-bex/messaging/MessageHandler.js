@@ -78,7 +78,7 @@ export class MessageHandler {
         return foundHandler;
     }
 
-    getContext(message) {
+    async handleAsync(message) {
         const { method, params } = message.data;
         const handler = this.#findHandler(method);
 
@@ -87,17 +87,7 @@ export class MessageHandler {
             throw new Error(`No function handler found for method: ${method}`);
         }
 
-        return {
-            message,
-            handler,
-            method,
-            params,
-        };
-    }
-
-    async handleAsync(message) {
-        const context = this.getContext(message);
-        const { handler, method, params } = context;
+        const context = { message, handler };
 
         let result;
         try {
