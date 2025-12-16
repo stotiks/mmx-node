@@ -3,12 +3,13 @@
         <!-- <h1 class="text-h5">History</h1> -->
         <q-card flat class="q-mx-md">
             <q-list bordered separator>
-                <q-item v-for="(item, index) in history" :key="index">
+                <q-item v-for="(item, index) in history" :key="index" v-ripple clickable @click="handleClick(item)">
                     <q-item-section>
                         <q-item-label>{{ item.message?.data?.method }}</q-item-label>
                         <q-item-label caption>{{ item.activeWallet }}</q-item-label>
                         <q-item-label caption>{{ new Date(item.timestamp).toLocaleString() }}</q-item-label>
                     </q-item-section>
+
                     <q-item-section v-if="item.result" side>
                         <q-icon
                             :name="item.result.success ? mdiCheckCircle : mdiAlertCircle"
@@ -35,4 +36,12 @@ import { mdiCheckCircle, mdiAlertCircle } from "@mdi/js";
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { history } = storeToRefs(vaultStore);
+
+const $q = useQuasar();
+const handleClick = (item) => {
+    $q.dialog({
+        title: item.message?.data?.method,
+        message: JSON.stringify(item, null, 2),
+    });
+};
 </script>
