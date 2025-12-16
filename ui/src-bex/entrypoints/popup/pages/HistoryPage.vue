@@ -6,7 +6,7 @@
                 <q-item v-for="(item, index) in history" :key="index" v-ripple clickable @click="handleClick(item)">
                     <q-item-section>
                         <q-item-label>{{ item.message?.data?.method }}</q-item-label>
-                        <q-item-label caption>{{ item.activeWallet }}</q-item-label>
+                        <q-item-label caption>{{ item.wallet }}</q-item-label>
                         <q-item-label caption>{{ new Date(item.timestamp).toLocaleString() }}</q-item-label>
                     </q-item-section>
 
