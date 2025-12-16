@@ -338,7 +338,7 @@ class Vault {
 
         const history = await this.getHistoryAsync();
         entry.timestamp = Date.now();
-        entry.activeWallet = this.#currentWalletAddress;
+        entry.wallet = this.#currentWalletAddress;
         history.push(entry);
 
         if (history.length > this.#MAX_HISTORY_ENTRIES) {
