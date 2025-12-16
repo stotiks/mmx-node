@@ -41,7 +41,7 @@ export const useNotificationMessageHandler = () => {
 
         const notificationMessageHandler = new MessageHandler(NotificationMessageHandlerMethods);
 
-        notificationMessageHandler.addPreHook(async (context) => {
+        notificationMessageHandler.addPreHook(() => {
             if (isRunning.value === true) {
                 throw new Error("Other request is running");
             }
@@ -49,7 +49,7 @@ export const useNotificationMessageHandler = () => {
             isRunning.value = true;
         });
 
-        notificationMessageHandler.addSuccessHook(async (context) => {
+        notificationMessageHandler.addSuccessHook(() => {
             isRunning.value = false;
             isLoading.value = false;
         });
