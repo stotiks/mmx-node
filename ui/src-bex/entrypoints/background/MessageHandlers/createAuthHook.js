@@ -33,7 +33,10 @@ export const createAuthHook = () => {
                 params: { data: message.data, url, isAcceptRequired },
             });
             console.log("requestPermissionsAndAcceptResponse:", requestPermissionsAndAcceptResponse);
-            accepted = requestPermissionsAndAcceptResponse.data?.accepted === true;
+
+            accepted =
+                requestPermissionsAndAcceptResponse?.success === true &&
+                requestPermissionsAndAcceptResponse?.data?.accepted === true;
         }
 
         const hasPermissions = await checkVaultPermissionsAsync();
