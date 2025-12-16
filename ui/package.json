@@ -48,7 +48,6 @@
     "@wxt-dev/storage": "^1.2.6",
     "animate.css": "^4.1.1",
     "axios": "^1.13.2",
-    "dotenv": "^17.2.3",
     "echarts": "^6.0.0",
     "fflate": "^0.8.2",
     "highlight.js": "^11.11.1",
@@ -56,9 +55,9 @@
     "pinia": "^3.0.4",
     "qrcode": "^1.5.4",
     "quasar": "^2.18.6",
-    "vue": "^3.5.25",
+    "vue": "^3.5.26",
     "vue-echarts": "^8.0.1",
-    "vue-i18n": "^11.2.2",
+    "vue-i18n": "^11.2.7",
     "vue-router": "^4.6.4",
     "webext-bridge": "^6.0.1"
   },
@@ -71,8 +70,9 @@
     "@vitejs/plugin-vue": "^6.0.3",
     "@vitest/coverage-v8": "^4.0.16",
     "@vue/test-utils": "^2.4.6",
-    "bun": "1.3.4",
+    "bun": "1.3.5",
     "bunx": "^0.1.0",
+    "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-pinia": "^0.4.2",
@@ -81,7 +81,7 @@
     "eslint-plugin-vue": "^10.6.2",
     "happy-dom": "^20.0.11",
     "prettier": "^3.7.4",
-    "sass-embedded": "^1.97.0",
+    "sass-embedded": "^1.97.1",
     "unplugin-auto-import": "^20.3.0",
     "unplugin-fonts": "^1.4.0",
     "unplugin-vue-components": "^30.0.0",
@@ -91,7 +91,7 @@
     "vite-plugin-singlefile": "^2.3.0",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vitest": "^4.0.16",
-    "wxt": "0.20.11"
+    "wxt": "0.20.13"
   },
   "overrides": {
     "web-ext-run": "0.2.3"
