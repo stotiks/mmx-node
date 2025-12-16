@@ -1,6 +1,6 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
-import { sha256 } from "@noble/hashes/sha2.js";
+import { scryptAsync } from "@noble/hashes/scrypt.js";
 import { bytesToHex, hexToBytes, utf8ToBytes } from "@noble/hashes/utils.js";
 
 import { EncryptedStorageItem } from "../utils/StorageItem";
@@ -13,7 +13,7 @@ class Vault {
 
     #wallets$$sensitive = [];
     #isUnlocked = false;
-    #encryptionKey = null;
+    #encryptionKey$$sensitive = null;
     #currentWalletAddress = null;
 
     get isUnlocked() {
@@ -25,10 +25,10 @@ class Vault {
         return this.isUnlocked;
     }
 
-    #generateEncryptionKey(password) {
+    async #generateEncryptionKeyAsync(password) {
         const salt = "7YvAn2bkuXwWoF";
-        const saltedPassword = `${salt}${password}${salt}`;
-        return bytesToHex(sha256(utf8ToBytes(saltedPassword))).toUpperCase();
+        const bytes = await scryptAsync(password, salt, { N: 2 ** 16, r: 8, p: 1, dkLen: 32 });
+        return bytesToHex(bytes).toUpperCase();
     }
 
     async unlockAsync({ password }) {
@@ -36,9 +36,9 @@ class Vault {
             return true;
         }
 
-        const encryptionKey = this.#generateEncryptionKey(password);
+        const encryptionKey = await this.#generateEncryptionKeyAsync(password);
         await this.#loadAsync(encryptionKey);
-        this.#encryptionKey = encryptionKey;
+        this.#encryptionKey$$sensitive = encryptionKey;
         this.#isUnlocked = true;
         this.emit("unlocked");
 
@@ -49,12 +49,12 @@ class Vault {
         if (!this.isUnlocked) {
             //throw new Error("Vault is locked already");
             await this.#unloadAsync();
-            return false;
+            return true;
         }
         await this.saveAsync();
         await this.#unloadAsync();
         this.emit("locked");
-        return false;
+        return true;
     }
 
     async getIsInitializedAsync() {
@@ -73,7 +73,7 @@ class Vault {
 
     async #unloadAsync() {
         this.#wallets$$sensitive = [];
-        this.#encryptionKey = null;
+        this.#encryptionKey$$sensitive = null;
 
         this.#isUnlocked = false;
     }
@@ -86,7 +86,7 @@ class Vault {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-        await this.#saveAsync(this.#encryptionKey);
+        await this.#saveAsync(this.#encryptionKey$$sensitive);
     }
 
     async initVaultAsync({ password }) {
@@ -97,7 +97,7 @@ class Vault {
         this.#wallets$$sensitive = [];
         this.#isUnlocked = false;
 
-        const encryptionKey = this.#generateEncryptionKey(password);
+        const encryptionKey = await this.#generateEncryptionKeyAsync(password);
 
         await this.#saveAsync(encryptionKey);
 
@@ -122,12 +122,12 @@ class Vault {
             throw new Error("New password must be different from the old password.");
         }
 
-        const currentEncryptionKey = this.#generateEncryptionKey(password);
-        if (currentEncryptionKey !== this.#encryptionKey) {
+        const currentEncryptionKey = await this.#generateEncryptionKeyAsync(password);
+        if (currentEncryptionKey !== this.#encryptionKey$$sensitive) {
             throw new Error("Wrong password");
         }
 
-        this.#encryptionKey = this.#generateEncryptionKey(newPassword);
+        this.#encryptionKey$$sensitive = await this.#generateEncryptionKeyAsync(newPassword);
         await this.saveAsync();
         this.emit("password-updated");
         return true;
@@ -345,7 +345,7 @@ class Vault {
             history.splice(0, history.length - this.#MAX_HISTORY_ENTRIES);
         }
 
-        await this.#historyStorage.set(history, this.#encryptionKey);
+        await this.#historyStorage.set(history, this.#encryptionKey$$sensitive);
         this.emit("history-updated");
     }
 
@@ -356,7 +356,7 @@ class Vault {
 
         let history = [];
         if (await this.#historyStorage.exists()) {
-            history = await this.#historyStorage.get(this.#encryptionKey);
+            history = await this.#historyStorage.get(this.#encryptionKey$$sensitive);
         }
         return history;
     }
