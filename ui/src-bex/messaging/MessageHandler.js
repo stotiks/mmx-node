@@ -4,16 +4,17 @@ const toCamelCase = (str) => {
 
 export class MessageHandler {
     #methods;
-    #hooks = [];
+    #preHooks = [];
     #postHooks = [];
     #successHooks = [];
+    #failHooks = [];
 
     constructor(methods) {
         this.#methods = methods;
     }
 
-    addHook(hook) {
-        this.#hooks.push(hook);
+    addPreHook(hook) {
+        this.#preHooks.push(hook);
     }
 
     addPostHook(hook) {
@@ -24,22 +25,30 @@ export class MessageHandler {
         this.#successHooks.push(hook);
     }
 
-    async #runHooks(context) {
-        for (const hook of this.#hooks) {
+    addFailsHook(hook) {
+        this.#failHooks.push(hook);
+    }
+
+    async #executeHooksAsync(context, hooks) {
+        for (const hook of hooks) {
             await hook(context);
         }
     }
 
-    async #runPostHooks(context) {
-        for (const hook of this.#postHooks) {
-            await hook(context);
-        }
+    async #runHooksAsync(context) {
+        await this.#executeHooksAsync(context, this.#preHooks);
     }
 
-    async #runSuccessHooks(context) {
-        for (const hook of this.#successHooks) {
-            await hook(context);
-        }
+    async #runPostHooksAsync(context) {
+        await this.#executeHooksAsync(context, this.#postHooks);
+    }
+
+    async #runSuccessHooksAsync(context) {
+        await this.#executeHooksAsync(context, this.#successHooks);
+    }
+
+    async #runFailHooksAsync(context) {
+        await this.#executeHooksAsync(context, this.#failHooks);
     }
 
     #findHandler(method) {
@@ -92,17 +101,18 @@ export class MessageHandler {
 
         let result;
         try {
-            await this.#runHooks(context);
+            await this.#runHooksAsync(context);
             const callResult = await handler.call(this.#methods, params);
             result = { success: true, data: callResult };
-            await this.#runSuccessHooks({ ...context, result });
+            await this.#runSuccessHooksAsync({ ...context, result });
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
                 console.log(`Error handling method [${method}]:`, error);
             }
             result = { success: false, error: error.message };
+            await this.#runFailHooksAsync({ ...context, result });
         }
-        await this.#runPostHooks({ ...context, result });
+        await this.#runPostHooksAsync({ ...context, result });
         return result;
     }
 
