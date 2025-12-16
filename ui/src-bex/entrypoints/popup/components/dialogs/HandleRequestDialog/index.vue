@@ -87,7 +87,7 @@ const AcceptPageComponent = {
     component: AcceptPage,
     props,
     events: {
-        ok: async (result) => {
+        ok: (result) => {
             if (result.accepted === true) {
                 onDialogOK({ accepted: true });
             }

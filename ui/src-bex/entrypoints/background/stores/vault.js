@@ -337,7 +337,7 @@ class Vault {
         }
 
         const history = await this.getHistoryAsync();
-        entry.time = Date.now();
+        entry.timestamp = Date.now();
         history.push(entry);
         if (history.length > this.#MAX_HISTORY_ENTRIES) {
             history.splice(0, history.length - this.#MAX_HISTORY_ENTRIES);
