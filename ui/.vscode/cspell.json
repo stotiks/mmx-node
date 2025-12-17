@@ -6,13 +6,18 @@
     "words": [
         "abytes",
         "bech",
+        "birpc",
         "bunx",
         "codepaths",
         "composables",
         "CUDA",
+        "dijkstrajs",
         "echarts",
+        "fflate",
         "fontsource",
         "highlightjs",
+        "hookable",
+        "intlify",
         "ksize",
         "netspace",
         "opencl",
@@ -20,6 +25,7 @@
         "plotnft",
         "prefetcher",
         "prehash",
+        "qrcode",
         "roboto",
         "scure",
         "secp",
@@ -38,7 +44,9 @@
         "wapi",
         "webext",
         "wordlist",
-        "xclasses"
+        "wordlists",
+        "xclasses",
+        "zrender"
     ],
     "ignoreWords": [],
     "import": []
