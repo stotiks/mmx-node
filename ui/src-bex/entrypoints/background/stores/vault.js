@@ -71,8 +71,20 @@ class Vault {
         }
     }
 
+    #emptyArray$$sensitive(array) {
+        array.forEach((item, index) => {
+            if (typeof item == "object") {
+                Object.keys(item).forEach((key) => {
+                    item[key] = null;
+                });
+            }
+            array[index] = null;
+        });
+        array.length = 0;
+    }
+
     async #unloadAsync() {
-        this.#wallets$$sensitive = [];
+        this.#emptyArray$$sensitive(this.#wallets$$sensitive);
         this.#encryptionKey$$sensitive = null;
 
         this.#isUnlocked = false;
