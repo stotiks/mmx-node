@@ -33,7 +33,7 @@ class Vault {
 
     async unlockAsync({ password }) {
         if (this.isUnlocked) {
-            return true;
+            return this.isUnlocked;
         }
 
         const encryptionKey = await this.#generateEncryptionKeyAsync(password);
@@ -42,19 +42,19 @@ class Vault {
         this.#isUnlocked = true;
         this.emit("unlocked");
 
-        return true;
+        return this.isUnlocked;
     }
 
     async lockAsync() {
         if (!this.isUnlocked) {
             //throw new Error("Vault is locked already");
             await this.#unloadAsync();
-            return true;
+            return this.isUnlocked;
         }
         await this.saveAsync();
         await this.#unloadAsync();
         this.emit("locked");
-        return true;
+        return this.isUnlocked;
     }
 
     async getIsInitializedAsync() {
