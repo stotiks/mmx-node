@@ -7,7 +7,7 @@ export class txio_t {
     //__type = "mmx.txio_t";
 
     address = "";
-    contract = "";
+    contract = undefined;
     amount = "0";
     memo = null;
 
