@@ -41,7 +41,7 @@ export class ConfigBuilder {
     }
 
     get config() {
-        const config = defineConfig(this.initConfig);
+        const config = defineConfig(this.#getInitConfig());
 
         (config.build ??= {}).outDir = `dist/${this.buildTarget.toLowerCase()}`;
 
@@ -108,154 +108,195 @@ export class ConfigBuilder {
     }
 
     // https://vitejs.dev/config/
-    initConfig = {
-        base: "./",
-        plugins: [
-            VueDevTools(),
-            vue({
-                template: { transformAssetUrls },
-            }),
-            // @quasar/plugin-vite options list:
-            // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
-            quasar({
-                sassVariables: fileURLToPath(new URL("./src/css/quasar.variables.scss", import.meta.url)),
-            }),
-            Components({ dts: true }),
-            Fonts({
-                fontsource: {
-                    families: [
-                        {
-                            name: "Roboto Flex Variable",
-                            variable: {
-                                wght: true,
+    #getInitConfig = () => {
+        const createChunkStrategy = () => (id) => {
+            //console.log(id);
+            const { base } = path.parse(id);
+
+            if (id.includes("/node_modules/")) {
+                if (id.includes("@scure")) {
+                    if (id.includes("wordlists")) {
+                        return "@scure/wordlists/" + base;
+                    } else {
+                        return "@scure/index";
+                    }
+                }
+
+                if (id.includes("@noble")) {
+                    return "@noble";
+                }
+
+                if (id.includes("zrender") || id.includes("echarts")) {
+                    return "echarts";
+                }
+
+                if (id.includes("/quasar/lang/")) {
+                    return "locales/quasar/" + base;
+                }
+
+                if (id.includes("qrcode") || id.includes("dijkstrajs")) {
+                    return "qrcode";
+                }
+
+                if (id.includes("axios")) {
+                    return "axios";
+                }
+
+                if (id.includes("@tanstack")) {
+                    return "query";
+                }
+
+                if (
+                    id.includes("vue") ||
+                    id.includes("pinia") ||
+                    id.includes("birpc") ||
+                    id.includes("@intlify") ||
+                    id.includes("hookable") ||
+                    id.includes("quasar") ||
+                    id.includes("@mdi") ||
+                    id.includes("animate.css") ||
+                    id.includes("highlight.js")
+                ) {
+                    return "ui";
+                }
+
+                if (id.includes("json-bigint") || id.includes("bignumber.js") || id.includes("fflate")) {
+                    return "mmx-wallet";
+                }
+
+                console.log(id);
+                return null;
+            }
+
+            if (id.includes("/src/locales/")) {
+                return "locales/" + base;
+            }
+
+            if (id.includes("/src/mmx/wallet/")) {
+                return "mmx-wallet";
+            }
+
+            if (id.includes("/src/")) {
+                return "app";
+            }
+
+            if (id.includes("/config/")) {
+                return "mmx-config";
+            }
+
+            //console.log(id);
+            return null;
+        };
+
+        const config = {
+            base: "./",
+            plugins: [
+                VueDevTools(),
+                vue({
+                    template: { transformAssetUrls },
+                }),
+                // @quasar/plugin-vite options list:
+                // https://github.com/quasarframework/quasar/blob/dev/vite-plugin/index.d.ts
+                quasar({
+                    sassVariables: fileURLToPath(new URL("./src/css/quasar.variables.scss", import.meta.url)),
+                }),
+                Components({ dts: true }),
+                Fonts({
+                    fontsource: {
+                        families: [
+                            {
+                                name: "Roboto Flex Variable",
+                                variable: {
+                                    wght: true,
+                                },
                             },
-                        },
-                        {
-                            name: "Roboto Mono Variable",
-                            variable: {
-                                wght: true,
+                            {
+                                name: "Roboto Mono Variable",
+                                variable: {
+                                    wght: true,
+                                },
                             },
+                        ],
+                    },
+                }),
+                AutoImport({
+                    imports: [
+                        "vue",
+                        {
+                            "vue-i18n": ["useI18n"],
+                            "vue-router": ["useRoute", "useRouter"],
+                            "@vueuse/core": ["computedAsync"],
+                            pinia: ["storeToRefs"],
+                            quasar: ["useQuasar"],
                         },
                     ],
-                },
-            }),
-            AutoImport({
-                imports: [
-                    "vue",
-                    {
-                        "vue-i18n": ["useI18n"],
-                        "vue-router": ["useRoute", "useRouter"],
-                        "@vueuse/core": ["computedAsync"],
-                        pinia: ["storeToRefs"],
-                        quasar: ["useQuasar"],
+                    dirs: ["src/utils/**/*", "src/composables/**/*", "src/stores/**/*"],
+                    eslintrc: {
+                        enabled: true,
+                        filepath: fileURLToPath(new URL("./.eslintrc-auto-import.json", import.meta.url)),
                     },
-                ],
-                dirs: ["src/utils/**/*", "src/composables/**/*", "src/stores/**/*"],
-                eslintrc: {
-                    enabled: true,
-                    filepath: fileURLToPath(new URL("./.eslintrc-auto-import.json", import.meta.url)),
+                    vueTemplate: true,
+                }),
+            ],
+            resolve: {
+                alias: {
+                    "@": fileURLToPath(new URL("./src", import.meta.url)),
+                    "@mmxConfig": fileURLToPath(new URL("../config", import.meta.url)),
+                    //"@bex": fileURLToPath(new URL("./src-bex", import.meta.url)),
                 },
-                vueTemplate: true,
-            }),
-        ],
-        resolve: {
-            alias: {
-                "@": fileURLToPath(new URL("./src", import.meta.url)),
-                "@mmxConfig": fileURLToPath(new URL("../config", import.meta.url)),
-                //"@bex": fileURLToPath(new URL("./src-bex", import.meta.url)),
+                extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
             },
-            extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
-        },
-        optimizeDeps: {
-            // exclude: ["echarts"],
-            entries: ["./src/**/*.{vue,js,jsx,ts,tsx}"],
-        },
-        css: {
-            preprocessorOptions: {
-                // Use sass-embedded for better stability and performance
-                sass: {
-                    api: "modern-compiler",
-                },
-                scss: {
-                    api: "modern-compiler",
-                },
+            optimizeDeps: {
+                // exclude: ["echarts"],
+                entries: ["./src/**/*.{vue,js,jsx,ts,tsx}"],
             },
-        },
-        build: {
-            target: "es2020",
-            chunkSizeWarningLimit: 1000,
-            rollupOptions: {
-                output: {
-                    manualChunks: (id) => {
-                        //console.log(id);
-
-                        if (id.includes("/node_modules/")) {
-                            if (id.includes("@scure")) {
-                                return "@scure";
-                            }
-
-                            if (id.includes("zrender") || id.includes("echarts")) {
-                                return "echarts";
-                            }
-
-                            if (id.includes("/quasar/lang/")) {
-                                const { base } = path.parse(id);
-                                return "locales/quasar/" + base;
-                            }
-
-                            if (id.includes("vue") || id.includes("quasar")) {
-                                return "quasar";
-                            }
-
-                            return "modules";
-                        }
-
-                        if (id.includes("/src/locales/")) {
-                            const { base } = path.parse(id);
-                            return "locales/" + base;
-                        }
-
-                        if (id.includes("/src/mmx/wallet/")) {
-                            return "mmx-wallet";
-                        }
-
-                        if (id.includes("/src/")) {
-                            return "ui";
-                        }
-
-                        if (id.includes("/config/")) {
-                            return "mmx-config";
-                        }
-
-                        //console.log(id);
-                        return;
+            css: {
+                preprocessorOptions: {
+                    // Use sass-embedded for better stability and performance
+                    sass: {
+                        api: "modern-compiler",
+                    },
+                    scss: {
+                        api: "modern-compiler",
                     },
                 },
             },
-        },
-        server: {
-            port: 3000,
-            hmr: {
-                path: "/__hmr",
-                clientPort: 3000,
-            },
-            // warmup: {
-            //     clientFiles: ["./src/components/**/*.vue", "./src/pages/**/*.vue"],
-            // },
-            proxy: {
-                "/api": {
-                    target: "http://127.0.0.1:11380",
-                    changeOrigin: true,
-                },
-                "/wapi": {
-                    target: "http://127.0.0.1:11380",
-                    changeOrigin: true,
-                },
-                "/server": {
-                    target: "http://127.0.0.1:11380",
-                    changeOrigin: true,
+            build: {
+                target: "es2020",
+                //minify: false,
+                chunkSizeWarningLimit: 1000,
+                rollupOptions: {
+                    output: {
+                        manualChunks: createChunkStrategy(),
+                    },
                 },
             },
-        },
+            server: {
+                port: 3000,
+                hmr: {
+                    path: "/__hmr",
+                    clientPort: 3000,
+                },
+                // warmup: {
+                //     clientFiles: ["./src/components/**/*.vue", "./src/pages/**/*.vue"],
+                // },
+                proxy: {
+                    "/api": {
+                        target: "http://127.0.0.1:11380",
+                        changeOrigin: true,
+                    },
+                    "/wapi": {
+                        target: "http://127.0.0.1:11380",
+                        changeOrigin: true,
+                    },
+                    "/server": {
+                        target: "http://127.0.0.1:11380",
+                        changeOrigin: true,
+                    },
+                },
+            },
+        };
+
+        return config;
     };
 }
