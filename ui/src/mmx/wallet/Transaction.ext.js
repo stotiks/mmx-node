@@ -8,17 +8,21 @@ const fields =
     "address contract amount memo solution flags signature" +
     "method args user withdraw symbol binary init_method init_args";
 
-const fullValues =
+const fullStringValues =
     "BURN CLAIM DEPLOY DEPOSIT EXECUTE MINT MUTATE OFFER REVOKE TRADE TRANSFER WITHDRAW" +
     "mmx.solution.PubKey mmx.contract.Executable mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev" +
     "mainnet";
 
-const partValues = '00000000 null [{""}]';
+const fullValues = "-1 0 1024 null []";
+
+const otherChunks =
+    '00000000 :[{" "}], ":0}]," ,"network":"mainnet"," ","solution":0,"flags":0}],"outputs":[{"address":" }],"execute":[],"solutions":[{"__type":"mmx.solution.PubKey","version":0,"pubkey":"';
 
 const dictData = [
     ...fields.split(" ").map((value) => `"${value}":`),
-    ...fullValues.split(" ").map((value) => `"${value}"`),
-    ...partValues.split(" "),
+    ...fullStringValues.split(" ").map((value) => `:"${value}",`),
+    ...fullValues.split(" ").map((value) => `:${value},`),
+    ...otherChunks.split(" "),
 ].join("");
 
 const dictionary = strToU8(dictData);
