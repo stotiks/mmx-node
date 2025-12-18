@@ -24,6 +24,10 @@ export class addr_t extends bytes_t {
     static prefix = "mmx";
     constructor(addr) {
         if (typeof addr == "string") {
+            // Quick format check before expensive validation
+            if (!addr.startsWith("mmx1") || addr.length !== 62) {
+                throw new Error("Invalid address");
+            }
             const decoded = bech32m.decodeToBytes(addr);
             const { prefix, bytes } = decoded;
             if (prefix != addr_t.prefix) {
@@ -31,7 +35,9 @@ export class addr_t extends bytes_t {
             }
             super(bytes.toReversed());
         } else if (isBytes(addr)) {
-            if (addr.length != 32) throw new Error("Invalid address length");
+            if (addr.length != 32) {
+                throw new Error("Invalid address length");
+            }
             super(addr);
         } else if (addr == undefined) {
             super(new Uint8Array(32));
@@ -44,6 +50,7 @@ export class addr_t extends bytes_t {
         return bech32m.encodeFromBytes(addr_t.prefix, this.toReversed());
     }
 }
+
 export class hash_t extends bytes_t {
     constructor(data) {
         if (data == undefined) {
