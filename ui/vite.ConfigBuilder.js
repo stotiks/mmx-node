@@ -126,7 +126,7 @@ export class ConfigBuilder {
                     return "@noble";
                 }
 
-                if (id.includes("zrender") || id.includes("echarts")) {
+                if (id.includes("echarts") || id.includes("zrender")) {
                     return "echarts";
                 }
 
@@ -151,20 +151,24 @@ export class ConfigBuilder {
                     id.includes("pinia") ||
                     id.includes("birpc") ||
                     id.includes("@intlify") ||
-                    id.includes("hookable") ||
-                    id.includes("quasar") ||
-                    id.includes("@mdi") ||
-                    id.includes("animate.css") ||
-                    id.includes("highlight.js")
+                    id.includes("hookable")
                 ) {
-                    return "ui";
+                    return "vue";
+                }
+
+                if (id.includes("quasar")) {
+                    return "quasar";
+                }
+
+                if (id.includes("@mdi") || id.includes("animate.css") || id.includes("highlight.js")) {
+                    return "ui-extras";
                 }
 
                 if (id.includes("json-bigint") || id.includes("bignumber.js") || id.includes("fflate")) {
                     return "mmx-wallet";
                 }
 
-                console.log(id);
+                //console.log(id);
                 return null;
             }
 
