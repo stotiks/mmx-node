@@ -1,7 +1,7 @@
 import { createI18n } from "vue-i18n";
 import commonMessages from "@/locales/common.json";
 import enMessages from "@/locales/en-US.json";
-import enQLocale from "/node_modules/quasar/lang/en-US.js";
+import { default as enQLocale } from "/node_modules/quasar/lang/en-US.js";
 
 export const availableLanguages = [
     { value: "en-US", label: "English" },
@@ -22,7 +22,11 @@ export const defaultLocale = availableLanguages[0].value;
 
 // https://quasar.dev/options/quasar-language-packs/#dynamical-non-ssr-
 import { Lang } from "quasar";
-const langList = import.meta.glob("/node_modules/quasar/lang/(en-US|id|de|es|nl|pt|ru|uk|zh-CN).js");
+const quasarLanguagePacks = import.meta.glob("/node_modules/quasar/lang/(id|de|es|nl|pt|ru|uk|zh-CN).js", {
+    import: "default",
+});
+
+const locales = import.meta.glob("@/locales/(id|de|es|nl|pt|ru|uk|zh-CN).json");
 
 const setI18nLanguage = (i18n, locale) => {
     if (i18n.mode === "legacy") {
@@ -43,20 +47,22 @@ const setI18nLanguage = (i18n, locale) => {
 export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
     const locale = toValue(validateLocale(_locale));
     try {
-        langList[`/node_modules/quasar/lang/${locale}.js`]().then((lang) => {
-            Lang.set(lang.default);
-        });
+        const lang = await quasarLanguagePacks[`/node_modules/quasar/lang/${locale}.js`]();
+        Lang.set(lang);
     } catch (err) {
-        console.error(err);
-        Lang.set(enQLocale.default);
+        Lang.set(enQLocale);
     }
-    try {
-        const messages = await import(`@/locales/${locale}.json`);
+
+    const setLocaleAndMessages = (locale, messages) => {
         i18n.global.setLocaleMessage(locale, mergeDeep({}, commonMessages, messages));
         setI18nLanguage(i18n, locale);
+    };
+
+    try {
+        const messages = await locales[`/src/locales/${locale}.json`]();
+        setLocaleAndMessages(locale, messages);
     } catch (err) {
-        i18n.global.setLocaleMessage(defaultLocale, mergeDeep({}, commonMessages, enMessages));
-        setI18nLanguage(i18n, defaultLocale);
+        setLocaleAndMessages(defaultLocale, enMessages);
     }
 };
 
