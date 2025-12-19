@@ -1,25 +1,8 @@
 import { hmac } from "@noble/hashes/hmac.js";
-import { sha256, sha512 } from "@noble/hashes/sha2.js";
+import { sha512 } from "@noble/hashes/sha2.js";
 import { hexToBytes, isBytes, u32, u8 } from "@noble/hashes/utils.js";
 
-import {
-    getPublicKey as secp256k1GetPublicKey,
-    hashes as secp256k1Hashes,
-    sign as secp256k1Sign,
-    signAsync as secp256k1SignAsync,
-} from "@noble/secp256k1";
-
-const secp256k1 = {
-    getPublicKey: secp256k1GetPublicKey,
-    sign: secp256k1Sign,
-    signAsync: secp256k1SignAsync,
-    hashes: secp256k1Hashes,
-};
-
-secp256k1.hashes.hmacSha256 = (key, msg) => hmac(sha256, key, msg);
-// secp256k1.hashes.sha256 = sha256;
-// secp256k1.hashes.hmacSha256Async = async (key, msg) => hmac(sha256, key, msg);
-// secp256k1.hashes.sha256Async = async (msg) => sha256(msg);
+import * as secp256k1 from "./secp256k1";
 
 import { addr_t, hash_t } from "@/mmx/wallet/common/addr_t";
 import "@/mmx/wallet/utils/Uint8ArrayUtils";
@@ -94,8 +77,4 @@ const sign = (privKey, msg) => {
     return secp256k1.sign(..._prepareSignArgs(privKey, msg));
 };
 
-const signAsync = async (privKey, msg) => {
-    return await secp256k1.signAsync(..._prepareSignArgs(privKey, msg));
-};
-
-export { getAddress, getFarmerKey, getFingerPrint, getKeys, sign, signAsync };
+export { getAddress, getFarmerKey, getFingerPrint, getKeys, sign };
