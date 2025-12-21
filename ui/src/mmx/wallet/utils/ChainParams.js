@@ -64,6 +64,11 @@ export class ChainParams {
         if (!params) {
             throw new Error("params is required");
         }
+
+        if (typeof params !== "object") {
+            throw new Error("params must be an object");
+        }
+
         Object.assign(this, params);
     }
 }
