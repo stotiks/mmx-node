@@ -43,29 +43,37 @@ export class ConfigBuilder {
     get config() {
         const config = defineConfig(this.#getInitConfig());
 
-        (config.build ??= {}).outDir = `dist/${this.buildTarget.toLowerCase()}`;
+        config.build ??= {};
+        config.define ??= {};
+        config.plugins ??= [];
 
-        (config.define ??= {}).__BUILD_TARGET__ = JSON.stringify(this.buildTarget);
-        (config.define ??= {}).__TX_QR_SEND_BASE_URL__ = JSON.stringify(
-            process.env.NODE_ENV === "production" ? this.txQRSendBaseUrl : undefined
-        );
+        this.#applyDefines(config);
+        this.#addGenerateFilePlugin(config);
 
-        (config.define ??= {}).__PUBLIC_RPC_URL__ = JSON.stringify(this.publicRPCUrl);
-
-        if (this.usePublicRPC) {
-            (config.define ??= {}).__WAPI_URL__ = JSON.stringify(
-                process.env.NODE_ENV === "production" || this.usePublicRPCForDevMode ? this.publicRPCUrl : undefined
-            );
+        if (this.useSingleFile) {
+            this.useDefaultRollupOptions = true;
+            config.plugins.push(viteSingleFile());
         }
 
-        (config.define ??= {}).__ALLOW_CUSTOM_RPC__ = JSON.stringify(this.allowCustomRPC);
+        if (this.useDefaultRollupOptions) {
+            config.build.rollupOptions = {};
+        }
 
+        config.build.outDir = `dist/${this.buildTarget.toLowerCase()}`;
+
+        //console.log("config :", config);
+        return config;
+    }
+
+    #addGenerateFilePlugin(config) {
         let generateFileOptions = [];
         if (this.writeBuildInfo) {
             const buildId = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
                 .toString(16)
                 .toUpperCase();
+
             (config.define ??= {}).__BUILD_ID__ = JSON.stringify(buildId);
+
             generateFileOptions.push({
                 type: "json",
                 output: "./guiBuildInfo.json",
@@ -91,20 +99,28 @@ export class ConfigBuilder {
         }
 
         if (generateFileOptions.length > 0) {
-            (config.plugins ??= []).push(GenerateFile(generateFileOptions));
+            config.plugins.push(GenerateFile(generateFileOptions));
+        }
+    }
+
+    #applyDefines(config) {
+        const defines = {};
+
+        defines.__BUILD_TARGET__ = this.buildTarget;
+        defines.__PUBLIC_RPC_URL__ = this.publicRPCUrl;
+        defines.__ALLOW_CUSTOM_RPC__ = this.allowCustomRPC;
+
+        defines.__TX_QR_SEND_BASE_URL__ = process.env.NODE_ENV === "production" ? this.txQRSendBaseUrl : undefined;
+
+        if (this.usePublicRPC) {
+            defines.__WAPI_URL__ =
+                process.env.NODE_ENV === "production" || this.usePublicRPCForDevMode ? this.publicRPCUrl : undefined;
         }
 
-        if (this.useSingleFile) {
-            this.useDefaultRollupOptions = true;
-            (config.plugins ??= []).push(viteSingleFile());
+        config.define ??= {};
+        for (const [key, value] of Object.entries(defines)) {
+            config.define[key] = JSON.stringify(value);
         }
-
-        if (this.useDefaultRollupOptions) {
-            (config.build ??= {}).rollupOptions = {};
-        }
-
-        //console.log("config :", config);
-        return config;
     }
 
     // https://vitejs.dev/config/
