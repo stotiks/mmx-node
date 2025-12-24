@@ -1,10 +1,10 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { scryptAsync } from "@noble/hashes/scrypt.js";
-import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
 
 import { EncryptedStorageItem } from "../utils/StorageItem";
 import { timingSafeEqual } from "../utils/timingSafeEqual";
+import { base64 } from "@scure/base";
 
 class Vault {
     #MAX_HISTORY_ENTRIES = 10;
@@ -40,6 +40,7 @@ class Vault {
         const encryptionBytes = await this.#generateEncryptionBytesAsync(password);
         await this.#loadAsync(encryptionBytes);
         this.#encryptionBytes$$sensitive = encryptionBytes;
+
         this.#isUnlocked = true;
         this.emit("unlocked");
 
@@ -179,7 +180,7 @@ class Vault {
 
         const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
         const address = await ecdsaWallet.getAddressAsync(0);
-        const seed = bytesToHex(mnemonicToSeed(mnemonic)).toUpperCase();
+        const seed = base64.encode(mnemonicToSeed(mnemonic));
         const newWallet$$sensitive = { address, seed, password };
 
         if (this.getWallets().some((wallet) => wallet.address === address)) {
@@ -234,7 +235,7 @@ class Vault {
             throw new Error(`Wallet not found for address: ${address}`);
         }
 
-        return new ECDSA_Wallet(hexToBytes(wallet.seed), wallet.password);
+        return new ECDSA_Wallet(base64.decode(wallet.seed), wallet.password);
     }
 
     // permissions
