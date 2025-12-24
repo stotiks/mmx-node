@@ -2,7 +2,7 @@ import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { scryptAsync } from "@noble/hashes/scrypt.js";
 
-import { EncryptedStorageItem } from "../utils/StorageItem";
+import { EncryptedStorageItem, clearStorage } from "../utils/StorageItem";
 import { timingSafeEqual } from "../utils/timingSafeEqual";
 import { base64 } from "@scure/base";
 
@@ -152,8 +152,11 @@ class Vault {
         if (this.isUnlocked) {
             throw new Error("Cannot remove vault while it is unlocked.");
         }
-        await this.#historyStorage.remove();
-        await this.#walletStorage.remove();
+
+        // await this.#historyStorage.remove();
+        // await this.#walletStorage.remove();
+        clearStorage("local");
+
         this.emit("vault-removed");
     }
 

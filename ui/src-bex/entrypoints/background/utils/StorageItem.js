@@ -4,6 +4,8 @@ import { JSONbigNativeString } from "@/mmx/wallet/utils/JSONbigNative";
 import { base64nopad } from "@scure/base";
 import { abytes } from "@noble/hashes/utils.js";
 
+export const clearStorage = (base) => storage.clear(base);
+
 export class StorageItem {
     #itemName;
 
