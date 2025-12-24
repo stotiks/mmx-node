@@ -139,8 +139,10 @@ class Vault {
             throw new Error("Wrong password");
         }
 
-        this.#encryptionKey$$sensitive = await this.#generateEncryptionKeyAsync(newPassword);
-        await this.saveAsync();
+        const newEncryptionKey = await this.#generateEncryptionKeyAsync(newPassword);
+        await this.#saveAsync(newEncryptionKey);
+        this.#encryptionKey$$sensitive = newEncryptionKey;
+
         this.emit("password-updated");
         return true;
     }
