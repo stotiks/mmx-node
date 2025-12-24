@@ -1,6 +1,8 @@
 import { storage } from "@wxt-dev/storage";
 import { decrypt, encrypt } from "@metamask/browser-passworder";
 import { JSONbigNativeString } from "@/mmx/wallet/utils/JSONbigNative";
+import { base64nopad } from "@scure/base";
+import { abytes } from "@noble/hashes/utils.js";
 
 export class StorageItem {
     #itemName;
@@ -27,12 +29,16 @@ export class StorageItem {
 }
 
 export class EncryptedStorageItem extends StorageItem {
-    async get(password) {
+    async get(encryptionBytes) {
+        abytes(encryptionBytes);
+        const password = base64nopad.encode(encryptionBytes);
         const encrypted = await super.get();
         return await decrypt(password, encrypted);
     }
 
-    async set(data, password) {
+    async set(data, encryptionBytes) {
+        abytes(encryptionBytes);
+        const password = base64nopad.encode(encryptionBytes);
         const _data = JSONbigNativeString.parse(JSONbigNativeString.stringify(data));
         const encrypted = await encrypt(password, _data);
         return await super.set(encrypted);
