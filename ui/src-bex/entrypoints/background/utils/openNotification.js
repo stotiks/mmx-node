@@ -1,6 +1,6 @@
 /* global browser */
 
-const waitForCondition = async (checkFunction, interval = 100) => {
+const waitForConditionAsync = async (checkFunction, interval = 100) => {
     while (!checkFunction()) {
         await new Promise((resolve) => setTimeout(resolve, interval));
     }
@@ -10,7 +10,7 @@ const waitForCondition = async (checkFunction, interval = 100) => {
 let notificationWindowId = null;
 let isNotificationLoaded = false;
 
-export const openNotification = async () => {
+export const openNotificationAsync = async () => {
     if (notificationWindowId) {
         const views = await browser.runtime.getContexts({ windowIds: [notificationWindowId] });
         if (views.length > 0) {
@@ -62,6 +62,6 @@ export const openNotification = async () => {
             }
         });
 
-        await waitForCondition(() => isNotificationLoaded === true);
+        await waitForConditionAsync(() => isNotificationLoaded === true);
     }
 };
