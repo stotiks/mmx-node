@@ -181,7 +181,9 @@ class Vault {
     }
 
     async addWalletAsync({ mnemonic, password = "" }) {
-        if (!this.isUnlocked) throw new Error("Vault is locked");
+        if (!this.isUnlocked) {
+            throw new Error("Vault is locked");
+        }
 
         const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
         const address = await ecdsaWallet.getAddressAsync(0);
@@ -194,6 +196,7 @@ class Vault {
 
         this.#wallets$$sensitive.push(newWallet$$sensitive);
         await this.saveAsync();
+
         this.emit("wallet-added", { address });
         return this.#walletCleanup(newWallet$$sensitive);
     }
