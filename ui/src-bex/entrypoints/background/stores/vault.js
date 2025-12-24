@@ -1,7 +1,7 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { scryptAsync } from "@noble/hashes/scrypt.js";
-import { bytesToHex, hexToBytes, utf8ToBytes } from "@noble/hashes/utils.js";
+import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
 
 import { EncryptedStorageItem } from "../utils/StorageItem";
 
@@ -13,7 +13,7 @@ class Vault {
 
     #wallets$$sensitive = [];
     #isUnlocked = false;
-    #encryptionKey$$sensitive = null;
+    #encryptionBytes$$sensitive = null;
     #currentWalletAddress = null;
 
     get isUnlocked() {
@@ -25,10 +25,10 @@ class Vault {
         return this.isUnlocked;
     }
 
-    async #generateEncryptionKeyAsync(password) {
+    async #generateEncryptionBytesAsync(password) {
         const salt = "7YvAn2bkuXwWoF";
         const bytes = await scryptAsync(password, salt, { N: 2 ** 16, r: 8, p: 1, dkLen: 32 });
-        return bytesToHex(bytes).toUpperCase();
+        return bytes;
     }
 
     async unlockAsync({ password }) {
@@ -36,9 +36,9 @@ class Vault {
             return this.isUnlocked;
         }
 
-        const encryptionKey = await this.#generateEncryptionKeyAsync(password);
-        await this.#loadAsync(encryptionKey);
-        this.#encryptionKey$$sensitive = encryptionKey;
+        const encryptionBytes = await this.#generateEncryptionBytesAsync(password);
+        await this.#loadAsync(encryptionBytes);
+        this.#encryptionBytes$$sensitive = encryptionBytes;
         this.#isUnlocked = true;
         this.emit("unlocked");
 
@@ -61,13 +61,13 @@ class Vault {
         return await this.#walletStorage.exists();
     }
 
-    async #loadAsync(encryptionKey) {
+    async #loadAsync(encryptionBytes) {
         if (!(await this.getIsInitializedAsync())) {
             throw new Error("Vault is not initialized");
         }
 
         if (await this.#walletStorage.exists()) {
-            this.#wallets$$sensitive = await this.#walletStorage.get(encryptionKey);
+            this.#wallets$$sensitive = await this.#walletStorage.get(encryptionBytes);
         }
     }
 
@@ -85,20 +85,20 @@ class Vault {
 
     async #unloadAsync() {
         this.#emptyArray$$sensitive(this.#wallets$$sensitive);
-        this.#encryptionKey$$sensitive = null;
+        this.#encryptionBytes$$sensitive = null;
 
         this.#isUnlocked = false;
     }
 
-    async #saveAsync(encryptionKey) {
-        await this.#walletStorage.set(this.#wallets$$sensitive, encryptionKey);
+    async #saveAsync(encryptionBytes) {
+        await this.#walletStorage.set(this.#wallets$$sensitive, encryptionBytes);
     }
 
     async saveAsync() {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
-        await this.#saveAsync(this.#encryptionKey$$sensitive);
+        await this.#saveAsync(this.#encryptionBytes$$sensitive);
     }
 
     async initVaultAsync({ password }) {
@@ -109,9 +109,8 @@ class Vault {
         this.#wallets$$sensitive = [];
         this.#isUnlocked = false;
 
-        const encryptionKey = await this.#generateEncryptionKeyAsync(password);
-
-        await this.#saveAsync(encryptionKey);
+        const encryptionBytes = await this.#generateEncryptionBytesAsync(password);
+        await this.#saveAsync(encryptionBytes);
 
         this.emit("initialized");
         return true;
@@ -134,14 +133,14 @@ class Vault {
             throw new Error("New password must be different from the old password.");
         }
 
-        const currentEncryptionKey = await this.#generateEncryptionKeyAsync(password);
-        if (currentEncryptionKey !== this.#encryptionKey$$sensitive) {
+        const currentEncryptionBytes = await this.#generateEncryptionBytesAsync(password);
+        if (currentEncryptionBytes !== this.#encryptionBytes$$sensitive) {
             throw new Error("Wrong password");
         }
 
-        const newEncryptionKey = await this.#generateEncryptionKeyAsync(newPassword);
-        await this.#saveAsync(newEncryptionKey);
-        this.#encryptionKey$$sensitive = newEncryptionKey;
+        const newEncryptionBytes = await this.#generateEncryptionBytesAsync(newPassword);
+        await this.#saveAsync(newEncryptionBytes);
+        this.#encryptionBytes$$sensitive = newEncryptionBytes;
 
         this.emit("password-updated");
         return true;
@@ -359,7 +358,7 @@ class Vault {
             history.splice(0, history.length - this.#MAX_HISTORY_ENTRIES);
         }
 
-        await this.#historyStorage.set(history, this.#encryptionKey$$sensitive);
+        await this.#historyStorage.set(history, this.#encryptionBytes$$sensitive);
         this.emit("history-updated");
     }
 
@@ -370,7 +369,7 @@ class Vault {
 
         let history = [];
         if (await this.#historyStorage.exists()) {
-            history = await this.#historyStorage.get(this.#encryptionKey$$sensitive);
+            history = await this.#historyStorage.get(this.#encryptionBytes$$sensitive);
         }
         return history;
     }
