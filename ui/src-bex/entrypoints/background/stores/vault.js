@@ -1,10 +1,11 @@
 import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
 import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
-import { scryptAsync } from "@noble/hashes/scrypt.js";
 
+import { sha256 } from "@noble/hashes/sha2.js";
+import { utf8ToBytes } from "@noble/hashes/utils.js";
+import { base64 } from "@scure/base";
 import { EncryptedStorageItem, clearStorage } from "../utils/StorageItem";
 import { timingSafeEqual } from "../utils/timingSafeEqual";
-import { base64 } from "@scure/base";
 
 class Vault {
     #MAX_HISTORY_ENTRIES = 10;
@@ -28,7 +29,8 @@ class Vault {
 
     async #generateEncryptionBytesAsync(password) {
         const salt = "7YvAn2bkuXwWoF";
-        const bytes = await scryptAsync(password, salt, { N: 2 ** 16, r: 8, p: 1, dkLen: 32 });
+        const saltedPassword = `${salt}${password}${salt}`;
+        const bytes = sha256(utf8ToBytes(saltedPassword));
         return bytes;
     }
 
