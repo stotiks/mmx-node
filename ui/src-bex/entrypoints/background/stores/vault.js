@@ -4,6 +4,7 @@ import { scryptAsync } from "@noble/hashes/scrypt.js";
 import { bytesToHex, hexToBytes } from "@noble/hashes/utils.js";
 
 import { EncryptedStorageItem } from "../utils/StorageItem";
+import { timingSafeEqual } from "../utils/timingSafeEqual";
 
 class Vault {
     #MAX_HISTORY_ENTRIES = 10;
@@ -85,7 +86,7 @@ class Vault {
 
     async #unloadAsync() {
         this.#emptyArray$$sensitive(this.#wallets$$sensitive);
-        this.#encryptionBytes$$sensitive = null;
+        this.#encryptionBytes$$sensitive.fill(0);
 
         this.#isUnlocked = false;
     }
@@ -134,7 +135,7 @@ class Vault {
         }
 
         const currentEncryptionBytes = await this.#generateEncryptionBytesAsync(password);
-        if (currentEncryptionBytes !== this.#encryptionBytes$$sensitive) {
+        if (!timingSafeEqual(currentEncryptionBytes, this.#encryptionBytes$$sensitive)) {
             throw new Error("Wrong password");
         }
 
