@@ -38,6 +38,7 @@ import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import router from "@/plugins/router";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
@@ -45,11 +46,11 @@ const password = ref(test_password || "");
 const newPassword = ref(test_password || "");
 const newPasswordConfirm = ref(test_password || "");
 
-const handleUpdatePasswordAsync = async () => {
-    await tryCatchWrapperAsync(() =>
-        vaultStore.updatePasswordAsync({ password: password.value, newPassword: newPassword.value })
-    );
-};
+const handleUpdatePasswordAsync = () =>
+    tryCatchWrapperAsync(async () => {
+        await vaultStore.updatePasswordAsync({ password: password.value, newPassword: newPassword.value });
+        router.go(-1);
+    });
 
 const handleReset = () => {
     password.value = "";
