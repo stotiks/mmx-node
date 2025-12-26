@@ -52,6 +52,12 @@ The following are auto-imported across the application via `unplugin-auto-import
 *   When testing components that use Quasar UI components, stub the Quasar components (e.g., `q-select`) in the test setup to avoid complexity and warnings. Define the props in the stub to prevent Vue warnings about invalid props.
 *   Run tests using `bun run test`. To run a specific test file, use `bun run test [path/to/file]`.
 
+*   **Import Structure**: Always import `{ describe, it, expect }` from `"vitest"` at the top of test files. Import `vi` when mocking is needed.
+*   **Test Organization**: Use nested `describe` blocks to group related tests logically:
+    *   Top-level `describe` for the module/file being tested
+    *   Nested `describe` blocks for individual functions or methods
+    *   Individual `it` blocks for specific test cases
+
 ## BEX Custom Store
 
 *   The file `src-bex/entrypoints/background/stores/vault.js` is a custom store for the browser extension's background script. Pinia cannot be used in this context, so it uses a custom singleton class for state management, storage, and events.
