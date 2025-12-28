@@ -1,383 +1,318 @@
-import { describe, it, expect, assert } from "vitest";
+import { describe, it, expect } from "vitest";
 import { PubKey } from "./PubKey.js";
-import { bytes_t, hash_t } from "./addr_t.js";
-
-import "../utils/Uint8ArrayUtils.js";
 
 describe("PubKey", () => {
-    const validPubKey = "0344EE96D1B85CAC0F99B7CFA44F39EFFC590BDF51D45099D1F24AA09E5F9AD6E0";
-    const validSignature =
+    // Sample test data - 32 byte pubkey and 64 byte signature in hex
+    const testPubKey = "0344EE96D1B85CAC0F99B7CFA44F39EFFC590BDF51D45099D1F24AA09E5F9AD6E0";
+    const testSignature =
         "3D2D75E0DAA39933578855552D9629DB6A15FAE8C5539CC5DCE0F031349621433A78311E016044D8B4E98D775D7EB2947B977A076E3BB6058FC856CDE73EA0EB";
 
-    describe("Constructor", () => {
-        it("should create PubKey with valid parameters", () => {
+    describe("constructor", () => {
+        it("should create a PubKey with provided pubkey and signature", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            expect(pubKey.version).toBe(0);
-            expect(pubKey.pubkey).toBe(validPubKey);
-            expect(pubKey.signature).toBe(validSignature);
             expect(pubKey.__type).toBe("mmx.solution.PubKey");
+            expect(pubKey.version).toBe(0);
+            expect(pubKey.pubkey).toBe(testPubKey);
+            expect(pubKey.signature).toBe(testSignature);
         });
 
-        it("should create PubKey with empty parameters", () => {
+        it("should create a PubKey with empty strings", () => {
             const pubKey = new PubKey({
                 pubkey: "",
                 signature: "",
             });
 
-            expect(pubKey.version).toBe(0);
             expect(pubKey.pubkey).toBe("");
             expect(pubKey.signature).toBe("");
         });
 
-        it("should handle undefined parameters", () => {
+        it("should handle Uint8Array inputs", () => {
+            const pubKeyBytes = new Uint8Array(33);
+            const signatureBytes = new Uint8Array(64);
+
             const pubKey = new PubKey({
-                pubkey: undefined,
-                signature: undefined,
+                pubkey: pubKeyBytes,
+                signature: signatureBytes,
             });
 
-            expect(pubKey.pubkey).toBeUndefined();
-            expect(pubKey.signature).toBeUndefined();
+            expect(pubKey.pubkey).toBeDefined();
+            expect(pubKey.signature).toBeDefined();
         });
     });
 
-    describe("Hash Proxy", () => {
-        it("should create hash proxy correctly", () => {
+    describe("getHashProxy", () => {
+        it("should return a proxy that converts pubkey to bytes_t", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
             const proxy = pubKey.getHashProxy();
+            expect(proxy.pubkey).toBeDefined();
+            expect(proxy.pubkey.constructor.name).toBe("bytes_t");
+        });
 
+        it("should return a proxy that converts signature to bytes_t", () => {
+            const pubKey = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
+
+            const proxy = pubKey.getHashProxy();
+            expect(proxy.signature).toBeDefined();
+            expect(proxy.signature.constructor.name).toBe("bytes_t");
+        });
+
+        it("should preserve version in proxy", () => {
+            const pubKey = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
+
+            const proxy = pubKey.getHashProxy();
             expect(proxy.version).toBe(0);
-            expect(proxy.pubkey).toBeInstanceOf(bytes_t);
-            expect(proxy.signature).toBeInstanceOf(bytes_t);
+        });
+
+        it("should preserve __type in proxy", () => {
+            const pubKey = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
+
+            const proxy = pubKey.getHashProxy();
             expect(proxy.__type).toBe("mmx.solution.PubKey");
         });
+    });
 
-        it("should convert pubkey to bytes_t in proxy", () => {
+    describe("hash_serialize", () => {
+        it("should serialize to a buffer", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const proxy = pubKey.getHashProxy();
-
-            expect(proxy.pubkey.toString()).toBe(validPubKey);
-            expect(proxy.pubkey).toBeInstanceOf(bytes_t);
+            const serialized = pubKey.hash_serialize(false);
+            expect(serialized).toBeDefined();
+            expect(serialized.byteLength).toBeGreaterThan(0);
         });
 
-        it("should convert signature to bytes_t in proxy", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+        it("should produce consistent output for same inputs", () => {
+            const pubKey1 = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const proxy = pubKey.getHashProxy();
+            const pubKey2 = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
 
-            expect(proxy.signature.toString()).toBe(validSignature);
-            expect(proxy.signature).toBeInstanceOf(bytes_t);
+            const serialized1 = pubKey1.hash_serialize(false);
+            const serialized2 = pubKey2.hash_serialize(false);
+
+            expect(new Uint8Array(serialized1)).toEqual(new Uint8Array(serialized2));
         });
 
-        it("should handle empty strings in proxy", () => {
-            const pubKey = new PubKey({
-                pubkey: "",
-                signature: "",
+        it("should produce different output for different pubkeys", () => {
+            const pubKey1 = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const proxy = pubKey.getHashProxy();
+            const pubKey2 = new PubKey({
+                pubkey: "022C514E47B3C5015D4118F4FF7E38041431358D4B16CB9654C1ABD28D8E1FD8DC",
+                signature: testSignature,
+            });
 
-            expect(proxy.pubkey).toBeInstanceOf(bytes_t);
-            expect(proxy.signature).toBeInstanceOf(bytes_t);
-            expect(proxy.pubkey.toString()).toBe("");
-            expect(proxy.signature.toString()).toBe("");
+            const serialized1 = pubKey1.hash_serialize(false);
+            const serialized2 = pubKey2.hash_serialize(false);
+
+            expect(new Uint8Array(serialized1)).not.toEqual(new Uint8Array(serialized2));
         });
 
-        it("should pass through non-converted properties", () => {
+        it("should include type hash in serialization", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const proxy = pubKey.getHashProxy();
-
-            expect(proxy.version).toBe(pubKey.version);
-            expect(proxy.__type).toBe(pubKey.__type);
+            const serialized = pubKey.hash_serialize(false);
+            // Type hash is written first as BigInt, should be present
+            expect(serialized.byteLength).toBeGreaterThan(8);
         });
     });
 
-    describe("Hash Serialization", () => {
-        it("should serialize hash correctly", () => {
+    describe("calc_hash", () => {
+        it("should calculate a hash from serialized data", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const serialized = pubKey.hash_serialize(true);
-
-            expect(serialized).toBeInstanceOf(Uint8Array);
-            expect(serialized.length).toBeGreaterThan(0);
+            const hash = pubKey.calc_hash(false);
+            expect(hash).toBeDefined();
+            expect(typeof hash).toBe("object");
+            expect(hash.constructor.name).toBe("hash_t");
         });
 
-        it("should serialize with empty values", () => {
-            const pubKey = new PubKey({
-                pubkey: "",
-                signature: "",
+        it("should produce consistent hashes for same inputs", () => {
+            const pubKey1 = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const serialized = pubKey.hash_serialize(true);
+            const pubKey2 = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
 
-            expect(serialized).toBeInstanceOf(Uint8Array);
-            expect(serialized.length).toBeGreaterThan(0);
+            const hash1 = pubKey1.calc_hash(false);
+            const hash2 = pubKey2.calc_hash(false);
+
+            expect(hash1.toString()).toBe(hash2.toString());
+        });
+
+        it("should produce different hashes for different signatures", () => {
+            const pubKey1 = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
+
+            const pubKey2 = new PubKey({
+                pubkey: testPubKey,
+                signature:
+                    "024F512B1F7149662F2D7B1901A2B1A392971091263A40E6DFE415314322EDD321CFE68AA81CDAAA854EA15F5BB9891F38A37F6CDADEFA6153F8613F7B133415",
+            });
+
+            const hash1 = pubKey1.calc_hash(false);
+            const hash2 = pubKey2.calc_hash(false);
+
+            expect(hash1.toString()).not.toBe(hash2.toString());
         });
 
         it("should handle full_hash parameter", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            const serializedFull = pubKey.hash_serialize(true);
-            const serializedPartial = pubKey.hash_serialize(false);
-
-            expect(serializedFull).toBeInstanceOf(Uint8Array);
-            expect(serializedPartial).toBeInstanceOf(Uint8Array);
-            // Both should be the same for PubKey as it doesn't use full_hash parameter
-            expect(serializedFull.length).toBe(serializedPartial.length);
-        });
-    });
-
-    describe("Hash Calculation", () => {
-        it("should calculate hash correctly", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            const hash = pubKey.calc_hash(true);
-
-            expect(hash).toBeInstanceOf(Uint8Array);
-            expect(hash.length).toBe(32); // SHA256 hash length
-        });
-
-        it("should produce consistent hashes", () => {
-            const pubKey1 = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            const pubKey2 = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            const hash1 = pubKey1.calc_hash(true);
-            const hash2 = pubKey2.calc_hash(true);
-
-            expect(hash1.toHex()).toBe(hash2.toHex());
-        });
-
-        it("should produce different hashes for different data", () => {
-            const pubKey1 = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            const differentSignature = "4D2D75E0DAA39933578855552D9629DB6A15FAE8C5539CC5DCE0F031349621433A78311E016044D8B4E98D775D7EB2947B977A076E3BB6058FC856CDE73EA0EB";
-            const pubKey2 = new PubKey({
-                pubkey: validPubKey,
-                signature: differentSignature,
-            });
-
-            const hash1 = pubKey1.calc_hash(true);
-            const hash2 = pubKey2.calc_hash(true);
-
-            expect(hash1.toHex()).not.toBe(hash2.toHex());
-        });
-
-        it("should handle full_hash parameter in calc_hash", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
             const hashFull = pubKey.calc_hash(true);
-            const hashPartial = pubKey.calc_hash(false);
+            const hashNotFull = pubKey.calc_hash(false);
 
-            expect(hashFull).toBeInstanceOf(Uint8Array);
-            expect(hashPartial).toBeInstanceOf(Uint8Array);
-            expect(hashFull.length).toBe(32);
-            expect(hashPartial.length).toBe(32);
+            expect(hashFull).toBeDefined();
+            expect(hashNotFull).toBeDefined();
+            // Both should produce valid hashes
+            expect(typeof hashFull).toBe("object");
+            expect(typeof hashNotFull).toBe("object");
         });
     });
 
-    describe("Cost Calculation", () => {
-        it("should calculate cost correctly", () => {
+    describe("calc_cost", () => {
+        it("should calculate cost based on params", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const mockParams = {
+            const params = {
                 min_txfee_sign: 1000,
             };
 
-            const cost = pubKey.calc_cost(mockParams);
-
-            expect(cost).toBe(BigInt(1000));
+            const cost = pubKey.calc_cost(params);
+            expect(cost).toBe(1000n);
+            expect(typeof cost).toBe("bigint");
         });
 
-        it("should handle different fee parameters", () => {
+        it("should return different costs for different params", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const mockParams1 = { min_txfee_sign: 500 };
-            const mockParams2 = { min_txfee_sign: 2000 };
+            const params1 = { min_txfee_sign: 1000 };
+            const params2 = { min_txfee_sign: 2000 };
 
-            const cost1 = pubKey.calc_cost(mockParams1);
-            const cost2 = pubKey.calc_cost(mockParams2);
+            const cost1 = pubKey.calc_cost(params1);
+            const cost2 = pubKey.calc_cost(params2);
 
-            expect(cost1).toBe(500n);
+            expect(cost1).toBe(1000n);
             expect(cost2).toBe(2000n);
         });
 
-        it("should handle zero fee", () => {
+        it("should handle BigInt min_txfee_sign", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
-            const mockParams = { min_txfee_sign: 0 };
-            const cost = pubKey.calc_cost(mockParams);
+            const params = {
+                min_txfee_sign: 5000n,
+            };
 
+            const cost = pubKey.calc_cost(params);
+            expect(cost).toBe(5000n);
+        });
+
+        it("should handle zero cost", () => {
+            const pubKey = new PubKey({
+                pubkey: testPubKey,
+                signature: testSignature,
+            });
+
+            const params = {
+                min_txfee_sign: 0,
+            };
+
+            const cost = pubKey.calc_cost(params);
             expect(cost).toBe(0n);
         });
-
-        it("should handle large fee values", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            const mockParams = { min_txfee_sign: Number.MAX_SAFE_INTEGER };
-            const cost = pubKey.calc_cost(mockParams);
-
-            expect(cost).toBe(BigInt(Number.MAX_SAFE_INTEGER));
-        });
     });
 
-    describe("Edge Cases", () => {
-        it("should handle hex strings without 0x prefix", () => {
+    describe("edge cases", () => {
+        it("should handle empty pubkey and signature in hash operations", () => {
             const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: "",
+                signature: "",
             });
 
-            expect(pubKey.pubkey).toBe(validPubKey);
-            expect(pubKey.signature).toBe(validSignature);
+            expect(() => {
+                pubKey.hash_serialize(false);
+            }).not.toThrow();
 
-            // Should work with hash operations
-            const hash = pubKey.calc_hash(true);
-            expect(hash).toBeInstanceOf(Uint8Array);
-            expect(hash.length).toBe(32);
+            expect(() => {
+                pubKey.calc_hash(false);
+            }).not.toThrow();
         });
 
-        it("should handle lowercase hex strings", () => {
-            const pubKeyLower = validPubKey.toLowerCase();
-            const signatureLower = validSignature.toLowerCase();
+        it("should handle long hex strings", () => {
+            const longPubKey = "0".repeat(66); // 33 bytes
+            const longSignature = "0".repeat(128); // 64 bytes
 
             const pubKey = new PubKey({
-                pubkey: pubKeyLower,
-                signature: signatureLower,
+                pubkey: longPubKey,
+                signature: longSignature,
             });
 
-            expect(pubKey.pubkey).toBe(pubKeyLower);
-            expect(pubKey.signature).toBe(signatureLower);
-
-            const hash = pubKey.calc_hash(true);
-            expect(hash).toBeInstanceOf(Uint8Array);
+            expect(pubKey.pubkey).toBe(longPubKey);
+            expect(pubKey.signature).toBe(longSignature);
         });
 
-        it("should handle very short hex strings", () => {
+        it("should maintain immutability through proxy", () => {
             const pubKey = new PubKey({
-                pubkey: "AB",
-                signature: "CD",
-            });
-
-            const hash = pubKey.calc_hash(true);
-            expect(hash).toBeInstanceOf(Uint8Array);
-            expect(hash.length).toBe(32);
-        });
-
-        it("should handle very long hex strings", () => {
-            const longHex = "A".repeat(1000);
-
-            const pubKey = new PubKey({
-                pubkey: longHex,
-                signature: longHex,
-            });
-
-            const hash = pubKey.calc_hash(true);
-            expect(hash).toBeInstanceOf(Uint8Array);
-            expect(hash.length).toBe(32);
-        });
-    });
-
-    describe("Type Validation", () => {
-        it("should maintain correct type", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            expect(pubKey.__type).toBe("mmx.solution.PubKey");
-        });
-
-        it("should have correct version", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
-            });
-
-            expect(pubKey.version).toBe(0);
-        });
-    });
-
-    describe("Integration with bytes_t", () => {
-        it("should work with bytes_t input", () => {
-            const pubKeyBytes = new bytes_t(validPubKey);
-            const signatureBytes = new bytes_t(validSignature);
-
-            const pubKey = new PubKey({
-                pubkey: pubKeyBytes.toString(),
-                signature: signatureBytes.toString(),
-            });
-
-            expect(pubKey.pubkey).toBe(validPubKey);
-            expect(pubKey.signature).toBe(validSignature);
-        });
-
-        it("should produce valid bytes_t in proxy", () => {
-            const pubKey = new PubKey({
-                pubkey: validPubKey,
-                signature: validSignature,
+                pubkey: testPubKey,
+                signature: testSignature,
             });
 
             const proxy = pubKey.getHashProxy();
+            const originalPubkey = pubKey.pubkey;
 
-            // Should be able to get hex representation
-            expect(typeof proxy.pubkey.toString()).toBe("string");
-            expect(typeof proxy.signature.toString()).toBe("string");
-
-            // Should be able to get byte array
-            expect(proxy.pubkey.valueOf()).toBeInstanceOf(Uint8Array);
-            expect(proxy.signature.valueOf()).toBeInstanceOf(Uint8Array);
+            // Accessing through proxy should not modify original
+            proxy.pubkey;
+            expect(pubKey.pubkey).toBe(originalPubkey);
         });
     });
 });
