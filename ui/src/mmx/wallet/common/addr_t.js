@@ -16,7 +16,7 @@ export class bytes_t extends Uint8Array {
     }
 
     toString() {
-        return bytesToHex(this.valueOf()).toUpperCase();
+        return bytesToHex(this).toUpperCase();
     }
 }
 
