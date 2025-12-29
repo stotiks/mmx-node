@@ -84,25 +84,19 @@ describe("pair", () => {
         it("should have read-only key property", () => {
             const p = new pair("originalKey", "value");
 
-            // Attempting to set should not work (private field)
+            // Attempting to set should throw (readonly getter)
             expect(() => {
                 p.key = "newKey";
-            }).not.toThrow();
-
-            // But the value should remain unchanged
-            expect(p.key).toBe("originalKey");
+            }).toThrow();
         });
 
         it("should have read-only value property", () => {
             const p = new pair("key", "originalValue");
 
-            // Attempting to set should not work (private field)
+            // Attempting to set should throw (readonly getter)
             expect(() => {
                 p.value = "newValue";
-            }).not.toThrow();
-
-            // But the value should remain unchanged
-            expect(p.value).toBe("originalValue");
+            }).toThrow();
         });
     });
 
@@ -124,14 +118,20 @@ describe("pair", () => {
 
         it("should not allow reassignment of key", () => {
             const p = new pair("originalKey", "value");
-            p.key = "newKey"; // This should have no effect
+
+            expect(() => {
+                p.key = "newKey";
+            }).toThrow();
 
             expect(p.key).toBe("originalKey");
         });
 
         it("should not allow reassignment of value", () => {
             const p = new pair("key", "originalValue");
-            p.value = "newValue"; // This should have no effect
+
+            expect(() => {
+                p.value = "newValue";
+            }).toThrow();
 
             expect(p.value).toBe("originalValue");
         });
