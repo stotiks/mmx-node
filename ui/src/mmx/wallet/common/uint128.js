@@ -8,6 +8,10 @@ export class uint128 {
         return (this.#upper << 64n) | this.#lower;
     }
 
+    toString(radix) {
+        return this.valueOf().toString(radix);
+    }
+
     lower() {
         return this.#lower;
     }
@@ -17,7 +21,7 @@ export class uint128 {
     }
 
     toHex() {
-        return "0x" + this.valueOf().toString(16);
+        return "0x" + this.toString(16).toLowerCase();
     }
 
     constructor(value) {
