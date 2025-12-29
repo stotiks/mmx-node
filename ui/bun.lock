@@ -17,8 +17,8 @@
         "@quasar/extras": "^1.17.0",
         "@scure/base": "^2.0.0",
         "@scure/bip39": "^2.0.1",
-        "@tanstack/vue-query": "^5.92.1",
-        "@tanstack/vue-query-devtools": "^6.1.2",
+        "@tanstack/vue-query": "^5.92.3",
+        "@tanstack/vue-query-devtools": "^6.1.3",
         "@vueuse/components": "^14.1.0",
         "@vueuse/core": "^14.1.0",
         "@vueuse/integrations": "^14.1.0",
@@ -450,13 +450,13 @@
 
     "@tanstack/match-sorter-utils": ["@tanstack/match-sorter-utils@8.19.4", "", { "dependencies": { "remove-accents": "0.5.0" } }, "sha512-Wo1iKt2b9OT7d+YGhvEPD3DXvPv2etTusIMhMUoG7fbhmxcXCtIjJDEygy91Y2JFlwGyjqiBPRozme7UD8hoqg=="],
 
-    "@tanstack/query-core": ["@tanstack/query-core@5.90.12", "", {}, "sha512-T1/8t5DhV/SisWjDnaiU2drl6ySvsHj1bHBCWNXd+/T+Hh1cf6JodyEYMd5sgwm+b/mETT4EV3H+zCVczCU5hg=="],
+    "@tanstack/query-core": ["@tanstack/query-core@5.90.14", "", {}, "sha512-/6di2yNI+YxpVrH9Ig74Q+puKnkCE+D0LGyagJEGndJHJc6ahkcc/UqirHKy8zCYE/N9KLggxcQvzYCsUBWgdw=="],
 
-    "@tanstack/query-devtools": ["@tanstack/query-devtools@5.91.1", "", {}, "sha512-l8bxjk6BMsCaVQH6NzQEE/bEgFy1hAs5qbgXl0xhzezlaQbPk6Mgz9BqEg2vTLPOHD8N4k+w/gdgCbEzecGyNg=="],
+    "@tanstack/query-devtools": ["@tanstack/query-devtools@5.92.0", "", {}, "sha512-N8D27KH1vEpVacvZgJL27xC6yPFUy0Zkezn5gnB3L3gRCxlDeSuiya7fKge8Y91uMTnC8aSxBQhcK6ocY7alpQ=="],
 
-    "@tanstack/vue-query": ["@tanstack/vue-query@5.92.1", "", { "dependencies": { "@tanstack/match-sorter-utils": "^8.19.4", "@tanstack/query-core": "5.90.12", "@vue/devtools-api": "^6.6.3", "vue-demi": "^0.14.10" }, "peerDependencies": { "@vue/composition-api": "^1.1.2", "vue": "^2.6.0 || ^3.3.0" }, "optionalPeers": ["@vue/composition-api"] }, "sha512-m672jBiwK6sv1HHFF7Q3XsLUVKejzjEAMDqhFgLXIVtmwSayUo0WnhNQmlBlcHRKCR/Lw5jmIh6iu08ZXBh4ag=="],
+    "@tanstack/vue-query": ["@tanstack/vue-query@5.92.3", "", { "dependencies": { "@tanstack/match-sorter-utils": "^8.19.4", "@tanstack/query-core": "5.90.14", "@vue/devtools-api": "^6.6.3", "vue-demi": "^0.14.10" }, "peerDependencies": { "@vue/composition-api": "^1.1.2", "vue": "^2.6.0 || ^3.3.0" }, "optionalPeers": ["@vue/composition-api"] }, "sha512-xiymdMOG902xDmH4OLmAEKicZtZnJY8e1E5pPSRON8s93akA4jdZjqD8NS3wDgxOL5LFpCLpfDBX4J6ANlF48g=="],
 
-    "@tanstack/vue-query-devtools": ["@tanstack/vue-query-devtools@6.1.2", "", { "dependencies": { "@tanstack/query-devtools": "5.91.1" }, "peerDependencies": { "@tanstack/vue-query": "^5.92.0", "vue": "^3.3.0" } }, "sha512-1E886RHorY432aOJU3dyzLbI67PhqQzvAPQyp8hU6UR4EVXKZSVzVT0O0utmTT2jnBpbbUiCFt2uNSs8W3grHw=="],
+    "@tanstack/vue-query-devtools": ["@tanstack/vue-query-devtools@6.1.3", "", { "dependencies": { "@tanstack/query-devtools": "5.92.0" }, "peerDependencies": { "@tanstack/vue-query": "^5.92.3", "vue": "^3.3.0" } }, "sha512-26g3qyNCnS+7Vguo/R/X3upcrvL+AU6Gn+lMQD7mT/1rl546aq+bP6sBNm1Xi5QFN+X1i29VNG9fI+WhcMXFDQ=="],
 
     "@trapezedev/gradle-parse": ["@trapezedev/gradle-parse@7.1.3", "", {}, "sha512-WQVF5pEJ5o/mUyvfGTG9nBKx9Te/ilKM3r2IT69GlbaooItT5ao7RyF1MUTBNjHLPk/xpGUY3c6PyVnjDlz0Vw=="],
 
