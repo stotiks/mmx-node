@@ -167,12 +167,9 @@ export class ConfigBuilder {
                     id.includes("pinia") ||
                     id.includes("birpc") ||
                     id.includes("@intlify") ||
-                    id.includes("hookable")
+                    id.includes("hookable") ||
+                    id.includes("quasar")
                 ) {
-                    return "vue";
-                }
-
-                if (id.includes("quasar")) {
                     return "quasar";
                 }
 
