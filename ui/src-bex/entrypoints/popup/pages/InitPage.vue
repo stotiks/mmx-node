@@ -37,7 +37,7 @@ const vaultStore = useVaultStore();
 
 const handleInitAsync = async () => {
     await tryCatchWrapperAsync(async () => {
-        await vaultStore.initVaultAsync({
+        await vaultStore.initAsync({
             password: newPassword.value,
         });
     });
