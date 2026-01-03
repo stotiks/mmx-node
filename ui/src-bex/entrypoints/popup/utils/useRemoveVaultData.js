@@ -18,7 +18,7 @@ export function useRemoveVaultData() {
                     color: "negative",
                 },
             }).onOk(async () => {
-                await vaultStore.removeVaultDataAsync();
+                await vaultStore.clearAllAsync();
             });
         });
     };

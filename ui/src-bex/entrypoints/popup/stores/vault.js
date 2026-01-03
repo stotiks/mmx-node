@@ -31,7 +31,7 @@ export const useVaultStore = defineStore("vault", () => {
     watch(currentWalletAddress, async () => {
         if (isUnlocked.value === true) {
             if (currentWalletAddress.value != (await vaultService.getCurrentWalletAddressAsync())) {
-                await vaultService.setCurrentWalletAsync({ address: currentWalletAddress.value });
+                await vaultService.setCurrentWalletByAddressAsync({ address: currentWalletAddress.value });
             }
         }
     });
@@ -68,16 +68,16 @@ export const useVaultStore = defineStore("vault", () => {
         await _refreshWalletsAsync();
     };
 
-    const removeVaultDataAsync = async () => {
+    const clearAllAsync = async () => {
         if (isUnlocked.value) {
             await lockAsync();
         }
-        await vaultService.removeVaultDataAsync();
+        await vaultService.clearAllAsync();
         await _refresh();
     };
 
-    const initVaultAsync = async ({ password }) => {
-        await vaultService.initVaultAsync({ password });
+    const initAsync = async ({ password }) => {
+        await vaultService.initAsync({ password });
         await _refresh();
     };
 
@@ -109,7 +109,7 @@ export const useVaultStore = defineStore("vault", () => {
 
         if (isInit === true && isUnlock === true && isUnlocked.value === true) {
             await _refreshWalletsAsync();
-            await updateHistoryAsync();
+            //await updateHistoryAsync();
         }
     };
 
@@ -151,8 +151,8 @@ export const useVaultStore = defineStore("vault", () => {
         removeWalletAsync,
         checkUrlPermissionsAsync,
         allowUrlAsync,
-        removeVaultDataAsync,
-        initVaultAsync,
+        clearAllAsync,
+        initAsync,
         updateHistoryAsync,
     };
 });
