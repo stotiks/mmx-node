@@ -97,7 +97,7 @@ export class MessageHandler {
         } catch (error) {
             // Transaction was ended before it could complete
             if (process.env.NODE_ENV === "development") {
-                console.log(`Error handling method [${method}]:`, error.message || error);
+                console.error(`Error handling method [${method}]:`, error.message || error);
             }
             result = { success: false, error: error.message || error };
             await this.#runFailHooksAsync({ ...context, result });

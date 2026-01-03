@@ -23,7 +23,8 @@ class DynamicMessageService {
                         if (errorHandler) {
                             errorHandler(error);
                         } else {
-                            console.error(error.message || error);
+                            //console.error(error.message || error);
+                            throw error;
                         }
                     }
                 };
@@ -37,6 +38,7 @@ import { Notify } from "quasar";
 const errorHandler = (error) => {
     console.error(error.message || error);
     Notify.create({ type: "negative", message: error.message || error });
+    throw error;
 };
 
-export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync, errorHandler);
+export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync);
