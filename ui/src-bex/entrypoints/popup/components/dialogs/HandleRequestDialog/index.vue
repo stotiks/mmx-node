@@ -51,8 +51,6 @@ import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 const { isUnlocked, isInitialized } = storeToRefs(vaultStore);
 
-const checkVaultPermissionsAsync = async () => await vaultStore.checkUrlPermissionsAsync(props.url).catch(() => false);
-
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
 import AcceptPage from "./pages/AcceptPage";
@@ -108,7 +106,10 @@ watchEffect(async () => {
         pageComponent.value = InitPageComponent;
     } else if (!isUnlocked.value) {
         pageComponent.value = UnlockPageComponent;
-    } else if (!permissionsGranted.value && (await checkVaultPermissionsAsync()) !== true) {
+    } else if (
+        !permissionsGranted.value &&
+        (await vaultStore.checkUrlPermissionsAsync(props.url).catch(() => false)) !== true
+    ) {
         pageComponent.value = RequestPermissionsPageComponent;
     } else if (props.isAcceptRequired === true) {
         pageComponent.value = AcceptPageComponent;
