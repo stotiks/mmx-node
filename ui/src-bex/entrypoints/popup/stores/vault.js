@@ -6,6 +6,7 @@ export const useVaultStore = defineStore("vault", () => {
     const isLoaded = ref(false);
     const isInitialized = ref(false);
     const isUnlocked = ref(false);
+
     const wallets = ref([]);
     const history = ref([]);
     const isActionRunning = ref(false);
@@ -41,11 +42,11 @@ export const useVaultStore = defineStore("vault", () => {
 
     // Actions
     const lockAsync = async () => {
-        isUnlocked.value = await vaultService.lockAsync();
+        isUnlocked.value = (await vaultService.lockAsync()) ?? false;
     };
 
     const unlockAsync = async ({ password }) => {
-        isUnlocked.value = await vaultService.unlockAsync({ password });
+        isUnlocked.value = (await vaultService.unlockAsync({ password })) ?? false;
     };
 
     const updatePasswordAsync = async ({ password, newPassword }) => {
@@ -99,17 +100,16 @@ export const useVaultStore = defineStore("vault", () => {
         }
     };
 
-    const _refreshIsInitializedAsync = async () => (isInitialized.value = await vaultService.getIsInitializedAsync());
-    const _refreshIsUnlockedAsync = async () => (isUnlocked.value = await vaultService.getIsUnlockedAsync());
+    const _refreshIsInitializedAsync = async () =>
+        (isInitialized.value = (await vaultService.getIsInitializedAsync()) ?? false);
+    const _refreshIsUnlockedAsync = async () => (isUnlocked.value = (await vaultService.getIsUnlockedAsync()) ?? false);
 
     const _refresh = async () => {
-        if ((await _refreshIsInitializedAsync()) === true) {
-            if ((await _refreshIsUnlockedAsync()) === true) {
-                if (isUnlocked.value === true) {
-                    await _refreshWalletsAsync();
-                    await updateHistoryAsync();
-                }
-            }
+        const [isInit, isUnlock] = await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
+
+        if (isInit === true && isUnlock === true && isUnlocked.value === true) {
+            await _refreshWalletsAsync();
+            await updateHistoryAsync();
         }
     };
 
