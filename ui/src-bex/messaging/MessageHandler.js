@@ -87,9 +87,8 @@ export class MessageHandler {
             throw new Error(`No function handler found for method: ${method}`);
         }
 
-        const context = { message, handler };
-
-        let result;
+        const context = { handler, message };
+        let result = { success: false, error: "Unknown error" };
         try {
             await this.#runHooksAsync(context);
             const callResult = await handler.call(this.#methods, params);
@@ -97,19 +96,25 @@ export class MessageHandler {
             await this.#runSuccessHooksAsync({ ...context, result });
         } catch (error) {
             if (process.env.NODE_ENV === "development") {
-                console.log(`Error handling method [${method}]:`, error);
+                console.log(`Error handling method [${method}]:`, error.message || error);
             }
-            result = { success: false, error: error.message };
+            result = { success: false, error: error.message || error };
             await this.#runFailHooksAsync({ ...context, result });
+        } finally {
+            await this.#runPostHooksAsync({ ...context, result });
+            return result;
         }
-        await this.#runPostHooksAsync({ ...context, result });
-        return result;
     }
 
     register(onWindowMessage, messageID) {
         onWindowMessage(messageID, async (message) => {
-            console.log(`Received [${messageID}] message:`, JSON.parse(JSON.stringify(message)));
-            return await this.handleAsync(message);
+            try {
+                console.log(`Received [${messageID}] message:`, JSON.parse(JSON.stringify(message)));
+                return await this.handleAsync(message);
+            } catch (error) {
+                console.error(`Error handling message [${messageID}]:`, error.message || error);
+                return { success: false, error: error.message || error };
+            }
         });
     }
 }
