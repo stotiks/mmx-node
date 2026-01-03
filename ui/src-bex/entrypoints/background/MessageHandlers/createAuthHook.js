@@ -23,7 +23,7 @@ export const createAuthHook = () => {
 
         const isAcceptRequired = handler.metadata?.isAcceptRequired ?? true;
 
-        const checkVaultPermissionsAsync = async () => await vault.checkPermissionsAsync(url).catch(() => false);
+        const checkVaultPermissionsAsync = async () => await vault.checkUrlPermissionsAsync(url).catch(() => false);
         const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
 
         let accepted = false;

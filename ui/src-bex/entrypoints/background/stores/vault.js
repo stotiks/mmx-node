@@ -258,7 +258,7 @@ class Vault {
         return urlObj;
     }
 
-    async checkPermissionsAsync(url) {
+    async checkUrlPermissionsAsync(url) {
         if (!this.isUnlocked) {
             throw new Error("Vault is locked");
         }
@@ -267,7 +267,7 @@ class Vault {
             const origin = this.#checkUrl(url).origin;
             return this.#allowedOriginsSet.has(origin);
         } catch (error) {
-            console.error("Vault: Invalid URL provided to checkPermissionsAsync:", error);
+            console.error("Vault: Invalid URL provided to checkUrlPermissionsAsync:", error);
             return false;
         }
     }
