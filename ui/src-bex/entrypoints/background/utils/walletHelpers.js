@@ -1,5 +1,5 @@
 import { bytesToHex } from "@noble/hashes/utils.js";
-import vault from "../stores/vault";
+import vault from "@bex/entrypoints/background/Vault";
 import { addr_t } from "@/mmx/wallet/common/addr_t";
 import { Wallet } from "@/mmx/wallet/Wallet";
 import { getContractAsync } from "../queries";

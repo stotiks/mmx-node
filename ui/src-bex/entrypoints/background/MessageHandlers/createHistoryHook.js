@@ -1,4 +1,4 @@
-import vault from "../stores/vault";
+import vault from "@bex/entrypoints/background/Vault";
 
 export const createHistoryHook = () => {
     // remove "handler" and "result.data"

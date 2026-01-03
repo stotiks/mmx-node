@@ -11,7 +11,7 @@ import {
     signTransactionAsync,
 } from "../utils/walletHelpers";
 
-import vault from "../stores/vault";
+import vault from "@bex/entrypoints/background/Vault";
 import { notificationMessenger } from "../utils/notificationMessenger";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 
