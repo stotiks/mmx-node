@@ -1,3 +1,3 @@
-import { vueApp } from "./vueApp.js";
-vueApp.provide("isNotification", false);
-vueApp.mount("#app");
+import { createBexApp } from "@bex/entrypoints/popup/createBexApp";
+
+createBexApp(false);
