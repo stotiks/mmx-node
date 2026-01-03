@@ -49,9 +49,9 @@ const onDialogShow = async () => {};
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isUnlocked, isInitialized, checkUrlPermissionsAsync } = storeToRefs(vaultStore);
+const { isUnlocked, isInitialized } = storeToRefs(vaultStore);
 
-const checkVaultPermissionsAsync = async () => await checkUrlPermissionsAsync(props.url).catch(() => false);
+const checkVaultPermissionsAsync = async () => await vaultStore.checkUrlPermissionsAsync(props.url).catch(() => false);
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
