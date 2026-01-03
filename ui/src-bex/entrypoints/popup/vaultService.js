@@ -1,7 +1,7 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 
 class DynamicMessageService {
-    constructor(messageID) {
+    constructor(messageID, sendMessageAsync) {
         return new Proxy(this, {
             get(target, prop, receiver) {
                 // Ignore internal props
@@ -17,14 +17,11 @@ class DynamicMessageService {
 
                 // Return a function that calls the API dynamically
                 return async (params) => {
-                    const method = prop;
-                    const sendMessageAsync = async (payload) =>
-                        await popupMessenger.sendMessageAsync(messageID, payload);
-                    return await sendMessageAsync({ method, params });
+                    return await sendMessageAsync(messageID, { method: prop, params });
                 };
             },
         });
     }
 }
 
-export const vaultService = new DynamicMessageService("vault");
+export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync);
