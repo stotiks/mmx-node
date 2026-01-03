@@ -1,4 +1,3 @@
-import { sha256 } from "@noble/hashes/sha2.js";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 
 export const timingSafeEqual = (aBuf, bBuf) => {
@@ -20,8 +19,11 @@ export const timingSafeEqual = (aBuf, bBuf) => {
 };
 
 export const timingSafeEqualStr = (aStr, bStr) => {
-    if (typeof aStr !== "string" || typeof bStr !== "string") {
-        throw new TypeError("Input strings must be strings");
+    if (typeof aStr !== "string") {
+        throw new TypeError("First argument must be a string");
     }
-    return timingSafeEqual(Buffer.from(sha256(utf8ToBytes(aStr))), Buffer.from(sha256(utf8ToBytes(bStr))));
+    if (typeof bStr !== "string") {
+        throw new TypeError("Second argument must be a string");
+    }
+    return timingSafeEqual(Buffer.from(utf8ToBytes(aStr)), Buffer.from(utf8ToBytes(bStr)));
 };

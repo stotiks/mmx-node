@@ -1,6 +1,6 @@
 import { notificationMessenger } from "../utils/notificationMessenger";
 
-import vault from "../stores/vault";
+import vault from "@bex/entrypoints/background/Vault";
 
 /* global browser */
 const getTabUrl = async (tabId) => {
