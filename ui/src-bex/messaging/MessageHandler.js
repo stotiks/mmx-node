@@ -95,15 +95,17 @@ export class MessageHandler {
             result = { success: true, data: callResult };
             await this.#runSuccessHooksAsync({ ...context, result });
         } catch (error) {
+            // Transaction was ended before it could complete
             if (process.env.NODE_ENV === "development") {
                 console.log(`Error handling method [${method}]:`, error.message || error);
             }
             result = { success: false, error: error.message || error };
             await this.#runFailHooksAsync({ ...context, result });
-        } finally {
-            await this.#runPostHooksAsync({ ...context, result });
-            return result;
         }
+
+        await this.#runPostHooksAsync({ ...context, result });
+
+        return result;
     }
 
     register(onWindowMessage, messageID) {
