@@ -1,7 +1,7 @@
 <template>
     <q-layout view="hHh lpR fFf">
         <q-page-container>
-            <template v-if="isMounted && !isLoading">
+            <template v-if="showContent">
                 <template v-if="!isInitialized">
                     <InitPage />
                 </template>
@@ -41,6 +41,6 @@ import { useNotificationMessageHandler } from "./MessageHandlers/useNotification
 const { isMounted, isRunning, isLoading } = useNotificationMessageHandler();
 
 const showContent = computed(() => {
-    return isMounted.value && !isLoading.value;
+    return isLoaded.value && !isActionRunning.value && isMounted.value && !isLoading.value;
 });
 </script>
