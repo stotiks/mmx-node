@@ -1,7 +1,7 @@
 import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
 
 class DynamicMessageService {
-    constructor(messageID, sendMessageAsync) {
+    constructor(messageID, sendMessageAsync, errorHandler) {
         return new Proxy(this, {
             get(target, prop, receiver) {
                 // Ignore internal props
@@ -17,11 +17,26 @@ class DynamicMessageService {
 
                 // Return a function that calls the API dynamically
                 return async (params) => {
-                    return await sendMessageAsync(messageID, { method: prop, params });
+                    try {
+                        return await sendMessageAsync(messageID, { method: prop, params });
+                    } catch (error) {
+                        if (errorHandler) {
+                            errorHandler(error);
+                        } else {
+                            console.error(error.message || error);
+                        }
+                    }
                 };
             },
         });
     }
 }
 
-export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync);
+import { Notify } from "quasar";
+
+const errorHandler = (error) => {
+    console.error(error.message || error);
+    Notify.create({ type: "negative", message: error.message || error });
+};
+
+export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync, errorHandler);

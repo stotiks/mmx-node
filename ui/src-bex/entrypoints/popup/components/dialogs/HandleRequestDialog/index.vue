@@ -45,14 +45,13 @@ import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
-import { vaultService } from "@bex/entrypoints/popup/vaultService";
-const checkVaultPermissionsAsync = async () => await vaultService.checkPermissionsAsync(props.url).catch(() => false);
-
 const onDialogShow = async () => {};
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { isUnlocked, isInitialized } = storeToRefs(vaultStore);
+const { isUnlocked, isInitialized, checkUrlPermissionsAsync } = storeToRefs(vaultStore);
+
+const checkVaultPermissionsAsync = async () => await checkUrlPermissionsAsync(props.url).catch(() => false);
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
