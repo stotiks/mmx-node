@@ -38,6 +38,7 @@
         "txin",
         "txio",
         "txout",
+        "unfonts",
         "unplugin",
         "virtualplot",
         "vueuse",
