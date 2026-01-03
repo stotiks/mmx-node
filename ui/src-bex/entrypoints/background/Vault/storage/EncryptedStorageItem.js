@@ -1,24 +1,32 @@
 import { JSONbigNativeString } from "@/mmx/wallet/utils/JSONbigNative";
 import { decrypt, encrypt } from "@metamask/browser-passworder";
-import { abytes } from "@noble/hashes/utils.js";
+import { isBytes } from "@noble/hashes/utils.js";
 import { base64 } from "@scure/base";
 
 import { StorageItem } from "./StorageItem";
 
 export class EncryptedStorageItem extends StorageItem {
-    async getAsync(encryptionBytes) {
-        abytes(encryptionBytes);
-        const password = base64.encode(encryptionBytes);
+    async getAsync(password) {
+        if (typeof password !== "string" && !isBytes(password)) {
+            throw new Error("Password must be a string or Uint8Array");
+        }
+
+        const _password = isBytes(password) ? base64.encode(password) : password;
+
         const encrypted = await super.getAsync();
-        const decrypted = await decrypt(password, encrypted);
+        const decrypted = await decrypt(_password, encrypted);
         return decrypted;
     }
 
-    async setAsync(data, encryptionBytes) {
-        abytes(encryptionBytes);
-        const password = base64.encode(encryptionBytes);
+    async setAsync(data, password) {
+        if (typeof password !== "string" && !isBytes(password)) {
+            throw new Error("Password must be a string or Uint8Array");
+        }
+
+        const _password = isBytes(password) ? base64.encode(password) : password;
         const _data = JSONbigNativeString.parse(JSONbigNativeString.stringify(data));
-        const encrypted = await encrypt(password, _data);
+
+        const encrypted = await encrypt(_password, _data);
         return await super.setAsync(encrypted);
     }
 }
