@@ -80,6 +80,10 @@ export const useVaultStore = defineStore("vault", () => {
         await _refresh();
     };
 
+    const checkUrlPermissionsAsync = async (url) => {
+        return await vaultService.checkUrlPermissionsAsync(url);
+    };
+
     const allowUrlAsync = async (url) => {
         await vaultService.allowUrlAsync(url);
     };
@@ -145,6 +149,7 @@ export const useVaultStore = defineStore("vault", () => {
         updatePasswordAsync,
         addWalletAsync,
         removeWalletAsync,
+        checkUrlPermissionsAsync,
         allowUrlAsync,
         removeVaultDataAsync,
         initVaultAsync,
