@@ -1,25 +1,29 @@
 import { storage } from "@wxt-dev/storage";
 
 export class StorageItem {
-    #storageItemKey;
+    #key;
 
-    constructor(storageItemKey) {
-        this.#storageItemKey = storageItemKey;
+    constructor(key) {
+        this.#key = key;
+    }
+
+    get key() {
+        return this.#key;
     }
 
     async existsAsync() {
-        return (await storage.getItem(this.#storageItemKey)) !== null;
+        return (await storage.getItem(this.#key)) !== null;
     }
 
     async getAsync() {
-        return await storage.getItem(this.#storageItemKey);
+        return await storage.getItem(this.#key);
     }
 
     async setAsync(data) {
-        return await storage.setItem(this.#storageItemKey, data);
+        return await storage.setItem(this.#key, data);
     }
 
     async removeAsync() {
-        return await storage.removeItem(this.#storageItemKey);
+        return await storage.removeItem(this.#key);
     }
 }
