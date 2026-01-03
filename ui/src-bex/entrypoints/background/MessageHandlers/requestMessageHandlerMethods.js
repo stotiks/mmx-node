@@ -33,7 +33,7 @@ export const requestMessageHandlerMethods = {
 
     mmx_requestWallets: $method(
         async () => {
-            return await vault.getWallets();
+            return await vault.getWalletsAsync();
         },
         {
             isAcceptRequired: false,
@@ -60,7 +60,7 @@ export const requestMessageHandlerMethods = {
 
     mmx_getNetwork: $method(
         async () => {
-            const network = await vault.getNetwork();
+            const network = await vault.getNetworkAsync();
             return network;
         },
         {
