@@ -1,15 +1,13 @@
-import { bytesToHex } from "@noble/hashes/utils.js";
-import vault from "@bex/entrypoints/background/Vault";
 import { addr_t } from "@/mmx/wallet/common/addr_t";
 import { Wallet } from "@/mmx/wallet/Wallet";
-import { getContractAsync } from "../queries";
-import { getChainParamsAsync } from "@/mmx/wallet/utils/getChainParamsAsync";
+import vault from "@bex/entrypoints/background/Vault";
+import { bytesToHex } from "@noble/hashes/utils.js";
 
 const getWalletByAddress = async (address) => {
     if (!address) {
         throw new Error("No wallet selected");
     }
-    return vault.getWallets().find((wallet) => wallet.address === address);
+    return (await vault.getWalletsAsync()).find((wallet) => wallet.address === address);
 };
 
 export const getCurrentWallet = () => {
@@ -18,14 +16,14 @@ export const getCurrentWallet = () => {
 };
 
 export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) => {
-    const ecdsaWallet = await vault.getECDSAWalletAsync(address);
+    const ecdsaWallet = await vault.getECDSAWalletAsync({ address });
     const { pubKey } = await ecdsaWallet.getKeysAsync(0);
 
     return bytesToHex(pubKey).toUpperCase();
 };
 
 export const signMessageAsync = async (msg, address = vault.getCurrentWalletAddress()) => {
-    const ecdsaWallet = await vault.getECDSAWalletAsync(address);
+    const ecdsaWallet = await vault.getECDSAWalletAsync({ address });
     return await ecdsaWallet.signMsgAsync(address, msg);
 };
 
@@ -52,7 +50,7 @@ export const getSendTxAsync = async (
     options,
     address = vault.getCurrentWalletAddress()
 ) => {
-    const ecdsaWallet = await vault.getECDSAWalletAsync(address);
+    const ecdsaWallet = await vault.getECDSAWalletAsync({ address });
     if (!currency) {
         currency = new addr_t().toString();
     }
@@ -62,6 +60,6 @@ export const getSendTxAsync = async (
 };
 
 export const signTransactionAsync = async (tx, options, address = vault.getCurrentWalletAddress()) => {
-    const ecdsaWallet = await vault.getECDSAWalletAsync(address);
+    const ecdsaWallet = await vault.getECDSAWalletAsync({ address });
     await ecdsaWallet.signOfAsync(tx, options);
 };

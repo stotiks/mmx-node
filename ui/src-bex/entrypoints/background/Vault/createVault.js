@@ -46,8 +46,10 @@ export const createVault = (dependencies = {}) => {
         addWalletAsync: walletModule.addWalletAsync,
         removeWalletAsync: walletModule.removeWalletAsync,
 
-        getCurrentWalletAddressAsync: walletModule.getCurrentWalletAddressAsync,
+        getCurrentWalletAddress: walletModule.getCurrentWalletAddress,
         setCurrentWalletByAddressAsync: walletModule.setCurrentWalletByAddressAsync,
+
+        getECDSAWalletAsync: walletModule.getECDSAWalletAsync,
 
         // History interface
         getHistoryAsync: storageManagerModule.getBoundStorage(historyStorage).getAsync,
@@ -56,6 +58,8 @@ export const createVault = (dependencies = {}) => {
         // Permission interface
         checkUrlPermissionsAsync: permissionModule.checkUrlPermissionsAsync,
         allowUrlAsync: permissionModule.allowUrlAsync,
+        revokeUrlAsync: permissionModule.revokeUrlAsync,
+        getAllowedOrigins: permissionModule.getAllowedOrigins,
 
         // // Event interface
         on: eventModule.on,
