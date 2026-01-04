@@ -68,7 +68,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         return await hasPersistedMasterKey();
     };
 
-    const getIsUnlockedAsync = async () => {
+    const getIsUnlocked = () => {
         return masterKey !== null;
     };
 
@@ -106,13 +106,13 @@ export const createStorageManagerModule = (dependencies = {}) => {
         setMasterKey(Uint8Array.from(masterKey));
 
         eventModule.emit("unlocked");
-        return getIsUnlockedAsync();
+        return getIsUnlocked();
     };
 
     const lockAsync = async () => {
         clearMasterKey();
         eventModule.emit("locked");
-        return getIsUnlockedAsync();
+        return getIsUnlocked();
     };
 
     /**
@@ -155,7 +155,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         getIsInitializedAsync,
         initAsync,
         //
-        getIsUnlockedAsync,
+        getIsUnlocked,
         unlockAsync,
         lockAsync,
         //
