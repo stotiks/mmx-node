@@ -36,7 +36,6 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {Promise<boolean>} Permission status
          */
         checkUrlPermissionsAsync: async (url) => {
-            //coreState.requireUnlocked();
             try {
                 const origin = checkUrl(url).origin;
                 return allowedOriginsSet.has(origin);
@@ -51,8 +50,6 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {Promise<void>}
          */
         allowUrlAsync: async (url) => {
-            //coreState.requireUnlocked();
-
             try {
                 const origin = checkUrl(url).origin;
                 allowedOriginsSet.add(origin);
@@ -69,8 +66,6 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {Promise<void>}
          */
         revokeUrlAsync: async (url) => {
-            //coreState.requireUnlocked();
-
             try {
                 const origin = checkUrl(url).origin;
                 allowedOriginsSet.delete(origin);
@@ -86,7 +81,6 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {string[]} Array of allowed origins
          */
         getAllowedOrigins: () => {
-            //coreState.requireUnlocked();
             return Array.from(allowedOriginsSet);
         },
 
