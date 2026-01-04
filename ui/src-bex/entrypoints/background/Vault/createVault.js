@@ -21,7 +21,6 @@ export const createVault = (dependencies = {}) => {
     const permissionModule = createPermissionModule({ eventModule });
 
     const walletBoundStorage = storageManagerModule.getBoundStorage(walletStorage);
-
     const walletModule = createWalletModule({
         walletBoundStorage,
         eventModule,
@@ -33,7 +32,7 @@ export const createVault = (dependencies = {}) => {
         getIsInitializedAsync: storageManagerModule.getIsInitializedAsync,
         initAsync: storageManagerModule.initAsync,
 
-        getIsUnlockedAsync: storageManagerModule.getIsUnlockedAsync,
+        getIsUnlocked: storageManagerModule.getIsUnlocked,
         unlockAsync: storageManagerModule.unlockAsync,
         lockAsync: storageManagerModule.lockAsync,
 
