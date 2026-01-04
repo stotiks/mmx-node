@@ -63,7 +63,7 @@ export const createWalletModule = (dependencies = {}) => {
         eventModule.emit("wallet-removed", { address });
     };
 
-    const getCurrentWalletAddressAsync = () => currentWalletAddress;
+    const getCurrentWalletAddress = () => currentWalletAddress;
 
     const setCurrentWalletByAddressAsync = async ({ address }) => {
         const wallets = await getWalletsAsync();
@@ -75,6 +75,28 @@ export const createWalletModule = (dependencies = {}) => {
         eventModule.emit("current-wallet-changed", { address });
     };
 
+    /**
+     * Get an ECDSA wallet instance for signing transactions
+     * @param {Object} params - Parameters
+     * @param {string} params.address - Wallet address
+     * @returns {Promise<ECDSA_Wallet>} ECDSA wallet instance
+     * @throws {Error} If wallet is not found
+     */
+    const getECDSAWalletAsync = async ({ address }) => {
+        if (!address) {
+            throw new Error("No wallet selected");
+        }
+
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
+        const wallet$$sensitive = wallets$$sensitive.find((wallet) => wallet.address === address);
+
+        if (!wallet$$sensitive) {
+            throw new Error(`Wallet not found for address: ${address}`);
+        }
+
+        return new ECDSA_Wallet(base64.decode(wallet$$sensitive.seed), wallet$$sensitive.password);
+    };
+
     const module = {
         getNetworkAsync,
 
@@ -82,8 +104,10 @@ export const createWalletModule = (dependencies = {}) => {
         addWalletAsync,
         removeWalletAsync,
 
-        getCurrentWalletAddressAsync,
+        getCurrentWalletAddress,
         setCurrentWalletByAddressAsync,
+
+        getECDSAWalletAsync,
     };
 
     return module;
