@@ -16,10 +16,15 @@ export const createWalletModule = (dependencies = {}) => {
      */
     const walletCleanup = ({ seed, password, ...wallet }) => wallet;
 
-    const getWalletsAsync = async () => {
+    const getWalletsAsync$$sensitive = async () => {
         const data = await walletBoundStorage.getAsync();
         const wallets = data.wallets || [];
 
+        return wallets;
+    };
+
+    const getWalletsAsync = async () => {
+        const wallets = await getWalletsAsync$$sensitive();
         return wallets.map((wallet) => walletCleanup(wallet));
     };
 
@@ -29,32 +34,32 @@ export const createWalletModule = (dependencies = {}) => {
         const address = await ecdsaWallet.getAddressAsync(0);
         const seed = base64.encode(mnemonicToSeed(mnemonic));
 
-        const newWallet = { address, seed, password };
+        const newWallet$$sensitive = { address, seed, password };
 
         // Check for duplicate wallets
-        const existingWallets = await getWalletsAsync();
-        if (existingWallets.some((wallet) => wallet.address === address)) {
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
+        if (wallets$$sensitive.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
-        existingWallets.push(newWallet);
-        await walletBoundStorage.setAsync({ wallets: existingWallets });
+        wallets$$sensitive.push(newWallet$$sensitive);
+        await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
 
         eventModule.emit("wallet-added", { address });
-        return walletCleanup(newWallet);
+        return walletCleanup(newWallet$$sensitive);
     };
 
     const removeWalletAsync = async ({ address }) => {
-        const wallets = await getWalletsAsync();
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
 
-        const index = wallets.findIndex((wallet) => wallet.address === address);
+        const index = wallets$$sensitive.findIndex((wallet) => wallet.address === address);
         if (index === -1) {
             throw new Error("Wallet not found");
         }
 
-        wallets.splice(index, 1);
+        wallets$$sensitive.splice(index, 1);
 
-        await walletBoundStorage.setAsync({ wallets });
+        await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
         eventModule.emit("wallet-removed", { address });
     };
 

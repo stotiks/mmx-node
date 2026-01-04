@@ -1,8 +1,5 @@
 import { abytes, randomBytes } from "@noble/hashes/utils.js";
-import { base64 } from "@scure/base";
-import { clearStorage } from "../storage/clearStorage";
 import { EncryptedStorageItem } from "../storage/EncryptedStorageItem";
-import { type } from "happy-dom/lib/PropertySymbol";
 
 export const createStorageManagerModule = (dependencies = {}) => {
     const { masterKeyStorage, managedStorages, eventModule } = dependencies;

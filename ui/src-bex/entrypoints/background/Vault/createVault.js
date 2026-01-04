@@ -5,7 +5,6 @@ import { createWalletModule } from "./modules/createWalletModule";
 import { EncryptedStorageItem } from "./storage/EncryptedStorageItem";
 
 export const createVault = (dependencies = {}) => {
-    // Set up dependencies with defaults
     const {
         masterKeyStorage = new EncryptedStorageItem("local:master"),
         walletStorage = new EncryptedStorageItem("local:wallets"),
@@ -53,8 +52,6 @@ export const createVault = (dependencies = {}) => {
         // History interface
         getHistoryAsync: storageManagerModule.getBoundStorage(historyStorage).getAsync,
         setHistoryAsync: storageManagerModule.getBoundStorage(historyStorage).setAsync,
-
-        // Network interface
 
         // Permission interface
         checkUrlPermissionsAsync: permissionModule.checkUrlPermissionsAsync,
