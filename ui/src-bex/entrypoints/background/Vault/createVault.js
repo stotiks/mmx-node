@@ -1,4 +1,5 @@
 import { createEventModule } from "./modules/createEventModule";
+import { createHistoryModule } from "./modules/createHistoryModule";
 import { createPermissionModule } from "./modules/createPermissionModule";
 import { createStorageManagerModule } from "./modules/createStorageManagerModule";
 import { createWalletModule } from "./modules/createWalletModule";
@@ -9,7 +10,7 @@ export const createVault = (dependencies = {}) => {
         masterKeyStorage = new EncryptedStorageItem("local:master"),
         walletStorage = new EncryptedStorageItem("local:wallets"),
         historyStorage = new EncryptedStorageItem("local:history"),
-        maxHistoryEntries = 10,
+        maxHistoryEntries = 100,
     } = dependencies;
 
     const eventModule = createEventModule();
@@ -24,6 +25,13 @@ export const createVault = (dependencies = {}) => {
     const walletModule = createWalletModule({
         walletBoundStorage,
         eventModule,
+    });
+
+    const historyBoundStorage = storageManagerModule.getBoundStorage(historyStorage);
+    const historyModule = createHistoryModule({
+        historyBoundStorage,
+        eventModule,
+        maxHistoryEntries,
     });
 
     // Compose the final vault interface
@@ -52,8 +60,10 @@ export const createVault = (dependencies = {}) => {
         getECDSAWalletAsync: walletModule.getECDSAWalletAsync,
 
         // History interface
-        getHistoryAsync: storageManagerModule.getBoundStorage(historyStorage).getAsync,
-        setHistoryAsync: storageManagerModule.getBoundStorage(historyStorage).setAsync,
+        getHistoryAsync: historyModule.getHistoryAsync,
+        addHistoryAsync: historyModule.addHistoryAsync,
+        clearHistoryAsync: historyModule.clearHistoryAsync,
+        getHistoryCountAsync: historyModule.getHistoryCountAsync,
 
         // Permission interface
         checkUrlPermissionsAsync: permissionModule.checkUrlPermissionsAsync,
