@@ -1,6 +1,9 @@
 <template>
     <q-layout view="hHh lpR fFf">
         <q-page-container>
+            <!-- <div style="padding-top: 66px">
+                {{ showContent }}
+            </div> -->
             <template v-if="showContent">
                 <template v-if="!isInitialized">
                     <InitPage />
@@ -14,7 +17,7 @@
                 </template>
             </template>
 
-            <q-inner-loading :showing="!showContent || isRunning" class="fullscreen">
+            <q-inner-loading :showing="!showContent" class="fullscreen">
                 <q-spinner-radio size="50px" color="primary" />
             </q-inner-loading>
         </q-page-container>
@@ -41,6 +44,6 @@ import { useNotificationMessageHandler } from "./MessageHandlers/useNotification
 const { isMounted, isRunning, isLoading } = useNotificationMessageHandler();
 
 const showContent = computed(() => {
-    return isLoaded.value && !isActionRunning.value && isMounted.value && !isLoading.value;
+    return isLoaded.value && !isActionRunning.value && isMounted.value && !isLoading.value && !isRunning.value;
 });
 </script>

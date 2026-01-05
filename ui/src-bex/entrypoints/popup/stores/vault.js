@@ -8,36 +8,59 @@ export const useVaultStore = defineStore("vault", () => {
     const isUnlocked = ref(false);
 
     const wallets = ref([]);
-    const history = ref([]);
-    const isActionRunning = ref(false);
-
     const currentWalletAddress = ref("");
 
-    watch(wallets, async () => {
-        let newCurrentWalletAddress = currentWalletAddress.value;
-        if (wallets.value.length > 0) {
-            if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
-                newCurrentWalletAddress = wallets.value[0].address;
-            }
-        } else {
-            newCurrentWalletAddress = "";
-        }
+    const history = ref([]);
 
-        if (newCurrentWalletAddress !== currentWalletAddress.value) {
-            currentWalletAddress.value = newCurrentWalletAddress;
+    const isActionRunning = ref(false);
+    const runningActionCount = ref(0);
+
+    watch(runningActionCount, () => {
+        isActionRunning.value = runningActionCount.value !== 0;
+    });
+
+    watch(wallets, async () => {
+        try {
+            runningActionCount.value++;
+
+            let newCurrentWalletAddress = currentWalletAddress.value;
+            if (wallets.value.length > 0) {
+                if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
+                    newCurrentWalletAddress = wallets.value[0].address;
+                }
+            } else {
+                newCurrentWalletAddress = "";
+            }
+
+            if (newCurrentWalletAddress !== currentWalletAddress.value) {
+                currentWalletAddress.value = newCurrentWalletAddress;
+            }
+        } finally {
+            runningActionCount.value--;
         }
     });
 
     watch(currentWalletAddress, async () => {
-        if (isUnlocked.value === true) {
-            if (currentWalletAddress.value != (await vaultService.getCurrentWalletAddressAsync())) {
-                await vaultService.setCurrentWalletByAddressAsync({ address: currentWalletAddress.value });
+        try {
+            runningActionCount.value++;
+
+            if (isUnlocked.value === true) {
+                if (currentWalletAddress.value != (await vaultService.getCurrentWalletAddressAsync())) {
+                    await vaultService.setCurrentWalletByAddressAsync({ address: currentWalletAddress.value });
+                }
             }
+        } finally {
+            runningActionCount.value--;
         }
     });
 
     watch(isUnlocked, async () => {
-        await _refresh();
+        try {
+            runningActionCount.value++;
+            await _refresh();
+        } finally {
+            runningActionCount.value--;
+        }
     });
 
     // Actions
@@ -105,9 +128,14 @@ export const useVaultStore = defineStore("vault", () => {
     const _refreshIsUnlockedAsync = async () => (isUnlocked.value = (await vaultService.getIsUnlockedAsync()) ?? false);
 
     const _refresh = async () => {
-        const [isInit, isUnlock] = await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
+        let doRefresh = isUnlocked.value;
 
-        if (isInit === true && isUnlock === true && isUnlocked.value === true) {
+        if (doRefresh === false) {
+            const [isInit, isUnlock] = await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
+            doRefresh = isInit === true && isUnlock === true;
+        }
+
+        if (doRefresh) {
             await _refreshWalletsAsync();
             //await updateHistoryAsync();
         }
@@ -125,12 +153,12 @@ export const useVaultStore = defineStore("vault", () => {
             return;
         }
 
-        isActionRunning.value = true;
+        runningActionCount.value++;
         after(() => {
-            isActionRunning.value = false;
+            runningActionCount.value--;
         });
         onError(() => {
-            isActionRunning.value = false;
+            runningActionCount.value--;
         });
     });
 
@@ -143,6 +171,8 @@ export const useVaultStore = defineStore("vault", () => {
         history,
         currentWalletAddress,
         isActionRunning,
+        runningActionCount,
+
         // Actions
         lockAsync,
         unlockAsync,
