@@ -37,6 +37,7 @@ export const createVault = (dependencies = {}) => {
         lock: storageManagerModule.lock,
 
         clearAllAsync: storageManagerModule.clearAllAsync,
+        updatePasswordAsync: storageManagerModule.updatePasswordAsync,
 
         // Wallet interface
         getNetworkAsync: walletModule.getNetworkAsync,
