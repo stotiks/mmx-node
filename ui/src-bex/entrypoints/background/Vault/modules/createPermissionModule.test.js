@@ -40,48 +40,41 @@ describe("createPermissionModule", () => {
 
     describe("checkUrlPermissionsAsync", () => {
         it("should return false when no permission exists", async () => {
-            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com"))
-                .resolves.toBe(false);
+            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com")).resolves.toBe(false);
         });
 
         it("should return true after allowUrlAsync for same origin", async () => {
             await permissionModule.allowUrlAsync("https://example.com/path");
 
-            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com/other"))
-                .resolves.toBe(true);
+            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com/other")).resolves.toBe(true);
         });
 
         it("should check by origin (path/query/hash do not matter)", async () => {
             await permissionModule.allowUrlAsync("https://example.com/a?x=1#h");
 
-            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com/b?y=2#z"))
-                .resolves.toBe(true);
+            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com/b?y=2#z")).resolves.toBe(true);
         });
 
         it("should not match different protocol", async () => {
             await permissionModule.allowUrlAsync("https://example.com");
 
-            await expect(permissionModule.checkUrlPermissionsAsync("http://example.com"))
-                .resolves.toBe(false);
+            await expect(permissionModule.checkUrlPermissionsAsync("http://example.com")).resolves.toBe(false);
         });
 
         it("should not match different port", async () => {
             await permissionModule.allowUrlAsync("https://example.com:443");
 
-            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com:444"))
-                .resolves.toBe(false);
+            await expect(permissionModule.checkUrlPermissionsAsync("https://example.com:444")).resolves.toBe(false);
         });
 
         it("should not match different subdomain", async () => {
             await permissionModule.allowUrlAsync("https://example.com");
 
-            await expect(permissionModule.checkUrlPermissionsAsync("https://sub.example.com"))
-                .resolves.toBe(false);
+            await expect(permissionModule.checkUrlPermissionsAsync("https://sub.example.com")).resolves.toBe(false);
         });
 
         it("should return false and log error for invalid URL", async () => {
-            await expect(permissionModule.checkUrlPermissionsAsync("not a url"))
-                .resolves.toBe(false);
+            await expect(permissionModule.checkUrlPermissionsAsync("not a url")).resolves.toBe(false);
 
             expect(consoleErrorSpy).toHaveBeenCalledWith(
                 "Permission: Invalid URL provided to checkUrlPermissionsAsync:",
@@ -90,8 +83,7 @@ describe("createPermissionModule", () => {
         });
 
         it("should return false and log error for unsafe protocol", async () => {
-            await expect(permissionModule.checkUrlPermissionsAsync("file:///tmp/a"))
-                .resolves.toBe(false);
+            await expect(permissionModule.checkUrlPermissionsAsync("file:///tmp/a")).resolves.toBe(false);
 
             expect(consoleErrorSpy).toHaveBeenCalledWith(
                 "Permission: Invalid URL provided to checkUrlPermissionsAsync:",
@@ -127,21 +119,18 @@ describe("createPermissionModule", () => {
         });
 
         it("should throw and log for invalid URL", async () => {
-            await expect(permissionModule.allowUrlAsync("not a url"))
-                .rejects.toThrow(/Invalid URL:/);
+            await expect(permissionModule.allowUrlAsync("not a url")).rejects.toThrow(/Invalid URL:/);
 
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                "Permission: Failed to allow URL:",
-                expect.any(Error)
-            );
+            expect(consoleErrorSpy).toHaveBeenCalledWith("Permission: Failed to allow URL:", expect.any(Error));
 
             expect(permissionModule.getPermissionCount()).toBe(0);
             expect(eventModule.emit).not.toHaveBeenCalledWith("permission-granted", expect.anything());
         });
 
         it("should throw for unsafe protocol", async () => {
-            await expect(permissionModule.allowUrlAsync("ftp://example.com"))
-                .rejects.toThrow(/Unsafe protocol not allowed/);
+            await expect(permissionModule.allowUrlAsync("ftp://example.com")).rejects.toThrow(
+                /Unsafe protocol not allowed/
+            );
         });
     });
 
@@ -164,18 +153,15 @@ describe("createPermissionModule", () => {
         });
 
         it("should throw and log for invalid URL", async () => {
-            await expect(permissionModule.revokeUrlAsync("not a url"))
-                .rejects.toThrow(/Invalid URL:/);
+            await expect(permissionModule.revokeUrlAsync("not a url")).rejects.toThrow(/Invalid URL:/);
 
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                "Permission: Failed to revoke URL:",
-                expect.any(Error)
-            );
+            expect(consoleErrorSpy).toHaveBeenCalledWith("Permission: Failed to revoke URL:", expect.any(Error));
         });
 
         it("should throw for unsafe protocol", async () => {
-            await expect(permissionModule.revokeUrlAsync("file:///tmp/a"))
-                .rejects.toThrow(/Unsafe protocol not allowed/);
+            await expect(permissionModule.revokeUrlAsync("file:///tmp/a")).rejects.toThrow(
+                /Unsafe protocol not allowed/
+            );
         });
 
         it("should revoke only the specified origin and keep others", async () => {
@@ -242,14 +228,10 @@ describe("createPermissionModule", () => {
 
     describe("hasOriginPermission", () => {
         it("should return false for invalid input", () => {
-            expect(permissionModule.hasOriginPermission(""))
-                .toBe(false);
-            expect(permissionModule.hasOriginPermission(null))
-                .toBe(false);
-            expect(permissionModule.hasOriginPermission(undefined))
-                .toBe(false);
-            expect(permissionModule.hasOriginPermission(123))
-                .toBe(false);
+            expect(permissionModule.hasOriginPermission("")).toBe(false);
+            expect(permissionModule.hasOriginPermission(null)).toBe(false);
+            expect(permissionModule.hasOriginPermission(undefined)).toBe(false);
+            expect(permissionModule.hasOriginPermission(123)).toBe(false);
         });
 
         it("should return true for allowed origin", async () => {
@@ -260,14 +242,10 @@ describe("createPermissionModule", () => {
 
     describe("addOrigin", () => {
         it("should throw for invalid input", () => {
-            expect(() => permissionModule.addOrigin(""))
-                .toThrow("Origin must be a non-empty string");
-            expect(() => permissionModule.addOrigin(null))
-                .toThrow("Origin must be a non-empty string");
-            expect(() => permissionModule.addOrigin(undefined))
-                .toThrow("Origin must be a non-empty string");
-            expect(() => permissionModule.addOrigin(123))
-                .toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.addOrigin("")).toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.addOrigin(null)).toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.addOrigin(undefined)).toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.addOrigin(123)).toThrow("Origin must be a non-empty string");
         });
 
         it("should add origin directly without URL validation", () => {
@@ -285,14 +263,10 @@ describe("createPermissionModule", () => {
 
     describe("removeOrigin", () => {
         it("should throw for invalid input", () => {
-            expect(() => permissionModule.removeOrigin(""))
-                .toThrow("Origin must be a non-empty string");
-            expect(() => permissionModule.removeOrigin(null))
-                .toThrow("Origin must be a non-empty string");
-            expect(() => permissionModule.removeOrigin(undefined))
-                .toThrow("Origin must be a non-empty string");
-            expect(() => permissionModule.removeOrigin(123))
-                .toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.removeOrigin("")).toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.removeOrigin(null)).toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.removeOrigin(undefined)).toThrow("Origin must be a non-empty string");
+            expect(() => permissionModule.removeOrigin(123)).toThrow("Origin must be a non-empty string");
         });
 
         it("should remove origin directly", () => {
@@ -305,8 +279,7 @@ describe("createPermissionModule", () => {
         });
 
         it("should be safe to remove non-existent origin", () => {
-            expect(() => permissionModule.removeOrigin("https://example.com"))
-                .not.toThrow();
+            expect(() => permissionModule.removeOrigin("https://example.com")).not.toThrow();
             expect(permissionModule.getPermissionCount()).toBe(0);
         });
     });
