@@ -18,6 +18,11 @@
                             v-model:new-password="newPassword"
                             v-model:new-password-confirm="newPasswordConfirm"
                         />
+
+                        <div class="row justify-end">
+                            <q-toggle v-model="rotateMasterKey" label="Rotate master key" />
+                        </div>
+
                         <div class="row justify-between">
                             <q-btn label="Reset" type="reset" color="primary" flat />
                             <q-btn label="Update" type="submit" color="primary" />
@@ -45,10 +50,15 @@ const test_password = process.env.NODE_ENV === "development" && import.meta.env.
 const password = ref(test_password || "");
 const newPassword = ref(test_password || "");
 const newPasswordConfirm = ref(test_password || "");
+const rotateMasterKey = ref(false);
 
 const handleUpdatePasswordAsync = () =>
     tryCatchWrapperAsync(async () => {
-        await vaultStore.updatePasswordAsync({ password: password.value, newPassword: newPassword.value });
+        await vaultStore.updatePasswordAsync({
+            password: password.value,
+            newPassword: newPassword.value,
+            rotateMasterKey: rotateMasterKey.value,
+        });
         router.go(-1);
     });
 
@@ -56,5 +66,6 @@ const handleReset = () => {
     password.value = "";
     newPassword.value = "";
     newPasswordConfirm.value = "";
+    rotateMasterKey.value = false;
 };
 </script>
