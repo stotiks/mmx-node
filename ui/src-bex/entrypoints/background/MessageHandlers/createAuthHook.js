@@ -27,7 +27,7 @@ export const createAuthHook = () => {
         const _hasPermissions = (await checkVaultPermissionsAsync()) === true;
 
         let accepted = false;
-        if (isAcceptRequired === true || _hasPermissions === false) {
+        if (isAcceptRequired === true || _hasPermissions === false || vault.getIsUnlocked() === false) {
             const requestPermissionsAndAcceptResponse = await notificationMessenger.sendMessageAsync({
                 method: "requestPermissionsAndAccept",
                 params: { data: message.data, url, isAcceptRequired },
