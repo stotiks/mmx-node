@@ -109,7 +109,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         return getIsUnlocked();
     };
 
-    const lockAsync = async () => {
+    const lock = () => {
         clearMasterKey();
         eventModule.emit("locked");
         return getIsUnlocked();
@@ -157,7 +157,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         //
         getIsUnlocked,
         unlockAsync,
-        lockAsync,
+        lock,
         //
         clearAllAsync,
         //
