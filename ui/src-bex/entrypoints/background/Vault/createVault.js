@@ -34,7 +34,7 @@ export const createVault = (dependencies = {}) => {
 
         getIsUnlocked: storageManagerModule.getIsUnlocked,
         unlockAsync: storageManagerModule.unlockAsync,
-        lockAsync: storageManagerModule.lockAsync,
+        lock: storageManagerModule.lock,
 
         clearAllAsync: storageManagerModule.clearAllAsync,
 

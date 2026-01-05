@@ -58,8 +58,3 @@ The following are auto-imported across the application via `unplugin-auto-import
     *   Nested `describe` blocks for individual functions or methods
     *   Individual `it` blocks for specific test cases
 
-## BEX Custom Store
-
-*   The file `src-bex/entrypoints/background/stores/vault.js` is a custom store for the browser extension's background script. Pinia cannot be used in this context, so it uses a custom singleton class for state management, storage, and events.
-*
-
