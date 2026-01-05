@@ -101,6 +101,60 @@ export const createStorageManagerModule = (dependencies = {}) => {
         eventModule.emit("vault-removed");
     };
 
+    const updatePasswordAsync = async ({ password, newPassword, rotateMasterKey = false }) => {
+        if (!getIsUnlocked()) {
+            throw new Error("Vault is locked");
+        }
+
+        if (typeof password !== "string" || !password || typeof newPassword !== "string" || !newPassword) {
+            throw new Error("Passwords must be non-empty strings");
+        }
+
+        if (typeof rotateMasterKey !== "boolean") {
+            throw new Error("rotateMasterKey must be a boolean");
+        }
+
+        // This comparison is not a security risk because it does not involve a secret value.
+        // It's a simple validation check to ensure the new password is not the same as the old one.
+        // The actual credential check is performed later by decrypting the persisted master key, which is safe.
+        // eslint-disable-next-line security/detect-possible-timing-attacks
+        if (password === newPassword) {
+            throw new Error("New password must be different from the old password.");
+        }
+
+        // Verify old password by attempting to decrypt the persisted master key.
+        // If decryption fails, the underlying storage will throw.
+        const { masterKey: persistedMasterKey } = await masterKeyStorage.getAsync(password);
+        const verifiedMasterKey = Uint8Array.from(persistedMasterKey);
+
+        const nextMasterKey = rotateMasterKey ? randomBytes(32) : verifiedMasterKey;
+
+        // Persist master key under new password.
+        await masterKeyStorage.setAsync({ masterKey: Array.from(nextMasterKey) }, newPassword);
+
+        if (rotateMasterKey) {
+            // Keep in-memory state in sync if we're rotating keys.
+            setMasterKey(nextMasterKey);
+
+            // Re-encrypt all managed storages.
+            // - Decrypt using verified key (the currently active key)
+            // - Encrypt using next key (same key unless rotateMasterKey=true)
+            for (const managedStorage of managedStorages) {
+                const data = await managedStorage.getAsync(verifiedMasterKey);
+                await managedStorage.setAsync(data, nextMasterKey);
+            }
+        }
+
+        verifiedMasterKey.fill(0);
+        if (rotateMasterKey) {
+            // If rotated, nextMasterKey is the new in-memory masterKey; do not zero it.
+            // If not rotated, nextMasterKey === verifiedMasterKey which has already been zeroed.
+        }
+
+        eventModule.emit("password-updated");
+        return true;
+    };
+
     const unlockAsync = async ({ password }) => {
         const { masterKey } = await masterKeyStorage.getAsync(password);
         setMasterKey(Uint8Array.from(masterKey));
@@ -160,6 +214,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         lock,
         //
         clearAllAsync,
+        updatePasswordAsync,
         //
         getBoundStorage,
     };
