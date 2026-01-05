@@ -72,8 +72,8 @@ export const useVaultStore = defineStore("vault", () => {
         isUnlocked.value = (await vaultService.unlockAsync({ password })) ?? false;
     };
 
-    const updatePasswordAsync = async ({ password, newPassword }) => {
-        await vaultService.updatePasswordAsync({ password, newPassword });
+    const updatePasswordAsync = async ({ password, newPassword, rotateMasterKey }) => {
+        await vaultService.updatePasswordAsync({ password, newPassword, rotateMasterKey });
     };
 
     const _refreshWalletsAsync = async () => {
