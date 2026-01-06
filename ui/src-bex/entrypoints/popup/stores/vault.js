@@ -137,7 +137,7 @@ export const useVaultStore = defineStore("vault", () => {
 
         if (doRefresh) {
             await _refreshWalletsAsync();
-            //await updateHistoryAsync();
+            await updateHistoryAsync();
         }
     };
 

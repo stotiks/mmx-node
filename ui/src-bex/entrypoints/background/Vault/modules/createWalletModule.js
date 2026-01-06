@@ -18,7 +18,7 @@ export const createWalletModule = (dependencies = {}) => {
 
     const getWalletsAsync$$sensitive = async () => {
         const data = await walletBoundStorage.getAsync();
-        const wallets = data.wallets || [];
+        const wallets = data?.wallets ?? [];
 
         return wallets;
     };
