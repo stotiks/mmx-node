@@ -68,12 +68,13 @@ export const createHistoryModule = (dependencies = {}) => {
 
     const getHistoryAsync = async () => {
         const data = await historyBoundStorage.getAsync();
-        return [...data.entries].sort(sortNewestFirst);
+        const entries = data?.entries ?? [];
+        return [...entries].sort(sortNewestFirst);
     };
 
     const getHistoryCountAsync = async () => {
-        const data = await historyBoundStorage.getAsync();
-        return data.entries.length;
+        const entries = await getHistoryAsync();
+        return entries.length;
     };
 
     const clearHistoryAsync = async () => {
@@ -88,10 +89,10 @@ export const createHistoryModule = (dependencies = {}) => {
             ...partialEntry,
         };
 
-        validateEntry(entry);
+        // validateEntry(entry);
 
-        const data = await historyBoundStorage.getAsync();
-        const nextEntries = [entry, ...data.entries].sort(sortNewestFirst);
+        const entries = await getHistoryAsync();
+        const nextEntries = [entry, ...entries].sort(sortNewestFirst);
 
         let trimmedCount = 0;
         let finalEntries = nextEntries;
@@ -105,10 +106,12 @@ export const createHistoryModule = (dependencies = {}) => {
 
         await historyBoundStorage.setAsync({ entries: finalEntries });
 
-        eventModule.emit("history-entry-added", entry);
-        if (trimmedCount > 0) {
-            eventModule.emit("history-trimmed", { trimmedCount, maxHistoryEntries });
-        }
+        eventModule.emit("history-updated");
+        //eventModule.emit("history-entry-added", entry);
+
+        // if (trimmedCount > 0) {
+        //     eventModule.emit("history-trimmed", { trimmedCount, maxHistoryEntries });
+        // }
     };
 
     return {
