@@ -14,6 +14,9 @@ export class EncryptedStorageItem extends StorageItem {
         const _password = isBytes(password) ? base64.encode(password) : password;
 
         const encrypted = await super.getAsync();
+        if (encrypted == null) {
+            return null;
+        }
         const decrypted = await decrypt(_password, encrypted);
         return decrypted;
     }
