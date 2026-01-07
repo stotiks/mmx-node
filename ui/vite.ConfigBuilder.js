@@ -132,9 +132,9 @@ export class ConfigBuilder {
             if (id.includes("/node_modules/")) {
                 if (id.includes("@scure")) {
                     if (id.includes("wordlists")) {
-                        return "@scure/wordlists/" + base;
+                        return "@scure-wordlist-" + base;
                     } else {
-                        return "@scure/index";
+                        return "@scure";
                     }
                 }
 
@@ -193,12 +193,12 @@ export class ConfigBuilder {
                 return "mmx-wallet";
             }
 
-            if (id.includes("/src/")) {
-                return "app";
-            }
-
             if (id.includes("/config/")) {
                 return "mmx-config";
+            }
+
+            if (id.includes("/src/")) {
+                return "app";
             }
 
             //console.log(id);
@@ -280,11 +280,16 @@ export class ConfigBuilder {
             },
             build: {
                 target: "es2020",
-                //minify: false,
                 chunkSizeWarningLimit: 1000,
                 rollupOptions: {
                     output: {
                         manualChunks: createChunkStrategy(),
+                        assetFileNames: (assetInfo) => {
+                            if (/\.(woff|woff2|eot|ttf|otf)$/.test(assetInfo.name)) {
+                                return "assets/fonts/[name]-[hash][extname]";
+                            }
+                            return "assets/[name]-[hash][extname]";
+                        },
                     },
                 },
             },
