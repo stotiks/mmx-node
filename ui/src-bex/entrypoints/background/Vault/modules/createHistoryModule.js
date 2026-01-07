@@ -35,37 +35,6 @@ export const createHistoryModule = (dependencies = {}) => {
 
     const sortNewestFirst = (a, b) => (b?.timestamp ?? 0) - (a?.timestamp ?? 0);
 
-    const validateEntry = (entry) => {
-        if (!entry || typeof entry !== "object") {
-            throw new Error("History entry must be an object");
-        }
-
-        const method = entry?.message?.data?.method;
-        if (typeof method !== "string" || !method) {
-            throw new Error("History entry requires message.data.method");
-        }
-
-        if (typeof entry.timestamp !== "number" || !Number.isFinite(entry.timestamp)) {
-            throw new Error("History entry requires a finite numeric timestamp");
-        }
-
-        if (typeof entry.id !== "string" || !entry.id) {
-            throw new Error("History entry requires id");
-        }
-
-        if (typeof entry.wallet !== "undefined" && entry.wallet !== null && typeof entry.wallet !== "string") {
-            throw new Error("History entry wallet must be a string (or undefined/null)");
-        }
-
-        if (typeof entry.result !== "undefined" && entry.result !== null && typeof entry.result !== "object") {
-            throw new Error("History entry result must be an object (or undefined/null)");
-        }
-
-        if (typeof entry.result?.success !== "undefined" && typeof entry.result?.success !== "boolean") {
-            throw new Error("History entry result.success must be a boolean (or undefined)");
-        }
-    };
-
     const getHistoryAsync = async () => {
         const data = await historyBoundStorage.getAsync();
         const entries = data?.entries ?? [];
@@ -89,29 +58,12 @@ export const createHistoryModule = (dependencies = {}) => {
             ...partialEntry,
         };
 
-        // validateEntry(entry);
-
         const entries = await getHistoryAsync();
         const nextEntries = [entry, ...entries].sort(sortNewestFirst);
-
-        let trimmedCount = 0;
-        let finalEntries = nextEntries;
-        if (maxHistoryEntries === 0) {
-            trimmedCount = nextEntries.length;
-            finalEntries = [];
-        } else if (maxHistoryEntries > 0 && nextEntries.length > maxHistoryEntries) {
-            trimmedCount = nextEntries.length - maxHistoryEntries;
-            finalEntries = nextEntries.slice(0, maxHistoryEntries);
-        }
-
+        const finalEntries = nextEntries.slice(0, maxHistoryEntries);
         await historyBoundStorage.setAsync({ entries: finalEntries });
 
         eventModule.emit("history-updated");
-        //eventModule.emit("history-entry-added", entry);
-
-        // if (trimmedCount > 0) {
-        //     eventModule.emit("history-trimmed", { trimmedCount, maxHistoryEntries });
-        // }
     };
 
     return {
