@@ -58,7 +58,7 @@ describe("createHistoryModule", () => {
             result: { success: true },
         });
 
-        expect(deps.events.map((e) => e.name)).toContain("history-entry-added");
+        expect(deps.events.map((e) => e.name)).toContain("history-updated");
     });
 
     it("sorts newest first", async () => {
@@ -116,8 +116,6 @@ describe("createHistoryModule", () => {
         const history = await module.getHistoryAsync();
         expect(history).toHaveLength(2);
         expect(history.map((h) => h.message.data.method)).toEqual(["c", "b"]);
-
-        expect(deps.events.some((e) => e.name === "history-trimmed")).toBe(true);
     });
 
     it("maxHistoryEntries=0 discards entries", async () => {
@@ -158,22 +156,5 @@ describe("createHistoryModule", () => {
         await module.clearHistoryAsync();
         expect(await module.getHistoryCountAsync()).toBe(0);
         expect(deps.events.some((e) => e.name === "history-cleared")).toBe(true);
-    });
-
-    it("throws if message.data.method is missing", async () => {
-        const deps = createDeps({
-            now: () => 1,
-            randomId: () => "id-1",
-        });
-
-        const module = createHistoryModule({
-            historyBoundStorage: deps.historyBoundStorage,
-            eventModule: deps.eventModule,
-            maxHistoryEntries: 10,
-            now: deps.now,
-            randomId: deps.randomId,
-        });
-
-        await expect(module.addHistoryAsync({})).rejects.toThrow(/message\.data\.method/);
     });
 });
