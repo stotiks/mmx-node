@@ -12,10 +12,11 @@ export default defineContentScript({
 
         contentScriptMessenger.allowWindowMessaging();
 
-        // sendMessage to window example
-        // debug/test; remove in production
-        setInterval(() => {
-            contentScriptMessenger.sendMessageAsync("message", { eventName: "ping", data: "pong" }, "window");
-        }, 1000);
+        // Debug/test interval - only runs in development mode
+        if (process.env.NODE_ENV === "development") {
+            setInterval(() => {
+                contentScriptMessenger.sendMessageAsync("message", { eventName: "ping", data: "pong" }, "window");
+            }, 1000);
+        }
     },
 });
