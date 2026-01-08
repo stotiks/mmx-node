@@ -1,29 +1,39 @@
 import { windowMessenger } from "@bex/messaging/entrypointMessengers/window";
 windowMessenger.setNamespace();
 
-const proxify = (obj) =>
+const createReadonlyProxy = (obj) =>
     new Proxy(obj, {
-        /////deleteProperty: () => !0,
-        // get(target, prop, receiver) {
-        //     const originalMethod = target[prop];
-        //     if (typeof originalMethod === "function") {
-        //         return function (...args) {
-        //             console.log(`Calling method: ${prop} with arguments:`, args);
-        //             const result = originalMethod.apply(this, args);
-        //             console.log(`Method ${prop} returned:`, result);
-        //             return result;
-        //         };
-        //     }
-        //     return Reflect.get(target, prop, receiver);
-        // },
+        // Prevent modification of properties
+        set(target, prop, value) {
+            console.warn(`MmxProvider: Cannot set property '${String(prop)}' on readonly object`);
+            return false;
+        },
+        deleteProperty(target, prop) {
+            console.warn(`MmxProvider: Cannot delete property '${String(prop)}' from readonly object`);
+            return false;
+        },
+        // Prevent extending the object with new properties
+        defineProperty(target, prop, descriptor) {
+            console.warn(`MmxProvider: Cannot define property '${String(prop)}' on readonly object`);
+            return false;
+        },
+        setPrototypeOf(target, proto) {
+            console.warn("MmxProvider: Cannot change prototype of readonly object");
+            return false;
+        },
+        // Allow reading properties
+        get(target, prop, receiver) {
+            const value = Reflect.get(target, prop, receiver);
+            // Return a readonly wrapper for functions
+            if (typeof value === "function") {
+                return value.bind(target);
+            }
+            return value;
+        },
     });
 
 export class MmxProvider {
     isFurryVault = true;
-
-    network = "mainnet";
-
-    // selectedAddress = null;
 
     #sendMessageAsync = async (messageId, payload) => await windowMessenger.sendMessageAsync(messageId, payload);
 
@@ -36,7 +46,7 @@ export class MmxProvider {
             return { success: true };
         });
 
-        return proxify(this);
+        return createReadonlyProxy(this);
     }
 
     // events
