@@ -2,7 +2,7 @@
     <div class="q-gutter-y-sm">
         <div>
             <div class="row q-gutter-x-none">
-                <m-chip>Farmer</m-chip>
+                <m-chip>{{ $t("main_menu.farmer") }}</m-chip>
                 <m-chip>{{ farmerKey }}</m-chip>
             </div>
             <q-card flat>
@@ -54,11 +54,11 @@ const { t } = useI18n();
 
 const framerDataListRows = computed(() => [
     {
-        label: "No. Blocks", //TODO i18n
+        label: t("explore_farmers.no_blocks"),
         field: "block_count",
     },
     {
-        label: "Total Rewards", //TODO i18n
+        label: t("explore_farmers.total_rewards"),
         field: "total_reward_value",
         classes: "main-currency",
     },
@@ -66,7 +66,7 @@ const framerDataListRows = computed(() => [
 
 const columns = computed(() => [
     {
-        label: "Reward", //TODO i18n
+        label: t("common.reward"),
         field: "value",
         headerClasses: "key-cell",
     },

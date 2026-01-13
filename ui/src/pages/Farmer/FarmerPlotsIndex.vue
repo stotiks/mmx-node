@@ -80,7 +80,7 @@ const columns2 = computed(() => [
         headerStyle: "width: 20%",
     },
     {
-        label: "Effective Size", //TODO i18n
+        label: t("farmer_info.effective_size"),
         field: "effective",
         format: (item) => (item / Math.pow(1000, 4)).toFixed(3),
         xclasses: "effective-size",

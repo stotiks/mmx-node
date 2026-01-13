@@ -57,7 +57,7 @@
             <q-btn
                 color="primary"
                 :icon-right="mdiArchiveArrowDown"
-                label="Export to CSV"
+                :label="$t('account_history.export_to_csv')"
                 outline
                 rounded
                 no-caps
