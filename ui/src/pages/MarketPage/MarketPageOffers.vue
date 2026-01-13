@@ -61,14 +61,14 @@
             <template v-slot:body-cell-actions="bcProps">
                 <q-td :props="bcProps" class="q-gutter-x-xs">
                     <q-btn
-                        :label="t('market_offers.trade')"
+                        :label="$t('market_offers.trade')"
                         :_icon="mdiBankTransfer"
                         outline
                         @click="handleTrade(bcProps.row)"
                     />
 
                     <q-btn
-                        :label="t('common.accept')"
+                        :label="$t('common.accept')"
                         :_icon="mdiBankCheck"
                         color="positive"
                         outline

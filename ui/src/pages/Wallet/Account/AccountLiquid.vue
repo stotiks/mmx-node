@@ -15,7 +15,7 @@
             <template v-slot:body-cell-actions="bcProps">
                 <q-td :props="bcProps" class="q-gutter-x-xs">
                     <q-btn
-                        :label="t('common.manage')"
+                        :label="$t('common.manage')"
                         :_icon="mdiCashEdit"
                         outline
                         color="secondary"

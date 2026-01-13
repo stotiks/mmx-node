@@ -31,7 +31,7 @@
             <q-td :props="bcProps">
                 <div class="row justify-end q-gutter-x-xs q-pa-none">
                     <q-btn
-                        :label="t('account_offers.deposit')"
+                        :label="$t('account_offers.deposit')"
                         :_icon="mdiBankTransferIn"
                         color="positive"
                         outline
@@ -40,7 +40,7 @@
 
                     <q-btn
                         :disable="!(bcProps.row.ask_balance > 0) || withdrawn.has(bcProps.row.address)"
-                        :label="t('account_contract_summary.withdraw')"
+                        :label="$t('account_contract_summary.withdraw')"
                         :_icon="mdiBankTransferOut"
                         color="negative"
                         outline
@@ -59,7 +59,7 @@
 
                     <q-btn
                         :disable="!(bcProps.row.bid_balance > 0) || canceled.has(bcProps.row.address)"
-                        :label="t('account_offers.revoke')"
+                        :label="$t('account_offers.revoke')"
                         :_icon="mdiBankRemove"
                         color="secondary"
                         outline
