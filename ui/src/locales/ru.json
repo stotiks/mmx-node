@@ -49,9 +49,11 @@
         "copied": "Скопировано!",
         "copy": "Скопировать",
         "ok": "Ok",
+        "lock": "Заблокировать",
         "unlock": "Разблокировать",
         "offline": "Оффлайн",
         "update": "Обновить",
+        "reset": "Сбросить",
         "set_key_to_value": "Значение '{key}' установлено на '{value}'",
         "nothing_here": "Упс. Здесь ничего нет..."
     },
@@ -179,7 +181,10 @@
     },
     "wallet_common": {
         "enter_passphrase": "Введите парольную фразу",
-        "unlock_wallet": "Разблокировать кошелек"
+        "unlock_wallet": "Разблокировать кошелек",
+        "tx_fee": "Комиссия",
+        "tx_fee_ratio": "Коэффициент комиссии",
+        "unlock_to_see_fee": "Разблокируйте кошелек, чтобы увидеть комиссию"
     },
     "account_send_form": {
         "source_address": "Исходный адрес",
@@ -221,7 +226,8 @@
         "receive_amount": "Сумма получения",
         "receive_currency_contract": "Валюта получения (контракт)",
         "symbol": "Символ",
-        "offer": "Предложить"
+        "offer": "Предложить",
+        "receive_currency": "Валюта получения"
     },
     "explore_menu": {
         "transactions": "Транзакции",

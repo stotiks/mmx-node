@@ -30,7 +30,3 @@
         </template>
     </q-select>
 </template>
-
-<script setup>
-//
-</script>

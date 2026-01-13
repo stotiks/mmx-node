@@ -52,10 +52,12 @@
         "copied": "Copied!",
         "copy": "Copy",
         "ok": "Ok",
+        "lock": "Lock",
         "unlock": "Unlock",
         "offline": "offline",
         "terabytes": "TB",
         "update": "Update",
+        "reset": "Reset",
         "confirmed": "Confirmed",
         "na": "N/A",
         "set_key_to_value": "Set '{key}' to '{value}'",
@@ -193,7 +195,11 @@
     },
     "wallet_common": {
         "enter_passphrase": "Passphrase required",
-        "unlock_wallet": "Unlock wallet"
+        "unlock_wallet": "Unlock wallet",
+        "tx_fee": "Fee",
+        "tx_fee_ratio": "Fee ratio",
+        "tx_min_fee": "min fee",
+        "unlock_to_see_fee": "Unlock wallet to see estimated fee"
     },
     "account_send_form": {
         "source_address": "Source Address",
