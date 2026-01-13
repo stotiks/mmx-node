@@ -141,7 +141,7 @@ const columns = computed(() => [
         align: "left",
     },
     {
-        label: t("account_history.memo"), // TODO i18n
+        label: t("account_history.memo"),
         field: "memo",
         style: "word-break: break-all;",
         align: "left",

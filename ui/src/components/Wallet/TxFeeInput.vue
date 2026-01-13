@@ -2,7 +2,7 @@
     <q-input
         :model-value="fee"
         v-bind="$attrs"
-        :label="$t('account_history_form.tx_fee')"
+        :label="$t('wallet_common.tx_fee')"
         suffix="MMX"
         input-class="amount-input"
         readonly
@@ -14,7 +14,7 @@
 
         <q-inner-loading :showing="locked">
             <q-icon :name="mdiLockOpenAlert" size="sm" class="text-warning">
-                <q-tooltip>Unlock wallet to see estimated fee</q-tooltip>
+                <q-tooltip>{{ $t("wallet_common.unlock_to_see_fee") }}</q-tooltip>
             </q-icon>
         </q-inner-loading>
 

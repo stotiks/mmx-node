@@ -102,7 +102,7 @@ const handleRemove = () => {
         cancel: true,
         persistent: true,
         ok: {
-            label: "Remove", //TODO i18n
+            label: t("common.remove"),
             color: "negative",
         },
     }).onOk(() => {
