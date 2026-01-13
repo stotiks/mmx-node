@@ -24,21 +24,21 @@
 const { t } = useI18n();
 const rows = computed(() => [
     {
-        label: "No. Blocks", // TODO i18n
+        label: t("farmer_rewards.no_blocks"),
         field: "num_blocks",
     },
     {
-        label: "Last Height", // TODO i18n
+        label: t("farmer_rewards.last_height"),
         field: "last_height",
         format: (last_height) => (last_height > 0 ? last_height : "N/A"),
     },
     {
-        label: "Total Rewards", // TODO i18n
+        label: t("farmer_rewards.total_rewards"),
         field: "total_rewards_value",
         classes: "main-currency",
     },
     {
-        label: "Time to win", // TODO i18n
+        label: t("farmer_rewards.time_to_win"),
         field: () => estTimeToWin,
         format: (item) => `${item.value} (on average)`,
         loading: estTimeToWinLoading.value,
@@ -47,7 +47,7 @@ const rows = computed(() => [
 
 const columns = computed(() => [
     {
-        label: "Reward", //TODO i18n
+        label: t("farmer_rewards.reward"),
         field: (row) => row.value,
         headerStyle: "width: 5%",
     },

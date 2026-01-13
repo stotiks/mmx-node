@@ -77,7 +77,7 @@ const columns = computed(() => [
     },
     // price
     {
-        label: "Price", // TODO i18n
+        label: t("swap.price"),
         field: "price",
         format: (item) => (item != null ? parseFloat(item.toPrecision(6)) : "N/A"),
         //align: "left",

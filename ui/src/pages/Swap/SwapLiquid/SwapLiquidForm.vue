@@ -181,8 +181,9 @@ const { data: currencyWalletBalance } = useWalletBalance(
     () => !!data.value?.tokens[1]
 );
 
-const hasTokenFunds = (value) => value <= tokenWalletBalance.value || "Insufficient funds";
-const hasCurrencyFunds = (value) => value <= currencyWalletBalance.value || "Insufficient funds";
+const { t } = useI18n();
+const hasTokenFunds = (value) => value <= tokenWalletBalance.value || t("swap.insufficient_funds");
+const hasCurrencyFunds = (value) => value <= currencyWalletBalance.value || t("swap.insufficient_funds");
 
 const price = computed(() => {
     if (formData.tokenAmount && formData.currencyAmount) {

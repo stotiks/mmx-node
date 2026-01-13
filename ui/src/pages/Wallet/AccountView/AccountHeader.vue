@@ -11,6 +11,7 @@
         <q-btn
             v-if="rows.with_passphrase"
             :icon="isLocked ? mdiLock : mdiLockOpenVariant"
+            :text-color="isLocked ? 'negative' : 'positive'"
             size="sm"
             round
             class="q-my-auto"
