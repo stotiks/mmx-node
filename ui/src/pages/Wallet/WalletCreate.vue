@@ -48,7 +48,7 @@
                         <q-input
                             v-if="withSeed"
                             v-model="fingerprint"
-                            label="Fingerprint (optional, to validate passphrase)"
+                            :label="$t('create_wallet.fingerprint_label')"
                             outlined
                         />
                     </template>

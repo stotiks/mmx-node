@@ -3,7 +3,11 @@
         <WForm ref="formRef" :data="formData" :default-data="defaultFormData" @submit="handleSubmit">
             <q-card-section>
                 <div class="q-gutter-y-sm">
-                    <q-input v-model="formData.name" :rules="[rules.required]" label="New PlotNFT Name" />
+                    <q-input
+                        v-model="formData.name"
+                        :rules="[rules.required]"
+                        :label="$t('account_plotnfts_create.new_plotnft_name')"
+                    />
                 </div>
 
                 <div class="row justify-end q-col-gutter-sm">

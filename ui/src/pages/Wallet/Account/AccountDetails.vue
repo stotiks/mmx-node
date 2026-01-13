@@ -42,10 +42,11 @@ const props = defineProps({
 
 const appStore = useAppStore();
 
+const { t } = useI18n();
 const columns = computed(() => [
     {
         name: "index",
-        label: "Index", //TODO i18n
+        label: t("account_details.index"),
         field: (data) => data,
         headerClasses: "key-cell",
         classes: " m-bg-grey",
@@ -53,7 +54,7 @@ const columns = computed(() => [
     },
     {
         name: "address",
-        label: "Address", //TODO i18n
+        label: t("account_details.address"),
         field: (data) => data,
         align: "left",
     },

@@ -347,8 +347,6 @@ const _removeAll = async () => {
     await walletSwapRemoveAllLiquidity.mutateAsync(payloadWithPassphrase);
 };
 
-const { t } = useI18n();
-
 import { useConfirmation } from "@/composables/useConfirmation";
 const { withConfirmation } = useConfirmation();
 

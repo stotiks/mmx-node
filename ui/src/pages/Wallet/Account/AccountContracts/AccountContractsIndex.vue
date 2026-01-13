@@ -35,6 +35,7 @@ watchEffect(() => {
     filter.value = filterInit.value;
 });
 
+const { t } = useI18n();
 const filterChips = computed(() => {
     const distinctWalletContractBinaries = Array.from(
         new Set(rows.value.filter((row) => chainBinariesSwapped.value[row.binary]).map((row) => row.binary))
@@ -50,7 +51,7 @@ const filterChips = computed(() => {
 
     if (hasOthers) {
         result.others = {
-            name: "Others", // TODO i18n
+            name: t("account_contracts.others"),
             address: "others",
             key: "others",
         };
