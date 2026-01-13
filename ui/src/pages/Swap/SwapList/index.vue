@@ -39,7 +39,7 @@
 
             <template v-slot:body-cell-actions="bcProps">
                 <q-td :props="bcProps" class="q-gutter-x-xs">
-                    <q-btn :label="t('swap.swap')" outline :to="`/swap/${bcProps.row.address}`" />
+                    <q-btn :label="$t('swap.swap')" outline :to="`/swap/${bcProps.row.address}`" />
                 </q-td>
             </template>
         </q-table>

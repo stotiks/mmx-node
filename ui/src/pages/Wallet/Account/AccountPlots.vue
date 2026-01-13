@@ -23,14 +23,14 @@
             <template v-slot:body-cell-actions="bcProps">
                 <q-td :props="bcProps" class="q-gutter-x-xs">
                     <q-btn
-                        :label="t('account_contract_summary.deposit')"
+                        :label="$t('account_contract_summary.deposit')"
                         :_icon="mdiBankTransferIn"
                         color="positive"
                         outline
                         @click="handleDeposit(bcProps.row.address, bcProps.row.owner)"
                     />
                     <q-btn
-                        :label="t('account_contract_summary.withdraw')"
+                        :label="$t('account_contract_summary.withdraw')"
                         :_icon="mdiBankTransferOut"
                         color="negative"
                         outline
