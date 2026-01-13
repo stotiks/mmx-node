@@ -363,7 +363,8 @@
         "seed_words": "Mnemonic Seed Words (optional, 24 words)",
         "passphrase": "Passphrase (secure password, 10+ characters)",
         "placeholder": "<random>",
-        "create_wallet": "Create Wallet"
+        "create_wallet": "Create Wallet",
+        "fingerprint_needed": "Fingerprint (needed to verify passphrase)"
     },
     "market_menu": {
         "they_offer": "They Offer",

@@ -4,10 +4,17 @@
             <q-card-section>
                 <div class="q-gutter-y-sm">
                     <SeedInput :model-value="seed" readonly />
+                    <q-checkbox
+                        v-if="withPassphrase"
+                        :model-value="withPassphrase"
+                        :label="$t('create_wallet.use_passphrase')"
+                        readonly
+                        disable
+                    />
                     <q-input
                         v-if="withPassphrase"
                         :model-value="fingerPrint"
-                        label="Fingerprint (needed to verify passphrase)"
+                        :label="$t('create_wallet.fingerprint_needed')"
                         input-class="text-bold"
                         readonly
                     />
@@ -15,11 +22,11 @@
             </q-card-section>
             <q-card-actions align="right">
                 <UseClipboard v-slot="{ copy, copied }">
-                    <q-btn label="Copy" flat :icon="mdiContentCopy" @click="copy(seed)">
-                        <q-tooltip :model-value="copied === true" no-parent-event>Copied!</q-tooltip>
+                    <q-btn :label="$t('common.copy')" flat :icon="mdiContentCopy" @click="copy(seed)">
+                        <q-tooltip :model-value="copied === true" no-parent-event>{{ $t("common.copied") }}</q-tooltip>
                     </q-btn>
                 </UseClipboard>
-                <q-btn label="Ok" flat @click="onDialogOK" />
+                <q-btn :label="$t('common.ok')" flat @click="onDialogOK" />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -50,3 +57,10 @@ import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 </script>
+
+<style scoped>
+:deep(.q-checkbox.disabled),
+:deep(.q-checkbox.disabled *) {
+    cursor: default !important;
+}
+</style>
