@@ -61,6 +61,7 @@ const formData = reactive({
     name: "",
     num_addresses: 1,
 });
+
 watchEffect(() => {
     formData.name = account.value.name;
     formData.num_addresses = account.value.num_addresses;
@@ -97,8 +98,8 @@ const handleShowSeed = async () => {
 
 const handleRemove = () => {
     $q.dialog({
-        title: "Remove Wallet", //TODO i18n
-        message: "To recover any funds you will need to re-create the wallet from a stored backup!", //TODO i18n
+        title: t("account_options.remove_wallet_title"),
+        message: t("account_options.remove_wallet_message"),
         cancel: true,
         persistent: true,
         ok: {
@@ -117,8 +118,8 @@ const handleRemove = () => {
 const showRemoveWarning = (keyFile) => {
     $q.dialog({
         type: "warning",
-        title: "Wallet removed", //TODO i18n
-        message: `Wallet file ${keyFile} needs to be deleted manually`, //TODO i18n
+        title: t("account_options.wallet_removed_title"),
+        message: t("account_options.wallet_removed_message", { keyFile }),
         persistent: true,
         cancel: false,
     }).onOk(() => {

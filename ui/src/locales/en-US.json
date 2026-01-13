@@ -188,7 +188,8 @@
     "history": "History",
     "liquidity": "Liquidity",
     "info": "Info",
-    "details": "Details"
+    "details": "Details",
+    "plotnfts": "PlotNFTs"
   },
   "account_addresses": {
     "index": "#",
@@ -369,7 +370,9 @@
     "reward_address": "Reward Address (optional, for pooling)"
   },
   "account_details": {
-    "copy_keys_to_plotter": "Copy keys to plotter"
+    "copy_keys_to_plotter": "Copy keys to plotter",
+    "index": "Index",
+    "address": "Address"
   },
   "account_actions": {
     "reset_cache": "Reset Cache",
@@ -390,7 +393,8 @@
     "passphrase": "Passphrase (secure password, 10+ characters)",
     "placeholder": "<random>",
     "create_wallet": "Create Wallet",
-    "fingerprint_needed": "Fingerprint (needed to verify passphrase)"
+    "fingerprint_needed": "Fingerprint (needed to verify passphrase)",
+    "fingerprint_label": "Fingerprint (optional, to validate passphrase)"
   },
   "market_menu": {
     "they_offer": "They Offer",
@@ -418,7 +422,8 @@
     "spend": "Spend",
     "receive": "Receive",
     "reward": "Reward",
-    "tx_fee": "TX Fee"
+    "tx_fee": "TX Fee",
+    "vdf_reward": "VDF Reward"
   },
   "farmer_menu": {
     "plots": "Plots",
@@ -465,7 +470,9 @@
     "sell": "Sell",
     "buy": "Buy",
     "insufficient_funds": "Insufficient funds",
-    "price": "Price"
+    "price": "Price",
+    "trade_price_avg_fee": "Trade Price (average, including fee)",
+    "no_such_swap": "No such swap"
   },
   "notifications": {
     "peer_kicked": "Peer kicked: {address}",
@@ -507,5 +514,28 @@
   "swap_trade_form": {
     "max_slippage": "Max Slippage",
     "iterations": "Iterations"
+  },
+  "account_contracts": {
+    "others": "Others"
+  },
+  "account_plotnfts": {
+    "pool_server": "Pool Server",
+    "solo_farming_na": "N/A (solo farming)",
+    "unlock_height": "Unlock Height"
+  },
+  "account_plotnfts_create": {
+    "new_plotnft_name": "New PlotNFT Name"
+  },
+  "account_nft": {
+    "nft": "NFT"
+  },
+  "account_view": {
+    "no_such_wallet": "No such wallet"
+  },
+  "account_options": {
+    "remove_wallet_title": "Remove Wallet",
+    "remove_wallet_message": "To recover any funds you will need to re-create the wallet from a stored backup!",
+    "wallet_removed_title": "Wallet removed",
+    "wallet_removed_message": "Wallet file {keyFile} needs to be deleted manually"
   }
 }

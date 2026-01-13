@@ -32,7 +32,7 @@ const tabs = computed(() => [
     { to: `/wallet/account/${props.index}/log`, label: t("account_menu.log") },
     { to: `/wallet/account/${props.index}/offer`, label: t("account_menu.offer"), badge: offersWithAskBalance.value },
     { to: `/wallet/account/${props.index}/liquid`, label: t("account_menu.liquidity") },
-    { to: `/wallet/account/${props.index}/plotnfts`, label: "PlotNFTs" },
+    { to: `/wallet/account/${props.index}/plotnfts`, label: t("account_menu.plotnfts") },
     { to: `/wallet/account/${props.index}/details`, label: t("account_menu.info") },
     { to: `/wallet/account/${props.index}/options`, icon: mdiCog },
 ]);
