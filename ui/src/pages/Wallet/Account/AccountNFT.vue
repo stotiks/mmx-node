@@ -32,7 +32,7 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const columns = computed(() => [{ label: "NFT", field: "item", align: "left" }]);
+const columns = computed(() => [{ label: t("account_nft.nft"), field: "item", align: "left" }]);
 
 import { useWalletBalance } from "@/queries/wapi";
 const { rows, loading } = useWalletBalance(

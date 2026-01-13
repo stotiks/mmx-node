@@ -8,7 +8,7 @@
         </div>
     </template>
     <template v-else>
-        <EmptyState title="No such wallet" :icon="mdiWallet" />
+        <EmptyState :title="$t('account_view.no_such_wallet')" :icon="mdiWallet" />
     </template>
 </template>
 

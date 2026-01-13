@@ -22,7 +22,7 @@
                                 style="border-style: none !important"
                             >
                                 <q-btn
-                                    label="Logout"
+                                    :label="$t('main_menu.logout')"
                                     :icon="mdiLogout"
                                     color="secondary"
                                     size="sm"
