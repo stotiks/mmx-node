@@ -19,7 +19,7 @@ export function useExportTable() {
         return `"${formatted}"`;
     };
 
-    const exportTable = (rows, columns, filename = "export.csv") => {
+    const exportTable = (rows, columns, filename = "export") => {
         // naive encoding to csv format
         const content = [columns.map((col) => wrapCsvValue(col.label))]
             .concat(
@@ -39,7 +39,7 @@ export function useExportTable() {
             )
             .join("\r\n");
 
-        const status = exportFile(filename, content, "text/csv");
+        const status = exportFile(`${filename}.csv`, content, "text/csv");
 
         if (status !== true) {
             $q.notify({
