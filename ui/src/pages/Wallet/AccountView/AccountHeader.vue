@@ -15,7 +15,11 @@
             round
             class="q-my-auto"
             @click="handleToggleLock"
-        />
+        >
+            <q-tooltip>
+                {{ isLocked ? $t("common.unlock") : $t("common.lock") }}
+            </q-tooltip>
+        </q-btn>
     </div>
 </template>
 
