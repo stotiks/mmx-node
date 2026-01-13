@@ -6,18 +6,18 @@
                     <div class="row q-gutter-x-sm">
                         <q-input
                             v-model="formData.name"
-                            :label="t('create_wallet.account_name')"
+                            :label="$t('create_wallet.account_name')"
                             readonly
                             class="col"
                         />
                         <q-input
                             v-model.number="formData.num_addresses"
-                            :label="t('create_wallet.number_of_addresses')"
+                            :label="$t('create_wallet.number_of_addresses')"
                             class="col-3"
                         />
                     </div>
                     <div class="q-mt-md row justify-end">
-                        <q-btn label="Update" type="submit" color="positive" outline class="col-2" />
+                        <q-btn :label="$t('common.update')" type="submit" color="positive" outline class="col-2" />
                     </div>
                 </q-form>
             </q-card-section>
@@ -28,7 +28,14 @@
                 <q-btn :label="$t('account_actions.reset_cache')" color="secondary" outline @click="handleResetCache" />
 
                 <q-btn :label="$t('account_actions.show_seed')" color="secondary" outline @click="handleShowSeed" />
-                <q-btn v-if="index >= 100" color="negative" outline @click="handleRemove">Remove</q-btn>
+
+                <q-btn
+                    v-if="index >= 100"
+                    :label="$t('common.remove')"
+                    color="negative"
+                    outline
+                    @click="handleRemove"
+                />
             </q-card-section>
         </q-card>
     </div>
