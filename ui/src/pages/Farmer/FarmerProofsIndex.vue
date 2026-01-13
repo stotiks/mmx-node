@@ -35,7 +35,7 @@ const { t } = useI18n();
 const columns = computed(() => [
     {
         name: "height",
-        label: "VDF height", //TODO i18n
+        label: t("farmer_proofs.vdf_height"),
         field: "vdf_height",
         headerStyle: "width: 7%",
     },

@@ -31,7 +31,7 @@ const infoTiles = computed(() => [
     },
     {
         field: "total_bytes_effective",
-        label: "Effective Size", // TODO i18n
+        label: t("farmer_info.effective_size"),
         format: (item) => `${(item / Math.pow(1000, 4)).toFixed(3)} TBe`,
     },
 ]);
@@ -39,11 +39,11 @@ const infoTiles = computed(() => [
 const summaryTiles = computed(() => [
     {
         field: "num_blocks",
-        label: "No. Blocks", // TODO i18n
+        label: t("farmer_info.no_blocks"),
     },
     {
         field: "total_rewards_value",
-        label: "Total Rewards", // TODO i18n
+        label: t("farmer_info.total_rewards"),
         format: (item) => `${(item ?? 0).toFixed(3)} MMX`,
     },
 ]);

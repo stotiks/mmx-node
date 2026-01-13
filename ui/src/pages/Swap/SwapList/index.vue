@@ -81,7 +81,7 @@ const columns = computed(() => [
     {
         label: t("common.price"),
         field: "price",
-        format: (item) => (item ? parseFloat(item.toPrecision(6)) : "N/A"),
+        format: (item) => (item ? parseFloat(item.toPrecision(6)) : t("common.na")),
         headerStyle: "width: 8%",
         align: "right",
         headerClasses: "dense-amount",

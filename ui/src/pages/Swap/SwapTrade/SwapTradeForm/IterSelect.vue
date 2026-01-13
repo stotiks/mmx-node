@@ -1,5 +1,5 @@
 <template>
-    <q-select v-bind="$attrs" :options="iterItems" emit-value map-options label="Iterations" />
+    <q-select v-bind="$attrs" :options="iterItems" emit-value map-options :label="$t('swap_trade_form.iterations')" />
 </template>
 
 <script setup>
