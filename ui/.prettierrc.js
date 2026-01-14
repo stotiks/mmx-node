@@ -9,7 +9,7 @@ const config = {
     singleQuote: false,
     overrides: [
         {
-            files: "package.json",
+            files: ["package.json", "tsconfig.json"],
             options: {
                 tabWidth: 2,
             },
