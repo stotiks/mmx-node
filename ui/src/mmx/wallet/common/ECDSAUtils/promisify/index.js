@@ -1,4 +1,4 @@
-import { executeECDSAFunctionWithCallbacks } from "./utils/execECDSAFunction";
+import { executeECDSAFunctionAsync } from "./utils/execECDSAFunctionAsync";
 import PromisifyWorker from "./worker?worker&inline";
 
 export const promisify = (fnName, args) => {
@@ -18,12 +18,12 @@ export const promisify = (fnName, args) => {
             worker.onerror = reject;
             worker.postMessage({ fnName, args });
         } else {
-            const exec = async () => await executeECDSAFunctionWithCallbacks(fnName, args, resolve, reject);
+            const execFn = async () => await executeECDSAFunctionAsync(fnName, args).then(resolve).catch(reject);
 
             if (typeof queueMicrotask !== "undefined") {
-                queueMicrotask(exec);
+                queueMicrotask(execFn);
             } else {
-                setTimeout(exec, 0);
+                setTimeout(execFn, 0);
             }
         }
     });
