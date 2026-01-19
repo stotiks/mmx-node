@@ -8,7 +8,7 @@ import highlight from "@/plugins/highlight";
 
 export function registerPlugins(app) {
     app.use(Quasar, quasarConfig);
-    app.use(router);    
+    app.use(router);
     app.use(i18n);
     app.use(pinia);
     app.use(VueQueryPlugin, vueQueryPluginOptions);
