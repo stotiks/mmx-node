@@ -1,6 +1,6 @@
 import { createI18n } from "vue-i18n";
 import commonMessages from "@/locales/common.json";
-import enMessages from "@/locales/en-US.json";
+import defaultMessages from "@/locales/en-US.json";
 import { default as enQLocale } from "/node_modules/quasar/lang/en-US.js";
 
 export const availableLanguages = [
@@ -45,7 +45,7 @@ const setI18nLanguage = (i18n, locale) => {
 };
 
 export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
-    const locale = toValue(validateLocale(_locale));
+    const locale = validateLocale(_locale);
     try {
         const lang = await quasarLanguagePacks[`/node_modules/quasar/lang/${locale}.js`]();
         Lang.set(lang);
@@ -54,7 +54,8 @@ export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
     }
 
     const setLocaleAndMessages = (locale, messages) => {
-        i18n.global.setLocaleMessage(locale, mergeDeep({}, commonMessages, messages));
+        i18n.global.setLocaleMessage(locale, commonMessages);
+        i18n.global.mergeLocaleMessage(locale, messages);
         setI18nLanguage(i18n, locale);
     };
 
@@ -62,43 +63,17 @@ export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
         const messages = await locales[`/src/locales/${locale}.json`]();
         setLocaleAndMessages(locale, messages);
     } catch (err) {
-        setLocaleAndMessages(defaultLocale, enMessages);
+        setLocaleAndMessages(defaultLocale, defaultMessages);
     }
 };
 
-export const validateLocale = (locale) => {
-    if (availableLanguages.some((language) => language.value == toValue(locale))) {
+export const validateLocale = (_locale) => {
+    const locale = toValue(_locale);
+    if (availableLanguages.some((language) => language.value == locale)) {
         return locale;
     } else {
         return defaultLocale;
     }
-};
-
-const isObject = (item) => {
-    return item && typeof item === "object" && !Array.isArray(item);
-};
-
-const mergeDeep = (target, ...sources) => {
-    if (!sources.length) return target;
-    const source = sources.shift();
-
-    if (isObject(target) && isObject(source)) {
-        for (const key in source) {
-            if (isObject(source[key])) {
-                if (!target[key])
-                    Object.assign(target, {
-                        [key]: {},
-                    });
-                mergeDeep(target[key], source[key]);
-            } else {
-                Object.assign(target, {
-                    [key]: source[key],
-                });
-            }
-        }
-    }
-
-    return mergeDeep(target, ...sources);
 };
 
 const i18n = createI18n({
@@ -107,8 +82,10 @@ const i18n = createI18n({
     locale: defaultLocale,
     fallbackLocale: defaultLocale,
     messages: {
-        "en-US": mergeDeep({}, commonMessages, enMessages),
+        [defaultLocale]: defaultMessages,
     },
 });
+
+i18n.global.mergeLocaleMessage(defaultLocale, commonMessages);
 
 export default i18n;
