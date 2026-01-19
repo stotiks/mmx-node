@@ -1,7 +1,8 @@
 import { createI18n } from "vue-i18n";
+import { Lang } from "quasar";
 import commonMessages from "@/locales/common.json";
 import defaultMessages from "@/locales/en-US.json";
-import { default as enQLocale } from "/node_modules/quasar/lang/en-US.js";
+import { default as defaultQuasarLanguagePack } from "quasar/lang/en-US.js";
 
 export const availableLanguages = [
     { value: "en-US", label: "English" },
@@ -17,17 +18,18 @@ export const availableLanguages = [
 
 export const defaultLocale = availableLanguages[0].value;
 
-// const availableLanguagesList = availableLanguages.map((item) => item.value);
-// console.log(availableLanguagesList.join("|"));
-
 // https://quasar.dev/options/quasar-language-packs/#dynamical-non-ssr-
-import { Lang } from "quasar";
-const quasarLanguagePacks = import.meta.glob("/node_modules/quasar/lang/(id|de|es|nl|pt|ru|uk|zh-CN).js", {
+const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(id|de|es|nl|pt|ru|uk|zh-CN).js", {
     import: "default",
 });
 
 const locales = import.meta.glob("@/locales/(id|de|es|nl|pt|ru|uk|zh-CN).json");
 
+/**
+ * Updates the current locale for the i18n instance and the HTML lang attribute
+ * @param {import('vue-i18n').I18n} i18n - The vue-i18n instance
+ * @param {string} locale - The locale code to set
+ */
 const setI18nLanguage = (i18n, locale) => {
     if (i18n.mode === "legacy") {
         i18n.global.locale = locale;
@@ -44,13 +46,21 @@ const setI18nLanguage = (i18n, locale) => {
     document.querySelector("html").setAttribute("lang", locale);
 };
 
+/**
+ * Loads and sets the i18n language asynchronously
+ * @param {import('vue-i18n').I18n} i18n - The vue-i18n instance
+ * @param {string|import('vue').Ref<string>} _locale - Locale to load (can be a Vue ref)
+ */
 export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
     const locale = validateLocale(_locale);
+
+    // Load Quasar language pack
     try {
-        const lang = await quasarLanguagePacks[`/node_modules/quasar/lang/${locale}.js`]();
+        const lang = await quasarLanguagePacks[`../../node_modules/quasar/lang/${locale}.js`]();
         Lang.set(lang);
     } catch (err) {
-        Lang.set(enQLocale);
+        console.warn(`Failed to load Quasar language pack for "${locale}", falling back to en-US`, err);
+        Lang.set(defaultQuasarLanguagePack);
     }
 
     const setLocaleAndMessages = (locale, messages) => {
@@ -59,19 +69,29 @@ export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
         setI18nLanguage(i18n, locale);
     };
 
+    // Load locale messages
     try {
         const messages = await locales[`/src/locales/${locale}.json`]();
         setLocaleAndMessages(locale, messages);
     } catch (err) {
+        console.warn(`Failed to load messages for "${locale}", falling back to ${defaultLocale}`, err);
         setLocaleAndMessages(defaultLocale, defaultMessages);
     }
 };
 
+/**
+ * Validates and normalizes a locale value
+ * @param {string|import('vue').Ref<string>} _locale - Locale to validate (can be a Vue ref)
+ * @returns {string} Validated locale or defaultLocale if invalid
+ */
 export const validateLocale = (_locale) => {
     const locale = toValue(_locale);
-    if (availableLanguages.some((language) => language.value == locale)) {
+    if (availableLanguages.some((language) => language.value === locale)) {
         return locale;
     } else {
+        if (locale !== defaultLocale) {
+            console.warn(`Invalid locale "${locale}", falling back to ${defaultLocale}`);
+        }
         return defaultLocale;
     }
 };
