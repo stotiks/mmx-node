@@ -4,6 +4,8 @@ import commonMessages from "@/locales/common.json";
 import defaultMessages from "@/locales/en-US.json";
 import { default as defaultQuasarLanguagePack } from "quasar/lang/en-US.js";
 
+export const defaultLocale = "en-US";
+
 export const availableLanguages = [
     { value: "en-US", label: "English" },
     { value: "id", label: "Bahasa Indonesia" },
@@ -15,8 +17,6 @@ export const availableLanguages = [
     { value: "uk", label: "Українська" },
     { value: "zh-CN", label: "简体中文" },
 ];
-
-export const defaultLocale = availableLanguages[0].value;
 
 // https://quasar.dev/options/quasar-language-packs/#dynamical-non-ssr-
 const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(id|de|es|nl|pt|ru|uk|zh-CN).js", {
@@ -64,8 +64,9 @@ export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
     }
 
     const setLocaleAndMessages = (locale, messages) => {
-        i18n.global.setLocaleMessage(locale, commonMessages);
+        i18n.global.setLocaleMessage(locale, {});
         i18n.global.mergeLocaleMessage(locale, messages);
+        i18n.global.mergeLocaleMessage(locale, commonMessages);
         setI18nLanguage(i18n, locale);
     };
 
