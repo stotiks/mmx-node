@@ -1,8 +1,6 @@
 import { createI18n } from "vue-i18n";
 import { Lang } from "quasar";
 import commonMessages from "@/locales/common.json";
-import defaultMessages from "@/locales/en-US.json";
-import { default as defaultQuasarLanguagePack } from "quasar/lang/en-US.js";
 
 export const defaultLocale = "en-US";
 
@@ -18,33 +16,15 @@ export const availableLanguages = [
     { value: "zh-CN", label: "简体中文" },
 ];
 
+const locales = import.meta.glob("@/locales/(en-US|id|de|es|nl|pt|ru|uk|zh-CN).json");
+
 // https://quasar.dev/options/quasar-language-packs/#dynamical-non-ssr-
-const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(id|de|es|nl|pt|ru|uk|zh-CN).js", {
+const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(en-US|id|de|es|nl|pt|ru|uk|zh-CN).js", {
     import: "default",
 });
 
-const locales = import.meta.glob("@/locales/(id|de|es|nl|pt|ru|uk|zh-CN).json");
-
-/**
- * Updates the current locale for the i18n instance and the HTML lang attribute
- * @param {import('vue-i18n').I18n} i18n - The vue-i18n instance
- * @param {string} locale - The locale code to set
- */
-const setI18nLanguage = (i18n, locale) => {
-    if (i18n.mode === "legacy") {
-        i18n.global.locale = locale;
-    } else {
-        i18n.global.locale.value = locale;
-    }
-    /**
-     * NOTE:
-     * If you need to specify the language setting for headers, such as the `fetch` API, set it here.
-     * The following is an example for axios.
-     *
-     * axios.defaults.headers.common['Accept-Language'] = locale
-     */
-    document.querySelector("html").setAttribute("lang", locale);
-};
+const defaultMessages = await locales[`/src/locales/${defaultLocale}.json`]();
+const defaultQuasarLanguagePack = await quasarLanguagePacks[`../../node_modules/quasar/lang/${defaultLocale}.js`]();
 
 /**
  * Loads and sets the i18n language asynchronously
@@ -67,7 +47,9 @@ export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
         i18n.global.setLocaleMessage(locale, {});
         i18n.global.mergeLocaleMessage(locale, messages);
         i18n.global.mergeLocaleMessage(locale, commonMessages);
-        setI18nLanguage(i18n, locale);
+
+        i18n.global.locale.value = locale;
+        document.querySelector("html").setAttribute("lang", locale);
     };
 
     // Load locale messages
@@ -103,7 +85,7 @@ const i18n = createI18n({
     locale: defaultLocale,
     fallbackLocale: defaultLocale,
     messages: {
-        [defaultLocale]: defaultMessages,
+        [defaultLocale]: { ...defaultMessages },
     },
 });
 
