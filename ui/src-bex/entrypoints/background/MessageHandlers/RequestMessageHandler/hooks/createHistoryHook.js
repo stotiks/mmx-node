@@ -6,7 +6,7 @@ export const createHistoryHook = () => {
         Object.fromEntries(Object.entries(context).filter(([key]) => key !== "handler" && key !== "result.data"));
 
     return async (context) => {
-        const isAcceptRequired = context.handler.metadata?.isAcceptRequired ?? true;
+        const isAcceptRequired = context.handler.body.metadata?.isAcceptRequired ?? true;
 
         if (isAcceptRequired) {
             // TODO: check if vault is unlocked and url has permissions
