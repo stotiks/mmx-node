@@ -1,7 +1,7 @@
 import { defineBackground } from "#imports";
 import { backgroundMessenger } from "@bex/messaging/entrypointMessengers/background";
-import { vaultMessageHandler } from "./MessageHandlers/VaultMessageHandler";
-import { requestMessageHandler } from "./MessageHandlers/RequestMessageHandler";
+import { vaultMessageHandler } from "./MessageHandlers/vaultMessageHandler";
+import { requestMessageHandler } from "./MessageHandlers/requestMessageHandler";
 import vault from "@bex/entrypoints/background/vault";
 
 export default defineBackground(() => {
