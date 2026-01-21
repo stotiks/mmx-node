@@ -1,4 +1,4 @@
-import vault from "@bex/entrypoints/background/Vault";
+import vault from "@bex/entrypoints/background/vault";
 
 /**
  * Creates a pre-hook that blocks vault method calls when the vault is locked
