@@ -9,10 +9,10 @@ import {
     getSendTxAsync,
     signMessageAsync,
     signTransactionAsync,
-} from "@bex/entrypoints/background/Vault/walletHelpers";
+} from "@bex/entrypoints/background/vault/walletHelpers";
 
 import { notificationMessenger } from "@bex/entrypoints/background/NotificationMessenger";
-import vault from "@bex/entrypoints/background/Vault";
+import vault from "@bex/entrypoints/background/vault";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 
 const $method = (fn, metadata = {}) => {

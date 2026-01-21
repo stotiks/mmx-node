@@ -1,5 +1,5 @@
 import { MessageHandler } from "@bex/messaging/MessageHandler";
-import vault from "@bex/entrypoints/background/Vault";
+import vault from "@bex/entrypoints/background/vault";
 import { createBlockECDSAWalletHook } from "./hooks/createBlockECDSAWalletHook";
 import { createVaultLockHook } from "./hooks/createVaultLockHook";
 
