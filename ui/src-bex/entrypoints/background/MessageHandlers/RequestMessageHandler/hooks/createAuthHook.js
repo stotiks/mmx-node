@@ -1,4 +1,4 @@
-import { notificationMessenger } from "../../../utils/notificationMessenger";
+import { notificationMessenger } from "@bex/entrypoints/background/NotificationMessenger";
 
 import vault from "@bex/entrypoints/background/Vault";
 
