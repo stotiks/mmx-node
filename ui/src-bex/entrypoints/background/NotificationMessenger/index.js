@@ -1,4 +1,4 @@
-import { openNotificationAsync } from "@bex/entrypoints/background/utils/openNotification";
+import { openNotificationAsync } from "./openNotification";
 import { backgroundMessenger } from "@bex/messaging/entrypointMessengers/background";
 
 const _sendMessageAsync = async (payload) =>
