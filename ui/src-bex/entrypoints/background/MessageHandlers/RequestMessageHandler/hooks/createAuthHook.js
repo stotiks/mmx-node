@@ -21,7 +21,7 @@ export const createAuthHook = () => {
         const tabId = message.sender.tabId;
         const url = await getTabUrl(tabId);
 
-        const isAcceptRequired = handler.metadata?.isAcceptRequired ?? true;
+        const isAcceptRequired = handler.body.metadata?.isAcceptRequired ?? true;
 
         const checkVaultPermissionsAsync = async () => await vault.checkUrlPermissionsAsync(url).catch(() => false);
         const _hasPermissions = (await checkVaultPermissionsAsync()) === true;

@@ -65,17 +65,14 @@ export class MessageHandler {
             methodCC.replace(/Async$/, ""), // Camel-cased with "Async" suffix removed
         ];
 
-        let foundHandler;
-
-        for (const handlerName of new Set(potentialHandlerNames)) {
-            const handler = this.#methods[handlerName];
-            if (typeof handler === "function") {
-                foundHandler = handler;
-                break;
+        for (const name of new Set(potentialHandlerNames)) {
+            const body = this.#methods[name];
+            if (typeof body === "function") {
+                return { body, name };
             }
         }
 
-        return foundHandler;
+        return null;
     }
 
     async handleAsync(message) {
@@ -91,7 +88,7 @@ export class MessageHandler {
         let result = { success: false, error: "Unknown error" };
         try {
             await this.#runHooksAsync(context);
-            const callResult = await handler.call(this.#methods, params);
+            const callResult = await handler.body.call(this.#methods, params);
             result = { success: true, data: callResult };
             await this.#runSuccessHooksAsync({ ...context, result });
         } catch (error) {
