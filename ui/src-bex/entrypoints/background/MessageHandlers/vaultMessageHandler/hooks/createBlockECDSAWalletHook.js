@@ -7,7 +7,7 @@
  *
  * @returns {Function} Pre-hook function that receives context and throws error if blocked
  */
-export const createBlockECDSAWalletHook = () => {
+const createBlockECDSAWalletHook = () => {
     return async (context) => {
         const { handler } = context;
 
@@ -21,3 +21,5 @@ export const createBlockECDSAWalletHook = () => {
         }
     };
 };
+
+export default createBlockECDSAWalletHook;

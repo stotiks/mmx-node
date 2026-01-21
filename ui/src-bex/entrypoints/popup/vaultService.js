@@ -1,4 +1,4 @@
-import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
+import popupMessenger from "@bex/messaging/entrypointMessengers/popup";
 
 class DynamicMessageService {
     constructor(messageID, sendMessageAsync, errorHandler) {

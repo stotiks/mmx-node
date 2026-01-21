@@ -1,6 +1,6 @@
 import vault from "@bex/entrypoints/background/vault";
 
-export const createHistoryHook = () => {
+const createHistoryHook = () => {
     // remove "handler" and "result.data"
     const ctxCleanup = (context) =>
         Object.fromEntries(Object.entries(context).filter(([key]) => key !== "handler" && key !== "result.data"));
@@ -15,3 +15,5 @@ export const createHistoryHook = () => {
         }
     };
 };
+
+export default createHistoryHook;

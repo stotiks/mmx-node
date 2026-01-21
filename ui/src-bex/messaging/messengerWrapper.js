@@ -32,10 +32,12 @@ const sendMessageWrapper = (sendMessage) => async (messageID, payload, target) =
     }
 };
 
-export const messengerWrapper = (messenger) => ({
+const messengerWrapper = (messenger) => ({
     sendMessageAsync: sendMessageWrapper(messenger.sendMessage),
     onMessage: (messageID, callback) => messenger.onMessage(messageID, callbackGuard(callback)),
     onWindowMessage: messenger.onMessage,
     allowWindowMessaging: messenger.allowWindowMessaging?.bind(null, namespace),
     setNamespace: messenger.setNamespace?.bind(null, namespace),
 });
+
+export default messengerWrapper;

@@ -9,7 +9,7 @@ import vault from "@bex/entrypoints/background/vault";
  *
  * @returns {Function} Pre-hook function that receives context and throws error if vault is locked
  */
-export const createVaultLockHook = () => {
+const createVaultLockHook = () => {
     // Methods that are allowed even when the vault is locked
     const allowedWhenLocked = ["unlockAsync", "getIsUnlocked", "initAsync", "getIsInitializedAsync", "clearAllAsync"];
 
@@ -31,3 +31,5 @@ export const createVaultLockHook = () => {
         }
     };
 };
+
+export default createVaultLockHook;
