@@ -1,7 +1,7 @@
 import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 import { Transaction } from "@/mmx/wallet/Transaction";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { getNodeInfoAsync, broadcastTransactionAsync, validateTransactionAsync } from "../queries";
+import { getNodeInfoAsync, broadcastTransactionAsync, validateTransactionAsync } from "../../queries";
 
 import {
     getCurrentWallet,
@@ -9,10 +9,10 @@ import {
     getSendTxAsync,
     signMessageAsync,
     signTransactionAsync,
-} from "../utils/walletHelpers";
+} from "../../utils/walletHelpers";
 
 import vault from "@bex/entrypoints/background/Vault";
-import { notificationMessenger } from "../utils/notificationMessenger";
+import { notificationMessenger } from "../../utils/notificationMessenger";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 
 const $method = (fn, metadata = {}) => {
