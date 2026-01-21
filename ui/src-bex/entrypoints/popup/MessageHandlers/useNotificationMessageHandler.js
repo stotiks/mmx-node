@@ -1,4 +1,4 @@
-import { popupMessenger } from "@bex/messaging/entrypointMessengers/popup";
+import popupMessenger from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
 import { useTimeoutFn } from "@vueuse/core";
 

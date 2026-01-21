@@ -10,7 +10,7 @@ const waitForConditionAsync = async (checkFunction, interval = 100) => {
 let notificationWindowId = null;
 let isNotificationLoaded = false;
 
-export const openNotificationAsync = async () => {
+const openNotificationAsync = async () => {
     if (notificationWindowId) {
         const views = await browser.runtime.getContexts({ windowIds: [notificationWindowId] });
         if (views.length > 0) {
@@ -65,3 +65,5 @@ export const openNotificationAsync = async () => {
         await waitForConditionAsync(() => isNotificationLoaded === true);
     }
 };
+
+export default openNotificationAsync;
