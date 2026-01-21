@@ -1,4 +1,4 @@
-import { notificationMessenger } from "@bex/entrypoints/background/notificationMessenger";
+import notificationMessenger from "@bex/entrypoints/background/notificationMessenger";
 
 import vault from "@bex/entrypoints/background/vault";
 
@@ -9,7 +9,7 @@ const getTabUrl = async (tabId) => {
     return url;
 };
 
-export const createAuthHook = () => {
+const createAuthHook = () => {
     return async (context) => {
         const { message, handler } = context;
         console.log("Checking permissions...");
@@ -50,3 +50,5 @@ export const createAuthHook = () => {
         }
     };
 };
+
+export default createAuthHook;
