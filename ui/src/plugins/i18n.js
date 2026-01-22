@@ -3,6 +3,8 @@ import { Lang } from "quasar";
 import commonMessages from "@/locales/common.json";
 
 export const defaultLocale = "en-US";
+import defaultMessages from "@/locales/en-US.json";
+import defaultQuasarLanguagePack from "quasar/lang/en-US.js";
 
 export const availableLanguages = [
     { value: "en-US", label: "English" },
@@ -23,15 +25,23 @@ const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(en
     import: "default",
 });
 
-const defaultMessages = await locales[`/src/locales/${defaultLocale}.json`]();
-const defaultQuasarLanguagePack = await quasarLanguagePacks[`../../node_modules/quasar/lang/${defaultLocale}.js`]();
+const i18n = createI18n({
+    globalInjection: true,
+    legacy: false,
+    locale: defaultLocale,
+    fallbackLocale: defaultLocale,
+    messages: {
+        [defaultLocale]: { ...defaultMessages },
+    },
+});
+
+i18n.global.mergeLocaleMessage(defaultLocale, commonMessages);
 
 /**
  * Loads and sets the i18n language asynchronously
- * @param {import('vue-i18n').I18n} i18n - The vue-i18n instance
  * @param {string|import('vue').Ref<string>} _locale - Locale to load (can be a Vue ref)
  */
-export const loadAndSetI18nLanguageAsync = async (i18n, _locale) => {
+export const loadAndSetI18nLanguageAsync = async (_locale) => {
     const locale = validateLocale(_locale);
 
     // Load Quasar language pack
@@ -78,17 +88,4 @@ export const validateLocale = (_locale) => {
         return defaultLocale;
     }
 };
-
-const i18n = createI18n({
-    globalInjection: true,
-    legacy: false,
-    locale: defaultLocale,
-    fallbackLocale: defaultLocale,
-    messages: {
-        [defaultLocale]: { ...defaultMessages },
-    },
-});
-
-i18n.global.mergeLocaleMessage(defaultLocale, commonMessages);
-
 export default i18n;
