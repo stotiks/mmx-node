@@ -35,7 +35,7 @@ export const createWalletModule = (dependencies = {}) => {
         return wallets$$sensitive;
     };
 
-    const setWalletsAsync$$sensitive = async ({ wallets$$sensitive }) => {
+    const setWalletsAsync$$sensitive = async (wallets$$sensitive) => {
         await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
         cacheCleanedWallets(wallets$$sensitive);
     };
@@ -68,7 +68,7 @@ export const createWalletModule = (dependencies = {}) => {
 
         const wallets$$sensitive = await getWalletsAsync$$sensitive();
         wallets$$sensitive.push(newWallet$$sensitive);
-        await setWalletsAsync$$sensitive({ wallets$$sensitive });
+        await setWalletsAsync$$sensitive(wallets$$sensitive);
 
         eventModule.emit("wallet-added", { address });
         return walletCleanup(newWallet$$sensitive);
@@ -84,7 +84,7 @@ export const createWalletModule = (dependencies = {}) => {
 
         wallets$$sensitive.splice(index, 1);
 
-        await setWalletsAsync$$sensitive({ wallets$$sensitive });
+        await setWalletsAsync$$sensitive(wallets$$sensitive);
         eventModule.emit("wallet-removed", { address });
     };
 
