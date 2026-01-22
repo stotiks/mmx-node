@@ -32,6 +32,10 @@ export const createWalletModule = (dependencies = {}) => {
         const wallets$$sensitive = data$$sensitive?.wallets ?? [];
 
         cacheCleanedWallets(wallets$$sensitive);
+        if (!currentWalletAddress) {
+            currentWalletAddress = wallets$$sensitive[0]?.address;
+        }
+
         return wallets$$sensitive;
     };
 
