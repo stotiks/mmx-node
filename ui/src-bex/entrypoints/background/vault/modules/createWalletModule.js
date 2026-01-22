@@ -15,18 +15,42 @@ export const createWalletModule = (dependencies = {}) => {
      * @returns {Object} Cleaned wallet object
      */
     const walletCleanup = ({ seed, password, ...wallet }) => wallet;
+    const walletsCleanup = (wallets) => wallets.map(walletCleanup);
+
+    let cleanedWalletsCache = null;
+
+    eventModule.on("locked", () => {
+        cleanedWalletsCache = null;
+    });
+
+    const cacheCleanedWallets = async (wallets$$sensitive) => {
+        cleanedWalletsCache = walletsCleanup(wallets$$sensitive);
+    };
 
     const getWalletsAsync$$sensitive = async () => {
-        const data = await walletBoundStorage.getAsync();
-        const wallets = data?.wallets ?? [];
+        const data$$sensitive = await walletBoundStorage.getAsync();
+        const wallets$$sensitive = data$$sensitive?.wallets ?? [];
 
-        return wallets;
+        cacheCleanedWallets(wallets$$sensitive);
+        return wallets$$sensitive;
     };
 
-    const getWalletsAsync = async () => {
-        const wallets = await getWalletsAsync$$sensitive();
-        return wallets.map((wallet) => walletCleanup(wallet));
+    const setWalletsAsync$$sensitive = async ({ wallets$$sensitive }) => {
+        await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
+        cacheCleanedWallets(wallets$$sensitive);
     };
+
+    const getCleanedWalletsAsync = async () => {
+        if (cleanedWalletsCache) {
+            return cleanedWalletsCache;
+        }
+
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
+        const cleanedWallets = walletsCleanup(wallets$$sensitive);
+        return cleanedWallets;
+    };
+
+    const getWalletsAsync = getCleanedWalletsAsync;
 
     const addWalletAsync = async ({ mnemonic, password }) => {
         // Create ECDSA wallet to validate mnemonic and get address
@@ -37,13 +61,14 @@ export const createWalletModule = (dependencies = {}) => {
         const newWallet$$sensitive = { address, seed, password };
 
         // Check for duplicate wallets
-        const wallets$$sensitive = await getWalletsAsync$$sensitive();
-        if (wallets$$sensitive.some((wallet) => wallet.address === address)) {
+        const wallets = await getWalletsAsync();
+        if (wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
         wallets$$sensitive.push(newWallet$$sensitive);
-        await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
+        await setWalletsAsync$$sensitive({ wallets$$sensitive });
 
         eventModule.emit("wallet-added", { address });
         return walletCleanup(newWallet$$sensitive);
@@ -59,7 +84,7 @@ export const createWalletModule = (dependencies = {}) => {
 
         wallets$$sensitive.splice(index, 1);
 
-        await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
+        await setWalletsAsync$$sensitive({ wallets$$sensitive });
         eventModule.emit("wallet-removed", { address });
     };
 
