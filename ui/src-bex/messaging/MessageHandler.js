@@ -75,6 +75,17 @@ export class MessageHandler {
         return null;
     }
 
+    #normalizeErrorMessage(error) {
+        const errorMessage = error.message || error;
+
+        // Map known error messages to user-friendly versions
+        if (errorMessage === "Transaction was ended before it could complete") {
+            return "Request aborted";
+        }
+
+        return errorMessage;
+    }
+
     async handleAsync(message) {
         const { method, params } = message.data;
         const handler = this.#findHandler(method);
@@ -92,11 +103,13 @@ export class MessageHandler {
             result = { success: true, data: callResult };
             await this.#runSuccessHooksAsync({ ...context, result });
         } catch (error) {
-            // Transaction was ended before it could complete
+            const errorMessage = this.#normalizeErrorMessage(error);
+
             if (process.env.NODE_ENV === "development") {
-                console.error(`Error handling method [${method}]:`, error.message || error);
+                console.error(`Error handling method [${method}]:`, errorMessage);
             }
-            result = { success: false, error: error.message || error };
+
+            result = { success: false, error: errorMessage };
             await this.#runFailHooksAsync({ ...context, result });
         }
 
