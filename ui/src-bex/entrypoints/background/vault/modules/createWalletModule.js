@@ -19,7 +19,7 @@ export const createWalletModule = (dependencies = {}) => {
 
     let cleanedWalletsCache = null;
 
-    eventModule.on("locked", () => {
+    eventModule?.on("locked", () => {
         cleanedWalletsCache = null;
     });
 
@@ -74,7 +74,7 @@ export const createWalletModule = (dependencies = {}) => {
         wallets$$sensitive.push(newWallet$$sensitive);
         await setWalletsAsync$$sensitive(wallets$$sensitive);
 
-        eventModule.emit("wallet-added", { address });
+        eventModule?.emit("wallet-added", { address });
         return walletCleanup(newWallet$$sensitive);
     };
 
@@ -89,7 +89,7 @@ export const createWalletModule = (dependencies = {}) => {
         wallets$$sensitive.splice(index, 1);
 
         await setWalletsAsync$$sensitive(wallets$$sensitive);
-        eventModule.emit("wallet-removed", { address });
+        eventModule?.emit("wallet-removed", { address });
     };
 
     const getCurrentWalletAddress = () => currentWalletAddress;
@@ -101,7 +101,7 @@ export const createWalletModule = (dependencies = {}) => {
         }
 
         currentWalletAddress = address;
-        eventModule.emit("current-wallet-changed", { address });
+        eventModule?.emit("current-wallet-changed", { address });
     };
 
     /**
