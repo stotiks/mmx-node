@@ -1,4 +1,4 @@
-import { loadAndSetI18nLanguageAsync } from "@/plugins/i18n";
+import { setI18nLanguage } from "@/plugins/i18n";
 
 export const useWatchI18n = (pollInterval = 500) => {
     const appStore = useAppStore();
@@ -6,8 +6,7 @@ export const useWatchI18n = (pollInterval = 500) => {
 
     const setLocale = async (locale) => {
         try {
-            await loadAndSetI18nLanguageAsync(locale);
-            return await nextTick();
+            await setI18nLanguage(locale);
         } catch (error) {
             console.error("Failed to set locale:", error);
         }

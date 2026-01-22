@@ -21,56 +21,70 @@ export const availableLanguages = [
 const locales = import.meta.glob("@/locales/(en-US|id|de|es|nl|pt|ru|uk|zh-CN).json");
 
 // https://quasar.dev/options/quasar-language-packs/#dynamical-non-ssr-
-const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(en-US|id|de|es|nl|pt|ru|uk|zh-CN).js", {
-    import: "default",
-});
+const quasarLanguagePacks = import.meta.glob("../../node_modules/quasar/lang/(en-US|id|de|es|nl|pt|ru|uk|zh-CN).js");
 
-const i18n = createI18n({
-    globalInjection: true,
-    legacy: false,
-    locale: defaultLocale,
-    fallbackLocale: defaultLocale,
-    messages: {
-        [defaultLocale]: { ...defaultMessages },
-    },
-});
+const setupI18n = () => {
+    const i18n = createI18n({
+        globalInjection: true,
+        legacy: false,
+        locale: defaultLocale,
+        fallbackLocale: defaultLocale,
+        messages: {
+            [defaultLocale]: { ...defaultMessages },
+        },
+    });
 
-i18n.global.mergeLocaleMessage(defaultLocale, commonMessages);
+    i18n.global.mergeLocaleMessage(defaultLocale, commonMessages);
 
-/**
- * Loads and sets the i18n language asynchronously
- * @param {string|import('vue').Ref<string>} _locale - Locale to load (can be a Vue ref)
- */
-export const loadAndSetI18nLanguageAsync = async (_locale) => {
+    return i18n;
+};
+
+const i18n = setupI18n();
+
+export async function setI18nLanguage(_locale) {
     const locale = validateLocale(_locale);
+    if (i18n.global.locale.value === locale) return;
+
+    // If messages for this locale aren't loaded yet → load them
+    if (!i18n.global.availableLocales.includes(locale)) {
+        await loadLocaleMessages(locale);
+    }
+
+    i18n.global.locale.value = locale;
 
     // Load Quasar language pack
+    await loadAndSetQuasarLanguagePack(locale);
+
+    // Optional: reflect in <html lang="...">
+    document.querySelector("html")?.setAttribute("lang", locale);
+
+    // Wait for Vue reactivity / template re-render
+    await nextTick();
+}
+
+async function loadAndSetQuasarLanguagePack(locale) {
     try {
         const lang = await quasarLanguagePacks[`../../node_modules/quasar/lang/${locale}.js`]();
-        Lang.set(lang);
+        Lang.set(lang.default ?? lang);
     } catch (err) {
-        console.warn(`Failed to load Quasar language pack for "${locale}", falling back to en-US`, err);
+        console.warn(`Failed to load Quasar language pack for "${locale}", falling back to default`, err);
         Lang.set(defaultQuasarLanguagePack);
     }
+}
 
-    const setLocaleAndMessages = (locale, messages) => {
-        i18n.global.setLocaleMessage(locale, {});
-        i18n.global.mergeLocaleMessage(locale, messages);
-        i18n.global.mergeLocaleMessage(locale, commonMessages);
+// Actually loads the JSON (or js/ts) file — uses Vite/Webpack dynamic import
+async function loadLocaleMessages(locale) {
+    // Dynamic import → creates separate chunk per language
+    const messages = await locales[`/src/locales/${locale}.json`]();
 
-        i18n.global.locale.value = locale;
-        document.querySelector("html").setAttribute("lang", locale);
-    };
+    // Register the messages
+    i18n.global.setLocaleMessage(locale, messages.default ?? messages);
+    i18n.global.mergeLocaleMessage(locale, commonMessages.default ?? commonMessages);
 
-    // Load locale messages
-    try {
-        const messages = await locales[`/src/locales/${locale}.json`]();
-        setLocaleAndMessages(locale, messages);
-    } catch (err) {
-        console.warn(`Failed to load messages for "${locale}", falling back to ${defaultLocale}`, err);
-        setLocaleAndMessages(defaultLocale, defaultMessages);
-    }
-};
+    // Optional: if you have number/date formats per locale
+    // i18n.global.setNumberFormat(locale, { ... })
+    // i18n.global.setDateTimeFormat(locale, { ... })
+}
 
 /**
  * Validates and normalizes a locale value
@@ -88,4 +102,5 @@ export const validateLocale = (_locale) => {
         return defaultLocale;
     }
 };
+
 export default i18n;
