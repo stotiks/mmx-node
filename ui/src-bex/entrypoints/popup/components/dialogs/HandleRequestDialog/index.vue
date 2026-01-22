@@ -101,22 +101,33 @@ const InitPageComponent = {
 
 const pageComponent = shallowRef(UnlockPageComponent);
 
-watchEffect(async () => {
-    if (!isInitialized.value) {
-        pageComponent.value = InitPageComponent;
-    } else if (!isUnlocked.value) {
-        pageComponent.value = UnlockPageComponent;
-    } else if (
-        !permissionsGranted.value &&
-        (await vaultStore.checkUrlPermissionsAsync(props.url).catch(() => false)) !== true
-    ) {
-        pageComponent.value = RequestPermissionsPageComponent;
-    } else if (props.isAcceptRequired === true) {
-        pageComponent.value = AcceptPageComponent;
-    } else {
-        pageComponent.value = null;
-        // close dialog if unlocked, permissions granted and accept not required
-        onDialogOK();
+watch(
+    [isInitialized, isUnlocked, permissionsGranted],
+    async () => {
+        if (!isInitialized.value) {
+            pageComponent.value = InitPageComponent;
+        } else if (!isUnlocked.value) {
+            pageComponent.value = UnlockPageComponent;
+        } else if (
+            !permissionsGranted.value &&
+            (await vaultStore.checkUrlPermissionsAsync(props.url).catch(() => false)) !== true
+        ) {
+            pageComponent.value = RequestPermissionsPageComponent;
+        } else {
+            // if initialized, unlocked and url permissions granted:
+            // show accept page
+            // if accept not required, close dialog
+
+            if (props.isAcceptRequired === true) {
+                pageComponent.value = AcceptPageComponent;
+            } else {
+                pageComponent.value = null;
+                onDialogOK();
+            }
+        }
+    },
+    {
+        immediate: true,
     }
-});
+);
 </script>
