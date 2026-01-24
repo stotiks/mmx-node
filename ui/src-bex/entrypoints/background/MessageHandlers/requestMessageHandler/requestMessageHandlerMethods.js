@@ -1,7 +1,11 @@
 import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 import { Transaction } from "@/mmx/wallet/Transaction";
 import { sha256 } from "@noble/hashes/sha2.js";
-import { getNodeInfoAsync, validateTransactionAsync } from "@bex/entrypoints/background/queries";
+import {
+    broadcastTransactionAsync,
+    getNodeInfoAsync,
+    validateTransactionAsync,
+} from "@bex/entrypoints/background/queries";
 
 import {
     getCurrentWallet,
@@ -77,15 +81,23 @@ export const requestMessageHandlerMethods = {
     mmx_send: $method(async ({ amount, dst_addr, currency, options: _options }) => {
         const options = new spend_options_t(_options);
         const tx = await getSendTxAsync(amount, dst_addr, currency, options);
-        // await broadcastTransactionAsync(tx);
-        await validateTransactionAsync(tx);
 
-        return {
+        const result = {
             id: tx.id,
-            dev: {
-                tx,
-            },
         };
+
+        if (process.env.NODE_ENV === "development") {
+            // await broadcastTransactionAsync(tx);
+            await validateTransactionAsync(tx);
+
+            result.dev = {
+                tx,
+            };
+        } else {
+            await broadcastTransactionAsync(tx);
+        }
+
+        return result;
     }, {}),
 
     mmx_signTransaction: $method(async ({ tx: _tx, options: _options }) => {
