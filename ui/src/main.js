@@ -1,6 +1,9 @@
 import App from "./App.vue";
-import { registerPlugins } from "./plugins";
-
 import { createQuasarApp } from "@/createQuasarApp";
-const app = createQuasarApp(App, registerPlugins);
+import { registerPlugins } from "@/plugins/registerPlugins";
+import router from "@/plugins/router";
+import pinia from "@/plugins/pinia";
+
+const app = createQuasarApp(App);
+registerPlugins(app, { router, pinia });
 app.mount("#app");
