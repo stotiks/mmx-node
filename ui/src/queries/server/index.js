@@ -32,12 +32,10 @@ export const useSession = () => {
     });
 };
 
-export const useSessionMutation = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: () => session(),
-        onSuccess: (data) => {
-            queryClient.setQueryData(["session"], data);
-        },
+export const fetchSession = async (queryClient) => {
+    return await queryClient.fetchQuery({
+        queryKey: ["session"],
+        queryFn: ({ signal }) => session(signal),
+        staleTime: 0,
     });
 };
