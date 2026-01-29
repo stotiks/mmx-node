@@ -9,7 +9,7 @@
         </q-card-section>
         <q-card-section :class="infoCardSectionTitleClass">
             <div v-if="props.tile.label != null">{{ props.tile.label }}</div>
-            <div else>&nbsp;</div>
+            <div v-else>&nbsp;</div>
         </q-card-section>
     </q-card>
 </template>
