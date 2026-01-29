@@ -16,13 +16,11 @@ export const usePeers = () => {
     });
 };
 
-export const usePeerInfoMutation = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: () => getPeerInfo(),
-        onSuccess: (data) => {
-            queryClient.setQueryData(["peers"], data);
-        },
+export const fetchPeerInfo = async (queryClient) => {
+    return await queryClient.fetchQuery({
+        queryKey: ["peers"],
+        queryFn: ({ signal }) => getPeerInfo(signal),
+        staleTime: 0,
     });
 };
 
