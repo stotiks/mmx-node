@@ -14,6 +14,14 @@ export const useConfig = () => {
     });
 };
 
+export const prefetchConfig = async (queryClient) => {
+    return await queryClient.prefetchQuery({
+        queryKey: ["config"],
+        queryFn: ({ signal }) => getConfig(signal),
+        staleTime: 0,
+    });
+};
+
 const setConfig = (payload) => axios.post("/wapi/config/set", payload).then((response) => response.data);
 export const useSetConfig = () => {
     const queryClient = useQueryClient();
