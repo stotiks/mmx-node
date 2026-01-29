@@ -2,9 +2,8 @@ import { useQueryClient } from "@tanstack/vue-query";
 import { useSession, useLogin } from "@/queries/server";
 import { prefetchConfig } from "@/queries/wapi";
 
-export const useNodeSession = () => {
+const useHandleLogin = () => {
     const sessionStore = useSessionStore();
-
     const login = useLogin();
     const queryClient = useQueryClient();
     const handleLogin = (credentials) => {
@@ -19,6 +18,12 @@ export const useNodeSession = () => {
             }
         );
     };
+    return handleLogin;
+};
+
+export const useNodeSession = () => {
+    const sessionStore = useSessionStore();
+    const handleLogin = useHandleLogin();
 
     const { data } = useSession();
     watch(data, (data) => {
