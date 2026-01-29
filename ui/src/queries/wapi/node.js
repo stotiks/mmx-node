@@ -49,15 +49,12 @@ const useNodeInfoWatch = (query) => {
         }
     });
 };
-export const useNodeInfoMutation = () => {
-    useNodeInfoWatch(useNodeInfo({ enabled: false }));
 
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: () => getNodeInfo(),
-        onSuccess: (data) => {
-            queryClient.setQueryData(["node_info"], data);
-        },
+export const fetchNodeInfo = async (queryClient) => {
+    return await queryClient.fetchQuery({
+        queryKey: ["node_info"],
+        queryFn: ({ signal }) => getNodeInfo(signal),
+        staleTime: 0,
     });
 };
 

@@ -1,6 +1,11 @@
-import { useSessionMutation } from "@/queries/server";
-import { usePeerInfoMutation } from "@/queries/api";
-import { useNodeInfoMutation } from "@/queries/wapi";
+import { useQueryClient } from "@tanstack/vue-query";
+import { fetchSession } from "@/queries/server";
+import { fetchPeerInfo } from "@/queries/api";
+import { fetchNodeInfo } from "@/queries/wapi";
+import { useSessionStore } from "@/stores/session";
+import { useConfigData } from "@/composables/Node/useConfigData";
+import { useIsQueryTakingLong } from "@/composables/useIsQueryTakingLong";
+import { useIntervalFn2 } from "@/composables/useIntervalFn2";
 
 export const NodeStatuses = Object.freeze({
     DisconnectedFromNode: Symbol("DisconnectedFromNode"),
@@ -15,6 +20,7 @@ export const NodeStatuses = Object.freeze({
 export const useNodeStatus = () => {
     const sessionStore = useSessionStore();
     const { isLocalNode } = useConfigData();
+    const queryClient = useQueryClient();
 
     const sessionFails = ref(0);
     const peerFails = ref(0);
@@ -26,93 +32,75 @@ export const useNodeStatus = () => {
     const connectedToNetwork = computed(() => (connectedToNode.value && peerFails.value < 1) || !isLocalNode.value);
     const synced = computed(() => connectedToNetwork.value && syncFails.value < 1);
 
-    // --- Session
-    const session = useSessionMutation();
-    const sessionIntervalFn = () => {
+    // --- Session Query using fetchQuery
+    const sessionIntervalFn = async () => {
         if (sessionStore.isLoggedIn) {
-            session.mutate(null, {
-                onSuccess: (data) => {
-                    if (data && data.user) {
-                        sessionFails.value = 0;
-                    } else {
-                        throw new Error("No valid session");
-                    }
-                },
-                onError: () => {
-                    sessionFails.value++;
-                },
-            });
+            try {
+                const data = await fetchSession(queryClient);
+
+                if (data?.user) {
+                    sessionFails.value = 0;
+                } else {
+                    throw new Error("No valid session");
+                }
+            } catch (error) {
+                sessionFails.value++;
+            }
         }
     };
 
     const sessionInterval = computed(() => {
-        let interval = connectedToNode.value ? 5000 : 1000;
-        if (!sessionStore.isLoggedIn) {
-            interval = -1;
-        }
-        return interval;
+        if (!sessionStore.isLoggedIn) return -1;
+        return connectedToNode.value ? 5000 : 1000;
     });
 
     useIntervalFn2(sessionIntervalFn, sessionInterval);
 
-    // --- Peers
-    const peerInfo = usePeerInfoMutation();
-    const peerInfoIntervalFn = () =>
-        peerInfo.mutate(null, {
-            onSuccess: (data) => {
-                if (data.peers?.length > 0) {
-                    peerFails.value = 0;
-                } else {
-                    throw new Error("No peers");
-                }
-            },
-            onError: () => {
-                peerFails.value++;
-            },
-        });
+    // --- Peer Info Query using fetchQuery
+    const peerInfoIntervalFn = async () => {
+        try {
+            const data = await fetchPeerInfo(queryClient);
+
+            if (data?.peers?.length > 0) {
+                peerFails.value = 0;
+            } else {
+                throw new Error("No peers");
+            }
+        } catch (error) {
+            peerFails.value++;
+        }
+    };
 
     const peerInfoInterval = computed(() => {
-        let interval = connectedToNetwork.value ? 5000 : 1000;
-
-        if (!connectedToNode.value) {
-            interval = -1;
-        }
-        return interval;
+        if (!connectedToNode.value) return -1;
+        return connectedToNetwork.value ? 5000 : 1000;
     });
 
     useIntervalFn2(peerInfoIntervalFn, peerInfoInterval);
 
-    // --- Sync
-    const syncing = ref(false);
-    const nodeInfoMutation = useNodeInfoMutation();
-    const nodeInfoIntervalFn = () =>
-        nodeInfoMutation.mutate(null, {
-            onSuccess: (data) => {
-                if (data) {
-                    syncing.value = true;
-                    if (data.is_synced) {
-                        syncFails.value = 0;
-                    }
-                } else {
-                    throw new Error("No Sync");
-                }
-            },
-            onError: () => {
-                syncing.value = false;
-                syncFails.value++;
-            },
-        });
+    // --- Node Info Query using fetchQuery
+    const nodeInfoIntervalFn = async () => {
+        try {
+            const data = await fetchNodeInfo(queryClient);
+
+            if (data?.is_synced) {
+                syncFails.value = 0;
+            } else {
+                throw new Error("No Sync");
+            }
+        } catch (error) {
+            syncFails.value++;
+        }
+    };
 
     const nodeInfoInterval = computed(() => {
-        let interval = connectedToNetwork.value ? 5000 : 1000;
-        if (!connectedToNode.value) {
-            interval = -1;
-        }
-        return interval;
+        if (!connectedToNode.value) return -1;
+        return connectedToNetwork.value ? 5000 : 1000;
     });
+
     useIntervalFn2(nodeInfoIntervalFn, nodeInfoInterval);
 
-    // --- currentStatus
+    // --- Current Status
     const currentStatus = computed(() => {
         let status = NodeStatuses.None;
 
@@ -124,10 +112,6 @@ export const useNodeStatus = () => {
                     status = NodeStatuses.Synced;
                 }
             }
-
-            // if (isQueryTakingLong.value) {
-            //     status = NodeStatuses.QueryTakingLong;
-            // }
         } else {
             status = NodeStatuses.DisconnectedFromNode;
         }
@@ -152,28 +136,4 @@ export const useNodeStatus = () => {
     return {
         status: currentStatus,
     };
-};
-
-import { useIntervalFn } from "@vueuse/core";
-const useIntervalFn2 = (cb, interval) => {
-    cb();
-
-    const intervalFn = useIntervalFn(cb, interval);
-
-    watch(interval, (newInterval, oldInterval) => {
-        // Pause the interval function if the new interval is zero or negative
-        if (toValue(newInterval) <= 0) {
-            intervalFn.pause();
-        }
-        // If transitioning from a non-positive to positive interval, or if the interval decreases, invoke the callback
-        if (
-            (toValue(oldInterval) <= 0 && toValue(newInterval) > 0) ||
-            (toValue(oldInterval) > 0 && toValue(newInterval) < toValue(oldInterval))
-        ) {
-            intervalFn.resume();
-            cb();
-        }
-    });
-
-    return intervalFn;
 };
