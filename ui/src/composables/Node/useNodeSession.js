@@ -1,10 +1,9 @@
 import { useQueryClient } from "@tanstack/vue-query";
 import { useSession, useLogin } from "@/queries/server";
+import { prefetchConfig } from "@/queries/wapi";
 
 export const useNodeSession = () => {
     const sessionStore = useSessionStore();
-
-    const { data } = useSession();
 
     const login = useLogin();
     const queryClient = useQueryClient();
@@ -12,14 +11,18 @@ export const useNodeSession = () => {
         login.mutate(
             { credentials },
             {
-                onSuccess: () => queryClient.invalidateQueries({ queryKey: ["config"] }),
+                onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: ["config"] });
+                    prefetchConfig(queryClient);
+                },
                 onError: () => sessionStore.doLogout(false),
             }
         );
     };
 
+    const { data } = useSession();
     watch(data, (data) => {
-        if (!(data && data.user)) {
+        if (!data?.user) {
             if (sessionStore.autoLogin) {
                 handleLogin(sessionStore.credentials);
             } else {
