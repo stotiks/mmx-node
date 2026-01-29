@@ -4,9 +4,10 @@ import { useQueryWrapper as useQuery } from "@/composables/useQueryWrapper";
 
 import { prefetchWalletAccounts } from "@/queries/wapi";
 
-import { ONE_SECOND, pushConfigSuccess, pushSuccess, onError } from "../common";
+import { ONE_SECOND, pushConfigSuccess, pushSuccess, onError, noCacheHeaders } from "../common";
 
-const getPeerInfo = (signal) => axios.get("/api/router/get_peer_info", { signal }).then((response) => response.data);
+const getPeerInfo = (signal) =>
+    axios.get("/api/router/get_peer_info", { signal, headers: noCacheHeaders }).then((response) => response.data);
 export const usePeers = () => {
     return useQuery({
         queryKey: ["peers"],
