@@ -1,6 +1,6 @@
 import axios from "@/queries/axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/vue-query";
-import { jsonContentTypeHeaders, ONE_SECOND } from "../common";
+import { jsonContentTypeHeaders, noCacheHeaders, ONE_SECOND } from "../common";
 
 const login = (credentials) => axios.post("/server/login", credentials, { headers: jsonContentTypeHeaders });
 export const useLogin = () => {
@@ -20,7 +20,8 @@ export const useLogout = () => {
     });
 };
 
-const session = (signal) => axios.get("/server/session", { signal }).then((response) => response.data);
+const session = (signal) =>
+    axios.get("/server/session", { signal, headers: noCacheHeaders }).then((response) => response.data);
 export const useSession = () => {
     const sessionStore = useSessionStore();
     return useQuery({
