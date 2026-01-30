@@ -160,7 +160,7 @@ export function useConfigData() {
     });
 
     const isLocalNode = computed(() => {
-        if (!queryData.value) return false;
+        if (!queryData.value) return null;
         const data = queryData.value?.local_node;
         return data || data == null ? true : false;
     });

@@ -1,139 +1,163 @@
-import { useQueryClient } from "@tanstack/vue-query";
-import { fetchSession } from "@/queries/server";
-import { fetchPeerInfo } from "@/queries/api";
-import { fetchNodeInfo } from "@/queries/wapi";
-import { useSessionStore } from "@/stores/session";
 import { useConfigData } from "@/composables/Node/useConfigData";
 import { useIsQueryTakingLong } from "@/composables/useIsQueryTakingLong";
-import { useIntervalFn2 } from "@/composables/useIntervalFn2";
+import { usePeers } from "@/queries/api";
+import { useSession } from "@/queries/server";
+import { useNodeInfo } from "@/queries/wapi";
+import { useSessionStore } from "@/stores/session";
+import { useIntervalFn } from "@vueuse/core";
 
 export const NodeStatuses = Object.freeze({
     DisconnectedFromNode: Symbol("DisconnectedFromNode"),
     QueryTakingLong: Symbol("QueryTakingLong"),
     //LoggedOff: Symbol("LoggedOff"),
-    Connecting: Symbol("Connecting"),
+    ConnectingToNetwork: Symbol("ConnectingToNetwork"),
     Syncing: Symbol("Syncing"),
     Synced: Symbol("Synced"),
     None: Symbol("None"),
 });
 
-export const useNodeStatus = () => {
+const usePollingQuery = (query, intervalGetter) => {
+    const { refetch, isFetching, queryKey } = query;
+
+    const intervalFn = async () => {
+        if (isFetching.value) return;
+
+        //console.log("usePollingQuery refetch", queryKey, toValue(intervalGetter));
+        await refetch();
+    };
+
+    useIntervalFn2(intervalFn, intervalGetter);
+    return query;
+};
+
+const useSessionPolling = () => {
     const sessionStore = useSessionStore();
+
+    const sessionQuery = useSession({ refetchInterval: false });
+
+    const isConnected = computed(() => !sessionQuery.isError.value);
+    const isValidSession = computed(() => isConnected.value && !!sessionQuery.data.value?.user);
+
+    const connectedToNode = computed(() => isValidSession.value);
+    const sessionInterval = computed(() => (sessionStore.isLoggedIn ? (connectedToNode.value ? 5000 : 1000) : -1));
+
+    usePollingQuery(sessionQuery, sessionInterval);
+
+    return { connectedToNode };
+};
+
+const usePeersPolling = (connectedToNode) => {
     const { isLocalNode } = useConfigData();
-    const queryClient = useQueryClient();
 
-    const sessionFails = ref(0);
-    const peerFails = ref(0);
-    const syncFails = ref(1);
+    const peerQuery = usePeers({ refetchInterval: false });
 
-    const isQueryTakingLong = useIsQueryTakingLong(1000);
+    const isPeersConnected = computed(() => !peerQuery.isError.value && (peerQuery.data.value?.length ?? 0) > 0);
 
-    const connectedToNode = computed(() => sessionFails.value < 1);
-    const connectedToNetwork = computed(() => (connectedToNode.value && peerFails.value < 1) || !isLocalNode.value);
-    const synced = computed(() => connectedToNetwork.value && syncFails.value < 1);
+    // watchEffect(() => {
+    //     console.debug("isPeersConnected", isPeersConnected.value);
+    // });
 
-    // --- Session Query using fetchQuery
-    const sessionIntervalFn = async () => {
-        if (sessionStore.isLoggedIn) {
-            try {
-                const data = await fetchSession(queryClient);
+    const connectedToNetwork = computed(
+        () =>
+            connectedToNode.value &&
+            ((isPeersConnected.value && isLocalNode.value) || (!isLocalNode.value && isLocalNode.value != null))
+    );
+    const peerInfoInterval = computed(() => (connectedToNode.value ? (connectedToNetwork.value ? 5000 : 1000) : -1));
 
-                if (data?.user) {
-                    sessionFails.value = 0;
-                } else {
-                    throw new Error("No valid session");
-                }
-            } catch (error) {
-                sessionFails.value++;
-            }
-        }
-    };
+    usePollingQuery(peerQuery, peerInfoInterval);
 
-    const sessionInterval = computed(() => {
-        if (!sessionStore.isLoggedIn) return -1;
-        return connectedToNode.value ? 5000 : 1000;
-    });
+    return { connectedToNetwork };
+};
 
-    useIntervalFn2(sessionIntervalFn, sessionInterval);
+const useNodeInfoPolling = (connectedToNetwork) => {
+    const nodeInfoQuery = useNodeInfo({ refetchInterval: false });
 
-    // --- Peer Info Query using fetchQuery
-    const peerInfoIntervalFn = async () => {
-        try {
-            const data = await fetchPeerInfo(queryClient);
+    const isSynced = computed(() => !nodeInfoQuery.isError.value && !!nodeInfoQuery.data.value?.is_synced);
+    const synced = computed(() => connectedToNetwork.value && isSynced.value);
 
-            if (data?.peers?.length > 0) {
-                peerFails.value = 0;
-            } else {
-                throw new Error("No peers");
-            }
-        } catch (error) {
-            peerFails.value++;
-        }
-    };
+    const nodeInfoInterval = computed(() => (connectedToNetwork.value ? (isSynced.value ? 5000 : 1000) : -1));
 
-    const peerInfoInterval = computed(() => {
-        if (!connectedToNode.value) return -1;
-        return connectedToNetwork.value ? 5000 : 1000;
-    });
+    // watchEffect(() => {
+    //     console.debug("nodeInfoInterval", nodeInfoInterval.value);
+    // });
 
-    useIntervalFn2(peerInfoIntervalFn, peerInfoInterval);
+    usePollingQuery(nodeInfoQuery, nodeInfoInterval);
 
-    // --- Node Info Query using fetchQuery
-    const nodeInfoIntervalFn = async () => {
-        try {
-            const data = await fetchNodeInfo(queryClient);
+    return { synced };
+};
 
-            if (data?.is_synced) {
-                syncFails.value = 0;
-            } else {
-                throw new Error("No Sync");
-            }
-        } catch (error) {
-            syncFails.value++;
-        }
-    };
+export const useNodeStatus = () => {
+    // const isQueryTakingLong = useIsQueryTakingLong(1000);
 
-    const nodeInfoInterval = computed(() => {
-        if (!connectedToNode.value) return -1;
-        return connectedToNetwork.value ? 5000 : 1000;
-    });
+    const { connectedToNode } = useSessionPolling();
+    const { connectedToNetwork } = usePeersPolling(connectedToNode);
+    const { synced } = useNodeInfoPolling(connectedToNetwork);
 
-    useIntervalFn2(nodeInfoIntervalFn, nodeInfoInterval);
-
-    // --- Current Status
-    const currentStatus = computed(() => {
-        let status = NodeStatuses.None;
-
-        if (connectedToNode.value) {
-            status = NodeStatuses.Connecting;
-            if (connectedToNetwork.value) {
-                status = NodeStatuses.Syncing;
-                if (synced.value) {
-                    status = NodeStatuses.Synced;
-                }
-            }
-        } else {
-            status = NodeStatuses.DisconnectedFromNode;
-        }
-
-        return status;
+    const status = computed(() => {
+        if (!connectedToNode.value) return NodeStatuses.DisconnectedFromNode;
+        if (!connectedToNetwork.value) return NodeStatuses.ConnectingToNetwork;
+        if (!synced.value) return NodeStatuses.Syncing;
+        return NodeStatuses.Synced;
     });
 
     if (process.env.NODE_ENV !== "production") {
         // --- Debug
         watchEffect(() => {
-            console.debug("isQueryTakingLong", isQueryTakingLong.value);
-            //console.debug("sessionFails", sessionFails.value);
+            // console.debug("isQueryTakingLong", isQueryTakingLong.value);
             console.debug("connectedToNode", connectedToNode.value);
-            //console.debug("peerFails", peerFails.value);
             console.debug("connectedToNetwork", connectedToNetwork.value);
-            //console.debug("syncFails", syncFails.value);
             console.debug("synced", synced.value);
-            console.debug("currentStatus", currentStatus.value);
+
+            console.debug("status", status.value);
         });
     }
 
     return {
-        status: currentStatus,
+        status,
     };
+};
+
+const useIntervalFn2 = (cb, interval) => {
+    // Validate callback parameter
+    if (typeof cb !== "function") {
+        throw new TypeError("useIntervalFn2: callback must be a function");
+    }
+
+    const intervalFn = useIntervalFn(cb, interval);
+
+    // Watch for interval changes to handle pause/resume and immediate execution
+    watch(interval, (newInterval, oldInterval) => {
+        const shouldPause = newInterval <= 0;
+        const wasPaused = oldInterval <= 0;
+        const isNowActive = newInterval > 0;
+
+        if (shouldPause) {
+            if (intervalFn.isActive.value) {
+                cb();
+            }
+            intervalFn.pause();
+            return;
+        }
+
+        // Resume if currently paused
+        if (!intervalFn.isActive.value) {
+            intervalFn.resume();
+        }
+
+        // Determine if callback should execute immediately
+        const shouldExecuteImmediately =
+            (wasPaused && isNowActive) || // Transitioning from paused to active
+            (oldInterval > 0 && newInterval < oldInterval); // Interval decreased (faster polling)
+
+        if (shouldExecuteImmediately) {
+            cb();
+        }
+    });
+
+    // Execute callback immediately on initialization if interval is active
+    if (toValue(interval) > 0) {
+        cb();
+    }
+
+    return intervalFn;
 };

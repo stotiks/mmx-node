@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/vue-query";
 
-export const useQueryWrapper = (...args) => {
-    const query = useQuery(...args);
+export const useQueryWrapper = (options, ...args) => {
+    const query = useQuery(options, ...args);
+    const queryKey = options?.queryKey;
+
     const loading = computed(() => query.isLoading.value || query.isLoadingError.value);
     const rows = computed(() => (!loading.value && query.data.value) || []);
 
@@ -32,6 +34,7 @@ export const useQueryWrapper = (...args) => {
         query.isFetching.value && query.errorUpdateCount.value > 0 ? isErrorPrev.value : query.isError.value
     );
 
+    query.queryKey = queryKey;
     query.loading = loading;
     query.rows = rows;
     query.noData = noData;
