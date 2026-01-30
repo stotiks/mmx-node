@@ -8,20 +8,12 @@ import { ONE_SECOND, pushConfigSuccess, pushSuccess, onError, noCacheHeaders } f
 
 const getPeerInfo = (signal) =>
     axios.get("/api/router/get_peer_info", { signal, headers: noCacheHeaders }).then((response) => response.data);
-export const usePeers = () => {
+export const usePeers = (params) => {
     return useQuery({
         queryKey: ["peers"],
         queryFn: ({ signal }) => getPeerInfo(signal),
         select: (data) => data.peers,
-        refetchInterval: 5.1 * ONE_SECOND,
-    });
-};
-
-export const fetchPeerInfo = async (queryClient) => {
-    return await queryClient.fetchQuery({
-        queryKey: ["peers"],
-        queryFn: ({ signal }) => getPeerInfo(signal),
-        staleTime: 0,
+        refetchInterval: params?.refetchInterval ?? 5.1 * ONE_SECOND,
     });
 };
 
