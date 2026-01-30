@@ -30,7 +30,7 @@ const options = {
     //     icon: mdiShieldKey,
     //     class: "text-negative",
     // },
-    [NodeStatuses.Connecting]: {
+    [NodeStatuses.ConnectingToNetwork]: {
         label: t("node_status.connecting"),
         icon: mdiConnection,
         class: "text-negative animate__animated animate__flash animate__slow animate__infinite",

@@ -50,14 +50,6 @@ const useNodeInfoWatch = (query) => {
     });
 };
 
-export const fetchNodeInfo = async (queryClient) => {
-    return await queryClient.fetchQuery({
-        queryKey: ["node_info"],
-        queryFn: ({ signal }) => getNodeInfo(signal),
-        staleTime: 0,
-    });
-};
-
 const getNodeLog = (params, signal) =>
     axios.get("/wapi/node/log", { params, signal }).then((response) => response.data);
 export const useNodeLog = (params) => {
