@@ -11,6 +11,10 @@
         "message": "Ververs de pagina om de update toe te passen",
         "refresh": "Verversen"
     },
+    "transaction": {
+        "validated_successfully": "Transactie succesvol gevalideerd",
+        "broadcasted_successfully": "Transactie succesvol uitgezonden"
+    },
     "common": {
         "yes": "Ja",
         "no": "Nee",
