@@ -79,6 +79,10 @@
         "validated_successfully": "Transaction validated successfully",
         "broadcasted_successfully": "Transaction broadcasted successfully"
     },
+    "wallet": {
+        "wrong_passphrase": "Wrong passphrase!",
+        "plotnft_created": "Created new PlotNFT: {name}"
+    },
     "route": {
         "wallets": "Wallets",
         "create_wallet": "Create wallet",
