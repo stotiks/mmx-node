@@ -11,6 +11,10 @@
         "message": "Пожалуйста, обновите страницу, чтобы применить обновление",
         "refresh": "Обновить"
     },
+    "transaction": {
+        "validated_successfully": "Транзакция успешно проверена",
+        "broadcasted_successfully": "Транзакция успешно отправлена"
+    },
     "common": {
         "yes": "Да",
         "no": "Нет",
