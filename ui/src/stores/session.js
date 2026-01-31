@@ -62,8 +62,6 @@ export const useSessionStore = defineStore("session", () => {
         }
 
         queryClient.clear();
-        // reset stores on logout
-        getActivePinia()._s.forEach((store) => store.$reset());
     };
 
     return {
