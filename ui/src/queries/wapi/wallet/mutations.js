@@ -38,7 +38,7 @@ export const usePassphraseValidate = () => {
         mutationFn: (payload) => passphraseValidate(payload),
         onError: (error) => {
             pushError({
-                message: `Wrong passphrase!`, // TODO i18n
+                message: t("wallet.wrong_passphrase"),
             });
         },
     });
@@ -160,7 +160,7 @@ export const useWalletPlotnftCreate = () => {
         onSuccess: (result, params) => {
             queryClient.invalidateQueries({ queryKey: ["wallet"] });
             pushSuccess({
-                message: "Created new PlotNFT: " + params.name,
+                message: t("wallet.plotnft_created", { name: params.name }),
             });
         },
         onError,

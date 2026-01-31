@@ -15,6 +15,10 @@
         "validated_successfully": "Transação validada com sucesso",
         "broadcasted_successfully": "Transação transmitida com sucesso"
     },
+    "wallet": {
+        "wrong_passphrase": "Senha incorreta!",
+        "plotnft_created": "Novo PlotNFT criado: {name}"
+    },
     "common": {
         "yes": "Sim",
         "no": "Não",
