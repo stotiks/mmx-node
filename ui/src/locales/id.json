@@ -11,6 +11,10 @@
         "message": "Silakan segarkan halaman untuk menerapkan pembaruan",
         "refresh": "Segarkan"
     },
+    "transaction": {
+        "validated_successfully": "Transaksi berhasil divalidasi",
+        "broadcasted_successfully": "Transaksi berhasil disiarkan"
+    },
     "common": {
         "Indonesian_Translation_Version": "v0.1 by limsandy",
         "yes": "Ya",

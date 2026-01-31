@@ -11,6 +11,10 @@
         "message": "Bitte aktualisieren Sie die Seite, um das Update anzuwenden",
         "refresh": "Aktualisieren"
     },
+    "transaction": {
+        "validated_successfully": "Transaktion erfolgreich validiert",
+        "broadcasted_successfully": "Transaktion erfolgreich gesendet"
+    },
     "common": {
         "yes": "Ja",
         "no": "Nein",

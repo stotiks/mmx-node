@@ -75,6 +75,10 @@
         "message": "Please refresh the page to apply the update",
         "refresh": "Refresh"
     },
+    "transaction": {
+        "validated_successfully": "Transaction validated successfully",
+        "broadcasted_successfully": "Transaction broadcasted successfully"
+    },
     "route": {
         "wallets": "Wallets",
         "create_wallet": "Create wallet",
