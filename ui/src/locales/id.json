@@ -1,4 +1,16 @@
 ﻿{
+    "validation": {
+        "invalid_number": "Nomor tidak valid",
+        "invalid_address": "Alamat tidak valid",
+        "field_required": "Bidang wajib diisi",
+        "invalid_amount": "Jumlah tidak valid",
+        "max_length": "Panjang maksimum adalah {max}"
+    },
+    "app_update": {
+        "title": "Pembaruan tersedia",
+        "message": "Silakan segarkan halaman untuk menerapkan pembaruan",
+        "refresh": "Segarkan"
+    },
     "common": {
         "Indonesian_Translation_Version": "v0.1 by limsandy",
         "yes": "Ya",

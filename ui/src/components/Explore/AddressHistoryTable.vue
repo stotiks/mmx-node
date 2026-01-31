@@ -85,12 +85,12 @@ const columns = computed(() => {
         },
         {
             name: "txid",
-            label: "Transaction ID", // TODO i18n
+            label: t("explore_transactions.transaction_id"),
             field: "txid",
             headerStyle: "width: 20%",
         },
         {
-            label: "Memo", // TODO i18n
+            label: t("common.memo"),
             field: "memo",
             style: "word-break: break-all",
             align: "left",

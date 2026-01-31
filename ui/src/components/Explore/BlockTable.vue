@@ -81,7 +81,7 @@ const columns = computed(() => [
         headerStyle: "width: 12%",
     },
     {
-        label: "TX Fees", //TODO 1i8n
+        label: t("block_view.tx_fees"),
         field: (row) => (row.tx_count ? row.tx_fees.value : null),
         format: (item) => (item ? item.toFixed(3) : ""),
         xclasses: (item) => (item ? "main-currency" : item),
