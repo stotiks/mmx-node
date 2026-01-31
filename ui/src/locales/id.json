@@ -15,6 +15,10 @@
         "validated_successfully": "Transaksi berhasil divalidasi",
         "broadcasted_successfully": "Transaksi berhasil disiarkan"
     },
+    "wallet": {
+        "wrong_passphrase": "Frasa sandi salah!",
+        "plotnft_created": "PlotNFT baru dibuat: {name}"
+    },
     "common": {
         "Indonesian_Translation_Version": "v0.1 by limsandy",
         "yes": "Ya",

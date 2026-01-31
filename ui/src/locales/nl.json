@@ -15,6 +15,10 @@
         "validated_successfully": "Transactie succesvol gevalideerd",
         "broadcasted_successfully": "Transactie succesvol uitgezonden"
     },
+    "wallet": {
+        "wrong_passphrase": "Verkeerde wachtwoordzin!",
+        "plotnft_created": "Nieuwe PlotNFT gemaakt: {name}"
+    },
     "common": {
         "yes": "Ja",
         "no": "Nee",
