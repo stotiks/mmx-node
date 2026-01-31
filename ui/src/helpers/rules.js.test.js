@@ -1,5 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import rules from "./rules";
+import i18n from "@/plugins/i18n";
+
+const { t } = i18n.global;
 
 describe("rules", () => {
     it("should be an object", () => {
@@ -14,10 +17,11 @@ describe("rules", () => {
         });
 
         it("should return error message for empty values", () => {
-            expect(rules.required("")).toBe("Field is required");
-            expect(rules.required(null)).toBe("Field is required");
-            expect(rules.required(undefined)).toBe("Field is required");
-            expect(rules.required("   ")).toBe("Field is required"); // isEmpty checks for trim().length === 0
+            const result = rules.required("");
+            expect(result).toBe(t("validation.field_required"));
+            expect(rules.required(null)).toBe(t("validation.field_required"));
+            expect(rules.required(undefined)).toBe(t("validation.field_required"));
+            expect(rules.required("   ")).toBe(t("validation.field_required")); // isEmpty checks for trim().length === 0
         });
     });
 
@@ -34,10 +38,10 @@ describe("rules", () => {
         });
 
         it("should return error message for invalid numbers", () => {
-            expect(rules.number("abc")).toBe("Invalid number");
-            expect(rules.number("12.34")).toBe("Invalid number"); // Regex is /^\d+$/
-            expect(rules.number("-1")).toBe("Invalid number");
-            expect(rules.number("12a")).toBe("Invalid number");
+            expect(rules.number("abc")).toBe(t("validation.invalid_number"));
+            expect(rules.number("12.34")).toBe(t("validation.invalid_number")); // Regex is /^\d+$/
+            expect(rules.number("-1")).toBe(t("validation.invalid_number"));
+            expect(rules.number("12a")).toBe(t("validation.invalid_number"));
         });
     });
 
@@ -55,8 +59,8 @@ describe("rules", () => {
         });
 
         it("should return error message for invalid address", () => {
-            expect(rules.address("invalid-address")).toBe("Invalid address");
-            expect(rules.address("mmx1invalid")).toBe("Invalid address");
+            expect(rules.address("invalid-address")).toBe(t("validation.invalid_address"));
+            expect(rules.address("mmx1invalid")).toBe(t("validation.invalid_address"));
         });
     });
 
@@ -73,9 +77,9 @@ describe("rules", () => {
         });
 
         it("should return error message for invalid amounts", () => {
-            expect(rules.amount(0)).toBe("Invalid amount"); // value > 0
-            expect(rules.amount(-5)).toBe("Invalid amount");
-            expect(rules.amount("10")).toBe("Invalid amount"); // typeof value === "number"
+            expect(rules.amount(0)).toBe(t("validation.invalid_amount")); // value > 0
+            expect(rules.amount(-5)).toBe(t("validation.invalid_amount"));
+            expect(rules.amount("10")).toBe(t("validation.invalid_amount")); // typeof value === "number"
         });
     });
 
@@ -88,7 +92,7 @@ describe("rules", () => {
 
         it("should return error message for memo longer than 64 chars", () => {
             const longMemo = "a".repeat(65);
-            expect(rules.memo(longMemo)).toBe("Maximum length is 64");
+            expect(rules.memo(longMemo)).toBe(t("validation.max_length", { max: 64 }));
         });
 
         it("should return true for memo with exactly 64 chars", () => {

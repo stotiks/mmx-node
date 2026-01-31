@@ -3,7 +3,6 @@
         <q-card class="q-dialog-plugin">
             <q-card-section>
                 <div class="q-gutter-y-sm">
-                    <!-- // TODO i18n -->
                     <div class="text-h6">{{ $t("wallet_common.unlock_wallet") }}</div>
                     <q-input
                         ref="inputRef"

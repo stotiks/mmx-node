@@ -1,4 +1,16 @@
 {
+    "validation": {
+        "invalid_number": "Ongeldig nummer",
+        "invalid_address": "Ongeldig adres",
+        "field_required": "Veld is verplicht",
+        "invalid_amount": "Ongeldig bedrag",
+        "max_length": "Maximale lengte is {max}"
+    },
+    "app_update": {
+        "title": "Een update is beschikbaar",
+        "message": "Ververs de pagina om de update toe te passen",
+        "refresh": "Verversen"
+    },
     "common": {
         "yes": "Ja",
         "no": "Nee",

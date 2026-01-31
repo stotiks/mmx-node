@@ -1,4 +1,16 @@
 {
+    "validation": {
+        "invalid_number": "Número inválido",
+        "invalid_address": "Endereço inválido",
+        "field_required": "Campo obrigatório",
+        "invalid_amount": "Quantidade inválida",
+        "max_length": "Comprimento máximo é {max}"
+    },
+    "app_update": {
+        "title": "Uma atualização está disponível",
+        "message": "Por favor, atualize a página para aplicar a atualização",
+        "refresh": "Atualizar"
+    },
     "common": {
         "yes": "Sim",
         "no": "Não",
