@@ -25,7 +25,7 @@ export class addr_t extends bytes_t {
     constructor(addr) {
         if (typeof addr == "string") {
             // Quick format check before expensive validation
-            if (!addr.startsWith("mmx1") || addr.length !== 62) {
+            if (!addr.startsWith(addr_t.prefix) || addr.length !== 62) {
                 throw new Error("Invalid address");
             }
             const decoded = bech32m.decodeToBytes(addr);
