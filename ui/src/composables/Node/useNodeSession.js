@@ -12,7 +12,6 @@ const useHandleLogin = () => {
             {
                 onSuccess: () => {
                     queryClient.invalidateQueries({ queryKey: ["config"] });
-                    prefetchConfig(queryClient);
                 },
                 onError: () => sessionStore.doLogout(false),
             }
