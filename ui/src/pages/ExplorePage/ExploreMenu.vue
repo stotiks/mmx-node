@@ -1,6 +1,6 @@
 <template>
-    <q-tabs align="left" indicator-color="primary">
-        <q-toolbar class="m-bg-grey">
+    <q-toolbar class="m-bg-grey">
+        <q-tabs align="left" indicator-color="primary">
             <template v-for="(item, key) in tabs" :key="key">
                 <q-route-tab
                     :to="item.to"
@@ -10,8 +10,8 @@
                     @mouseover="item.prefetcher && item.prefetcher(item.to)"
                 />
             </template>
-        </q-toolbar>
-    </q-tabs>
+        </q-tabs>
+    </q-toolbar>
 </template>
 
 <script setup>
