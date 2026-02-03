@@ -226,4 +226,38 @@ export class ECDSA_Wallet {
 
         tx.aux = { decimals, feeAmount, feeValue };
     }
+
+    /**
+     * Securely destroy the wallet instance by zeroing out sensitive data.
+     * This should be called when the wallet is no longer needed to ensure
+     * sensitive cryptographic material is cleared from memory.
+     */
+    destroy() {
+        // Zero out the seed value (overwrites actual memory bytes)
+        if (this.#seed_value) {
+            this.#seed_value.fill(0);
+            this.#seed_value = null;
+        }
+
+        // Clear passphrase
+        this.#passphrase = "";
+
+        // Clear cached fingerprint and farmer key
+        this.#fingerPrintCache = null;
+        this.#farmerKeyCache = null;
+
+        // Zero out private keys in the keys cache
+        for (const [, keys] of this.#keysCache) {
+            if (keys.privKey && keys.privKey instanceof Uint8Array) {
+                keys.privKey.fill(0);
+            }
+            if (keys.pubKey && keys.pubKey instanceof Uint8Array) {
+                keys.pubKey.fill(0);
+            }
+        }
+        this.#keysCache.clear();
+
+        // Clear address cache
+        this.#addressCache.clear();
+    }
 }
