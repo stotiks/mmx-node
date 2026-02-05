@@ -14,11 +14,13 @@ export const createVault = (dependencies = {}) => {
     } = dependencies;
 
     const eventModule = createEventModule();
+
     const storageManagerModule = createStorageManagerModule({
         masterKeyStorage,
         managedStorages: [walletStorage, historyStorage],
         eventModule,
     });
+
     const permissionModule = createPermissionModule({ eventModule });
 
     const walletBoundStorage = storageManagerModule.getBoundStorage(walletStorage);
@@ -71,7 +73,7 @@ export const createVault = (dependencies = {}) => {
         revokeUrlAsync: permissionModule.revokeUrlAsync,
         getAllowedOrigins: permissionModule.getAllowedOrigins,
 
-        // // Event interface
+        // Event interface
         on: eventModule.on,
         removeListener: eventModule.removeListener,
     };
