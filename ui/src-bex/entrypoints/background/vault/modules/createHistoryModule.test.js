@@ -19,11 +19,14 @@ describe("createHistoryModule", () => {
             },
         };
 
+        const requireUnlocked = () => {}; // Mock requireUnlocked function
+
         return {
             store,
             events,
             historyBoundStorage,
             eventModule,
+            requireUnlocked,
             ...overrides,
         };
     };
@@ -38,6 +41,7 @@ describe("createHistoryModule", () => {
             historyBoundStorage: deps.historyBoundStorage,
             eventModule: deps.eventModule,
             maxHistoryEntries: 10,
+            requireUnlocked: deps.requireUnlocked,
             now: deps.now,
             randomId: deps.randomId,
         });
@@ -73,6 +77,7 @@ describe("createHistoryModule", () => {
             historyBoundStorage: deps.historyBoundStorage,
             eventModule: deps.eventModule,
             maxHistoryEntries: 10,
+            requireUnlocked: deps.requireUnlocked,
             now: (() => {
                 const times = [100, 300, 200];
                 let i = 0;
@@ -101,6 +106,7 @@ describe("createHistoryModule", () => {
             historyBoundStorage: deps.historyBoundStorage,
             eventModule: deps.eventModule,
             maxHistoryEntries: 2,
+            requireUnlocked: deps.requireUnlocked,
             now: (() => {
                 const times = [1, 2, 3];
                 let i = 0;
@@ -128,6 +134,7 @@ describe("createHistoryModule", () => {
             historyBoundStorage: deps.historyBoundStorage,
             eventModule: deps.eventModule,
             maxHistoryEntries: 0,
+            requireUnlocked: deps.requireUnlocked,
             now: deps.now,
             randomId: deps.randomId,
         });
@@ -146,6 +153,7 @@ describe("createHistoryModule", () => {
             historyBoundStorage: deps.historyBoundStorage,
             eventModule: deps.eventModule,
             maxHistoryEntries: 10,
+            requireUnlocked: deps.requireUnlocked,
             now: deps.now,
             randomId: deps.randomId,
         });

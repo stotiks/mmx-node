@@ -74,10 +74,12 @@ describe("createWalletModule", () => {
     const createDeps = (overrides = {}) => {
         const walletBoundStorage = createMockWalletBoundStorage();
         const eventModule = createMockEventModule();
+        const requireUnlocked = vi.fn(); // Mock requireUnlocked function
 
         return {
             walletBoundStorage,
             eventModule,
+            requireUnlocked,
             ...overrides,
         };
     };

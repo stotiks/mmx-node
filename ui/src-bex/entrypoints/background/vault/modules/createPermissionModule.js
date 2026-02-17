@@ -1,5 +1,5 @@
 export const createPermissionModule = (dependencies = {}) => {
-    const { eventModule } = dependencies;
+    const { eventModule, requireUnlocked } = dependencies;
 
     if (!eventModule || typeof eventModule.emit !== "function") {
         throw new Error("Event module is required");
@@ -36,6 +36,8 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {Promise<boolean>} Permission status
          */
         checkUrlPermissionsAsync: async (url) => {
+            requireUnlocked();
+
             try {
                 const origin = checkUrl(url).origin;
                 return allowedOriginsSet.has(origin);
@@ -50,6 +52,8 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {Promise<void>}
          */
         allowUrlAsync: async (url) => {
+            requireUnlocked();
+
             try {
                 const origin = checkUrl(url).origin;
                 allowedOriginsSet.add(origin);
@@ -66,6 +70,8 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {Promise<void>}
          */
         revokeUrlAsync: async (url) => {
+            requireUnlocked();
+
             try {
                 const origin = checkUrl(url).origin;
                 allowedOriginsSet.delete(origin);
@@ -81,6 +87,7 @@ export const createPermissionModule = (dependencies = {}) => {
          * @returns {string[]} Array of allowed origins
          */
         getAllowedOrigins: () => {
+            requireUnlocked();
             return Array.from(allowedOriginsSet);
         },
 
