@@ -21,12 +21,16 @@ export const createVault = (dependencies = {}) => {
         eventModule,
     });
 
-    const permissionModule = createPermissionModule({ eventModule });
+    const permissionModule = createPermissionModule({
+        eventModule,
+        requireUnlocked: storageManagerModule.requireUnlocked,
+    });
 
     const walletBoundStorage = storageManagerModule.getBoundStorage(walletStorage);
     const walletModule = createWalletModule({
         walletBoundStorage,
         eventModule,
+        requireUnlocked: storageManagerModule.requireUnlocked,
     });
 
     const historyBoundStorage = storageManagerModule.getBoundStorage(historyStorage);
@@ -34,6 +38,7 @@ export const createVault = (dependencies = {}) => {
         historyBoundStorage,
         eventModule,
         maxHistoryEntries,
+        requireUnlocked: storageManagerModule.requireUnlocked,
     });
 
     // Compose the final vault interface

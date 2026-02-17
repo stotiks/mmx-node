@@ -14,6 +14,7 @@ export const createHistoryModule = (dependencies = {}) => {
         historyBoundStorage,
         eventModule,
         maxHistoryEntries = 100,
+        requireUnlocked,
         // For testing / determinism
         now = () => Date.now(),
         randomId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -36,22 +37,30 @@ export const createHistoryModule = (dependencies = {}) => {
     const sortNewestFirst = (a, b) => (b?.timestamp ?? 0) - (a?.timestamp ?? 0);
 
     const getHistoryAsync = async () => {
+        requireUnlocked();
+
         const data = await historyBoundStorage.getAsync();
         const entries = data?.entries ?? [];
         return [...entries].sort(sortNewestFirst);
     };
 
     const getHistoryCountAsync = async () => {
+        requireUnlocked();
+
         const entries = await getHistoryAsync();
         return entries.length;
     };
 
     const clearHistoryAsync = async () => {
+        requireUnlocked();
+
         await historyBoundStorage.setAsync({ entries: [] });
         eventModule.emit("history-cleared");
     };
 
     const addHistoryAsync = async (partialEntry) => {
+        requireUnlocked();
+
         const entry = {
             id: randomId(),
             timestamp: now(),

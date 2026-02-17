@@ -39,9 +39,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
      * @throws {Error} If no master key is loaded
      */
     const requireMasterKey = () => {
-        if (masterKey === null) {
-            throw new Error("Vault is locked");
-        }
+        requireUnlocked();
         return masterKey;
     };
 
@@ -70,6 +68,16 @@ export const createStorageManagerModule = (dependencies = {}) => {
 
     const getIsUnlocked = () => {
         return masterKey !== null;
+    };
+
+    /**
+     * Require that the vault is unlocked
+     * @throws {Error} If vault is locked
+     */
+    const requireUnlocked = () => {
+        if (!getIsUnlocked()) {
+            throw new Error("Vault is locked. Please unlock the vault first.");
+        }
     };
 
     const initAsync = async ({ password }) => {
@@ -102,9 +110,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
     };
 
     const updatePasswordAsync = async ({ password, newPassword, rotateMasterKey = false }) => {
-        if (!getIsUnlocked()) {
-            throw new Error("Vault is locked");
-        }
+        requireUnlocked();
 
         if (typeof password !== "string" || !password || typeof newPassword !== "string" || !newPassword) {
             throw new Error("Passwords must be non-empty strings");
@@ -210,6 +216,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         initAsync,
         //
         getIsUnlocked,
+        requireUnlocked,
         unlockAsync,
         lock,
         //
