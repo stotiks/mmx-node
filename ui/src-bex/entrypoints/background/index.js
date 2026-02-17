@@ -24,7 +24,7 @@ export default defineBackground(() => {
         requestMessageHandler.register(backgroundMessenger.onWindowMessage, "request");
 
         //process messages from popup/notification
-        vaultMessageHandler.register(backgroundMessenger.onWindowMessage, "vault");
+        vaultMessageHandler.register(backgroundMessenger.onMessage, "vault");
 
         //forward events from vault to popup
         vault.on("<any>", async (eventName, params) => {
