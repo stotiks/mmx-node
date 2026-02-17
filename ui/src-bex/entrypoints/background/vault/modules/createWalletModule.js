@@ -3,11 +3,14 @@ import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
 import { base64 } from "@scure/base";
 
 export const createWalletModule = (dependencies = {}) => {
-    const { walletBoundStorage, eventModule } = dependencies;
+    const { walletBoundStorage, eventModule, requireUnlocked } = dependencies;
 
     let currentWalletAddress = null;
 
-    const getNetworkAsync = () => "mainnet";
+    const getNetworkAsync = () => {
+        requireUnlocked();
+        return "mainnet";
+    };
 
     /**
      * Clean wallet data by removing sensitive fields
@@ -45,6 +48,8 @@ export const createWalletModule = (dependencies = {}) => {
     };
 
     const getCleanedWalletsAsync = async () => {
+        requireUnlocked();
+
         if (cleanedWalletsCache) {
             return cleanedWalletsCache;
         }
@@ -57,6 +62,8 @@ export const createWalletModule = (dependencies = {}) => {
     const getWalletsAsync = getCleanedWalletsAsync;
 
     const addWalletAsync = async ({ mnemonic, password }) => {
+        requireUnlocked();
+
         // Create ECDSA wallet to validate mnemonic and get address
         const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
         const address = await ecdsaWallet.getAddressAsync(0);
@@ -79,6 +86,8 @@ export const createWalletModule = (dependencies = {}) => {
     };
 
     const removeWalletAsync = async ({ address }) => {
+        requireUnlocked();
+
         const wallets$$sensitive = await getWalletsAsync$$sensitive();
 
         const index = wallets$$sensitive.findIndex((wallet) => wallet.address === address);
@@ -92,9 +101,14 @@ export const createWalletModule = (dependencies = {}) => {
         eventModule?.emit("wallet-removed", { address });
     };
 
-    const getCurrentWalletAddress = () => currentWalletAddress;
+    const getCurrentWalletAddress = () => {
+        requireUnlocked();
+        return currentWalletAddress;
+    };
 
     const setCurrentWalletByAddressAsync = async ({ address }) => {
+        requireUnlocked();
+
         const wallets = await getWalletsAsync();
         if (address && !wallets.some((wallet) => wallet.address === address)) {
             throw new Error(`Wallet with address ${address} not found`);
@@ -112,6 +126,8 @@ export const createWalletModule = (dependencies = {}) => {
      * @throws {Error} If wallet is not found
      */
     const getECDSAWalletAsync = async ({ address }) => {
+        requireUnlocked();
+
         if (!address) {
             throw new Error("No wallet selected");
         }
