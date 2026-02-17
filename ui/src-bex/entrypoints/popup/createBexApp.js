@@ -12,7 +12,7 @@ export const createBexApp = (isNotification = false) => {
     const pinia = createPinia();
     const app = createQuasarApp(App);
 
-    registerPlugins(app, { router, pinia, includeHighlight: false });
+    registerPlugins(app, { router, pinia });
     app.provide("isNotification", isNotification);
     app.mount("#app");
 };
