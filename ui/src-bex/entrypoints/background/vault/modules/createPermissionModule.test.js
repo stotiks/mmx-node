@@ -210,6 +210,16 @@ describe("createPermissionModule", () => {
             expect(permissionModule.getPermissionCount()).toBe(0);
             expect(eventModule.emit).toHaveBeenCalledWith("all-permissions-cleared");
         });
+
+        it("should throw when vault is locked", () => {
+            const requireUnlocked = vi.fn(() => {
+                throw new Error("Vault is locked");
+            });
+            const lockedModule = createPermissionModule({ eventModule, requireUnlocked });
+
+            expect(() => lockedModule.clearAllPermissions()).toThrow("Vault is locked");
+            expect(requireUnlocked).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe("getPermissionCount", () => {
@@ -260,6 +270,16 @@ describe("createPermissionModule", () => {
             permissionModule.addOrigin("https://example.com");
             expect(permissionModule.getPermissionCount()).toBe(1);
         });
+
+        it("should throw when vault is locked", () => {
+            const requireUnlocked = vi.fn(() => {
+                throw new Error("Vault is locked");
+            });
+            const lockedModule = createPermissionModule({ eventModule, requireUnlocked });
+
+            expect(() => lockedModule.addOrigin("https://example.com")).toThrow("Vault is locked");
+            expect(requireUnlocked).toHaveBeenCalledTimes(1);
+        });
     });
 
     describe("removeOrigin", () => {
@@ -282,6 +302,16 @@ describe("createPermissionModule", () => {
         it("should be safe to remove non-existent origin", () => {
             expect(() => permissionModule.removeOrigin("https://example.com")).not.toThrow();
             expect(permissionModule.getPermissionCount()).toBe(0);
+        });
+
+        it("should throw when vault is locked", () => {
+            const requireUnlocked = vi.fn(() => {
+                throw new Error("Vault is locked");
+            });
+            const lockedModule = createPermissionModule({ eventModule, requireUnlocked });
+
+            expect(() => lockedModule.removeOrigin("https://example.com")).toThrow("Vault is locked");
+            expect(requireUnlocked).toHaveBeenCalledTimes(1);
         });
     });
 
