@@ -95,6 +95,7 @@ export const createPermissionModule = (dependencies = {}) => {
          * Clear all permissions (for cleanup)
          */
         clearAllPermissions: () => {
+            requireUnlocked();
             allowedOriginsSet.clear();
             eventModule.emit("all-permissions-cleared");
         },
@@ -124,6 +125,7 @@ export const createPermissionModule = (dependencies = {}) => {
          * @param {string} origin - Origin to add
          */
         addOrigin: (origin) => {
+            requireUnlocked();
             if (typeof origin !== "string" || !origin) {
                 throw new Error("Origin must be a non-empty string");
             }
@@ -135,6 +137,7 @@ export const createPermissionModule = (dependencies = {}) => {
          * @param {string} origin - Origin to remove
          */
         removeOrigin: (origin) => {
+            requireUnlocked();
             if (typeof origin !== "string" || !origin) {
                 throw new Error("Origin must be a non-empty string");
             }
