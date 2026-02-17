@@ -2,8 +2,14 @@ import vault from "@bex/entrypoints/background/vault";
 
 const createHistoryHook = () => {
     // remove "handler" and "result.data"
-    const ctxCleanup = (context) =>
-        Object.fromEntries(Object.entries(context).filter(([key]) => key !== "handler" && key !== "result.data"));
+    const ctxCleanup = (context) => {
+        const { handler, result, ...contextWithoutHandlerAndResult } = context;
+        const { data, ...resultWithoutData } = result;
+        return {
+            ...contextWithoutHandlerAndResult,
+            result: resultWithoutData,
+        };
+    };
 
     return async (context) => {
         const isAcceptRequired = context.handler.body.metadata?.isAcceptRequired ?? true;
