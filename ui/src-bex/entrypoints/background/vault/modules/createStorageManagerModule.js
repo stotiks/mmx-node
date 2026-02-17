@@ -1,5 +1,6 @@
 import { abytes, randomBytes } from "@noble/hashes/utils.js";
 import { EncryptedStorageItem } from "../storage/EncryptedStorageItem";
+import { base64 } from "@scure/base";
 
 export const createStorageManagerModule = (dependencies = {}) => {
     const { masterKeyStorage, managedStorages, eventModule } = dependencies;
@@ -86,7 +87,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         }
 
         const masterKey = randomBytes(32);
-        await masterKeyStorage.setAsync({ masterKey: Array.from(masterKey) }, password);
+        await masterKeyStorage.setAsync({ masterKey: base64.encode(masterKey) }, password);
 
         for (const managedStorage of managedStorages) {
             await managedStorage.setAsync({}, masterKey);
@@ -131,12 +132,12 @@ export const createStorageManagerModule = (dependencies = {}) => {
         // Verify old password by attempting to decrypt the persisted master key.
         // If decryption fails, the underlying storage will throw.
         const { masterKey: persistedMasterKey } = await masterKeyStorage.getAsync(password);
-        const verifiedMasterKey = Uint8Array.from(persistedMasterKey);
+        const verifiedMasterKey = base64.decode(persistedMasterKey);
 
         const nextMasterKey = rotateMasterKey ? randomBytes(32) : verifiedMasterKey;
 
         // Persist master key under new password.
-        await masterKeyStorage.setAsync({ masterKey: Array.from(nextMasterKey) }, newPassword);
+        await masterKeyStorage.setAsync({ masterKey: base64.encode(nextMasterKey) }, newPassword);
 
         if (rotateMasterKey) {
             // Keep in-memory state in sync if we're rotating keys.
@@ -163,7 +164,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
 
     const unlockAsync = async ({ password }) => {
         const { masterKey } = await masterKeyStorage.getAsync(password);
-        setMasterKey(Uint8Array.from(masterKey));
+        setMasterKey(base64.decode(masterKey));
 
         eventModule.emit("unlocked");
         return getIsUnlocked();
