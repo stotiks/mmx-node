@@ -12,8 +12,6 @@ const NOTIFICATION_CONFIG = {
     topOffset: 80,
 };
 
-let notificationWindowId = null;
-
 /**
  * Returns a promise that resolves when the given tab finishes loading,
  * or rejects after `timeoutMs` milliseconds.
@@ -102,21 +100,7 @@ const createNotificationWindow = async () => {
     };
 };
 
-/**
- * Sets up a listener to clean up when the notification window is closed.
- * @param {number} tabId - The tab ID to monitor.
- */
-const setupWindowCloseListener = (tabId) => {
-    const onRemoved = (removedTabId) => {
-        if (removedTabId === tabId) {
-            browser.tabs.onRemoved.removeListener(onRemoved);
-            notificationWindowId = null;
-        }
-    };
-
-    browser.tabs.onRemoved.addListener(onRemoved);
-};
-
+let notificationWindowId = null;
 const openNotificationAsync = async () => {
     // Check if existing window is still open
     if (await windowExists(notificationWindowId)) {
@@ -124,15 +108,9 @@ const openNotificationAsync = async () => {
         return;
     }
 
-    // Clear stale window ID if window no longer exists
-    notificationWindowId = null;
-
     // Create new notification window
     const { windowId, tabId } = await createNotificationWindow();
     notificationWindowId = windowId;
-
-    // Setup cleanup listener
-    setupWindowCloseListener(tabId);
 
     // Wait for the window to load
     await waitForTabLoad(tabId);
