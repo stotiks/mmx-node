@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { createStorageManagerModule } from "./createStorageManagerModule";
 import { EncryptedStorageItem } from "../storage/EncryptedStorageItem";
+import { base64 } from "@scure/base";
 
 describe("createStorageManagerModule", () => {
     const createMockMasterKeyStorage = () => {
@@ -119,7 +120,8 @@ describe("createStorageManagerModule", () => {
 
         it("returns true when persisted master key exists", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
 
             const module = createStorageManagerModule(deps);
 
@@ -141,7 +143,8 @@ describe("createStorageManagerModule", () => {
 
         it("returns true when master key is loaded", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -151,7 +154,8 @@ describe("createStorageManagerModule", () => {
 
         it("returns false after locking", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -164,7 +168,8 @@ describe("createStorageManagerModule", () => {
     describe("initAsync", () => {
         it("throws error if vault is already initialized", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await expect(module.initAsync({ password: "password" })).rejects.toThrow("Vault is already initialized");
@@ -210,7 +215,8 @@ describe("createStorageManagerModule", () => {
 
         it("throws error with invalid password", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "correct-password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "correct-password");
             const module = createStorageManagerModule(deps);
 
             await expect(module.unlockAsync({ password: "wrong-password" })).rejects.toThrow("Invalid password");
@@ -218,7 +224,8 @@ describe("createStorageManagerModule", () => {
 
         it("sets master key in memory on successful unlock", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             const result = await module.unlockAsync({ password: "password" });
@@ -229,7 +236,8 @@ describe("createStorageManagerModule", () => {
 
         it("emits 'unlocked' event", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -241,7 +249,8 @@ describe("createStorageManagerModule", () => {
     describe("lock", () => {
         it("clears master key from memory", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -252,7 +261,8 @@ describe("createStorageManagerModule", () => {
 
         it("returns false (vault is locked)", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -263,7 +273,8 @@ describe("createStorageManagerModule", () => {
 
         it("emits 'locked' event", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -283,7 +294,8 @@ describe("createStorageManagerModule", () => {
     describe("updatePasswordAsync", () => {
         it("throws error when vault is locked", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "old-password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "old-password");
             const module = createStorageManagerModule(deps);
 
             await expect(module.updatePasswordAsync({ password: "old", newPassword: "new" })).rejects.toThrow(
@@ -293,7 +305,8 @@ describe("createStorageManagerModule", () => {
 
         it("throws error for empty password", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -308,7 +321,8 @@ describe("createStorageManagerModule", () => {
 
         it("throws error for same old and new password", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -319,7 +333,8 @@ describe("createStorageManagerModule", () => {
 
         it("throws error for invalid rotateMasterKey type", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -330,7 +345,8 @@ describe("createStorageManagerModule", () => {
 
         it("updates password without rotating master key", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "old-password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "old-password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "old-password" });
 
@@ -345,9 +361,10 @@ describe("createStorageManagerModule", () => {
 
         it("updates password and rotates master key when rotateMasterKey=true", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "old-password");
-            deps.managedStorages[0]._setData({ test: "data" }, [1, 2, 3]);
-            deps.managedStorages[1]._setData({ other: "data" }, [1, 2, 3]);
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "old-password");
+            deps.managedStorages[0]._setData({ test: "data" }, masterKeyBytes);
+            deps.managedStorages[1]._setData({ other: "data" }, masterKeyBytes);
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "old-password" });
 
@@ -364,7 +381,8 @@ describe("createStorageManagerModule", () => {
 
         it("emits 'password-updated' event", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "old-password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "old-password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "old-password" });
 
@@ -380,7 +398,8 @@ describe("createStorageManagerModule", () => {
     describe("clearAllAsync", () => {
         it("clears master key from memory", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -391,7 +410,8 @@ describe("createStorageManagerModule", () => {
 
         it("removes persisted master key", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.clearAllAsync();
@@ -420,7 +440,8 @@ describe("createStorageManagerModule", () => {
 
         it("can clear vault when already locked", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await expect(module.clearAllAsync()).resolves.not.toThrow();
@@ -453,8 +474,9 @@ describe("createStorageManagerModule", () => {
 
         it("returns adapter with getAsync and setAsync methods", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
-            deps.managedStorages[0]._setData({ test: "data" }, [1, 2, 3]);
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
+            deps.managedStorages[0]._setData({ test: "data" }, masterKeyBytes);
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -466,8 +488,9 @@ describe("createStorageManagerModule", () => {
 
         it("getAsync retrieves data using master key", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
-            deps.managedStorages[0]._setData({ test: "data" }, [1, 2, 3]);
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
+            deps.managedStorages[0]._setData({ test: "data" }, masterKeyBytes);
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -479,7 +502,8 @@ describe("createStorageManagerModule", () => {
 
         it("setAsync stores data using master key", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -512,7 +536,7 @@ describe("createStorageManagerModule", () => {
         it("works with EncryptedStorageItem instances", async () => {
             const deps = createDeps();
             const masterKeyBytes = new Uint8Array([1, 2, 3]);
-            deps.masterKeyStorage._setData({ masterKey: masterKeyBytes }, "password");
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             deps.managedStorages[0]._setData({ test: "data" }, masterKeyBytes);
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
@@ -537,7 +561,7 @@ describe("createStorageManagerModule", () => {
         it("zeros master key bytes when cleared", async () => {
             const deps = createDeps();
             const masterKeyBytes = new Uint8Array([1, 2, 3, 4, 5]);
-            deps.masterKeyStorage._setData({ masterKey: masterKeyBytes }, "password");
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
@@ -551,8 +575,8 @@ describe("createStorageManagerModule", () => {
         it("zeros verified master key after password update without rotation", async () => {
             const deps = createDeps();
             // Use a tracked array that we can verify gets zeroed
-            const masterKeyArray = [1, 2, 3, 4, 5];
-            deps.masterKeyStorage._setData({ masterKey: masterKeyArray }, "old-password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3, 4, 5]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "old-password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "old-password" });
 
@@ -587,7 +611,8 @@ describe("createStorageManagerModule", () => {
 
         it("unlock emits events in correct order", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             await module.unlockAsync({ password: "password" });
@@ -598,7 +623,8 @@ describe("createStorageManagerModule", () => {
 
         it("lock emits events", () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "password");
             const module = createStorageManagerModule(deps);
 
             module.lock();
@@ -609,7 +635,8 @@ describe("createStorageManagerModule", () => {
 
         it("updatePassword emits events", async () => {
             const deps = createDeps();
-            deps.masterKeyStorage._setData({ masterKey: [1, 2, 3] }, "old-password");
+            const masterKeyBytes = new Uint8Array([1, 2, 3]);
+            deps.masterKeyStorage._setData({ masterKey: base64.encode(masterKeyBytes) }, "old-password");
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "old-password" });
 
