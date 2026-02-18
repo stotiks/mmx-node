@@ -1,40 +1,5 @@
 /* global browser */
 
-let notificationWindowId = null;
-
-/**
- * Returns a promise that resolves when the given tab finishes loading,
- * or rejects after `timeoutMs` milliseconds.
- *
- * @param {number} tabId - The tab ID to wait for.
- * @param {number} [timeoutMs=10000] - Timeout in milliseconds.
- * @returns {Promise<void>}
- */
-const waitForTabLoad = (tabId, timeoutMs = 10000) => {
-    return new Promise((resolve, reject) => {
-        let timeoutId;
-
-        const onUpdated = (updatedTabId, changeInfo) => {
-            if (updatedTabId === tabId && changeInfo.status === "complete") {
-                cleanup();
-                resolve();
-            }
-        };
-
-        const cleanup = () => {
-            browser.tabs.onUpdated.removeListener(onUpdated);
-            clearTimeout(timeoutId);
-        };
-
-        browser.tabs.onUpdated.addListener(onUpdated);
-
-        timeoutId = setTimeout(() => {
-            cleanup();
-            reject(new Error("Notification load timed out"));
-        }, timeoutMs);
-    });
-};
-
 /**
  * Configuration for the notification window.
  */
@@ -47,23 +12,71 @@ const NOTIFICATION_CONFIG = {
     topOffset: 80,
 };
 
+let notificationWindowId = null;
+
 /**
- * Checks if the notification window is still open and focuses it if so.
- * @param {number|null} windowId - The window ID to check.
- * @returns {Promise<boolean>} True if window exists and was focused, false otherwise.
+ * Returns a promise that resolves when the given tab finishes loading,
+ * or rejects after `timeoutMs` milliseconds.
+ *
+ * @param {number} tabId - The tab ID to wait for.
+ * @param {number} [timeoutMs=30000] - Timeout in milliseconds.
+ * @returns {Promise<void>}
  */
-const focusExistingWindow = async (windowId) => {
+const waitForTabLoad = (tabId, timeoutMs = 30000) => {
+    return new Promise((resolve, reject) => {
+        let timeoutId;
+
+        const onUpdated = (updatedTabId, changeInfo) => {
+            if (updatedTabId === tabId && changeInfo.status === "complete") {
+                cleanup();
+                resolve();
+            }
+        };
+
+        const onRemoved = (removedTabId) => {
+            if (removedTabId === tabId) {
+                cleanup();
+                reject(new Error("Notification tab was closed"));
+            }
+        };
+
+        const cleanup = () => {
+            browser.tabs.onUpdated.removeListener(onUpdated);
+            browser.tabs.onRemoved.removeListener(onRemoved);
+            clearTimeout(timeoutId);
+        };
+
+        browser.tabs.onUpdated.addListener(onUpdated);
+        browser.tabs.onRemoved.addListener(onRemoved);
+
+        timeoutId = setTimeout(() => {
+            cleanup();
+            reject(new Error("Notification load timed out"));
+        }, timeoutMs);
+    });
+};
+
+/**
+ * Checks if a window with the given ID exists.
+ * @param {number|null} windowId - The window ID to check.
+ * @returns {Promise<boolean>} True if window exists, false otherwise.
+ */
+const windowExists = async (windowId) => {
     if (!windowId) {
         return false;
     }
 
     const views = await browser.runtime.getContexts({ windowIds: [windowId] });
-    if (views.length > 0) {
-        await browser.windows.update(windowId, { focused: true });
-        return true;
-    }
+    return views.length > 0;
+};
 
-    return false;
+/**
+ * Focuses the window with the given ID.
+ * @param {number} windowId - The window ID to focus.
+ * @returns {Promise<void>}
+ */
+const focusWindow = async (windowId) => {
+    await browser.windows.update(windowId, { focused: true });
 };
 
 /**
@@ -95,7 +108,7 @@ const createNotificationWindow = async () => {
  */
 const setupWindowCloseListener = (tabId) => {
     const onRemoved = (removedTabId) => {
-        if (tabId === removedTabId) {
+        if (removedTabId === tabId) {
             browser.tabs.onRemoved.removeListener(onRemoved);
             notificationWindowId = null;
         }
@@ -105,8 +118,9 @@ const setupWindowCloseListener = (tabId) => {
 };
 
 const openNotificationAsync = async () => {
-    // Try to focus existing window
-    if (await focusExistingWindow(notificationWindowId)) {
+    // Check if existing window is still open
+    if (await windowExists(notificationWindowId)) {
+        await focusWindow(notificationWindowId);
         return;
     }
 
