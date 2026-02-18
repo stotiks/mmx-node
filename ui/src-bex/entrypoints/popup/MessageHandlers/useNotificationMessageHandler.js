@@ -59,6 +59,11 @@ export const useNotificationMessageHandler = () => {
             isLoading.value = false;
         });
 
+        notificationMessageHandler.addFailHook(() => {
+            isRunning.value = false;
+            isLoading.value = false;
+        });
+
         notificationMessageHandler.register(popupMessenger.onMessage, "notification");
         //isMounted.value = true;
         useTimeoutFn(() => {
