@@ -6,6 +6,7 @@ export const createPermissionModule = (dependencies = {}) => {
     }
 
     // Private permission storage - Set of allowed origins
+    // Per-session storage only, no persistence needed - permissions reset on browser restart
     const allowedOriginsSet = new Set();
 
     /**
