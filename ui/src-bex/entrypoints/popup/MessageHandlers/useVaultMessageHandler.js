@@ -50,5 +50,9 @@ export const useVaultMessageHandler = () => {
         },
     };
     const vaultMessageHandler = new MessageHandler(vaultMessageHandlerMethods);
-    vaultMessageHandler.register(popupMessenger.onMessage, "vault");
+
+    //const isNotification = inject("isNotification");
+    //const messageID = isNotification ? "notification/vault" : "popup/vault";
+    const messageID = "popup/vault";
+    vaultMessageHandler.register(popupMessenger.onMessage, messageID);
 };
