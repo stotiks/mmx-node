@@ -15,9 +15,12 @@ const createHistoryHook = () => {
         const isAcceptRequired = context.handler.body.metadata?.isAcceptRequired ?? true;
 
         if (isAcceptRequired) {
-            // TODO: check if vault is unlocked and url has permissions
             const ctx = ctxCleanup(context);
-            await vault.addHistoryAsync(ctx);
+
+            // no await, fire-and-forget
+            vault.addHistoryAsync(ctx).catch((err) => {
+                console.warn("[HistoryHook] Failed to save history:", err);
+            });
         }
     };
 };
