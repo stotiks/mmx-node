@@ -17,7 +17,7 @@ const createHistoryHook = () => {
         if (isAcceptRequired) {
             // TODO: check if vault is unlocked and url has permissions
             const ctx = ctxCleanup(context);
-            vault.addHistoryAsync(ctx);
+            await vault.addHistoryAsync(ctx);
         }
     };
 };
