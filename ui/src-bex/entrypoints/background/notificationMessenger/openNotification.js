@@ -2,6 +2,39 @@
 
 let notificationWindowId = null;
 
+/**
+ * Returns a promise that resolves when the given tab finishes loading,
+ * or rejects after `timeoutMs` milliseconds.
+ *
+ * @param {number} tabId - The tab ID to wait for.
+ * @param {number} [timeoutMs=10000] - Timeout in milliseconds.
+ * @returns {Promise<void>}
+ */
+function waitForTabLoad(tabId, timeoutMs = 10000) {
+    return new Promise((resolve, reject) => {
+        let timeoutId;
+
+        const onUpdated = (updatedTabId, changeInfo) => {
+            if (updatedTabId === tabId && changeInfo.status === "complete") {
+                cleanup();
+                resolve();
+            }
+        };
+
+        const cleanup = () => {
+            browser.tabs.onUpdated.removeListener(onUpdated);
+            clearTimeout(timeoutId);
+        };
+
+        browser.tabs.onUpdated.addListener(onUpdated);
+
+        timeoutId = setTimeout(() => {
+            cleanup();
+            reject(new Error("Notification load timed out"));
+        }, timeoutMs);
+    });
+}
+
 const openNotificationAsync = async () => {
     if (notificationWindowId) {
         const views = await browser.runtime.getContexts({ windowIds: [notificationWindowId] });
@@ -45,27 +78,7 @@ const openNotificationAsync = async () => {
             }
         });
 
-        const loadingPromise = new Promise((resolve, reject) => {
-            const listener = (tabIdUpdated, changeInfo) => {
-                if (tabId === tabIdUpdated && changeInfo.status === "complete") {
-                    browser.tabs.onUpdated.removeListener(listener);
-                    clearTimeout(rejectTimeout);
-                    //console.log("Notification loaded");
-                    resolve();
-                }
-            };
-
-            // wait for the tab to load
-            browser.tabs.onUpdated.addListener(listener);
-
-            const rejectTimeout = setTimeout(() => {
-                browser.tabs.onUpdated.removeListener(listener);
-                clearTimeout(rejectTimeout);
-                reject("Notification load timed out");
-            }, 10 * 1000);
-        });
-
-        await loadingPromise;
+        await waitForTabLoad(tabId);
     }
 };
 
