@@ -1,7 +1,9 @@
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { vaultService } from "@bex/entrypoints/popup/vaultService";
+import { useVaultService } from "@bex/entrypoints/popup/composables/useVaultService";
 
-export const useVaultStore = defineStore("vault", () => {
+export const useVaultStore = defineStore("vaultStore", () => {
+    const vaultService = useVaultService();
+
     // State
     const isLoaded = ref(false);
     const isInitialized = ref(false);

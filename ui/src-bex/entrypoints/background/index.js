@@ -17,22 +17,32 @@ export default defineBackground(() => {
     // });
 
     const initializeExtension = async () => {
-        //await vault.initAsync();
-        //await vault.removeDataAsync();
-
         //process messages from injected provider
-        requestMessageHandler.register(backgroundMessenger.onWindowMessage, "request");
+        requestMessageHandler.register(backgroundMessenger.onWindowMessage, "provider/request");
 
-        //process messages from popup/notification
-        vaultMessageHandler.register(backgroundMessenger.onMessage, "vault");
+        //process messages from popup
+        vaultMessageHandler.register(backgroundMessenger.onMessage, "popup/vault");
 
-        //forward events from vault to popup
+        // //process messages from notification
+        // vaultMessageHandler.register(backgroundMessenger.onMessage, "notification/vault");
+
+        //forward events from vault to popup/notification
         vault.on("<any>", async (eventName, params) => {
             try {
-                await backgroundMessenger.sendMessageAsync("vault", { method: eventName, params }, "popup");
+                await backgroundMessenger.sendMessageAsync("popup/vault", { method: eventName, params }, "popup");
             } catch (err) {
                 console.log(err);
             }
+
+            // try {
+            //     await backgroundMessenger.sendMessageAsync(
+            //         "notification/vault",
+            //         { method: eventName, params },
+            //         "popup"
+            //     );
+            // } catch (err) {
+            //     console.log(err);
+            // }
         });
     };
 

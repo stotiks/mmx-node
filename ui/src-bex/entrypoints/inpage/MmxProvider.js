@@ -37,7 +37,7 @@ export class MmxProvider {
 
     #sendMessageAsync = async (messageId, payload) => await windowMessenger.sendMessageAsync(messageId, payload);
 
-    request = async (payload) => await this.#sendMessageAsync("request", payload);
+    request = async (payload) => await this.#sendMessageAsync("provider/request", payload);
 
     constructor() {
         windowMessenger.onMessage("message", (message) => {
