@@ -49,20 +49,20 @@ const NOTIFICATION_CONFIG = {
 
 /**
  * Checks if the notification window is still open and focuses it if so.
+ * @param {number|null} windowId - The window ID to check.
  * @returns {Promise<boolean>} True if window exists and was focused, false otherwise.
  */
-const focusExistingWindow = async () => {
-    if (!notificationWindowId) {
+const focusExistingWindow = async (windowId) => {
+    if (!windowId) {
         return false;
     }
 
-    const views = await browser.runtime.getContexts({ windowIds: [notificationWindowId] });
+    const views = await browser.runtime.getContexts({ windowIds: [windowId] });
     if (views.length > 0) {
-        await browser.windows.update(notificationWindowId, { focused: true });
+        await browser.windows.update(windowId, { focused: true });
         return true;
     }
 
-    notificationWindowId = null;
     return false;
 };
 
@@ -106,9 +106,12 @@ const setupWindowCloseListener = (tabId) => {
 
 const openNotificationAsync = async () => {
     // Try to focus existing window
-    if (await focusExistingWindow()) {
+    if (await focusExistingWindow(notificationWindowId)) {
         return;
     }
+
+    // Clear stale window ID if window no longer exists
+    notificationWindowId = null;
 
     // Create new notification window
     const { windowId, tabId } = await createNotificationWindow();
