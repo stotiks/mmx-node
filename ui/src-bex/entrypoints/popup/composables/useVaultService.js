@@ -41,4 +41,11 @@ class DynamicMessageService {
 //     throw error;
 // };
 
-export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync);
+export const useVaultService = () => {
+    //const isNotification = inject("isNotification");
+    //const messageID = isNotification ? "notification/vault" : "popup/vault";
+    const messageID = "popup/vault";
+    const vaultService = new DynamicMessageService(messageID, popupMessenger.sendMessageAsync);
+
+    return vaultService;
+};
