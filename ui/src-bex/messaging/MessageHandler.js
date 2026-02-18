@@ -25,7 +25,7 @@ export class MessageHandler {
         this.#successHooks.push(hook);
     }
 
-    addFailsHook(hook) {
+    addFailHook(hook) {
         this.#failHooks.push(hook);
     }
 
