@@ -33,12 +33,12 @@ class DynamicMessageService {
     }
 }
 
-import { Notify } from "quasar";
+// import { Notify } from "quasar";
 
-const errorHandler = (error) => {
-    console.error(error.message || error);
-    Notify.create({ type: "negative", message: error.message || error });
-    throw error;
-};
+// const errorHandler = (error) => {
+//     console.error(error.message || error);
+//     Notify.create({ type: "negative", message: error.message || error });
+//     throw error;
+// };
 
 export const vaultService = new DynamicMessageService("vault", popupMessenger.sendMessageAsync);
