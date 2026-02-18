@@ -8,7 +8,7 @@ import { createPinia } from "pinia";
  * Creates and mounts a BEX app instance
  * @param {boolean} isNotification - Whether this is a notification window
  */
-export const createBexApp = (isNotification = false) => {
+export const createBexApp = ({ isNotification = false }) => {
     const pinia = createPinia();
     const app = createQuasarApp(App);
 
