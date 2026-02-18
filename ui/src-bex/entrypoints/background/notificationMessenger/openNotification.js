@@ -1,14 +1,6 @@
 /* global browser */
 
-const waitForConditionAsync = async (checkFunction, interval = 100) => {
-    while (!checkFunction()) {
-        await new Promise((resolve) => setTimeout(resolve, interval));
-    }
-    return true;
-};
-
 let notificationWindowId = null;
-let isNotificationLoaded = false;
 
 const openNotificationAsync = async () => {
     if (notificationWindowId) {
@@ -45,24 +37,35 @@ const openNotificationAsync = async () => {
         notificationWindowId = newWindow.id;
         const tabId = newWindow.tabs[0].id;
 
-        browser.tabs.onUpdated.addListener(function listener(tabIdUpdated, changeInfo) {
-            if (tabId === tabIdUpdated && changeInfo.status === "complete") {
-                browser.tabs.onUpdated.removeListener(listener);
-                isNotificationLoaded = true;
-                //console.log("Window content fully loaded");
-            }
-        });
-
         browser.tabs.onRemoved.addListener(function listener(tabIdUpdated) {
             if (tabId === tabIdUpdated) {
                 browser.tabs.onRemoved.removeListener(listener);
-                isNotificationLoaded = false;
                 notificationWindowId = null;
                 //console.log("Window closed");
             }
         });
 
-        await waitForConditionAsync(() => isNotificationLoaded === true);
+        const loadingPromise = new Promise((resolve, reject) => {
+            const listener = (tabIdUpdated, changeInfo) => {
+                if (tabId === tabIdUpdated && changeInfo.status === "complete") {
+                    browser.tabs.onUpdated.removeListener(listener);
+                    clearTimeout(rejectTimeout);
+                    //console.log("Notification loaded");
+                    resolve();
+                }
+            };
+
+            // wait for the tab to load
+            browser.tabs.onUpdated.addListener(listener);
+
+            const rejectTimeout = setTimeout(() => {
+                browser.tabs.onUpdated.removeListener(listener);
+                clearTimeout(rejectTimeout);
+                reject("Notification load timed out");
+            }, 10 * 1000);
+        });
+
+        await loadingPromise;
     }
 };
 
