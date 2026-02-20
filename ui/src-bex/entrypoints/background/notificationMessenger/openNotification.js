@@ -1,5 +1,7 @@
 /* global browser */
 
+let notificationWindowId = null;
+
 /**
  * Configuration for the notification window.
  */
@@ -94,23 +96,26 @@ const createNotificationWindow = async () => {
         left: currentWindow.left + currentWindow.width - NOTIFICATION_CONFIG.width - NOTIFICATION_CONFIG.rightOffset,
     });
 
+    notificationWindowId = newWindow.id;
+
     return {
         windowId: newWindow.id,
         tabId: newWindow.tabs[0].id,
     };
 };
 
-let notificationWindowId = null;
+export const notificationWindowExists = () => windowExists(notificationWindowId);
+export const focusNotificationWindow = () => focusWindow(notificationWindowId);
+
 const openNotificationAsync = async () => {
     // Check if existing window is still open
-    if (await windowExists(notificationWindowId)) {
-        await focusWindow(notificationWindowId);
+    if (await notificationWindowExists()) {
+        await focusNotificationWindow();
         return;
     }
 
     // Create new notification window
-    const { windowId, tabId } = await createNotificationWindow();
-    notificationWindowId = windowId;
+    const { tabId } = await createNotificationWindow();
 
     // Wait for the window to load
     await waitForTabLoad(tabId);
