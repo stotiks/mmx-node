@@ -42,10 +42,10 @@ const route = useRoute();
 import { useVaultStore } from "../stores/vault";
 const vaultStore = useVaultStore();
 
-import { useTryCatchWrapperAsync } from "../utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "../composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-import { useRemoveVaultData } from "../utils/useRemoveVaultData";
+import { useRemoveVaultData } from "../composables/useRemoveVaultData";
 const { handleRemoveVaultDataAsync } = useRemoveVaultData();
 
 const handleLockAsync = async () => {

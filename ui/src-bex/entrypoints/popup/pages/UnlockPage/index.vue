@@ -26,6 +26,6 @@
 <script setup>
 import UnlockForm from "./UnlockForm";
 
-import { useRemoveVaultData } from "@bex/entrypoints/popup/utils/useRemoveVaultData";
+import { useRemoveVaultData } from "@bex/entrypoints/popup/composables/useRemoveVaultData";
 const { handleRemoveVaultDataAsync } = useRemoveVaultData();
 </script>

@@ -42,7 +42,7 @@ import rules from "@/helpers/rules";
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 import router from "@/plugins/router";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
