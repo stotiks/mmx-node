@@ -55,7 +55,7 @@ import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
 import AcceptPage from "./pages/AcceptPage";
 
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 import InitPage from "@bex/entrypoints/popup/pages/InitPage.vue";
 const tryCatchWrapperASync = useTryCatchWrapperAsync();
 
