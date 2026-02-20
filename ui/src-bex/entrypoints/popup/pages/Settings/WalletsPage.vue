@@ -51,7 +51,7 @@
 import { mdiCheck, mdiContentCopy, mdiDelete } from "@mdi/js";
 
 import { UseClipboard } from "@vueuse/components";
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 import AddWalletDialog from "@bex/entrypoints/popup/components/dialogs/AddWalletDialog";
 
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();

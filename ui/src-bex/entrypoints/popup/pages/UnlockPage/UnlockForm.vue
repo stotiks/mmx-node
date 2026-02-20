@@ -29,7 +29,7 @@ const password = ref(test_password || "");
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 const handleUnlockAsync = async () => {
     await tryCatchWrapperAsync(() => vaultStore.unlockAsync({ password: password.value }));

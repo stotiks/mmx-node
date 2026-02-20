@@ -36,7 +36,7 @@ const handleSubmit = async () => {
 };
 const onDialogShow = () => {};
 
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";

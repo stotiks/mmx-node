@@ -25,7 +25,7 @@
 import PasswordForm from "@bex/entrypoints/popup/components/PasswordForm.vue";
 import WBtnSubmit from "@/components/Wallet/WalletForm/WBtnSubmit.vue";
 
-import { useTryCatchWrapperAsync } from "../utils/useTryCatchWrapperAsync";
+import { useTryCatchWrapperAsync } from "../composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
