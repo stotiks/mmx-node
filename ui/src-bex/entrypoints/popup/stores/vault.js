@@ -93,6 +93,9 @@ export const useVaultStore = defineStore("vaultStore", () => {
         await _refreshWalletsAsync();
     };
 
+    // NOTE: Users can delete all vault data at any time without password verification.
+    // This is intentional - users should always have the ability to clear their local data,
+    // even if they've forgotten their password. This is a "factory reset" operation.
     const clearAllAsync = async () => {
         if (isUnlocked.value) {
             await lockAsync();
