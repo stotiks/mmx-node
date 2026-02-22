@@ -25,7 +25,11 @@ const getWalletByAddress = async (address) => {
     if (!address) {
         throw new Error("No wallet selected");
     }
-    return (await vault.getWalletsAsync()).find((wallet) => wallet.address === address);
+    const wallet = (await vault.getWalletsAsync()).find((w) => w.address === address);
+    if (!wallet) {
+        throw new Error(`Wallet not found for address: ${address}`);
+    }
+    return wallet;
 };
 
 export const getCurrentWallet = () => {
