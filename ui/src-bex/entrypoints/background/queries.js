@@ -1,3 +1,8 @@
+// Guard against undefined __PUBLIC_RPC_URL__ at module load time
+if (typeof __PUBLIC_RPC_URL__ === "undefined") {
+    throw new Error("__PUBLIC_RPC_URL__ is not defined");
+}
+
 const getData = (endpoint, params) => {
     const url = new URL(endpoint, __PUBLIC_RPC_URL__);
     return fetch(url + `?${new URLSearchParams(params)}`).then(async (res) => {
