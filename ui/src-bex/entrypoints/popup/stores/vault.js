@@ -130,14 +130,10 @@ export const useVaultStore = defineStore("vaultStore", () => {
     const _refreshIsUnlockedAsync = async () => (isUnlocked.value = (await vaultService.getIsUnlockedAsync()) ?? false);
 
     const _refresh = async () => {
-        let doRefresh = isUnlocked.value;
+        // Always fetch real state from background
+        await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
 
-        if (doRefresh === false) {
-            const [isInit, isUnlock] = await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
-            doRefresh = isInit === true && isUnlock === true;
-        }
-
-        if (doRefresh) {
+        if (isUnlocked.value) {
             await _refreshWalletsAsync();
             await _refreshCurrentWalletAddressAsync();
             await updateHistoryAsync();
