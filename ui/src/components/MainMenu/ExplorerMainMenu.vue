@@ -22,5 +22,5 @@ const tabs = computed(() => [
 ]);
 
 import { useNodeInfo } from "@/queries/wapi";
-useNodeInfo({ refreshInterval: 5000 });
+useNodeInfo({ refetchInterval: 5000 });
 </script>
