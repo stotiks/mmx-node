@@ -8,7 +8,7 @@ export const useNodeInfo = (params) => {
     const query = useQuery({
         queryKey: ["node_info"],
         queryFn: ({ signal }) => getNodeInfo(signal),
-        refetchInterval: params?.refreshInterval ?? 1.1 * ONE_SECOND,
+        refetchInterval: params?.refetchInterval ?? 1.1 * ONE_SECOND,
         enabled: params?.enabled ?? true,
     });
     useNodeInfoWatch(query);
@@ -36,11 +36,11 @@ const useNodeInfoWatch = (query) => {
             queryClient.invalidateQueries({ queryKey: ["block", { height: height - 1 }] });
             queryClient.invalidateQueries({ queryKey: ["block", { height }] });
 
-            (queryClient.invalidateQueries({ queryKey: ["transaction"] }), { cancelRefetch: false });
+            queryClient.invalidateQueries({ queryKey: ["transaction"] }, { cancelRefetch: false });
 
-            (queryClient.invalidateQueries({ queryKey: ["wallet"] }), { cancelRefetch: false });
-            (queryClient.invalidateQueries({ queryKey: ["market"] }), { cancelRefetch: false });
-            (queryClient.invalidateQueries({ queryKey: ["swap"] }), { cancelRefetch: false });
+            queryClient.invalidateQueries({ queryKey: ["wallet"] }, { cancelRefetch: false });
+            queryClient.invalidateQueries({ queryKey: ["market"] }, { cancelRefetch: false });
+            queryClient.invalidateQueries({ queryKey: ["swap"] }, { cancelRefetch: false });
 
             queryClient.invalidateQueries({ queryKey: ["farm", "info"] }, { cancelRefetch: false });
             if (height % 3 == 0) {
