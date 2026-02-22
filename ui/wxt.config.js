@@ -25,7 +25,10 @@ export default defineConfig({
         web_accessible_resources: [
             {
                 resources: ["inpage.js"],
-                matches: ["<all_urls>"],
+                // The inpage script needs to be injected into web pages to provide
+                // the MMX wallet API (window.mmx) for dApps to interact with.
+                // Restricted to HTTP/HTTPS protocols for security.
+                matches: ["http://*/*", "https://*/*"],
             },
         ],
     },
