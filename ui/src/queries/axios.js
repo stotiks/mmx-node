@@ -1,15 +1,12 @@
 import axiosLib from "axios";
 
-//axiosLib.defaults.timeout = 10000;
+const axios = axiosLib.create();
 
-axiosLib.defaults.paramsSerializer = (params) => {
-    return Object.entries(params)
+axios.defaults.paramsSerializer = (params) =>
+    Object.entries(params)
         .filter(([, value]) => value !== undefined && value !== null)
         .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
         .join("&");
-};
-
-const axios = axiosLib.create();
 
 axios.interceptors.request.use(
     (config) => {
