@@ -1,4 +1,4 @@
-import axios from "@/queries/axios";
+import axios from "axios";
 import { useQuery } from "@tanstack/vue-query";
 import { ONE_SECOND } from "../common";
 
