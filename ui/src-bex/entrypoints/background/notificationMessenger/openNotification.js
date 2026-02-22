@@ -3,6 +3,22 @@
 let notificationWindowId = null;
 
 /**
+ * In-flight promise guard — prevents concurrent calls from opening duplicate
+ * notification windows. Cleared after the window finishes loading (or on error).
+ */
+let pendingOpen = null;
+
+/**
+ * Listen for window removal to clear stale notificationWindowId.
+ * This prevents the code from thinking the window still exists after user closes it.
+ */
+browser.windows.onRemoved.addListener((windowId) => {
+    if (windowId === notificationWindowId) {
+        notificationWindowId = null;
+    }
+});
+
+/**
  * Configuration for the notification window.
  */
 const NOTIFICATION_CONFIG = {
@@ -15,14 +31,15 @@ const NOTIFICATION_CONFIG = {
 };
 
 /**
- * Returns a promise that resolves when the given tab finishes loading,
+ * Returns a promise that resolves when the notification window finishes loading,
  * or rejects after `timeoutMs` milliseconds.
  *
- * @param {number} tabId - The tab ID to wait for.
+ * @param {number} windowId - The window ID to wait for.
+ * @param {number} tabId - The tab ID within the window.
  * @param {number} [timeoutMs=30000] - Timeout in milliseconds.
  * @returns {Promise<void>}
  */
-const waitForTabLoad = (tabId, timeoutMs = 30000) => {
+const waitForWindowLoad = (windowId, tabId, timeoutMs = 30000) => {
     return new Promise((resolve, reject) => {
         let timeoutId;
 
@@ -33,21 +50,21 @@ const waitForTabLoad = (tabId, timeoutMs = 30000) => {
             }
         };
 
-        const onRemoved = (removedTabId) => {
-            if (removedTabId === tabId) {
+        const onRemoved = (removedWindowId) => {
+            if (removedWindowId === windowId) {
                 cleanup();
-                reject(new Error("Notification tab was closed"));
+                reject(new Error("Notification window was closed"));
             }
         };
 
         const cleanup = () => {
             browser.tabs.onUpdated.removeListener(onUpdated);
-            browser.tabs.onRemoved.removeListener(onRemoved);
+            browser.windows.onRemoved.removeListener(onRemoved);
             clearTimeout(timeoutId);
         };
 
         browser.tabs.onUpdated.addListener(onUpdated);
-        browser.tabs.onRemoved.addListener(onRemoved);
+        browser.windows.onRemoved.addListener(onRemoved);
 
         timeoutId = setTimeout(() => {
             cleanup();
@@ -108,17 +125,26 @@ export const notificationWindowExists = () => windowExists(notificationWindowId)
 export const focusNotificationWindow = () => focusWindow(notificationWindowId);
 
 const openNotificationAsync = async () => {
+    // If a window is already being opened, join the in-flight promise instead
+    // of creating a duplicate (BUG-4 fix).
+    if (pendingOpen) return pendingOpen;
+
     // Check if existing window is still open
     if (await notificationWindowExists()) {
         await focusNotificationWindow();
         return;
     }
 
-    // Create new notification window
-    const { tabId } = await createNotificationWindow();
+    // Create new notification window and wait for it to load.
+    // Store the promise so concurrent callers share it.
+    pendingOpen = (async () => {
+        const { windowId, tabId } = await createNotificationWindow();
+        await waitForWindowLoad(windowId, tabId);
+    })().finally(() => {
+        pendingOpen = null;
+    });
 
-    // Wait for the window to load
-    await waitForTabLoad(tabId);
+    return pendingOpen;
 };
 
 export default openNotificationAsync;
