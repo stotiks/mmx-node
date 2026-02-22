@@ -16,7 +16,7 @@ export const jsonContentTypeHeaders = {
 };
 
 export const pushConfigSuccess = (vars) => {
-    var value = vars.value != null ? vars.value : "null";
+    const value = vars.value != null ? vars.value : "null";
     Notify.create({
         caption: vars.restart ? t("node_settings.restart_needed") : "",
         message: t("common.set_key_to_value", { key: vars.key, value: value }),
