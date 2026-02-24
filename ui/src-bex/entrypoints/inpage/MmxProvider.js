@@ -21,6 +21,22 @@ const createReadonlyProxy = (obj) =>
             console.warn("MmxProvider: Cannot change prototype of readonly object");
             return false;
         },
+        // Prevent prototype chain inspection/mutation
+        getPrototypeOf() {
+            return null;
+        },
+        // Prevent introspection of property descriptors
+        getOwnPropertyDescriptor(target, prop) {
+            const descriptor = Reflect.getOwnPropertyDescriptor(target, prop);
+            if (descriptor) {
+                return {
+                    ...descriptor,
+                    writable: false,
+                    configurable: false,
+                };
+            }
+            return descriptor;
+        },
         // Allow reading properties
         get(target, prop, receiver) {
             const value = Reflect.get(target, prop, receiver);
@@ -32,7 +48,7 @@ const createReadonlyProxy = (obj) =>
         },
     });
 
-export class MmxProvider {
+class MmxProvider {
     isFurryVault = true;
 
     #sendMessageAsync = async (messageId, payload) => await windowMessenger.sendMessageAsync(messageId, payload);
@@ -42,6 +58,9 @@ export class MmxProvider {
     // Private events map - not accessible from outside
     #events = new Map();
 
+    // Store proxy reference to prevent bypass via method chaining
+    #proxy;
+
     constructor() {
         windowMessenger.onMessage("message", (message) => {
             const { eventName, data } = message.data;
@@ -49,7 +68,8 @@ export class MmxProvider {
             return { success: true };
         });
 
-        return createReadonlyProxy(this);
+        this.#proxy = createReadonlyProxy(this);
+        return this.#proxy;
     }
 
     // Public API for event listeners
@@ -58,7 +78,7 @@ export class MmxProvider {
             this.#events.set(eventName, []);
         }
         this.#events.get(eventName).push(callback);
-        return this;
+        return this.#proxy;
     };
 
     removeListener(eventName, callback) {
@@ -69,7 +89,7 @@ export class MmxProvider {
                 callbacks.splice(index, 1);
             }
         }
-        return this;
+        return this.#proxy;
     }
 
     // Private emit method - only callable internally
@@ -85,3 +105,8 @@ export class MmxProvider {
         }
     }
 }
+
+// Freeze the prototype to prevent tampering
+Object.freeze(MmxProvider.prototype);
+
+export { MmxProvider };
