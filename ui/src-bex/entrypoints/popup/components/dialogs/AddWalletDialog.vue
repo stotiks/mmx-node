@@ -1,6 +1,6 @@
 <template>
     <q-dialog ref="dialogRef" persistent @show="onDialogShow" @hide="onDialogHide">
-        <q-card lass="q-dialog-plugin" style="min-width: 350px">
+        <q-card class="q-dialog-plugin" style="min-width: 350px">
             <q-form ref="formRef" @submit="handleSubmit">
                 <q-card-section class="q-pt-none q-gutter-y-sm">
                     <SeedInput v-model="mnemonic" :debounce="200" dense />
