@@ -154,7 +154,7 @@ const requests = [
 const $q = useQuasar();
 const doRequest = async (payload) => {
     try {
-        return await vault.value.request(payload);
+        return await vault.value.requestAsync(payload);
     } catch (e) {
         // $q.notify({ type: "negative", message: e.message || "Unknown error" });
         return { error: e.message || "Unknown error" };
