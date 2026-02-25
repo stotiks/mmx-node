@@ -3,9 +3,6 @@ import { MessageHandler } from "@bex/messaging/MessageHandler";
 
 /**
  * Whitelist of safe vault methods that can be accessed via message handler.
- * This explicitly excludes:
- * - getECDSAWalletAsync: exposes raw private key material
- * - on, removeListener: event methods used server-side only
  */
 const vaultPublicAPI = {
     // Storage manager interface
@@ -28,8 +25,8 @@ const vaultPublicAPI = {
 
     // History interface
     getHistoryAsync: vault.getHistoryAsync,
-    addHistoryAsync: vault.addHistoryAsync,
-    clearHistoryAsync: vault.clearHistoryAsync,
+    // addHistoryAsync: vault.addHistoryAsync,
+    // clearHistoryAsync: vault.clearHistoryAsync,
     getHistoryCountAsync: vault.getHistoryCountAsync,
 
     // Permission interface
