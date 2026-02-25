@@ -121,17 +121,21 @@ const createNotificationWindow = async () => {
     };
 };
 
-export const notificationWindowExists = () => windowExists(notificationWindowId);
-export const focusNotificationWindow = () => focusWindow(notificationWindowId);
-
+/**
+ * Opens the notification window, creating it if necessary.
+ * @returns {Promise<void>}
+ */
 const openNotificationAsync = async () => {
     // If a window is already being opened, join the in-flight promise instead
-    // of creating a duplicate (BUG-4 fix).
     if (pendingOpen) return pendingOpen;
 
+    // Capture the window ID before checking existence to avoid race condition
+    // where window closes between check and focus call
+    const windowId = notificationWindowId;
+
     // Check if existing window is still open
-    if (await notificationWindowExists()) {
-        await focusNotificationWindow();
+    if (windowId && (await windowExists(windowId))) {
+        await focusWindow(windowId);
         return;
     }
 
