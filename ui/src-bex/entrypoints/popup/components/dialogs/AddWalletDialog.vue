@@ -46,6 +46,7 @@ const { isActionRunning } = storeToRefs(vaultStore);
 const handleAddWalletAsync = async () => {
     await tryCatchWrapperAsync(async () => {
         await vaultStore.addWalletAsync({ mnemonic: mnemonic.value, password: password.value });
+        mnemonic.value = ""; // Clear mnemonic from memory after successful wallet addition
         onDialogOK();
     });
 };
