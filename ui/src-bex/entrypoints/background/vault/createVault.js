@@ -64,7 +64,8 @@ export const createVault = (dependencies = {}) => {
         getCurrentWalletAddress: walletModule.getCurrentWalletAddress,
         setCurrentWalletByAddressAsync: walletModule.setCurrentWalletByAddressAsync,
 
-        getECDSAWalletAsync: walletModule.getECDSAWalletAsync,
+        //getECDSAWalletAsync: walletModule.getECDSAWalletAsync,
+        withECDSAWallet: walletModule.withECDSAWallet,
 
         // History interface
         getHistoryAsync: historyModule.getHistoryAsync,
