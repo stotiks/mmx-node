@@ -1,8 +1,6 @@
 import windowMessenger from "@bex/messaging/entrypointMessengers/window";
 import { createReadonlyProxy } from "./utils/createReadonlyProxy.js";
 
-windowMessenger.setNamespace();
-
 class MmxProvider {
     isFurryVault = true;
 
@@ -10,22 +8,27 @@ class MmxProvider {
 
     requestAsync = async (payload) => await this.#sendMessageAsync("provider/request", payload);
 
-    // Private events map - not accessible from outside
-    #events = new Map();
-
     // Store proxy reference to prevent bypass via method chaining
     #proxy;
 
     constructor() {
+        this.#init();
+
+        this.#proxy = createReadonlyProxy(this);
+        return this.#proxy;
+    }
+
+    #init() {
+        windowMessenger.setNamespace();
         windowMessenger.onMessage("message", (message) => {
             const { eventName, data } = message.data;
             this.#emit(eventName, data);
             return { success: true };
         });
-
-        this.#proxy = createReadonlyProxy(this);
-        return this.#proxy;
     }
+
+    // Private events map - not accessible from outside
+    #events = new Map();
 
     // Public API for event listeners
     on = (eventName, callback) => {
