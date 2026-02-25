@@ -17,6 +17,7 @@ vi.mock("@/mmx/wallet/ECDSA_Wallet", () => ({
         async getAddressAsync(index) {
             return mockECDSAWallet?.getAddressAsync?.(index) ?? "mmx1default";
         }
+        destroy() {}
     },
 }));
 
@@ -521,6 +522,91 @@ describe("createWalletModule", () => {
         });
     });
 
+    describe("withECDSAWallet", () => {
+        it("calls callback with ECDSA wallet instance", async () => {
+            const deps = createDeps();
+            const mockSeed = new Uint8Array([1, 2, 3, 4, 5]);
+            const encodedSeed = base64.encode(mockSeed);
+            deps.walletBoundStorage._setData({
+                wallets: [{ address: "mmx1wallet1", seed: encodedSeed, password: "mypassword" }],
+            });
+            const module = createWalletModule(deps);
+
+            const result = await module.withECDSAWallet("mmx1wallet1", async (ecdsaWallet) => {
+                return ecdsaWallet.password;
+            });
+
+            expect(result).toBe("mypassword");
+        });
+
+        it("calls destroy on the ECDSA wallet after callback completes", async () => {
+            const deps = createDeps();
+            const encodedSeed = base64.encode(new Uint8Array([1, 2, 3]));
+            deps.walletBoundStorage._setData({
+                wallets: [{ address: "mmx1wallet1", seed: encodedSeed, password: "pass" }],
+            });
+            const module = createWalletModule(deps);
+
+            let capturedWallet;
+            await module.withECDSAWallet("mmx1wallet1", async (ecdsaWallet) => {
+                capturedWallet = ecdsaWallet;
+                capturedWallet.destroy = vi.fn();
+            });
+
+            expect(capturedWallet.destroy).toHaveBeenCalledOnce();
+        });
+
+        it("calls destroy even when callback throws", async () => {
+            const deps = createDeps();
+            const encodedSeed = base64.encode(new Uint8Array([1, 2, 3]));
+            deps.walletBoundStorage._setData({
+                wallets: [{ address: "mmx1wallet1", seed: encodedSeed, password: "pass" }],
+            });
+            const module = createWalletModule(deps);
+
+            let capturedWallet;
+            await expect(
+                module.withECDSAWallet("mmx1wallet1", async (ecdsaWallet) => {
+                    capturedWallet = ecdsaWallet;
+                    capturedWallet.destroy = vi.fn();
+                    throw new Error("callback error");
+                })
+            ).rejects.toThrow("callback error");
+
+            expect(capturedWallet.destroy).toHaveBeenCalledOnce();
+        });
+
+        it("returns the callback result", async () => {
+            const deps = createDeps();
+            const encodedSeed = base64.encode(new Uint8Array([1, 2, 3]));
+            deps.walletBoundStorage._setData({
+                wallets: [{ address: "mmx1wallet1", seed: encodedSeed, password: "pass" }],
+            });
+            const module = createWalletModule(deps);
+
+            const result = await module.withECDSAWallet("mmx1wallet1", async () => "expected-result");
+
+            expect(result).toBe("expected-result");
+        });
+
+        it("throws when address is not found", async () => {
+            const deps = createDeps();
+            deps.walletBoundStorage._setData({ wallets: [] });
+            const module = createWalletModule(deps);
+
+            await expect(module.withECDSAWallet("mmx1nonexistent", async () => {})).rejects.toThrow(
+                "Wallet not found for address: mmx1nonexistent"
+            );
+        });
+
+        it("throws when address is null", async () => {
+            const deps = createDeps();
+            const module = createWalletModule(deps);
+
+            await expect(module.withECDSAWallet(null, async () => {})).rejects.toThrow("No wallet selected");
+        });
+    });
+
     describe("module exports", () => {
         it("exports all expected methods", () => {
             const deps = createDeps();
@@ -533,6 +619,7 @@ describe("createWalletModule", () => {
             expect(module).toHaveProperty("getCurrentWalletAddress");
             expect(module).toHaveProperty("setCurrentWalletByAddressAsync");
             expect(module).toHaveProperty("getECDSAWalletAsync");
+            expect(module).toHaveProperty("withECDSAWallet");
 
             expect(typeof module.getNetworkAsync).toBe("function");
             expect(typeof module.getWalletsAsync).toBe("function");
@@ -541,6 +628,7 @@ describe("createWalletModule", () => {
             expect(typeof module.getCurrentWalletAddress).toBe("function");
             expect(typeof module.setCurrentWalletByAddressAsync).toBe("function");
             expect(typeof module.getECDSAWalletAsync).toBe("function");
+            expect(typeof module.withECDSAWallet).toBe("function");
         });
 
         it("does not expose internal sensitive methods", () => {
