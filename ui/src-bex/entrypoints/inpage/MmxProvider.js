@@ -8,7 +8,7 @@ class MmxProvider {
 
     #sendMessageAsync = async (messageId, payload) => await windowMessenger.sendMessageAsync(messageId, payload);
 
-    request = async (payload) => await this.#sendMessageAsync("provider/request", payload);
+    requestAsync = async (payload) => await this.#sendMessageAsync("provider/request", payload);
 
     // Private events map - not accessible from outside
     #events = new Map();
