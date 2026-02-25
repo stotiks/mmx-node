@@ -66,7 +66,9 @@ export class MessageHandler {
         ];
 
         for (const name of new Set(potentialHandlerNames)) {
-            const body = this.#methods[name];
+            // Use getOwnPropertyDescriptor to safely check and access the property
+            const descriptor = Object.getOwnPropertyDescriptor(this.#methods, name);
+            const body = descriptor?.value;
             if (typeof body === "function") {
                 return { body, name };
             }
