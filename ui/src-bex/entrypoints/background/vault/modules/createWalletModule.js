@@ -65,8 +65,15 @@ export const createWalletModule = (dependencies = {}) => {
         requireUnlocked();
 
         // Create ECDSA wallet to validate mnemonic and get address
+        // Use try/finally to ensure destroy() is always called, even if getAddressAsync throws
         const ecdsaWallet = new ECDSA_Wallet(mnemonic, password);
-        const address = await ecdsaWallet.getAddressAsync(0);
+        let address;
+        try {
+            address = await ecdsaWallet.getAddressAsync(0);
+        } finally {
+            ecdsaWallet.destroy();
+        }
+
         const seed = base64.encode(mnemonicToSeed(mnemonic));
 
         const newWallet$$sensitive = { address, seed, password };
@@ -142,6 +149,24 @@ export const createWalletModule = (dependencies = {}) => {
         return new ECDSA_Wallet(base64.decode(wallet$$sensitive.seed), wallet$$sensitive.password);
     };
 
+    /**
+     * Execute a callback function with an ECDSA wallet instance and ensure cleanup.
+     * This function gets the ECDSA wallet, calls the callback, and destroys the wallet
+     * to securely clean up sensitive cryptographic data from memory.
+     *
+     * @param {string} address - The wallet address
+     * @param {Function} callback - Async function that receives the ecdsaWallet instance
+     * @returns {Promise<*>} The result of the callback function
+     */
+    const withECDSAWallet = async (address, callback) => {
+        const ecdsaWallet = await getECDSAWalletAsync({ address });
+        try {
+            return await callback(ecdsaWallet);
+        } finally {
+            ecdsaWallet.destroy();
+        }
+    };
+
     const module = {
         getNetworkAsync,
 
@@ -152,6 +177,7 @@ export const createWalletModule = (dependencies = {}) => {
         getCurrentWalletAddress,
         setCurrentWalletByAddressAsync,
 
+        withECDSAWallet,
         getECDSAWalletAsync,
     };
 
