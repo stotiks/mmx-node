@@ -123,7 +123,9 @@ export class MessageHandler {
     register(onMessage, messageID) {
         onMessage(messageID, async (message) => {
             try {
-                console.log(`Received [${messageID}] message:`, JSON.parse(JSON.stringify(message)));
+                if (process.env.NODE_ENV === "development") {
+                    console.log(`Received [${messageID}] message:`, JSON.parse(JSON.stringify(message)));
+                }
                 return await this.handleAsync(message);
             } catch (error) {
                 console.error(`Error handling message [${messageID}]:`, error.message || error);
