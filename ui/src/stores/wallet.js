@@ -4,6 +4,7 @@ export const useWalletStore = defineStore("wallet", () => {
     const wallet = ref(null);
 
     const doLogout = () => {
+        wallet.value?.destroy?.();
         wallet.value = null;
     };
 
