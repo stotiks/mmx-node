@@ -1,52 +1,7 @@
 import windowMessenger from "@bex/messaging/entrypointMessengers/window";
-windowMessenger.setNamespace();
+import { createReadonlyProxy } from "./utils/createReadonlyProxy.js";
 
-const createReadonlyProxy = (obj) =>
-    new Proxy(obj, {
-        // Prevent modification of properties
-        set(target, prop, value) {
-            console.warn(`MmxProvider: Cannot set property '${String(prop)}' on readonly object`);
-            return false;
-        },
-        deleteProperty(target, prop) {
-            console.warn(`MmxProvider: Cannot delete property '${String(prop)}' from readonly object`);
-            return false;
-        },
-        // Prevent extending the object with new properties
-        defineProperty(target, prop, descriptor) {
-            console.warn(`MmxProvider: Cannot define property '${String(prop)}' on readonly object`);
-            return false;
-        },
-        setPrototypeOf(target, proto) {
-            console.warn("MmxProvider: Cannot change prototype of readonly object");
-            return false;
-        },
-        // Prevent prototype chain inspection/mutation
-        getPrototypeOf() {
-            return null;
-        },
-        // Prevent introspection of property descriptors
-        getOwnPropertyDescriptor(target, prop) {
-            const descriptor = Reflect.getOwnPropertyDescriptor(target, prop);
-            if (descriptor) {
-                return {
-                    ...descriptor,
-                    writable: false,
-                    configurable: false,
-                };
-            }
-            return descriptor;
-        },
-        // Allow reading properties
-        get(target, prop, receiver) {
-            const value = Reflect.get(target, prop, receiver);
-            // Return a readonly wrapper for functions
-            if (typeof value === "function") {
-                return value.bind(target);
-            }
-            return value;
-        },
-    });
+windowMessenger.setNamespace();
 
 class MmxProvider {
     isFurryVault = true;
