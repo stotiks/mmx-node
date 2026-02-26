@@ -9,9 +9,19 @@ import { validateAddress } from "./validateAddress";
 export const stringify = (value, indent = 4) => {
     if (value instanceof Object) {
         try {
-            return JSON.stringify(value, null, indent);
+            const seen = new WeakSet();
+            return JSON.stringify(
+                value,
+                (_key, val) => {
+                    if (typeof val === "object" && val !== null) {
+                        if (seen.has(val)) return "[Circular]";
+                        seen.add(val);
+                    }
+                    return val;
+                },
+                indent
+            );
         } catch (error) {
-            console.warn("Failed to stringify object:", error);
             return String(value);
         }
     }
