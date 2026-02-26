@@ -1,7 +1,11 @@
 // eslint-disable-next-line no-restricted-imports
 import * as messenger from "webext-bridge/content-script";
-import messengerWrapper from "../messengerWrapper";
+import { sendMessageWrapper, onMessageWrapper, allowWindowMessagingWrapper } from "../messengerWrapper";
 
-const contentScriptMessenger = messengerWrapper(messenger);
+const contentScriptMessenger = {
+    sendMessageAsync: sendMessageWrapper(messenger),
+    onMessage: onMessageWrapper(messenger),
+    allowWindowMessaging: allowWindowMessagingWrapper(messenger),
+};
 
 export default contentScriptMessenger;
