@@ -3,21 +3,23 @@ const namespace = "8de3d70b-550f-48b3-aaae-c4cb5b798db7";
 // eslint-disable-next-line no-restricted-imports
 import { isInternalEndpoint } from "webext-bridge";
 
-const sendMessageWrapper = (sendMessage) => async (messageID, payload, target) => {
-    const response = await sendMessage(messageID, payload, target);
-    if (response?.success != null) {
-        const { success, data, error } = response;
-        if (success) {
-            return data;
+const sendMessageWrapper =
+    ({ sendMessage }) =>
+    async (messageID, payload, target) => {
+        const response = await sendMessage(messageID, payload, target);
+        if (response?.success != null) {
+            const { success, data, error } = response;
+            if (success) {
+                return data;
+            } else {
+                throw new Error(error || "Unsuccessful request");
+            }
         } else {
-            throw new Error(error || "Unsuccessful request");
+            // //console.error("Invalid response:", response);
+            throw new Error("Invalid response: " + response);
+            // return response;
         }
-    } else {
-        // //console.error("Invalid response:", response);
-        throw new Error("Invalid response: " + response);
-        // return response;
-    }
-};
+    };
 
 /**
  * Creates a callback guard that validates the sender endpoint
@@ -47,12 +49,19 @@ const isWindowEndpoint = (sender) => sender.context === "window";
 // Respond only if request is from 'window'
 const windowEndpointCallbackGuard = createEndpointCallbackGuard(isWindowEndpoint, "window endpoint");
 
-const messengerWrapper = (messenger) => ({
-    sendMessageAsync: sendMessageWrapper(messenger.sendMessage),
-    onMessage: (messageID, callback) => messenger.onMessage(messageID, internalEndpointCallbackGuard(callback)),
-    onWindowMessage: (messageID, callback) => messenger.onMessage(messageID, windowEndpointCallbackGuard(callback)),
-    allowWindowMessaging: messenger.allowWindowMessaging?.bind(null, namespace),
-    setNamespace: messenger.setNamespace?.bind(null, namespace),
-});
+const onMessageWrapper = (messenger) => (messageID, callback) =>
+    messenger.onMessage(messageID, internalEndpointCallbackGuard(callback));
 
-export default messengerWrapper;
+const onWindowMessageWrapper = (messenger) => (messageID, callback) =>
+    messenger.onMessage(messageID, windowEndpointCallbackGuard(callback));
+
+const allowWindowMessagingWrapper = (messenger) => messenger.allowWindowMessaging?.bind(null, namespace);
+const setNamespaceWrapper = (messenger) => messenger.setNamespace?.bind(null, namespace);
+
+export {
+    sendMessageWrapper,
+    onMessageWrapper,
+    onWindowMessageWrapper,
+    allowWindowMessagingWrapper,
+    setNamespaceWrapper,
+};
