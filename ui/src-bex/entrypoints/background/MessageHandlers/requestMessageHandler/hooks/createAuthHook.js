@@ -34,9 +34,7 @@ const createAuthHook = () => {
             });
             console.log("requestPermissionsAndAcceptResponse:", requestPermissionsAndAcceptResponse);
 
-            accepted =
-                requestPermissionsAndAcceptResponse?.success === true &&
-                requestPermissionsAndAcceptResponse?.data?.accepted === true;
+            accepted = requestPermissionsAndAcceptResponse?.accepted === true;
         }
 
         const hasPermissions = await checkVaultPermissionsAsync();
