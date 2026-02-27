@@ -34,13 +34,7 @@ export const useNotificationMessageHandler = () => {
             static dummy = async () => {};
 
             static requestPermissionsAndAccept = async (params) => {
-                try {
-                    const data = await showHandleRequestDialogAsync(params);
-                    return { success: true, data };
-                } catch (error) {
-                    console.error(error);
-                    return { success: false, error: error.message || error };
-                }
+                return await showHandleRequestDialogAsync(params);
             };
         }
 
