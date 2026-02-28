@@ -16,6 +16,12 @@ export function useExportTable() {
         // .split('\n').join('\\n')
         // .split('\r').join('\\r')
 
+        // Prevent CSV injection: prefix cells starting with formula characters
+        // (=, +, -, @, \t, \r) with a tab so spreadsheet apps don't evaluate them.
+        if (/^[=+\-@\t\r]/.test(formatted)) {
+            formatted = `\t${formatted}`;
+        }
+
         return `"${formatted}"`;
     };
 
