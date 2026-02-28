@@ -19,7 +19,7 @@ const props = defineProps({
 });
 
 import { usePlotnft } from "@/queries/wapi";
-const { data, loading } = usePlotnft(reactive({ id: props.address }));
+const { data, loading } = usePlotnft(reactive({ id: toRef(() => props.address) }));
 
 const { t } = useI18n();
 const rows = computed(() => [
