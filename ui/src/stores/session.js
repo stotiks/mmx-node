@@ -25,6 +25,9 @@ export const useSessionStore = defineStore("session", () => {
         },
     });
 
+    const isSafeRedirect = (redirect) =>
+        typeof redirect === "string" && redirect.startsWith("/") && !redirect.startsWith("//");
+
     const doLogin = (newCredentials) => {
         if (autoLogin.value) {
             credentials.value = newCredentials;
@@ -32,11 +35,8 @@ export const useSessionStore = defineStore("session", () => {
 
         console.log("login");
         isLoggedIn.value = true;
-        if (router.currentRoute.value.query?.redirect) {
-            router.replace(router.currentRoute.value.query.redirect);
-        } else {
-            router.replace("/");
-        }
+        const redirect = router.currentRoute.value.query?.redirect;
+        router.replace(isSafeRedirect(redirect) ? redirect : "/");
     };
 
     const doLogout = (userCall) => {
