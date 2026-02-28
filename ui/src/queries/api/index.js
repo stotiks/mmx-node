@@ -152,6 +152,7 @@ export const useCreateWallet = () => {
     });
 };
 
+// TODO (MS1): removeAccount uses GET for a destructive operation — vulnerable to CSRF via image tags or link prefetching. Should be changed to POST/DELETE.
 const removeAccount = (params) => axios.get("/api/wallet/remove_account", { params }).then((response) => response.data);
 export const useRemoveAccount = () => {
     const { t } = useI18n();
