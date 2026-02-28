@@ -79,9 +79,9 @@ const showPassphrase = ref(false);
 
 const name = ref("");
 const numAddresses = ref(1);
-const seed = ref();
-const passphrase = ref();
-const fingerprint = ref();
+const seed = useSecureRef();
+const passphrase = useSecureRef();
+const fingerprint = useSecureRef();
 
 const router = useRouter();
 import { useCreateWallet } from "@/queries/api";

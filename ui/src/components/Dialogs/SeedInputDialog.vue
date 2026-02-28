@@ -29,7 +29,7 @@ const onDialogShow = () => {
     }
 };
 
-const wallet = ref(null);
+const wallet = useSecureRef(null);
 const handleLogin = () => {
     onDialogOK({ wallet });
     // Clear the wallet ref immediately after handing it off
