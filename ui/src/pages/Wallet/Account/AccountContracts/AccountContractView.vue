@@ -37,13 +37,27 @@
 </template>
 
 <script setup>
+import { mdiBankTransferIn, mdiBankTransferOut } from "@mdi/js";
+
 const props = defineProps({
     data: {
         type: Object,
+        required: true,
+    },
+    index: {
+        type: Number,
         required: true,
     },
 });
 
 const { chainBinariesSwapped } = useChainBinaries();
 const binary = computed(() => chainBinariesSwapped.value[props.data?.binary]);
+
+const router = useRouter();
+const handleDeposit = (index, address) => {
+    router.push("/wallet/account/" + index + "/send/" + address);
+};
+const handleWithdraw = (index, address) => {
+    router.push("/wallet/account/" + index + "/send_from/" + address);
+};
 </script>
