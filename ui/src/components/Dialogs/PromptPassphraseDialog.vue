@@ -39,7 +39,7 @@
 
 <script setup>
 import { mdiLockOpenVariant, mdiEye, mdiEyeOff } from "@mdi/js";
-const passphrase = ref("");
+const passphrase = useSecureRef("");
 const showPassphrase = ref(false);
 
 import { useDialogPluginComponent } from "quasar";

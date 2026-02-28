@@ -39,7 +39,7 @@ const props = defineProps({
 const wordCount = 24;
 const getEmptyWords = () => new Array(wordCount).fill("");
 
-const words = ref(new Array(wordCount).fill(""));
+const words = useSecureRef(getEmptyWords());
 
 const handleWordUpdate = (value, index) => {
     value = value.trim();
