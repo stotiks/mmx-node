@@ -181,7 +181,7 @@
         "enable_timelord": "Activar o TimeLord",
         "farmer_reward_address": "Endereço de recompensa do Farmer",
         "timeLord_reward_address": "Endereço de recompensa do TimeLord",
-        "reward_address_placeholder": "<по умолчанию>",
+        "reward_address_placeholder": "<padrão>",
         "restart_needed": "(é necessário reiniciar para produzir efeito)"
     },
     "create_locked_contract": {

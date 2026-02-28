@@ -182,7 +182,7 @@
         "enable_timelord": "Habilitar servidor de tiempo",
         "farmer_reward_address": "Direccion de granjero para recompensas",
         "timeLord_reward_address": "Direccion de servidor de tiempo para recompensas",
-        "reward_address_placeholder": "<по умолчанию>",
+        "reward_address_placeholder": "<por defecto>",
         "restart_needed": "(Se requiere reinicio para aplicar)"
     },
     "create_locked_contract": {
