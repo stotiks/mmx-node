@@ -46,7 +46,7 @@ export const requestMessageHandlerMethods = {
 
     mmx_getCurrentWallet: $method(
         async () => {
-            return getCurrentWallet();
+            return await getCurrentWalletAsync();
         },
         {
             isAcceptRequired: false,

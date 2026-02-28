@@ -3,7 +3,7 @@ import { Wallet } from "@/mmx/wallet/Wallet";
 import vault from "@bex/entrypoints/background/vault";
 import { bytesToHex } from "@noble/hashes/utils.js";
 
-const getWalletByAddress = async (address) => {
+const getWalletByAddressAsync = async (address) => {
     if (!address) {
         throw new Error("No wallet selected");
     }
@@ -14,9 +14,9 @@ const getWalletByAddress = async (address) => {
     return wallet;
 };
 
-export const getCurrentWallet = () => {
+export const getCurrentWalletAsync = async () => {
     const address = vault.getCurrentWalletAddress();
-    return getWalletByAddress(address);
+    return await getWalletByAddressAsync(address);
 };
 
 export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) => {
