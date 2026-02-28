@@ -31,7 +31,7 @@ const props = defineProps({
 });
 
 import { useWalletAccount } from "@/queries/wapi";
-const { rows, loading, noData } = useWalletAccount(reactive({ index: props.index }));
+const { rows, loading, noData } = useWalletAccount(reactive({ index: toRef(() => props.index) }));
 
 const sessionStore = useSessionStore();
 if (props.useRouterView) {

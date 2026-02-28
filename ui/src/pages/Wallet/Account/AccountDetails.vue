@@ -66,7 +66,9 @@ const { rows: account } = useWalletAccount(props, (data) => {
     return data;
 });
 const { rows: keys } = useWalletKeys(props);
-const { rows: addresses, loading: addressesLoading } = useWalletAddress({ ...props, limit: 1000 });
+const { rows: addresses, loading: addressesLoading } = useWalletAddress(
+    reactive({ index: toRef(() => props.index), limit: 1000 })
+);
 
 const handleCopyKeysToPlotter = () => {
     window.mmx.copyKeysToPlotter(JSON.stringify(keys.value));
