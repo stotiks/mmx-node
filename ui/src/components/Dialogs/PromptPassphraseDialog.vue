@@ -25,7 +25,13 @@
             </q-card-section>
             <q-card-actions align="right">
                 <q-btn :label="$t('common.cancel')" flat @click="onDialogCancel" />
-                <q-btn :label="$t('common.unlock')" flat :icon="mdiLockOpenVariant" @click="onOKClick" />
+                <q-btn
+                    :label="$t('common.unlock')"
+                    flat
+                    :icon="mdiLockOpenVariant"
+                    color="positive"
+                    @click="onOKClick"
+                />
             </q-card-actions>
         </q-card>
     </q-dialog>
@@ -42,6 +48,8 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const onOKClick = () => {
     onDialogOK({ passphrase: passphrase.value });
+    // Clear immediately after handing off the value
+    passphrase.value = "";
 };
 
 const inputRef = ref(null);

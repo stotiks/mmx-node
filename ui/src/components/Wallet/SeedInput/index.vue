@@ -37,6 +37,7 @@ const props = defineProps({
 });
 
 const wordCount = 24;
+const getEmptyWords = () => new Array(wordCount).fill("");
 
 const words = ref(new Array(wordCount).fill(""));
 
@@ -53,7 +54,7 @@ const handleWordUpdate = (value, index) => {
 
 const updateWords = () => {
     const seed = seedString.value ? seedString.value.split(" ") : [];
-    const paddedWords = new Array(wordCount).fill("");
+    const paddedWords = getEmptyWords();
     for (let i = 0; i < seed.length; i++) {
         paddedWords[i] = seed[i];
     }
