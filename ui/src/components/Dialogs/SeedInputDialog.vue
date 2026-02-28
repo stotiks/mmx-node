@@ -32,6 +32,8 @@ const onDialogShow = () => {
 const wallet = ref(null);
 const handleLogin = () => {
     onDialogOK({ wallet });
+    // Clear the wallet ref immediately after handing it off
+    wallet.value = null;
 };
 
 /* Usage:
