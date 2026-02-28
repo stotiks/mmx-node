@@ -8,7 +8,7 @@
                 <q-space />
                 <q-btn-group rounded>
                     <q-btn :to="prevPath" :icon="mdiArrowLeft" outline :disable="height <= 0" />
-                    <q-btn :to="nextPath" :icon-right="mdiArrowRight" outline :disable1="noData" />
+                    <q-btn :to="nextPath" :icon-right="mdiArrowRight" outline :disable="noData" />
                 </q-btn-group>
             </div>
             <q-card flat>
