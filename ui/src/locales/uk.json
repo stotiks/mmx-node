@@ -174,7 +174,7 @@
     },
     "create_virtual_plot_contract": {
         "farmer_public_key": "Відкритий ключ фермера",
-        "reward_address": "Алреса винагороди (опціонально, для об'єднання)"
+        "reward_address": "Адреса винагороди (опціонально, для об'єднання)"
     },
     "account_details": {
         "copy_keys_to_plotter": "Копіювати ключі в плоттер"
