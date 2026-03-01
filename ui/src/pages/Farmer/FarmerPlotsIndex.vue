@@ -89,7 +89,7 @@ const columns2 = computed(() => [
 ]);
 
 const select = (data) => {
-    var res = { plot_count: [], harvester_bytes: [] };
+    const res = { plot_count: [], harvester_bytes: [] };
     for (const entry of data.plot_count) {
         res.plot_count.push({ ksize: entry[0], count: entry[1] });
     }

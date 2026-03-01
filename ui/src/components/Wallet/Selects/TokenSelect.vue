@@ -35,7 +35,7 @@ const options = computed(() => {
 
         const isNative = token.is_native;
 
-        var item = { label, value, decimals };
+        let item = { label, value, decimals };
 
         if (!isNative) {
             item = { ...item, description, descriptionClasses };

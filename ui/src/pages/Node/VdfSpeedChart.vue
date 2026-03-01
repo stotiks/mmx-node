@@ -16,13 +16,7 @@ const props = defineProps({
 
 const { t } = useI18n();
 
-const select = (data) => {
-    var result = [];
-    for (const item of data) {
-        result.push([item.height, item.vdf_speed]);
-    }
-    return result;
-};
+const select = (data) => data.map((item) => [item.height, item.vdf_speed]);
 
 import { useGraphBlocks } from "@/queries/wapi";
 const { data, loading } = useGraphBlocks(props, select);

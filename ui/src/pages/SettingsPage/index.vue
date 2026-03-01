@@ -115,7 +115,7 @@ const panelState = ref(initPanelState.value);
 watch(
     panelState,
     (value) => {
-        var keys = Object.keys(value);
+        const keys = Object.keys(value);
         if (value) {
             router.push({ path: route.path, query: { state: keys.filter((key) => value[key])[0] }, replace: true });
         } else {
