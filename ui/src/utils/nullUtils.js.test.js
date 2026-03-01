@@ -13,6 +13,10 @@ describe("nullUtils", () => {
             expect(NullToStr("hello")).toBe("hello");
             expect(NullToStr("0")).toBe("0");
         });
+
+        it("should return the original value for number 0", () => {
+            expect(NullToStr(0)).toBe(0);
+        });
     });
 
     describe("StrToNull", () => {
