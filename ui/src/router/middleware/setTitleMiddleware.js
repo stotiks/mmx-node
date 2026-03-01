@@ -1,7 +1,7 @@
 import { useTitle } from "@vueuse/core";
 export const setTitleMiddleware = async (to) => {
     const defaultTitle = "MMX Node";
-    var title = defaultTitle;
+    let title = defaultTitle;
     to.matched.forEach((element) => {
         const subTitle = element.meta.title;
         if (subTitle) {

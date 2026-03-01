@@ -59,10 +59,11 @@ export const useTransaction = (params) => {
         queryKey: ["transaction", params],
         queryFn: ({ signal }) => getTransaction(params, signal),
         select: (data) => {
-            for (const op of data.operations) {
+            const result = { ...data, operations: [...data.operations] };
+            for (const op of result.operations) {
                 delete op.solution;
             }
-            return data;
+            return result;
         },
     });
 };
