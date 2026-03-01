@@ -1,7 +1,7 @@
 import { assert, describe, expect, it } from "vitest";
 import { Deposit, Operation } from "./Operation";
 
-import "../utils/Uint8ArrayUtils";
+import { toUpperHex } from "../utils/Uint8ArrayUtils";
 
 describe("mmx.operation.Deposit", () => {
     const json =
@@ -14,7 +14,7 @@ describe("mmx.operation.Deposit", () => {
         const obj = JSON.parse(json);
         const op = new Operation(obj);
         const hash_serialize = op.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     describe("constructor", () => {
@@ -243,7 +243,7 @@ describe("mmx.operation.Execute", () => {
         const obj = JSON.parse(json);
         const op = new Operation(obj);
         const hash_serialize = op.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     describe("constructor", () => {

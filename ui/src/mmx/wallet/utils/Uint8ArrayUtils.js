@@ -1,34 +1,23 @@
 import { bytesToHex, abytes } from "@noble/hashes/utils.js";
 
-Object.defineProperty(Uint8Array.prototype, "first", {
-    get() {
-        abytes(this, 64);
-
-        const length = this.length;
-        const halfwayThrough = Math.floor(length / 2);
-        const first = this.slice(0, halfwayThrough);
-        return first;
-    },
-});
-
-Object.defineProperty(Uint8Array.prototype, "second", {
-    get() {
-        abytes(this, 64);
-
-        const length = this.length;
-        const halfwayThrough = Math.floor(length / 2);
-        const second = this.slice(halfwayThrough, this.length);
-        return second;
-    },
-});
-
-if (typeof Uint8Array.from([]).toHex === "function") {
-    const originalToHex = Uint8Array.prototype.toHex;
-    Uint8Array.prototype.toHex = function () {
-        return originalToHex.call(this).toUpperCase();
+/**
+ * Split a 64-byte HMAC-SHA512 digest into two 32-byte halves.
+ * @param {Uint8Array} digest - Must be exactly 64 bytes
+ * @returns {{ first: Uint8Array, second: Uint8Array }}
+ */
+export const splitHmacDigest = (digest) => {
+    abytes(digest, 64);
+    return {
+        first: digest.slice(0, 32),
+        second: digest.slice(32, 64),
     };
-} else {
-    Uint8Array.prototype.toHex = function () {
-        return bytesToHex(this).toUpperCase();
-    };
-}
+};
+
+/**
+ * Convert a Uint8Array to uppercase hex string.
+ * @param {Uint8Array} bytes
+ * @returns {string}
+ */
+export const toUpperHex = (bytes) => {
+    return bytesToHex(bytes).toUpperCase();
+};

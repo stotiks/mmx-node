@@ -1,6 +1,5 @@
 import { describe, it, assert, expect } from "vitest";
 
-import "../utils/Uint8ArrayUtils";
 import { Variant } from "./Variant";
 
 describe("Variant", () => {

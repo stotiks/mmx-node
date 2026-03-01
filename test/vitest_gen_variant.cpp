@@ -13,7 +13,7 @@ void static print_test(const std::string& testname, const T& value, const std::s
 	const auto test =
 		"it(\"" + testname + "\", () => {\n"
 		"   const variant = new Variant(" + jsvalue + ");\n"
-		"   const jsHex = variant.data.toHex();\n"
+		"   const jsHex = toUpperHex(variant.data);\n"
 		"   const cppHex = \"" + cppHex + "\";\n"
 		"   assert.equal(jsHex, cppHex);\n\n"
 		"   const jsNumBytes = get_num_bytes(variant);\n"

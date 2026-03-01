@@ -1,18 +1,18 @@
 import { assert, describe, expect, it } from "vitest";
 import { WriteBytes } from "./WriteBytes";
 
-import "../utils/Uint8ArrayUtils";
+import { toUpperHex } from "../utils/Uint8ArrayUtils";
 
 describe("WriteBuffer", () => {
     it("empty", () => {
         const wb = new WriteBytes();
-        assert.equal(wb.buffer.toHex(), "");
+        assert.equal(toUpperHex(wb.buffer), "");
     });
 
     it("field without value", () => {
         const wb = new WriteBytes();
         wb.write_field("field");
-        assert.equal(wb.buffer.toHex(), "6669656C643C3E737472696E673C3E05000000000000006669656C64");
+        assert.equal(toUpperHex(wb.buffer), "6669656C643C3E737472696E673C3E05000000000000006669656C64");
     });
 
     it("unknown type", () => {

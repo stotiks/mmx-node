@@ -9,6 +9,7 @@ import { cost_to_fee, bigIntMin, bigIntMax } from "./common/utils";
 import { getChainParamsAsync } from "./utils/getChainParamsAsync";
 import { spend_options_t } from "./common/spend_options_t";
 import { Operation, Execute, Deposit } from "./common/Operation";
+import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 export class ECDSA_Wallet {
     #seed_value;
@@ -50,8 +51,8 @@ export class ECDSA_Wallet {
 
             const signature = await signAsync(keys.privKey, msg);
             const solution = new PubKey({
-                pubkey: keys.pubKey.toHex(),
-                signature: signature.toHex(),
+                pubkey: toUpperHex(keys.pubKey),
+                signature: toUpperHex(signature),
             });
 
             return solution;
@@ -128,7 +129,7 @@ export class ECDSA_Wallet {
         // compute final content hash
         const chainParams = await getChainParamsAsync(options.network);
         tx.static_cost = tx.calc_cost(chainParams);
-        tx.content_hash = tx.calc_hash(true).toHex();
+        tx.content_hash = toUpperHex(tx.calc_hash(true));
     };
 
     completeAsync = async (tx, _options, deposit = []) => {

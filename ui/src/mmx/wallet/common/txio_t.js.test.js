@@ -4,8 +4,6 @@ import { addr_t } from "./addr_t.js";
 import { optional } from "./optional.js";
 import { ChainParams } from "../utils/ChainParams.js";
 
-import "../utils/Uint8ArrayUtils.js";
-
 describe("Transaction I/O Types", () => {
     const validAddress = "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev";
     const validContract = "mmx16aq5vpcmxcrh9xck0z06eqnmr87w5r2j062snjj6g7cvj0thry7q0mp3w6";
