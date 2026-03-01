@@ -2,7 +2,7 @@ import { describe, it, assert, expect } from "vitest";
 import { hexToBytes } from "@noble/hashes/utils.js";
 import { addr_t, bytes_t, hash_t } from "./addr_t";
 
-import "../utils/Uint8ArrayUtils";
+import { toUpperHex } from "../utils/Uint8ArrayUtils";
 
 describe("bytes_t", () => {
     it("empty to bytes_t", () => {
@@ -11,7 +11,7 @@ describe("bytes_t", () => {
     });
 
     const int8Array = Uint8Array.from([0xca, 0xfe, 0x01, 0x23]);
-    const str = int8Array.toHex();
+    const str = toUpperHex(int8Array);
 
     it("Uint8Array to bytes_t", () => {
         const int8Array = Uint8Array.from([0xca, 0xfe, 0x01, 0x23]);
@@ -36,13 +36,13 @@ describe("addr_t", () => {
     it("str to bytes", () => {
         const addr = new addr_t(addrStr);
         assert.equal(addr.toString(), addrStr);
-        assert.equal(addr.toHex(), addrHex);
+        assert.equal(toUpperHex(addr), addrHex);
     });
 
     it("bytes to str", () => {
         const addr = new addr_t(hexToBytes(addrHex));
         assert.equal(addr.toString(), addrStr);
-        assert.equal(addr.toHex(), addrHex);
+        assert.equal(toUpperHex(addr), addrHex);
     });
 
     it("empty", () => {
@@ -51,7 +51,7 @@ describe("addr_t", () => {
 
         const addr = new addr_t();
         assert.equal(addr.toString(), addrStrEmpty);
-        assert.equal(addr.toHex(), addrEmptyHex);
+        assert.equal(toUpperHex(addr), addrEmptyHex);
     });
 
     it("invalid address prefix", () => {

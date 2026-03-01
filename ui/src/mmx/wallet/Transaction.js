@@ -4,6 +4,7 @@ import { etc } from "@noble/secp256k1";
 const bytesToNumberBE = etc.bytesToNumberBE;
 
 import { JSONbigNativeString } from "./utils/JSONbigNative";
+import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 import { tx_note_e } from "./common/tx_note_e";
 import { addr_t, bytes_t, hash_t } from "./common/addr_t";
@@ -165,7 +166,7 @@ class Transaction {
     }
 
     finalizeId() {
-        this.id = this.calc_hash().toHex();
+        this.id = toUpperHex(this.calc_hash());
     }
 
     finalize() {

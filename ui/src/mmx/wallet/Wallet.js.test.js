@@ -6,6 +6,7 @@ import { Wallet } from "./Wallet";
 
 import "./Transaction.ext";
 import { JSONbigNativeString } from "./utils/JSONbigNative";
+import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
 const ecdsaWallet = new ECDSA_Wallet(mnemonic, "");
@@ -103,7 +104,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), json);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getDepositTxAsync", async () => {
@@ -129,7 +130,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getDeployTxAsync", async () => {
@@ -161,7 +162,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getMakeOfferTxAsync", async () => {
@@ -196,7 +197,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
 
         await expect(() =>
             Wallet.getMakeOfferTxAsync(ecdsaWallet, owner, 0, bid_currency, ask_amount, ask_currency, options)
@@ -230,7 +231,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getOfferWithdrawTxAsync", async () => {
@@ -255,7 +256,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getAcceptOfferTxAsync", async () => {
@@ -283,7 +284,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getCancelOfferTxAsync", async () => {
@@ -306,7 +307,7 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 
     it("getPlotNftCreateTxAsync", async () => {
@@ -329,6 +330,6 @@ describe("Wallet", () => {
         assert.equal(tx.toString(), jsonTxt);
 
         const hash_serialize = tx.hash_serialize(true);
-        assert.equal(hash_serialize.toHex(), hex);
+        assert.equal(toUpperHex(hash_serialize), hex);
     });
 });

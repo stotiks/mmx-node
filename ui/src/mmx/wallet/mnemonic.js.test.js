@@ -1,7 +1,6 @@
 import { assert, describe, expect, it, vi } from "vitest";
 import { mnemonicToSeed, seedToWords, randomWords, randomSeed } from "./mnemonic";
 
-import "./utils/Uint8ArrayUtils";
 import { hash_t } from "./common/addr_t";
 import { wordlist as wordlistEnglish } from "@scure/bip39/wordlists/english.js";
 
