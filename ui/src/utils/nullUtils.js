@@ -1,5 +1,5 @@
 export const NullToStr = (str) => {
-    if (!str) {
+    if (str === null || str === undefined || str === "") {
         return "null";
     }
     return str;
