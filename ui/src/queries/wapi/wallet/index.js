@@ -140,7 +140,7 @@ export const useWalletOffers = (params) => {
     return useQuery({
         queryKey: ["wallet", "offers", params],
         queryFn: ({ signal }) => getWalletOffers(params, signal),
-        select: (data) => data.sort((L, R) => R.height - L.height),
+        select: (data) => [...data].sort((L, R) => R.height - L.height),
         placeholderData: keepPreviousData,
     });
 };

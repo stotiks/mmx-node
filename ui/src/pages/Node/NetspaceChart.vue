@@ -17,7 +17,7 @@ const props = defineProps({
 const { t } = useI18n();
 
 const select = (data) => {
-    var result = [];
+    const result = [];
     for (const item of data) {
         result.push([item.height, item.netspace]);
     }

@@ -19,17 +19,10 @@ const props = defineProps({
 
 const { t } = useI18n();
 
-const select = (data) => {
-    var result = {
-        reward: [],
-        tx_fees: [],
-    };
-    for (const item of data) {
-        result.reward.push([item.height, item.reward]);
-        result.tx_fees.push([item.height, item.tx_fees]);
-    }
-    return result;
-};
+const select = (data) => ({
+    reward: data.map((item) => [item.height, item.reward]),
+    tx_fees: data.map((item) => [item.height, item.tx_fees]),
+});
 
 import { useGraphBlocks } from "@/queries/wapi";
 const { data, loading } = useGraphBlocks(props, select);
