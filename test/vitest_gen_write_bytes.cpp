@@ -18,7 +18,7 @@ void static print_test(const std::string& testname, const T& value, const std::s
 		"it(\"" + testname + "\", () => {\n"
 		"   const wb = new WriteBytes();\n"
 		"   wb.write_field(\"field_name\", " + jsvalue + ");\n"
-		"   const jsHex = wb.buffer.toHex();\n"
+		"   const jsHex = toUpperHex(wb.buffer);\n"
 		"   const cppHex = \"" + cppHex + "\";\n"
 		"   assert.equal(jsHex, cppHex);\n"
 		"});";

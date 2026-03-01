@@ -6,7 +6,7 @@ import { getChainParamsAsync } from "./utils/getChainParamsAsync";
 import "./Transaction.ext";
 
 import { JSONbigNativeString } from "./utils/JSONbigNative";
-import "./utils/Uint8ArrayUtils";
+import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 import { txs } from "./Transaction.js.txs.test.js";
 import { txio_t } from "./common/txio_t";
@@ -29,7 +29,7 @@ txs.forEach((item, key) => {
         it("calc_hash id", () => {
             const tx = Transaction.parse(json);
             const hash = tx.calc_hash(false);
-            assert.equal(hash.toHex(), id);
+            assert.equal(toUpperHex(hash), id);
         });
 
         it("calc_hash content_hash", () => {
@@ -38,8 +38,8 @@ txs.forEach((item, key) => {
             const hash_serialize = tx.hash_serialize(item.full_hash ?? true);
             const hash = tx.calc_hash(true);
 
-            assert.equal(hash_serialize.toHex(), hex);
-            assert.equal(hash.toHex(), content_hash);
+            assert.equal(toUpperHex(hash_serialize), hex);
+            assert.equal(toUpperHex(hash), content_hash);
         });
 
         it("finalize", () => {
@@ -83,7 +83,7 @@ describe("Transaction #nonce as string", () => {
     it("calc_hash id", () => {
         const tx = Transaction.parse(json);
         const hash = tx.calc_hash(false);
-        assert.equal(hash.toHex(), id);
+        assert.equal(toUpperHex(hash), id);
     });
 
     it("calc_hash content_hash", () => {
@@ -92,8 +92,8 @@ describe("Transaction #nonce as string", () => {
         const hash_serialize = tx.hash_serialize(true);
         const hash = tx.calc_hash(true);
 
-        assert.equal(hash_serialize.toHex(), hex);
-        assert.equal(hash.toHex(), content_hash);
+        assert.equal(toUpperHex(hash_serialize), hex);
+        assert.equal(toUpperHex(hash), content_hash);
     });
 });
 

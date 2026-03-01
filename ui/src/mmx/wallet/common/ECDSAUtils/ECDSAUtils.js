@@ -5,7 +5,7 @@ import { hexToBytes, isBytes, u32, u8 } from "@noble/hashes/utils.js";
 import * as secp256k1 from "./secp256k1";
 
 import { addr_t, hash_t } from "@/mmx/wallet/common/addr_t";
-import "@/mmx/wallet/utils/Uint8ArrayUtils";
+import { splitHmacDigest } from "@/mmx/wallet/utils/Uint8ArrayUtils";
 
 const KDF_ITERS = 4096;
 
@@ -26,19 +26,26 @@ const hmac_sha512_n = (message, key, index) => {
 const getFarmerKey = (seed_value) => {
     const master = kdf_hmac_sha512(seed_value, new hash_t("MMX/farmer_keys"), KDF_ITERS);
 
-    const tmp = hmac_sha512_n(master.first, master.second, 0);
-    const pubKey = secp256k1.getPublicKey(tmp.first);
+    const masterSplit = splitHmacDigest(master);
+    const tmp = hmac_sha512_n(masterSplit.first, masterSplit.second, 0);
+    const tmpSplit = splitHmacDigest(tmp);
+    const pubKey = secp256k1.getPublicKey(tmpSplit.first);
     return pubKey;
 };
 
 const getKeys = (seed_value, passphrase, index) => {
     const master = kdf_hmac_sha512(seed_value, new hash_t("MMX/seed/" + passphrase), KDF_ITERS);
 
-    const chain = hmac_sha512_n(master.first, master.second, 11337);
-    const account = hmac_sha512_n(chain.first, chain.second, 0);
+    const masterSplit = splitHmacDigest(master);
+    const chain = hmac_sha512_n(masterSplit.first, masterSplit.second, 11337);
+    const chainSplit = splitHmacDigest(chain);
+    const account = hmac_sha512_n(chainSplit.first, chainSplit.second, 0);
+    const accountSplit = splitHmacDigest(account);
 
-    const tmp = hmac_sha512_n(account.first, account.second, index);
-    const privKey = tmp.first;
+    const tmp = hmac_sha512_n(accountSplit.first, accountSplit.second, index);
+    const tmpSplit = splitHmacDigest(tmp);
+    const privKey = tmpSplit.first;
+
     const pubKey = secp256k1.getPublicKey(privKey);
     return { privKey, pubKey };
 };
