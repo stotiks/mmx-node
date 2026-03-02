@@ -108,7 +108,7 @@ const payload = computed(() => ({
     },
 }));
 
-const { promptPassphrase, isLocked } = useWalletLocker(reactive({ index: toRef(() => props.index) }));
+const { protectedMutate, isLocked } = useWalletLocker(reactive({ index: toRef(() => props.index) }));
 const { isValid, isValidConfirmed, isValidUnlocked, isValidConfirmedUnlocked } = useWalletFormStatusL(
     formRef,
     isLocked
@@ -122,12 +122,7 @@ const {
 } = useWalletSendFeeEstimate(payload, isValidConfirmedUnlocked);
 
 const walletSend = useWalletSend();
-const handleSend = async () => {
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload.value, options: { ...payload.value.options, passphrase } };
-    //console.log(payloadWithPassphrase);
-    await walletSend.mutateAsync(payloadWithPassphrase);
-};
+const handleSend = () => protectedMutate(walletSend, payload.value);
 
 import { useWalletBalance } from "@/queries/wapi";
 const { data: walletBalance } = useWalletBalance(

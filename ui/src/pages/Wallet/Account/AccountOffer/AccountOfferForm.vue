@@ -107,7 +107,7 @@ const payload = computed(() => ({
     },
 }));
 
-const { promptPassphrase, isLocked } = useWalletLocker(reactive({ index: toRef(() => props.index) }));
+const { protectedMutate, isLocked } = useWalletLocker(reactive({ index: toRef(() => props.index) }));
 const { isValid, isValidConfirmed, isValidUnlocked, isValidConfirmedUnlocked } = useWalletFormStatusL(
     formRef,
     isLocked
@@ -121,11 +121,7 @@ const {
 } = useWalletMakeOfferFeeEstimate(payload, isValidConfirmedUnlocked);
 
 const walletMakeOffer = useWalletMakeOffer();
-const handleSubmit = async () => {
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload.value, options: { ...payload.value.options, passphrase } };
-    await walletMakeOffer.mutateAsync(payloadWithPassphrase);
-};
+const handleSubmit = () => protectedMutate(walletMakeOffer, payload.value);
 </script>
 
 <style scoped>

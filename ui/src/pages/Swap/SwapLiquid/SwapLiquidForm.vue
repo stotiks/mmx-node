@@ -137,7 +137,7 @@ const defaultFormData = {
 const formRef = ref(null);
 const formData = reactive({ ...defaultFormData });
 
-const { promptPassphrase, isLocked } = useWalletLocker(reactive({ index: activeWalletIndex }));
+const { protectedMutate, isLocked } = useWalletLocker(reactive({ index: activeWalletIndex }));
 const { isValid, isValidConfirmed, isValidUnlocked, isValidConfirmedUnlocked } = useWalletFormStatusL(
     formRef,
     isLocked
@@ -260,11 +260,7 @@ const handlePayout = async () => {
             fee_ratio: formData.feeRatio,
         },
     };
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload, options: { ...payload.options, passphrase } };
-    // console.log(payloadWithPassphrase);
-
-    await walletSwapPayout.mutateAsync(payloadWithPassphrase, {
+    await protectedMutate(walletSwapPayout, payload, {
         onSuccess: () => {
             paid.value = true;
         },
@@ -280,11 +276,7 @@ const _switchFee = async () => {
             fee_ratio: formData.feeRatio,
         },
     };
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload, options: { ...payload.options, passphrase } };
-    // console.log(payloadWithPassphrase);
-
-    await walletSwapSwitchPool.mutateAsync(payloadWithPassphrase);
+    await protectedMutate(walletSwapSwitchPool, payload);
 };
 
 const walletSwapAddLiquidity = useWalletSwapAddLiquidity();
@@ -298,11 +290,7 @@ const _addLiquidity = async () => {
             fee_ratio: formData.feeRatio,
         },
     };
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload, options: { ...payload.options, passphrase } };
-    // console.log(payloadWithPassphrase);
-
-    await walletSwapAddLiquidity.mutateAsync(payloadWithPassphrase, {
+    await protectedMutate(walletSwapAddLiquidity, payload, {
         onSuccess: () => {
             formRef.value.reset();
         },
@@ -320,11 +308,7 @@ const _removeLiquidity = async () => {
             fee_ratio: formData.feeRatio,
         },
     };
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload, options: { ...payload.options, passphrase } };
-    // console.log(payloadWithPassphrase);
-
-    await walletSwapRemoveLiquidity.mutateAsync(payloadWithPassphrase, {
+    await protectedMutate(walletSwapRemoveLiquidity, payload, {
         onSuccess: () => {
             formRef.value.reset();
         },
@@ -340,11 +324,7 @@ const _removeAll = async () => {
             fee_ratio: formData.feeRatio,
         },
     };
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload, options: { ...payload.options, passphrase } };
-    // console.log(payloadWithPassphrase);
-
-    await walletSwapRemoveAllLiquidity.mutateAsync(payloadWithPassphrase);
+    await protectedMutate(walletSwapRemoveAllLiquidity, payload);
 };
 
 import { useConfirmation } from "@/composables/useConfirmation";
