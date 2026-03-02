@@ -119,7 +119,7 @@ const defaultFormData = {
 const formRef = ref(null);
 const formData = reactive({ ...defaultFormData });
 
-const { promptPassphrase, isLocked } = useWalletLocker(reactive({ index: activeWalletIndex }));
+const { protectedMutate, isLocked } = useWalletLocker(reactive({ index: activeWalletIndex }));
 const { isValid, isValidConfirmed, isValidUnlocked, isValidConfirmedUnlocked } = useWalletFormStatusL(
     formRef,
     isLocked
@@ -178,10 +178,5 @@ const {
 } = useWalletSwapTradeFeeEstimate(payload, isValidConfirmedUnlocked);
 
 const walletSwapTrade = useWalletSwapTrade();
-const handleSubmit = async () => {
-    const passphrase = await promptPassphrase();
-    const payloadWithPassphrase = { ...payload.value, options: { ...payload.value.options, passphrase } };
-    //console.log(payloadWithPassphrase);
-    await walletSwapTrade.mutateAsync(payloadWithPassphrase);
-};
+const handleSubmit = () => protectedMutate(walletSwapTrade, payload.value);
 </script>
