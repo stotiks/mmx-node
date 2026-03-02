@@ -29,6 +29,11 @@
 </template>
 
 <script setup>
+const TYPE_CLASS_MAP = new Map([
+    ["BUY", "text-green"],
+    ["SELL", "text-red"],
+]);
+
 const props = defineProps({
     address: {
         type: String,
@@ -52,11 +57,7 @@ const columns = computed(() => [
     {
         label: t("common.type"),
         field: "type",
-        classes: (item) =>
-            new Map([
-                ["BUY", "text-green"],
-                ["SELL", "text-red"],
-            ]).get(item.type) || "",
+        classes: (item) => TYPE_CLASS_MAP.get(item.type) || "",
         headerStyle: "width: 11%",
     },
 
