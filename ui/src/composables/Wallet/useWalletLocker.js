@@ -63,9 +63,28 @@ export const useWalletLocker = (props) => {
         }
     };
 
+    /**
+     * Prompt for passphrase if locked, merge it into payload.options,
+     * then call mutation.mutateAsync.
+     *
+     * @param {Object} mutation       - TanStack useMutation instance
+     * @param {Object} payload        - Plain payload object (caller unwraps refs)
+     * @param {Object} [mutateOptions] - Optional TanStack mutateAsync options (onSuccess, etc.)
+     * @returns {Promise}
+     */
+    const protectedMutate = async (mutation, payload, mutateOptions) => {
+        const passphrase = await promptPassphrase();
+        const merged = {
+            ...payload,
+            options: { ...payload.options, passphrase },
+        };
+        return mutation.mutateAsync(merged, mutateOptions);
+    };
+
     return {
         isLocked,
         handleToggleLock,
-        promptPassphrase,
+        promptPassphrase, // kept for edge cases (e.g. AccountHeader)
+        protectedMutate,
     };
 };
