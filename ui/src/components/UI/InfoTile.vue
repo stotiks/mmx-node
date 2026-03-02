@@ -28,7 +28,7 @@ const props = defineProps({
 });
 
 const value = computed(() => {
-    var value;
+    let value;
     if (props.tile.field instanceof Function) {
         value = props.tile.field(props.rows);
     } else {

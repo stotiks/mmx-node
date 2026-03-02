@@ -88,7 +88,7 @@ const crows = computed(() =>
 );
 
 const getValue = (item, data) => {
-    var result;
+    let result;
     if (data) {
         if (item.field instanceof Function) {
             try {
@@ -112,7 +112,7 @@ const getValue = (item, data) => {
 };
 
 const getPropValue = (prop, data) => {
-    var result;
+    let result;
     if (prop instanceof Function) {
         if (data) {
             try {
