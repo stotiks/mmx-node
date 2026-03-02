@@ -29,9 +29,9 @@
                         <span
                             v-for="(chunk, key) in bcProps.value.split(numberRegExp)"
                             :key="key"
-                            :set="m = bcProps.value.match(numberRegExp)"
+                            :set="isNumber = numberRegExp.test(chunk)"
                         >
-                            <template v-if="m && m.includes(chunk)">
+                            <template v-if="isNumber">
                                 <span style="color: darkcyan">{{ chunk }}</span>
                             </template>
                             <template v-else>{{ chunk }}</template>
@@ -99,6 +99,7 @@ const level = ref(3);
 const module = ref(null);
 
 import { useNodeLog } from "@/queries/wapi";
+import { is } from "quasar";
 const { rows, loading } = useNodeLog(reactive({ limit, level, module }));
 
 const rowsFiltered = computed(() =>
