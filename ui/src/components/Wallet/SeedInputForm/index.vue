@@ -86,19 +86,19 @@ const emit = defineEmits(["login"]);
 
 const modelMnemonic = defineModel("mnemonic", {
     type: String,
-    require: false,
+    required: false,
     default: null,
 });
 
 const modelPassphrase = defineModel("passphrase", {
     type: String,
-    require: false,
+    required: false,
     default: null,
 });
 
 const modelWallet = defineModel("wallet", {
     type: Object,
-    require: false,
+    required: false,
     default: null,
 });
 
