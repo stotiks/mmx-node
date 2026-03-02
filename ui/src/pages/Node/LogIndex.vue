@@ -30,11 +30,9 @@
                             v-for="(chunk, key) in bcProps.value.split(numberRegExp)"
                             :key="key"
                             :set="isNumber = numberRegExp.test(chunk)"
+                            :class="{ 'text-darkcyan': isNumber }"
                         >
-                            <template v-if="isNumber">
-                                <span style="color: darkcyan">{{ chunk }}</span>
-                            </template>
-                            <template v-else>{{ chunk }}</template>
+                            {{ chunk }}
                         </span>
                     </template>
                 </template>
@@ -125,5 +123,9 @@ const rowsFiltered = computed(() =>
 :deep(.q-btn-group .q-btn) {
     padding-left: 1em;
     padding-right: 1em;
+}
+
+.text-darkcyan {
+    color: darkcyan;
 }
 </style>
