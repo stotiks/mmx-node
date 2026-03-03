@@ -196,7 +196,10 @@ const handleAccept = (offer) => {
             offer: offer,
         },
     }).onOk(() => {
-        accepted.value.add(offer.address);
+        // Create a new Set to trigger Vue reactivity
+        const newSet = new Set(accepted.value);
+        newSet.add(offer.address);
+        accepted.value = newSet;
     });
 };
 </script>
