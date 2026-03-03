@@ -3,6 +3,14 @@ import { useQueryClient } from "@tanstack/vue-query";
 import { useWalletIsLocked, fetchWalletIsLocked, useWalletLock, useWalletUnlock } from "@/queries/api";
 import { useWalletAccount } from "@/queries/wapi";
 
+/** Thrown when the user cancels the passphrase prompt. */
+export class PassphraseCancelledError extends Error {
+    constructor() {
+        super("Passphrase prompt cancelled");
+        this.name = "PassphraseCancelledError";
+    }
+}
+
 export const useWalletLocker = (props) => {
     const queryClient = useQueryClient();
 
@@ -46,7 +54,7 @@ export const useWalletLocker = (props) => {
                     resolve(passphrase);
                 })
                 .onCancel(() => {
-                    reject(new Error("Prompt rejected!"));
+                    reject(new PassphraseCancelledError());
                 });
         });
 
@@ -58,8 +66,13 @@ export const useWalletLocker = (props) => {
 
     const handleUnlock = async () => {
         if (isLocked.value) {
-            const passphrase = await promptPassphrase();
-            await unlock(passphrase);
+            try {
+                const passphrase = await promptPassphrase();
+                await unlock(passphrase);
+            } catch (e) {
+                if (e instanceof PassphraseCancelledError) return;
+                throw e;
+            }
         }
     };
 
@@ -73,7 +86,13 @@ export const useWalletLocker = (props) => {
      * @returns {Promise}
      */
     const protectedMutate = async (mutation, payload, mutateOptions) => {
-        const passphrase = await promptPassphrase();
+        let passphrase;
+        try {
+            passphrase = await promptPassphrase();
+        } catch (e) {
+            if (e instanceof PassphraseCancelledError) return;
+            throw e;
+        }
         const merged = {
             ...payload,
             options: { ...payload.options, passphrase },
