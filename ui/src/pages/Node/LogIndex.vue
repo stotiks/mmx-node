@@ -27,12 +27,11 @@
                     </template>
                     <template v-else>
                         <span
-                            v-for="(chunk, key) in bcProps.value.split(numberRegExp)"
+                            v-for="(chunk, key) in parseMessageChunks(bcProps.value)"
                             :key="key"
-                            :set="isNumber = numberRegExp.test(chunk)"
-                            :class="{ 'text-darkcyan': isNumber }"
+                            :class="{ 'text-darkcyan': chunk.isNumber }"
                         >
-                            {{ chunk }}
+                            {{ chunk.text }}
                         </span>
                     </template>
                 </template>
@@ -47,6 +46,18 @@
 <script setup>
 //const numberRegExp = /(?<=height )(\d+(?:\.\d+)?)(?=,|\s|$)/g;
 const numberRegExp = /(?<=\s|^)(\d+(?:\.\d+)?)(?=,|\s|$)/g;
+
+// Pre-parse message into chunks
+const parseMessageChunks = (message) => {
+    const chunks = message.split(numberRegExp);
+    return chunks.map((text, index) => ({
+        text,
+        // split() with a capturing group interleaves non-matched and matched segments:
+        // even indices are non-matched text, odd indices are captured numbers
+        isNumber: index % 2 === 1,
+    }));
+};
+
 const { t } = useI18n();
 const appStore = useAppStore();
 
@@ -97,7 +108,6 @@ const level = ref(3);
 const module = ref(null);
 
 import { useNodeLog } from "@/queries/wapi";
-import { is } from "quasar";
 const { rows, loading } = useNodeLog(reactive({ limit, level, module }));
 
 const rowsFiltered = computed(() =>
