@@ -17,12 +17,12 @@ describe("intToHex", () => {
     });
 
     it("should handle large positive numbers", () => {
-      expect(intToHex(123456789)).toBe("0x075bcd15");
-      expect(intToHex(Number.MAX_SAFE_INTEGER)).toBe("0x1fffffffffffff");
+        expect(intToHex(123456789)).toBe("0x075bcd15");
+        expect(intToHex(Number.MAX_SAFE_INTEGER)).toBe("0x1fffffffffffff");
     });
-  
+
     it("should handle large negative numbers", () => {
-      expect(intToHex(-123456789)).toBe("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffff8a432eb");
+        expect(intToHex(-123456789)).toBe("0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffff8a432eb");
     });
 
     it("should ensure even length hex output", () => {
