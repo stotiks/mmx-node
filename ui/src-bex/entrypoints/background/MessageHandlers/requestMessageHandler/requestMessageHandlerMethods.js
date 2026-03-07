@@ -8,7 +8,7 @@ import {
 } from "@bex/entrypoints/background/queries";
 
 import {
-    getCurrentWallet,
+    getCurrentWalletAsync,
     getPubKeyAsync,
     getSendTxAsync,
     signMessageAsync,
