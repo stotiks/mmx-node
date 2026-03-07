@@ -1,3 +1,4 @@
-import { createBexApp } from "@bex/entrypoints/popup/createBexApp";
+const isNotification = new URLSearchParams(location.search).get("notification") === "true";
 
-createBexApp({ isNotification: false });
+import { createBexApp } from "@bex/entrypoints/popup/createBexApp";
+createBexApp({ isNotification });
