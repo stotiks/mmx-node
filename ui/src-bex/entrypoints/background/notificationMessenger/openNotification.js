@@ -22,7 +22,7 @@ browser.windows.onRemoved.addListener((windowId) => {
  * Configuration for the notification window.
  */
 const NOTIFICATION_CONFIG = {
-    url: "notification.html",
+    url: "popup.html",
     type: "popup",
     width: 570,
     height: 600,
@@ -103,8 +103,12 @@ const focusWindow = async (windowId) => {
 const createNotificationWindow = async () => {
     const currentWindow = await browser.windows.getCurrent();
 
+    const urlStr = browser.runtime.getURL(NOTIFICATION_CONFIG.url);
+    const url = new URL(urlStr);
+    url.searchParams.set("notification", "true");
+
     const newWindow = await browser.windows.create({
-        url: browser.runtime.getURL(NOTIFICATION_CONFIG.url),
+        url: url.href,
         type: NOTIFICATION_CONFIG.type,
         width: NOTIFICATION_CONFIG.width,
         height: NOTIFICATION_CONFIG.height,
