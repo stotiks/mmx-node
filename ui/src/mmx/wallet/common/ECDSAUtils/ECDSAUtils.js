@@ -1,6 +1,6 @@
 import { hmac } from "@noble/hashes/hmac.js";
 import { sha512 } from "@noble/hashes/sha2.js";
-import { hexToBytes, isBytes, u32, u8 } from "@noble/hashes/utils.js";
+import { hexToBytes, isBytes, u32, u8, utf8ToBytes, concatBytes } from "@noble/hashes/utils.js";
 
 import * as secp256k1 from "./secp256k1";
 
@@ -8,6 +8,10 @@ import { addr_t, hash_t } from "@/mmx/wallet/common/addr_t";
 import { splitHmacDigest } from "@/mmx/wallet/utils/Uint8ArrayUtils";
 
 const KDF_ITERS = 4096;
+
+/** Normalize passphrase to Uint8Array — backward-compatible with string callers. */
+const toPassphraseBytes = (passphrase) =>
+    passphrase instanceof Uint8Array ? passphrase : utf8ToBytes(passphrase ?? "");
 
 const kdf_hmac_sha512 = (message, key, iterations) => {
     let tmp = new Uint8Array(key);
@@ -34,7 +38,8 @@ const getFarmerKey = (seed_value) => {
 };
 
 const getKeys = (seed_value, passphrase, index) => {
-    const master = kdf_hmac_sha512(seed_value, new hash_t("MMX/seed/" + passphrase), KDF_ITERS);
+    const prefixed = concatBytes(utf8ToBytes("MMX/seed/"), toPassphraseBytes(passphrase));
+    const master = kdf_hmac_sha512(seed_value, new hash_t(prefixed), KDF_ITERS);
 
     const masterSplit = splitHmacDigest(master);
     const chain = hmac_sha512_n(masterSplit.first, masterSplit.second, 11337);
@@ -60,13 +65,14 @@ const getAddress = (seed_value, passphrase, index) => {
 
 const getFingerPrint = (seed_value, passphrase) => {
     let pass_hash = new Uint8Array(32);
-    if (passphrase) {
-        pass_hash = new hash_t("MMX/fingerprint/" + passphrase);
+    const passBytes = toPassphraseBytes(passphrase);
+    if (passBytes.length > 0) {
+        pass_hash = new hash_t(concatBytes(utf8ToBytes("MMX/fingerprint/"), passBytes));
     }
 
     let hash = new Uint8Array(32);
     for (let i = 0; i < 16384; ++i) {
-        hash = new hash_t(new Uint8Array([...hash, ...seed_value, ...pass_hash]));
+        hash = new hash_t(concatBytes(hash, seed_value, pass_hash));
     }
 
     const fingerPrint = u32(hash)[0];
