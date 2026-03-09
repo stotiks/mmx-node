@@ -132,7 +132,9 @@ const tmpWallet = computed(() => {
     const result = { wallet: null, error: "" };
     if (!isEmpty(formData.mnemonic) && isValidForm.value) {
         try {
-            result.wallet = new ECDSA_Wallet(formData.mnemonic, formData.passphrase);
+            // markRaw prevents Vue from deep-tracking the wallet object,
+            // keeping private key material invisible to Vue Devtools.
+            result.wallet = markRaw(new ECDSA_Wallet(formData.mnemonic, formData.passphrase));
         } catch (e) {
             result.error = e.message;
         }
