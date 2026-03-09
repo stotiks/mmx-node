@@ -1,3 +1,5 @@
+import { utf8ToBytes } from "@noble/hashes/utils.js";
+
 import { mnemonicToSeed } from "./mnemonic";
 
 import { getFingerPrintAsync, getFarmerKeyAsync, getAddressAsync, getKeysAsync, signAsync } from "./common/ECDSAUtils";
@@ -11,21 +13,35 @@ import { spend_options_t } from "./common/spend_options_t";
 import { Operation, Execute, Deposit } from "./common/Operation";
 import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
+/**
+ * Convert a passphrase to a Uint8Array for secure storage.
+ * Throws on unsupported types to catch programming errors early.
+ * @param {string|Uint8Array|null|undefined} passphrase
+ * @returns {Uint8Array}
+ */
+const encodePassphrase = (passphrase) => {
+    if (passphrase == null) return new Uint8Array(0);
+    if (passphrase instanceof Uint8Array) return new Uint8Array(passphrase); // defensive copy
+    if (typeof passphrase === "string") return passphrase ? utf8ToBytes(passphrase) : new Uint8Array(0);
+    throw new Error(`Invalid passphrase type: ${typeof passphrase}`);
+};
+
 export class ECDSA_Wallet {
     #seed_value;
-    #passphrase = "";
+    #passphrase = new Uint8Array(0);
 
     constructor(seed, passphrase) {
         let seed_value;
         if (typeof seed === "string") {
             seed_value = mnemonicToSeed(seed);
         } else if (seed instanceof Uint8Array) {
-            seed_value = seed;
+            // Defensive copy — prevents destroy() from zeroing a shared reference
+            seed_value = new Uint8Array(seed);
         } else {
             throw new Error("Invalid seed type");
         }
         this.#seed_value = seed_value;
-        this.#passphrase = passphrase ?? "";
+        this.#passphrase = encodePassphrase(passphrase);
     }
 
     #fingerPrintCache = null;
@@ -240,8 +256,11 @@ export class ECDSA_Wallet {
             this.#seed_value = null;
         }
 
-        // Clear passphrase
-        this.#passphrase = "";
+        // Zero out passphrase bytes (overwrites actual memory bytes)
+        if (this.#passphrase) {
+            this.#passphrase.fill(0);
+            this.#passphrase = null;
+        }
 
         // Clear cached fingerprint and farmer key
         this.#fingerPrintCache = null;
