@@ -1,6 +1,6 @@
 import { describe, it, assert, expect } from "vitest";
 
-import { hexToBytes } from "@noble/hashes/utils.js";
+import { hexToBytes, utf8ToBytes } from "@noble/hashes/utils.js";
 
 import { mnemonicToSeed } from "./mnemonic";
 import { ECDSA_Wallet } from "./ECDSA_Wallet";
@@ -26,8 +26,18 @@ describe("ECDSA_Wallet", async () => {
     const addressWithPassphrase = await ecdsaWallet2.getAddressAsync(0);
     const addressWithPassphrase1 = await ecdsaWallet2.getAddressAsync(1);
 
+    // Uint8Array passphrase — must produce identical results to string passphrase
+    const ecdsaWallet3 = new ECDSA_Wallet(seed, utf8ToBytes("passphrase"));
+    const fingerPrintWithPassphraseU8 = await ecdsaWallet3.getFingerPrintAsync();
+    const addressWithPassphraseU8 = await ecdsaWallet3.getAddressAsync(0);
+
     it("invalid seed type", () => {
         expect(() => new ECDSA_Wallet(Symbol("invalid seed type"))).toThrowError();
+    });
+
+    it("invalid passphrase type throws", () => {
+        expect(() => new ECDSA_Wallet(seed, 42)).toThrowError("Invalid passphrase type: number");
+        expect(() => new ECDSA_Wallet(seed, Symbol("bad"))).toThrowError("Invalid passphrase type: symbol");
     });
 
     it("createFarmerKey", () => {
@@ -56,6 +66,26 @@ describe("ECDSA_Wallet", async () => {
 
     it("getAddress with passphrase #2", () => {
         assert.equal(addressWithPassphrase1, "mmx12gfh8lswlcccefwnev6fp66h6wu3myjaqqw9gspjy9cqdcnz89dslkeym4");
+    });
+
+    it("Uint8Array passphrase produces same fingerprint as string passphrase", () => {
+        assert.equal(fingerPrintWithPassphraseU8, fingerPrintWithPassphrase);
+    });
+
+    it("Uint8Array passphrase produces same address as string passphrase", () => {
+        assert.equal(addressWithPassphraseU8, addressWithPassphrase);
+    });
+
+    it("destroy() zeroes passphrase and seed", async () => {
+        const tmpWallet = new ECDSA_Wallet(seed, "secret");
+        // Confirm it works before destroy
+        const addrBefore = await tmpWallet.getAddressAsync(0);
+        assert.ok(addrBefore.startsWith("mmx"));
+
+        tmpWallet.destroy();
+
+        // After destroy, methods that rely on #seed_value / #passphrase should throw
+        await expect(tmpWallet.getAddressAsync(0)).rejects.toThrow();
     });
 
     it("getKeys", async () => {
