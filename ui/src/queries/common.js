@@ -43,7 +43,7 @@ export const pushError = (vars) => {
 };
 
 export const onError = (error) => {
-    const message = error.response?.data || error.message;
+    const message = error.response?.data?.message ?? error.response?.data ?? error.message;
     Notify.create({
         message: message,
         type: "negative",
