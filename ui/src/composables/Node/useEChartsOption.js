@@ -24,6 +24,7 @@ export const useEChartsOption = () =>
             fontWeight: "normal",
         },
         tooltip: {
+            renderMode: "richText",
             trigger: "axis",
             axisPointer: {
                 type: "line",
