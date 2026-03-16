@@ -1,5 +1,5 @@
 export class uint128 {
-    static BITMASK_64 = 0xffffffffffffffffn;
+    static #BITMASK_64 = 0xffffffffffffffffn;
 
     #lower = null;
     #upper = null;
@@ -26,21 +26,23 @@ export class uint128 {
 
     constructor(value) {
         let _value;
-        if (typeof value === "string") {
+        if (typeof value === "object" && value instanceof uint128) {
+            return new uint128(value.valueOf());
+        } else if (typeof value === "string") {
             _value = BigInt(value);
         } else if (typeof value === "number") {
             _value = BigInt(value);
         } else if (typeof value === "bigint") {
             _value = value;
         } else {
-            throw new Error("Unsupported type");
+            throw new Error("Unsupported type" + typeof value);
         }
 
         if (_value >> 128n) {
             throw new Error("uint128() overflow");
         }
 
-        this.#lower = _value & uint128.BITMASK_64;
-        this.#upper = (_value >> 64n) & uint128.BITMASK_64;
+        this.#lower = _value & uint128.#BITMASK_64;
+        this.#upper = (_value >> 64n) & uint128.#BITMASK_64;
     }
 }
