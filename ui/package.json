@@ -16,7 +16,7 @@
     "dev:offline": "bunx vite --config vite.config.offline.js",
     "build:offline": "bunx vite build --config vite.config.offline.js",
     "preview:offline": "bunx vite preview --config vite.config.offline.js",
-    "build:all": "bun run build && bun run build:explorer",
+    "build:all": "bunx wxt zip && bun run build && bun run build:explorer",
     "build:android": "bun run build:explorer && bunx cap sync && bunx capacitor-assets generate --android && bunx cap build android",
     "dev:wxt": "bunx wxt",
     "dev:wxt:firefox": "bunx wxt -b firefox",
@@ -40,7 +40,7 @@
     "@quasar/extras": "^1.17.0",
     "@scure/base": "^2.0.0",
     "@scure/bip39": "^2.0.1",
-    "@tanstack/vue-query": "^5.92.9",
+    "@tanstack/vue-query": "^5.92.12",
     "@tanstack/vue-query-devtools": "^6.1.5",
     "@vueuse/components": "^14.2.1",
     "@vueuse/core": "^14.2.1",
@@ -54,11 +54,11 @@
     "json-bigint": "^1.0.0",
     "pinia": "^3.0.4",
     "qrcode": "^1.5.4",
-    "quasar": "^2.18.6",
+    "quasar": "^2.18.7",
     "vue": "^3.5.30",
     "vue-echarts": "^8.0.1",
     "vue-i18n": "^11.3.0",
-    "vue-router": "^5.0.3",
+    "vue-router": "^5.0.4",
     "webext-bridge": "^6.0.1"
   },
   "devDependencies": {
@@ -66,11 +66,11 @@
     "@capacitor/cli": "^7.4.4",
     "@eslint/compat": "^2.0.3",
     "@quasar/vite-plugin": "^1.11.0",
-    "@tanstack/eslint-plugin-query": "^5.91.4",
+    "@tanstack/eslint-plugin-query": "^5.91.5",
     "@vitejs/plugin-vue": "^6.0.4",
     "@vitest/coverage-v8": "^4.1.0",
     "@vue/test-utils": "^2.4.6",
-    "bun": "1.3.10",
+    "bun": "1.3.11",
     "bunx": "^0.1.0",
     "dotenv": "^17.3.1",
     "eslint": "^9.39.2",
@@ -91,7 +91,7 @@
     "vite-plugin-singlefile": "^2.3.2",
     "vite-plugin-vue-devtools": "^8.1.0",
     "vitest": "^4.1.0",
-    "wxt": "0.20.19"
+    "wxt": "0.20.20"
   },
   "overrides": {
     "web-ext-run": "0.2.3"
