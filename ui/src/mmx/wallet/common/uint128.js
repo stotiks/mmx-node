@@ -26,7 +26,7 @@ export class uint128 {
 
     constructor(value) {
         let _value;
-        if (typeof value === "object" && value instanceof uint128) {
+        if (isUInt128(value)) {
             return new uint128(value.valueOf());
         } else if (typeof value === "string") {
             _value = BigInt(value);
@@ -46,3 +46,5 @@ export class uint128 {
         this.#upper = (_value >> 64n) & uint128.#BITMASK_64;
     }
 }
+
+export const isUInt128 = (value) => value != null && typeof value === "object" && value instanceof uint128;
