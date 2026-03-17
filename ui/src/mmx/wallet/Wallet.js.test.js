@@ -12,6 +12,8 @@ const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
 const ecdsaWallet = new ECDSA_Wallet(mnemonic, "");
 
 import { txs } from "./Transaction.js.txs.test.js";
+import { uint128 } from "./common/uint128";
+import { get_inv_price } from "./common/offer_data_t";
 
 describe("Wallet", () => {
     const currency = new addr_t().toString();
@@ -222,9 +224,17 @@ describe("Wallet", () => {
 
         const address = "mmx1zmkneqqv28gyt8k8m3a09f2v2h3s0n44gly60hn5tq2d892re2asyh6g5x";
         const ask_currency = new addr_t().toString();
-        const amount = "100001";
+        // const ask_currency_decimals = 6;
+        // const ask_currency_symbol = "MMX";
 
-        const price = "0x4189374bc6a7f0";
+        // const bid_currency = "mmx1ey6mxts9rcarq9jgl89su8cgex527plw3wskpnwxr4xgzkw4z65qxpj3fg";
+        // const bid_currency_decimals = 6;
+        // const bid_currency_symbol = "🐳";
+
+        const amount = 100001;
+
+        const _price = 1000;
+        const price = get_inv_price(_price); //"0x4189374bc6a7f0"
 
         const tx = await Wallet.getOfferTradeTxAsync(ecdsaWallet, address, amount, ask_currency, price, options);
 
