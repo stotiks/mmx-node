@@ -69,14 +69,13 @@ import { mdiCheck, mdiClose, mdiDeleteEmpty } from "@mdi/js";
 import { stringify } from "@/utils/dataFormatters";
 
 const isBexLoaded = computed(() => window.mmx && window.mmx.isFurryVault);
+const vault = computed(() => isBexLoaded.value && window.mmx);
 
 const bexStatus = computed(() =>
     isBexLoaded.value
         ? { label: "Extension Loaded", color: "positive", icon: mdiCheck }
         : { label: "Extension Not Loaded", color: "negative", icon: mdiClose }
 );
-
-const vault = computed(() => isBexLoaded.value && window.mmx);
 
 const requestResults = ref(new Map());
 
@@ -168,9 +167,7 @@ const handleRequest = async (request) => {
 
     if (request.method === "mmx_send" && !result.error) {
         $q.notify({ type: "positive", message: `Transaction sent successfully: ${result.id}` });
-    }
-
-    if (result.error) {
+    } else if (result.error) {
         $q.notify({ type: "negative", message: result.error });
     }
 };
