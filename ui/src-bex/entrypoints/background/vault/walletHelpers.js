@@ -65,6 +65,19 @@ export const getSendTxAsync = async (
     });
 };
 
+export const getOfferTradeTxAsync = async (
+    address,
+    amount,
+    ask_currency,
+    price,
+    options,
+    wallet_address = vault.getCurrentWalletAddress()
+) => {
+    return vault.withECDSAWallet(wallet_address, async (ecdsaWallet) => {
+        return await Wallet.getOfferTradeTxAsync(ecdsaWallet, address, amount, ask_currency, price, options);
+    });
+};
+
 export const signTransactionAsync = async (tx, options, address = vault.getCurrentWalletAddress()) => {
     return vault.withECDSAWallet(address, async (ecdsaWallet) => {
         await ecdsaWallet.signOfAsync(tx, options);
