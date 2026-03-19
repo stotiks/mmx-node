@@ -9,6 +9,7 @@ import {
 
 import {
     getCurrentWalletAsync,
+    getOfferTradeTxAsync,
     getPubKeyAsync,
     getSendTxAsync,
     signMessageAsync,
@@ -105,6 +106,28 @@ export const requestMessageHandlerMethods = {
         const options = new spend_options_t(_options);
         await signTransactionAsync(tx, options);
         return tx;
+    }, {}),
+
+    mmx_offerTrade: $method(async ({ address, amount, ask_currency, price, options: _options }) => {
+        const options = new spend_options_t(_options);
+        const tx = await getOfferTradeTxAsync(address, amount, ask_currency, price, options);
+
+        const result = {
+            id: tx.id,
+        };
+
+        if (process.env.NODE_ENV === "development") {
+            // await broadcastTransactionAsync(tx);
+            await validateTransactionAsync(tx);
+
+            result.dev = {
+                tx,
+            };
+        } else {
+            await broadcastTransactionAsync(tx);
+        }
+
+        return result;
     }, {}),
 
     // dummy method for testing
