@@ -67,33 +67,13 @@ const offlineRoutes = [
     ...catchAll,
 ];
 
-const explorerRoutes = [
-    ...explore,
-    ...catchAll,
-    {
-        path: "/",
-        redirect: "/explore",
-    },
-    {
-        path: "/wallet",
-        component: () => import("@/pages/WebWalletPage"),
-        meta: {
-            title: () => t("route.web_wallet"),
-        },
-    },
-    {
-        path: "/pg/tx",
-        component: () => import("@/pages/!pg/tx.vue"),
-        meta: {
-            title: "TX Test",
-        },
-    },
-    txQrSendRoute,
-];
-
 const playgroundRoutes = [
     {
         path: "/",
+        redirect: "/pg/bex",
+    },
+    {
+        path: "/pg/",
         redirect: "/pg/bex",
     },
     {
@@ -110,8 +90,33 @@ const playgroundRoutes = [
             title: "TX PLAYGROUND",
         },
     },
+    {
+        path: "/pg/whale",
+        component: () => import("@/pages/!pg/whale"),
+        meta: {
+            title: "Whale",
+        },
+    },
     txQrSendRoute,
     ...catchAll,
+];
+
+const explorerRoutes = [
+    ...explore,
+    ...catchAll,
+    {
+        path: "/",
+        redirect: "/explore",
+    },
+    {
+        path: "/wallet",
+        component: () => import("@/pages/WebWalletPage"),
+        meta: {
+            title: () => t("route.web_wallet"),
+        },
+    },
+    ...playgroundRoutes,
+    txQrSendRoute,
 ];
 
 let routes;
