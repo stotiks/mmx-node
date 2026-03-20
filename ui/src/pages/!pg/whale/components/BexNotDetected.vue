@@ -27,12 +27,12 @@
 
         <q-card-actions class="q-pa-md q-pt-none">
             <q-btn
+                href="/bex/mmx-node-web-gui-0.0.1-chrome.zip"
+                target="_blank"
                 :icon="mdiDownload"
                 label="Download Extension"
                 color="primary"
                 unelevated
-                href=".output/mmx-node-web-gui-0.0.1-chrome.zip"
-                target="_blank"
             />
         </q-card-actions>
     </q-card>
