@@ -16,4 +16,7 @@ import ExploreSearchBar from "./ExploreSearchBar";
 import ExploreMenu from "./ExploreMenu";
 
 const route = useRoute();
+
+import { useNodeInfo } from "@/queries/wapi";
+useNodeInfo({ refetchInterval: 5000 });
 </script>
