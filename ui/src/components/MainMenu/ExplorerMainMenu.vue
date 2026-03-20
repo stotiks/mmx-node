@@ -20,7 +20,4 @@ const tabs = computed(() => [
     themeChangerRouteTabItem.value,
     { component: I18nDropDown, tabTagWrap: false },
 ]);
-
-import { useNodeInfo } from "@/queries/wapi";
-useNodeInfo({ refetchInterval: 5000 });
 </script>
