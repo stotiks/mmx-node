@@ -9,6 +9,7 @@ const getWalletAccounts = (signal) => axios.get("/wapi/wallet/accounts", { signa
 export const useWalletAccounts = () => {
     const queryClient = useQueryClient();
     return useQuery({
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- queryClient is used in queryFn for cache-seeding side-effect only, not a reactive dependency
         queryKey: ["accounts"],
         queryFn: async ({ signal }) => {
             const data = await getWalletAccounts(signal);
