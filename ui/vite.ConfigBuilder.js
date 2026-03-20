@@ -1,12 +1,13 @@
-import { defineConfig } from "vite";
+import { defineConfig, normalizePath } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
 import Fonts from "unplugin-fonts/vite";
 import Components from "unplugin-vue-components/vite";
 
 import GenerateFile from "vite-plugin-generate-file";
-import { viteSingleFile } from "vite-plugin-singlefile";
 import VueDevTools from "vite-plugin-vue-devtools";
+import { viteSingleFile } from "vite-plugin-singlefile";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
 import vue from "@vitejs/plugin-vue";
@@ -100,6 +101,19 @@ export class ConfigBuilder {
 
         if (generateFileOptions.length > 0) {
             config.plugins.push(GenerateFile(generateFileOptions));
+        }
+
+        if (this.buildTarget === BuildTargets.EXPLORER) {
+            config.plugins.push(
+                viteStaticCopy({
+                    targets: [
+                        {
+                            src: normalizePath(path.resolve(__dirname, ".output/*.zip")),
+                            dest: "bex",
+                        },
+                    ],
+                })
+            );
         }
     }
 
