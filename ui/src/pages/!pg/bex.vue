@@ -68,8 +68,18 @@
 import { mdiCheck, mdiClose, mdiDeleteEmpty } from "@mdi/js";
 import { stringify } from "@/utils/dataFormatters";
 
-const isBexLoaded = computed(() => window.mmx && window.mmx.isFurryVault);
-const vault = computed(() => isBexLoaded.value && window.mmx);
+const mmx = ref(window.mmx ?? null);
+
+import { useEventListener } from "@vueuse/core";
+if (!mmx.value) {
+    useEventListener(document, "mmx-provider-loaded", (event) => {
+        console.log("mmx-provider-loaded");
+        mmx.value = event.detail.provider;
+    });
+}
+
+const isBexLoaded = computed(() => !!mmx.value?.isFurryVault);
+const vault = computed(() => isBexLoaded.value && mmx.value);
 
 const bexStatus = computed(() =>
     isBexLoaded.value
