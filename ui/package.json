@@ -16,7 +16,7 @@
     "dev:offline": "bunx vite --config vite.config.offline.js",
     "build:offline": "bunx vite build --config vite.config.offline.js",
     "preview:offline": "bunx vite preview --config vite.config.offline.js",
-    "build:all": "bunx wxt zip && bun run build && bun run build:explorer",
+    "build:all": "bun run zip:wxt && bun run build:offline && bun run build && bun run build:explorer",
     "build:android": "bun run build:explorer && bunx cap sync && bunx capacitor-assets generate --android && bunx cap build android",
     "dev:wxt": "bunx wxt",
     "dev:wxt:firefox": "bunx wxt -b firefox",
