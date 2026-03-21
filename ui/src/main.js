@@ -1,7 +1,7 @@
 import App from "./App.vue";
 import { createQuasarApp } from "@/createQuasarApp";
 import { registerPlugins } from "@/plugins/registerPlugins";
-import router from "@/plugins/router";
+import router from "@/router";
 import pinia from "@/plugins/pinia";
 
 const app = createQuasarApp(App);
