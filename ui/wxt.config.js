@@ -21,7 +21,7 @@ export default defineConfig({
     manifest: {
         name: "Fury Vault",
         version: "0.0.1",
-        permissions: ["storage"],
+        permissions: ["storage", "tabs"],
         web_accessible_resources: [
             {
                 resources: ["inpage.js"],
