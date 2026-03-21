@@ -124,10 +124,11 @@ export class ConfigBuilder {
             [BuildTargets.EXPLORER]: "explorerRoutes.js",
             [BuildTargets.OFFLINE]: "offlineRoutes.js",
             [BuildTargets.PLAYGROUND]: "playgroundRoutes.js",
+            [BuildTargets.NONE]: "emptyRoutes.js",
         };
         const file = routesMap[this.buildTarget];
         if (!file) {
-            throw new Error(`No routes file for build target: ${this.buildTarget}`);
+            //throw new Error(`No routes file for build target: ${this.buildTarget}`);
         }
         return file;
     }
@@ -137,7 +138,8 @@ export class ConfigBuilder {
             [BuildTargets.GUI]: "GuiMainMenu.vue",
             [BuildTargets.EXPLORER]: "ExplorerMainMenu.vue",
             [BuildTargets.OFFLINE]: "OfflineMainMenu.vue",
-            [BuildTargets.PLAYGROUND]: "ExplorerMainMenu.vue",
+            [BuildTargets.PLAYGROUND]: "EmptyMainMenu.vue",
+            [BuildTargets.NONE]: "EmptyMainMenu.vue",
         };
         const file = menuMap[this.buildTarget];
         if (!file) {
