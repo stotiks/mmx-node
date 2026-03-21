@@ -1,25 +1,30 @@
+/* global browser */
+
 import notificationMessenger from "@bex/entrypoints/background/notificationMessenger";
 
 import vault from "@bex/entrypoints/background/vault";
 
-/* global browser */
-const getTabUrl = async (tabId) => {
-    const tab = await browser.tabs.get(tabId);
-    const url = new URL(tab.url);
-    return url;
-};
-
 const createAuthHook = () => {
     return async (context) => {
-        const { message, handler } = context;
         console.log("Checking permissions...");
+
+        const { message, handler } = context;
 
         if (message.sender.frameId != null) {
             throw new Error("iFrame not supported");
         }
 
-        const tabId = message.sender.tabId;
-        const url = await getTabUrl(tabId);
+        if (message.sender.tabId == null) {
+            throw new Error("Sender tab not found");
+        }
+
+        const tabInfo = await browser.tabs.get(message.sender.tabId);
+
+        if (tabInfo.url == null) {
+            throw new Error("Sender tab url not found");
+        }
+
+        const url = new URL(tabInfo.url);
 
         const isAcceptRequired = handler.body.metadata?.isAcceptRequired ?? true;
 
