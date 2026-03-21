@@ -272,8 +272,8 @@ export class ConfigBuilder {
             resolve: {
                 alias: {
                     "@": fileURLToPath(new URL("./src", import.meta.url)),
+                    "@mmx": fileURLToPath(new URL("./src/mmx", import.meta.url)),
                     "@mmxConfig": fileURLToPath(new URL("../config", import.meta.url)),
-                    //"@bex": fileURLToPath(new URL("./src-bex", import.meta.url)),
                 },
                 extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
             },

@@ -127,7 +127,7 @@ watchEffect(() => {
 const { isValid: isValidForm } = useWalletFormStatusL(formRef);
 const isValid = computed(() => isValidForm.value && wallet.value != null && fingerprint.value != null);
 
-import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
+import { ECDSA_Wallet } from "@mmx/wallet/ECDSA_Wallet";
 const tmpWallet = computed(() => {
     const result = { wallet: null, error: "" };
     if (!isEmpty(formData.mnemonic) && isValidForm.value) {
@@ -183,7 +183,7 @@ const handleSubmit = async () => {
     emit("login");
 };
 
-import { randomWords } from "@/mmx/wallet/mnemonic";
+import { randomWords } from "@mmx/wallet/mnemonic";
 const $q = useQuasar();
 const handleNewMnemonic = async () => {
     handleReset();

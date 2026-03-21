@@ -1,5 +1,5 @@
-import { addr_t } from "@/mmx/wallet/common/addr_t";
-import { Wallet } from "@/mmx/wallet/Wallet";
+import { addr_t } from "@mmx/wallet/common/addr_t";
+import { Wallet } from "@mmx/wallet/Wallet";
 import vault from "@bex/entrypoints/background/vault";
 import { bytesToHex } from "@noble/hashes/utils.js";
 

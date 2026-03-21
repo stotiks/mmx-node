@@ -21,8 +21,8 @@ const props = defineProps({
     },
 });
 
-import { Transaction } from "@/mmx/wallet/Transaction";
-import "@/mmx/wallet/Transaction.ext";
+import { Transaction } from "@mmx/wallet/Transaction";
+import "@mmx/wallet/Transaction.ext";
 
 const tx = computed(() => Transaction.fromCompressedBase64(props.txData));
 

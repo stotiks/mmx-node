@@ -97,7 +97,7 @@ const { isValid, isValidConfirmed } = useWalletFormStatus(formRef);
 
 const evaluating = shallowRef(false);
 
-import { Wallet } from "@/mmx/wallet/Wallet";
+import { Wallet } from "@mmx/wallet/Wallet";
 const tx = computedAsync(
     async () => {
         if (!isValidConfirmed.value) return null;
