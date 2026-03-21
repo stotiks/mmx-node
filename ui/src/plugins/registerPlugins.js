@@ -2,6 +2,7 @@ import { Quasar, quasarConfig } from "@/plugins/quasar";
 import i18n from "@/plugins/i18n";
 import VueQueryPlugin, { vueQueryPluginOptions } from "@/plugins/query";
 import highlight from "@/plugins/highlight";
+import { setRouter } from "@/plugins/router";
 
 /**
  * Registers all application plugins with the Vue app instance
@@ -26,6 +27,7 @@ export const registerPlugins = (app, options = {}) => {
 
     // Router (context-specific)
     app.use(router);
+    setRouter(router);
 
     // Pinia (context-specific)
     app.use(pinia);
