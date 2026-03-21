@@ -118,6 +118,34 @@ export class ConfigBuilder {
         }
     }
 
+    #getRoutesFile() {
+        const routesMap = {
+            [BuildTargets.GUI]: "guiRoutes.js",
+            [BuildTargets.EXPLORER]: "explorerRoutes.js",
+            [BuildTargets.OFFLINE]: "offlineRoutes.js",
+            [BuildTargets.PLAYGROUND]: "playgroundRoutes.js",
+        };
+        const file = routesMap[this.buildTarget];
+        if (!file) {
+            throw new Error(`No routes file for build target: ${this.buildTarget}`);
+        }
+        return file;
+    }
+
+    #getMenuFile() {
+        const menuMap = {
+            [BuildTargets.GUI]: "GuiMainMenu.vue",
+            [BuildTargets.EXPLORER]: "ExplorerMainMenu.vue",
+            [BuildTargets.OFFLINE]: "OfflineMainMenu.vue",
+            [BuildTargets.PLAYGROUND]: "ExplorerMainMenu.vue",
+        };
+        const file = menuMap[this.buildTarget];
+        if (!file) {
+            throw new Error(`No menu file for build target: ${this.buildTarget}`);
+        }
+        return file;
+    }
+
     #applyDefines(config) {
         const defines = {};
 
@@ -275,6 +303,12 @@ export class ConfigBuilder {
                     "@": fileURLToPath(new URL("./src", import.meta.url)),
                     "@mmx": fileURLToPath(new URL("./src/mmx", import.meta.url)),
                     "@mmxConfig": fileURLToPath(new URL("../config", import.meta.url)),
+                    "@buildRoutes": fileURLToPath(
+                        new URL(`./src/router/routes/${this.#getRoutesFile()}`, import.meta.url)
+                    ),
+                    "@buildMenu": fileURLToPath(
+                        new URL(`./src/components/MainMenu/${this.#getMenuFile()}`, import.meta.url)
+                    ),
                 },
                 extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
             },
