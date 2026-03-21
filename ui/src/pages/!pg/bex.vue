@@ -59,12 +59,16 @@
                 </q-card>
             </template>
         </div>
+        <div v-else>
+            <BexNotDetected />
+        </div>
     </div>
 </template>
 
 <script setup>
 import { mdiCheck, mdiClose, mdiDeleteEmpty } from "@mdi/js";
 import { stringify } from "@/utils/dataFormatters";
+import BexNotDetected from "./whale/components/BexNotDetected.vue";
 
 const { isMmxProviderLoaded, mmxProvider } = useMmxProvider();
 
