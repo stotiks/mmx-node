@@ -213,6 +213,7 @@ export class ConfigBuilder {
                     id.includes("birpc") ||
                     id.includes("@intlify") ||
                     id.includes("hookable") ||
+                    id.includes("perfect-debounce") ||
                     id.includes("quasar")
                 ) {
                     return "quasar";
@@ -244,6 +245,10 @@ export class ConfigBuilder {
 
             if (id.includes("/src/")) {
                 return "app";
+            }
+
+            if (id.includes("vite")) {
+                return "vite";
             }
 
             //console.log(id);
