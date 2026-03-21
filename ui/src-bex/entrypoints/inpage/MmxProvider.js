@@ -14,8 +14,8 @@ class MmxProvider {
     constructor() {
         this.#init();
 
-        // this.#proxy = createReadonlyProxy(this);
-        // return this.#proxy;
+        this.#proxy = createReadonlyProxy(this);
+        return this.#proxy;
     }
 
     #init() {
