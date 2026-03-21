@@ -2,7 +2,7 @@
     <div class="fullscreen row justify-center bg-image">
         <WVideo ref="whaleVideoRef" :src="whaleVideoUrl" preload :class="['bg-video', { playing: isPlaying }]" />
         <div class="self-center col-xl-4 col-lg-6 col-md-8 col-sm-10 col-xs-12 q-mt-xl transparent">
-            <template v-if="isBexLoaded">
+            <template v-if="isMmxProviderLoaded">
                 <q-card v-if="showOfferCard" flat bordered class="offer-card q-pa-md">
                     <q-card-section class="q-pb-xs">
                         <div class="text-h5 text-weight-bold q-mb-xs">
@@ -89,18 +89,7 @@ const ask_value = ask_amount / 10 ** offer.ask_decimals;
 const bid_amount = Number((BigInt(ask_amount) * BigInt(offer.inv_price)) >> 64n);
 const bid_value = bid_amount / 10 ** offer.bid_decimals;
 
-const mmxProvider = shallowRef(window.mmx ?? null);
-
-import { useEventListener } from "@vueuse/core";
-if (!mmxProvider.value) {
-    useEventListener(document, "mmx-provider-loaded", (event) => {
-        console.log("mmx-provider-loaded");
-        mmxProvider.value = event.detail.provider;
-    });
-}
-
-const isBexLoaded = computed(() => !!mmxProvider.value?.isFurryVault);
-const vault = computed(() => isBexLoaded.value && mmxProvider.value);
+const { isMmxProviderLoaded, mmxProvider } = useMmxProvider();
 
 const $q = useQuasar();
 const handleTrade = async () => {
@@ -120,7 +109,7 @@ const handleTrade = async () => {
 
     let result;
     try {
-        result = await vault.value.requestAsync(payload);
+        result = await mmxProvider.value.requestAsync(payload);
     } catch (e) {
         result = { error: e.message || "Unknown error" };
     }

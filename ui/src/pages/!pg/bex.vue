@@ -5,7 +5,7 @@
         <div class="row items-center justify-between q-mb-md">
             <q-chip :color="bexStatus.color" :icon="bexStatus.icon" :label="bexStatus.label" />
             <q-btn
-                v-if="isBexLoaded"
+                v-if="isMmxProviderLoaded"
                 outline
                 color="secondary"
                 :icon="mdiDeleteEmpty"
@@ -14,7 +14,7 @@
             />
         </div>
 
-        <div v-if="isBexLoaded" class="q-gutter-y-sm">
+        <div v-if="isMmxProviderLoaded" class="q-gutter-y-sm">
             <template v-for="request in requests" :key="request">
                 <q-card flat>
                     <q-card-section>
@@ -66,21 +66,10 @@
 import { mdiCheck, mdiClose, mdiDeleteEmpty } from "@mdi/js";
 import { stringify } from "@/utils/dataFormatters";
 
-const mmxProvider = shallowRef(window.mmx ?? null);
-
-import { useEventListener } from "@vueuse/core";
-if (!mmxProvider.value) {
-    useEventListener(document, "mmx-provider-loaded", (event) => {
-        console.log("mmx-provider-loaded");
-        mmxProvider.value = event.detail.provider;
-    });
-}
-
-const isBexLoaded = computed(() => !!mmxProvider.value?.isFurryVault);
-const vault = computed(() => isBexLoaded.value && mmxProvider.value);
+const { isMmxProviderLoaded, mmxProvider } = useMmxProvider();
 
 const bexStatus = computed(() =>
-    isBexLoaded.value
+    isMmxProviderLoaded.value
         ? { label: "Extension Loaded", color: "positive", icon: mdiCheck }
         : { label: "Extension Not Loaded", color: "negative", icon: mdiClose }
 );
@@ -161,7 +150,7 @@ const requests = [
 const $q = useQuasar();
 const doRequest = async (payload) => {
     try {
-        return await vault.value.requestAsync(payload);
+        return await mmxProvider.value.requestAsync(payload);
     } catch (e) {
         // $q.notify({ type: "negative", message: e.message || "Unknown error" });
         return { error: e.message || "Unknown error" };
