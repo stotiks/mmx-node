@@ -89,8 +89,18 @@ const ask_value = ask_amount / 10 ** offer.ask_decimals;
 const bid_amount = Number((BigInt(ask_amount) * BigInt(offer.inv_price)) >> 64n);
 const bid_value = bid_amount / 10 ** offer.bid_decimals;
 
-const isBexLoaded = !!window.mmx?.isFurryVault;
-const vault = isBexLoaded && window.mmx;
+const mmx = ref(window.mmx ?? null);
+
+import { useEventListener } from "@vueuse/core";
+if (!mmx.value) {
+    useEventListener(document, "mmx-provider-loaded", (event) => {
+        console.log("mmx-provider-loaded");
+        mmx.value = event.detail.provider;
+    });
+}
+
+const isBexLoaded = computed(() => !!mmx.value?.isFurryVault);
+const vault = computed(() => isBexLoaded.value && mmx.value);
 
 const $q = useQuasar();
 const handleTrade = async () => {
@@ -110,7 +120,7 @@ const handleTrade = async () => {
 
     let result;
     try {
-        result = await vault.requestAsync(payload);
+        result = await vault.value.requestAsync(payload);
     } catch (e) {
         result = { error: e.message || "Unknown error" };
     }
