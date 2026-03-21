@@ -89,18 +89,18 @@ const ask_value = ask_amount / 10 ** offer.ask_decimals;
 const bid_amount = Number((BigInt(ask_amount) * BigInt(offer.inv_price)) >> 64n);
 const bid_value = bid_amount / 10 ** offer.bid_decimals;
 
-const mmx = ref(window.mmx ?? null);
+const mmxProvider = shallowRef(window.mmx ?? null);
 
 import { useEventListener } from "@vueuse/core";
-if (!mmx.value) {
+if (!mmxProvider.value) {
     useEventListener(document, "mmx-provider-loaded", (event) => {
         console.log("mmx-provider-loaded");
-        mmx.value = event.detail.provider;
+        mmxProvider.value = event.detail.provider;
     });
 }
 
-const isBexLoaded = computed(() => !!mmx.value?.isFurryVault);
-const vault = computed(() => isBexLoaded.value && mmx.value);
+const isBexLoaded = computed(() => !!mmxProvider.value?.isFurryVault);
+const vault = computed(() => isBexLoaded.value && mmxProvider.value);
 
 const $q = useQuasar();
 const handleTrade = async () => {
