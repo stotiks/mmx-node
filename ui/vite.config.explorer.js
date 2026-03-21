@@ -5,6 +5,7 @@ const configBuilder = new ConfigBuilder({
     writeBuildInfo: true,
     writeRobotsTxt: true,
     usePublicRPC: true,
+    usePublicRPCForDevMode: true,
 });
 
 export default configBuilder.config;
