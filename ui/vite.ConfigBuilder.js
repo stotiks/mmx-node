@@ -20,6 +20,7 @@ export const BuildTargets = {
     EXPLORER: "EXPLORER",
     OFFLINE: "OFFLINE",
     PLAYGROUND: "PLAYGROUND",
+    NONE: "NONE",
 };
 
 export class ConfigBuilder {
