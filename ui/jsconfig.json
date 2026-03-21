@@ -11,6 +11,12 @@
             ],
             "@bex/*": [
                 "src-bex/*"
+            ],
+            "@buildRoutes": [
+                "src/router/routes/guiRoutes.js"
+            ],
+            "@buildMenu": [
+                "src/components/MainMenu/GuiMainMenu.vue"
             ]
         },
         "lib": [
