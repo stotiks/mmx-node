@@ -128,7 +128,7 @@ export class ConfigBuilder {
         };
         const file = routesMap[this.buildTarget];
         if (!file) {
-            //throw new Error(`No routes file for build target: ${this.buildTarget}`);
+            throw new Error(`No routes file for build target: ${this.buildTarget}`);
         }
         return file;
     }
