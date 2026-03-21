@@ -1,4 +1,4 @@
-import { JSONbigNativeString } from "@/mmx/wallet/utils/JSONbigNative";
+import { JSONbigNativeString } from "@mmx/wallet/utils/JSONbigNative";
 import { decrypt, encrypt } from "@metamask/browser-passworder";
 import { isBytes } from "@noble/hashes/utils.js";
 import { base64 } from "@scure/base";

@@ -4,7 +4,7 @@ import { base64 } from "@scure/base";
 
 // Mock the ECDSA_Wallet and mnemonic modules
 let mockECDSAWallet;
-vi.mock("@/mmx/wallet/ECDSA_Wallet", () => ({
+vi.mock("@mmx/wallet/ECDSA_Wallet", () => ({
     ECDSA_Wallet: class MockECDSAWallet {
         constructor(mnemonic, password) {
             this.mnemonic = mnemonic;
@@ -22,7 +22,7 @@ vi.mock("@/mmx/wallet/ECDSA_Wallet", () => ({
 }));
 
 let mockMnemonicToSeed;
-vi.mock("@/mmx/wallet/mnemonic", () => ({
+vi.mock("@mmx/wallet/mnemonic", () => ({
     mnemonicToSeed: (mnemonic) => {
         return mockMnemonicToSeed?.(mnemonic) ?? new Uint8Array([1, 2, 3, 4, 5]);
     },

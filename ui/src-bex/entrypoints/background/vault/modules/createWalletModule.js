@@ -1,5 +1,5 @@
-import { ECDSA_Wallet } from "@/mmx/wallet/ECDSA_Wallet";
-import { mnemonicToSeed } from "@/mmx/wallet/mnemonic";
+import { ECDSA_Wallet } from "@mmx/wallet/ECDSA_Wallet";
+import { mnemonicToSeed } from "@mmx/wallet/mnemonic";
 import { base64 } from "@scure/base";
 
 export const createWalletModule = (dependencies = {}) => {

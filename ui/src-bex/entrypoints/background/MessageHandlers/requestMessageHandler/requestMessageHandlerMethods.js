@@ -1,5 +1,5 @@
-import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
-import { Transaction } from "@/mmx/wallet/Transaction";
+import { spend_options_t } from "@mmx/wallet/common/spend_options_t";
+import { Transaction } from "@mmx/wallet/Transaction";
 import { sha256 } from "@noble/hashes/sha2.js";
 import {
     broadcastTransactionAsync,

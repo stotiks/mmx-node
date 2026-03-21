@@ -18,8 +18,8 @@
 <script setup>
 const txStr = ref("{}");
 
-import { Transaction } from "@/mmx/wallet/Transaction";
-import { JSONbigNative } from "@/mmx/wallet/utils/JSONbigNative";
+import { Transaction } from "@mmx/wallet/Transaction";
+import { JSONbigNative } from "@mmx/wallet/utils/JSONbigNative";
 
 const getPayload = () => {
     const tx = Transaction.parse(txStr.value);
