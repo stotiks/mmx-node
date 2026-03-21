@@ -1,67 +1,65 @@
 <template>
-    <q-page-container>
-        <q-page padding>
-            <h6>BEX Playground</h6>
+    <div>
+        <div class="text-h6 q-mb-lg">BEX Playground</div>
 
-            <div class="row items-center justify-between q-mb-md">
-                <q-chip :color="bexStatus.color" :icon="bexStatus.icon" :label="bexStatus.label" />
-                <q-btn
-                    v-if="isBexLoaded"
-                    outline
-                    color="secondary"
-                    :icon="mdiDeleteEmpty"
-                    label="Clear Results"
-                    @click="handleClearResults"
-                />
-            </div>
+        <div class="row items-center justify-between q-mb-md">
+            <q-chip :color="bexStatus.color" :icon="bexStatus.icon" :label="bexStatus.label" />
+            <q-btn
+                v-if="isBexLoaded"
+                outline
+                color="secondary"
+                :icon="mdiDeleteEmpty"
+                label="Clear Results"
+                @click="handleClearResults"
+            />
+        </div>
 
-            <div v-if="isBexLoaded" class="q-gutter-y-sm">
-                <template v-for="request in requests" :key="request">
-                    <q-card flat>
-                        <q-card-section>
-                            <div class="row items-center q-mb-sm">
-                                <q-btn
-                                    outline
-                                    no-caps
-                                    :label="request.method"
-                                    :color="requestResults.get(request)?.error ? 'negative' : 'primary'"
-                                    @click="handleRequest(request)"
-                                />
-                                <q-space />
-                                <q-chip v-if="request.params" size="sm" color="info" outline> Has Params </q-chip>
+        <div v-if="isBexLoaded" class="q-gutter-y-sm">
+            <template v-for="request in requests" :key="request">
+                <q-card flat>
+                    <q-card-section>
+                        <div class="row items-center q-mb-sm">
+                            <q-btn
+                                outline
+                                no-caps
+                                :label="request.method"
+                                :color="requestResults.get(request)?.error ? 'negative' : 'primary'"
+                                @click="handleRequest(request)"
+                            />
+                            <q-space />
+                            <q-chip v-if="request.params" size="sm" color="info" outline> Has Params </q-chip>
+                        </div>
+
+                        <template v-if="request.params">
+                            <q-expansion-item label="View Parameters" class="q-mb-sm">
+                                <highlightjs :code="stringify(request.params)" class="hljsCode" />
+                            </q-expansion-item>
+                        </template>
+
+                        <template v-if="requestResults.get(request)">
+                            <q-separator class="q-my-sm" />
+                            <div class="text-subtitle2 q-mb-sm">
+                                Result:
+                                <q-chip
+                                    :color="requestResults.get(request).error ? 'negative' : 'positive'"
+                                    text-color="white"
+                                    size="sm"
+                                >
+                                    {{ requestResults.get(request).error ? "Error" : "Success" }}
+                                </q-chip>
                             </div>
-
-                            <template v-if="request.params">
-                                <q-expansion-item label="View Parameters" class="q-mb-sm">
-                                    <highlightjs :code="stringify(request.params)" class="hljsCode" />
-                                </q-expansion-item>
+                            <template v-if="typeof requestResults.get(request) == 'object'">
+                                <highlightjs :code="stringify(requestResults.get(request))" class="hljsCode" />
                             </template>
-
-                            <template v-if="requestResults.get(request)">
-                                <q-separator class="q-my-sm" />
-                                <div class="text-subtitle2 q-mb-sm">
-                                    Result:
-                                    <q-chip
-                                        :color="requestResults.get(request).error ? 'negative' : 'positive'"
-                                        text-color="white"
-                                        size="sm"
-                                    >
-                                        {{ requestResults.get(request).error ? "Error" : "Success" }}
-                                    </q-chip>
-                                </div>
-                                <template v-if="typeof requestResults.get(request) == 'object'">
-                                    <highlightjs :code="stringify(requestResults.get(request))" class="hljsCode" />
-                                </template>
-                                <template v-else>
-                                    <highlightjs :code="requestResults.get(request).toString()" class="hljsCode" />
-                                </template>
+                            <template v-else>
+                                <highlightjs :code="requestResults.get(request).toString()" class="hljsCode" />
                             </template>
-                        </q-card-section>
-                    </q-card>
-                </template>
-            </div>
-        </q-page>
-    </q-page-container>
+                        </template>
+                    </q-card-section>
+                </q-card>
+            </template>
+        </div>
+    </div>
 </template>
 
 <script setup>
