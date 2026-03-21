@@ -7,6 +7,8 @@ import { ECDSA_Wallet } from "./ECDSA_Wallet";
 
 import { toUpperHex } from "./utils/Uint8ArrayUtils";
 import { signAsync } from "./common/ECDSAUtils";
+import { sha256 } from "@noble/hashes/sha2.js";
+import { verify, verifyAsync } from "@noble/secp256k1";
 
 describe("ECDSA_Wallet", async () => {
     const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
@@ -125,5 +127,26 @@ describe("ECDSA_Wallet", async () => {
             toUpperHex(signature),
             "024F512B1F7149662F2D7B1901A2B1A392971091263A40E6DFE415314322EDD321CFE68AA81CDAAA854EA15F5BB9891F38A37F6CDADEFA6153F8613F7B133415"
         );
+    });
+
+    it("ecdsaWallet.signMsgAsync", async () => {
+        const message = "test123";
+        const msgWithPrefix = `MMX/sign_message/${message}`;
+        const msgHash = sha256(utf8ToBytes(msgWithPrefix));
+        const solution = await ecdsaWallet.signMsgAsync(address, msgHash);
+
+        const result = {
+            __type: "mmx.solution.PubKey",
+            version: 0,
+            pubkey: "0344EE96D1B85CAC0F99B7CFA44F39EFFC590BDF51D45099D1F24AA09E5F9AD6E0",
+            signature:
+                "66C82351361AB58008FAF4391610038A76293D3BE3990693311B9DC860C1C34B32B36F09A8E52DE3B5EB593B6B143646AEE683E04148C1FD189402EEB7FBC3F8",
+        };
+        assert.equal(solution.pubkey, result.pubkey);
+        assert.equal(solution.signature, result.signature);
+        const isValid = await verifyAsync(hexToBytes(solution.signature), msgHash, hexToBytes(solution.pubkey), {
+            prehash: false,
+        });
+        assert.equal(isValid, true);
     });
 });
