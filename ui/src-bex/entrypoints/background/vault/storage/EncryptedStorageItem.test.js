@@ -8,7 +8,7 @@ vi.mock("@metamask/browser-passworder", () => ({
     decrypt: vi.fn(),
 }));
 
-vi.mock("@/mmx/wallet/utils/JSONbigNative", () => ({
+vi.mock("@mmx/wallet/utils/JSONbigNative", () => ({
     JSONbigNativeString: {
         parse: vi.fn((str) => JSON.parse(str)),
         stringify: vi.fn((obj) => JSON.stringify(obj)),
@@ -39,7 +39,7 @@ vi.mock("./StorageItem", () => ({
 }));
 
 import { encrypt, decrypt } from "@metamask/browser-passworder";
-import { JSONbigNativeString } from "@/mmx/wallet/utils/JSONbigNative";
+import { JSONbigNativeString } from "@mmx/wallet/utils/JSONbigNative";
 import { StorageItem } from "./StorageItem";
 
 describe("EncryptedStorageItem", () => {

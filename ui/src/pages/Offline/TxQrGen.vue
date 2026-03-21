@@ -164,7 +164,7 @@ const formRef = ref(null);
 const formData = reactive({ ...defaultFormData });
 const { isValid, isValidConfirmed } = useWalletFormStatus(formRef);
 
-import { Wallet } from "@/mmx/wallet/Wallet";
+import { Wallet } from "@mmx/wallet/Wallet";
 const evaluating = ref(false);
 const tx = computedAsync(
     async () => {
@@ -219,7 +219,7 @@ const handleLogout = () => {
 
 import router from "@/plugins/router";
 import { useQRCode } from "@vueuse/integrations/useQRCode";
-import "@/mmx/wallet/Transaction.ext";
+import "@mmx/wallet/Transaction.ext";
 const qrData = computed(() => {
     const txData = tx.value?.toCompressedBase64();
     if (!txData) return;

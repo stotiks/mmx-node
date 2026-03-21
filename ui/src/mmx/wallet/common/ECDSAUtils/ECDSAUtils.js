@@ -4,8 +4,8 @@ import { hexToBytes, isBytes, u32, u8, utf8ToBytes, concatBytes } from "@noble/h
 
 import * as secp256k1 from "./secp256k1";
 
-import { addr_t, hash_t } from "@/mmx/wallet/common/addr_t";
-import { splitHmacDigest } from "@/mmx/wallet/utils/Uint8ArrayUtils";
+import { addr_t, hash_t } from "@mmx/wallet/common/addr_t";
+import { splitHmacDigest } from "@mmx/wallet/utils/Uint8ArrayUtils";
 
 const KDF_ITERS = 4096;
 
