@@ -27,7 +27,7 @@ import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
-const test_mnemonic = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_MNEMONIC;
+const test_mnemonic = import.meta.env.DEV && import.meta.env.VITE_TEST_MNEMONIC;
 const mnemonic = ref(test_mnemonic || "");
 const password = ref("");
 

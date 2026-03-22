@@ -107,7 +107,7 @@ export class MessageHandler {
         } catch (error) {
             const errorMessage = this.#normalizeErrorMessage(error);
 
-            if (process.env.NODE_ENV === "development") {
+            if (import.meta.env.DEV) {
                 console.error(`Error handling method [${method}]:`, errorMessage);
             }
 
@@ -123,7 +123,7 @@ export class MessageHandler {
     register(onMessage, messageID) {
         onMessage(messageID, async (message) => {
             try {
-                if (process.env.NODE_ENV === "development") {
+                if (import.meta.env.DEV) {
                     console.log(`Received [${messageID}] message:`, JSON.parse(JSON.stringify(message)));
                 }
                 return await this.handleAsync(message);

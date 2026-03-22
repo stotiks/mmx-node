@@ -100,7 +100,7 @@ export const useNodeStatus = () => {
         return NodeStatuses.Synced;
     });
 
-    if (process.env.NODE_ENV !== "production") {
+    if (import.meta.env.DEV) {
         // --- Debug
         watchEffect(() => {
             // console.debug("isQueryTakingLong", isQueryTakingLong.value);

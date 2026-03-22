@@ -87,7 +87,7 @@ export const requestMessageHandlerMethods = {
             id: tx.id,
         };
 
-        if (process.env.NODE_ENV === "development") {
+        if (import.meta.env.DEV) {
             // await broadcastTransactionAsync(tx);
             await validateTransactionAsync(tx);
 
@@ -116,7 +116,7 @@ export const requestMessageHandlerMethods = {
             id: tx.id,
         };
 
-        if (process.env.NODE_ENV === "development") {
+        if (import.meta.env.DEV) {
             // await broadcastTransactionAsync(tx);
             await validateTransactionAsync(tx);
 
