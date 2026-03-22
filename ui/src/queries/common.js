@@ -103,6 +103,7 @@ const disableAutoSend = (params) => ({ ...toValue(params), options: { ...toValue
 const formatFee = (fee) => (fee ? parseFloat(fee.toFixed(6)) : null);
 const selectEstimatedFee = (data, enabled) => (enabled.value ? formatFee(data?.exec_result?.total_fee_value) : null);
 export const getFeeEstimateUseQuery = (queryFn, params, enabled, queryFnKey) => {
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps
     return useQuery({
         queryKey: ["wallet", "fee", queryFnKey, params, enabled],
         queryFn: ({ signal }) => queryFn(disableAutoSend(params), signal),
