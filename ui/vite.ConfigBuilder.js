@@ -36,10 +36,31 @@ export class ConfigBuilder {
     usePublicRPCForDevMode = false;
     allowCustomRPC = false;
     useDefaultRollupOptions = false;
-    useSingleFile = false;
+    createSingleFile = false;
+
+    static #buildTargetDefaults = {
+        [BuildTargets.GUI]: {
+            writeBuildInfo: true,
+            writeRobotsTxt: true,
+        },
+        [BuildTargets.EXPLORER]: {
+            writeBuildInfo: true,
+            writeRobotsTxt: true,
+            usePublicRPC: true,
+            usePublicRPCForDevMode: true,
+        },
+        [BuildTargets.OFFLINE]: {
+            usePublicRPC: true,
+            createSingleFile: true,
+        },
+        [BuildTargets.PLAYGROUND]: {},
+        [BuildTargets.NONE]: {},
+    };
 
     constructor(options) {
-        Object.assign(this, options);
+        const target = options?.buildTarget ?? this.buildTarget;
+        const targetDefaults = ConfigBuilder.#buildTargetDefaults[target] ?? {};
+        Object.assign(this, targetDefaults, options);
     }
 
     get config() {
@@ -52,7 +73,7 @@ export class ConfigBuilder {
         this.#applyDefines(config);
         this.#addGenerateFilePlugin(config);
 
-        if (this.useSingleFile) {
+        if (this.createSingleFile) {
             this.useDefaultRollupOptions = true;
             config.plugins.push(viteSingleFile());
         }
