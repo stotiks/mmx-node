@@ -168,28 +168,28 @@ export const useWalletPlotnftCreate = () => {
 };
 
 export const useWalletSendFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("send", params, enabled, walletSend);
+    getFeeEstimateUseQuery(walletSend, params, enabled, "send");
 
 export const useWalletExecuteFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("execute", params, enabled, walletExecute);
+    getFeeEstimateUseQuery(walletExecute, params, enabled, "execute");
 
 export const useWalletMakeOfferFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("offer", params, enabled, walletMakeOffer);
+    getFeeEstimateUseQuery(walletMakeOffer, params, enabled, "offer");
 
 export const useWalletOfferWithdrawFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("offer_withdraw", params, enabled, walletOfferWithdraw);
+    getFeeEstimateUseQuery(walletOfferWithdraw, params, enabled, "offer_withdraw");
 
 export const useWalletOfferCancelFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("cancel_offer", params, enabled, walletOfferCancel);
+    getFeeEstimateUseQuery(walletOfferCancel, params, enabled, "cancel_offer");
 
 export const useWalletOfferTradeFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("offer_trade", params, enabled, walletOfferTrade);
+    getFeeEstimateUseQuery(walletOfferTrade, params, enabled, "offer_trade");
 
 export const useWalletOfferAcceptFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("accept_offer", params, enabled, walletOfferAccept);
+    getFeeEstimateUseQuery(walletOfferAccept, params, enabled, "accept_offer");
 
 export const useWalletSwapTradeFeeEstimate = (params, enabled) =>
-    getFeeEstimateUseQuery("swap/trade", params, enabled, walletSwapTrade);
+    getFeeEstimateUseQuery(walletSwapTrade, params, enabled, "swap/trade");
 
 const walletSwapPayout = (payload) => axios.post("/wapi/wallet/swap/payout", payload).then((response) => response.data);
 export const useWalletSwapPayout = () => {
