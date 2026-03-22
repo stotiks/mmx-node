@@ -2,4 +2,4 @@
 
 bun i && ^
 bun run clean && ^
-bun run build:all
+bun run build
