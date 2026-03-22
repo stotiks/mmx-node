@@ -102,9 +102,9 @@ import { useQueryWrapper as useQuery } from "@/composables/useQueryWrapper";
 const disableAutoSend = (params) => ({ ...toValue(params), options: { ...toValue(params).options, auto_send: false } });
 const formatFee = (fee) => (fee ? parseFloat(fee.toFixed(6)) : null);
 const selectEstimatedFee = (data, enabled) => (enabled.value ? formatFee(data?.exec_result?.total_fee_value) : null);
-export const getFeeEstimateUseQuery = (key, params, enabled, queryFn) => {
+export const getFeeEstimateUseQuery = (queryFn, params, enabled, queryFnKey) => {
     return useQuery({
-        queryKey: ["wallet", "fee", key, params, enabled],
+        queryKey: ["wallet", "fee", queryFnKey, params, enabled],
         queryFn: ({ signal }) => queryFn(disableAutoSend(params), signal),
         select: (data) => selectEstimatedFee(data, enabled),
         enabled,
