@@ -19,7 +19,10 @@
                         </q-avatar>
                     </q-item-section>
                     <q-item-section>
-                        <q-item-label class="text-body2" v-html="step" />
+                        <q-item-label class="text-body2">
+                            <!-- eslint-disable-next-line vue/no-v-html -- Safe: static HTML from hardcoded installSteps array -->
+                            <span v-html="step" />
+                        </q-item-label>
                     </q-item-section>
                 </q-item>
             </q-list>
