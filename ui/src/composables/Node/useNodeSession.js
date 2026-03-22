@@ -35,7 +35,7 @@ export const useNodeSession = () => {
         }
     });
 
-    // if (process.env.NODE_ENV === "production") {
+    // if (import.meta.env.PROD) {
     //     watch(isError, (isError) => {
     //         if (isError) {
     //             sessionStore.doLogout(false);
