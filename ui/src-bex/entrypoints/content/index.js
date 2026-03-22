@@ -13,7 +13,7 @@ export default defineContentScript({
         contentScriptMessenger.allowWindowMessaging();
 
         // Debug/test interval - only runs in development mode
-        if (process.env.NODE_ENV === "development") {
+        if (import.meta.env.DEV) {
             setInterval(() => {
                 contentScriptMessenger.sendMessageAsync("message", { eventName: "ping", data: "pong" }, "window");
             }, 1000);

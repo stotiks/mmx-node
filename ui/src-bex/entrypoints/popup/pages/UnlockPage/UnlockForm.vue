@@ -23,7 +23,7 @@
 import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
 import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 
-const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
+const test_password = import.meta.env.DEV && import.meta.env.VITE_TEST_PASSWORD;
 const password = ref(test_password || "");
 
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";

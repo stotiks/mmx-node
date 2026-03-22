@@ -28,7 +28,7 @@ import WBtnSubmit from "@/components/Wallet/WalletForm/WBtnSubmit.vue";
 import { useTryCatchWrapperAsync } from "../composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-const test_password = process.env.NODE_ENV === "development" && import.meta.env.VITE_TEST_PASSWORD;
+const test_password = import.meta.env.DEV && import.meta.env.VITE_TEST_PASSWORD;
 const newPassword = ref(test_password || "");
 const newPasswordConfirm = ref(test_password || "");
 
