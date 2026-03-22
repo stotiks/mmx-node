@@ -132,6 +132,7 @@ export class ConfigBuilder {
                         {
                             src: normalizePath(path.resolve(__dirname, ".output/*.zip")),
                             dest: "bex",
+                            rename: { stripBase: 1 },
                         },
                     ],
                 })
