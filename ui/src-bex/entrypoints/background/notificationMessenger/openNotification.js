@@ -1,4 +1,4 @@
-/* global browser */
+import { browser } from "wxt/browser";
 
 let notificationWindowId = null;
 
