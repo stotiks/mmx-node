@@ -19,7 +19,7 @@ export const createPermissionModule = (dependencies = {}) => {
         try {
             urlObj = new URL(url);
         } catch (error) {
-            throw new Error(`Invalid URL format: ${error.message}`);
+            throw new Error(`Invalid URL format`, { cause: error });
         }
 
         // Security check: don't allow file:// or other potentially unsafe protocols
@@ -60,8 +60,7 @@ export const createPermissionModule = (dependencies = {}) => {
                 allowedOriginsSet.add(origin);
                 eventModule.emit("permission-granted", { origin });
             } catch (error) {
-                console.error("Permission: Failed to allow URL:", error);
-                throw new Error(`Invalid URL: ${error.message}`);
+                throw new Error("Permission: Failed to allow URL:", { cause: error });
             }
         },
 
@@ -78,8 +77,7 @@ export const createPermissionModule = (dependencies = {}) => {
                 allowedOriginsSet.delete(origin);
                 eventModule.emit("permission-revoked", { origin });
             } catch (error) {
-                console.error("Permission: Failed to revoke URL:", error);
-                throw new Error(`Invalid URL: ${error.message}`);
+                throw new Error("Permission: Failed to revoke URL:", { cause: error });
             }
         },
 
