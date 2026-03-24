@@ -20,6 +20,27 @@ import notificationMessenger from "@bex/entrypoints/background/notificationMesse
 import vault from "@bex/entrypoints/background/vault";
 import { utf8ToBytes } from "@noble/hashes/utils.js";
 
+const broadcastTransactionAsync2 = async (tx) => {
+    const result = {
+        id: tx.id,
+    };
+
+    if (import.meta.env.DEV) {
+        await validateTransactionAsync(tx);
+        result.dev = {
+            tx,
+        };
+    } else {
+        await broadcastTransactionAsync(tx);
+    }
+
+    return result;
+};
+
+const getValidatedSpendOptions = (spendOptions) => {
+    return new spend_options_t(spendOptions);
+};
+
 const $method = (fn, metadata = {}) => {
     fn.metadata = { isAcceptRequired: true, ...metadata };
     return fn;
@@ -80,24 +101,10 @@ export const requestMessageHandlerMethods = {
     }, {}),
 
     mmx_send: $method(async ({ amount, dst_addr, currency, options: _options }) => {
-        const options = new spend_options_t(_options);
+        const options = getValidatedSpendOptions(_options);
         const tx = await getSendTxAsync(amount, dst_addr, currency, options);
 
-        const result = {
-            id: tx.id,
-        };
-
-        if (import.meta.env.DEV) {
-            // await broadcastTransactionAsync(tx);
-            await validateTransactionAsync(tx);
-
-            result.dev = {
-                tx,
-            };
-        } else {
-            await broadcastTransactionAsync(tx);
-        }
-
+        const result = broadcastTransactionAsync2(tx);
         return result;
     }, {}),
 
@@ -112,21 +119,7 @@ export const requestMessageHandlerMethods = {
         const options = new spend_options_t(_options);
         const tx = await getOfferTradeTxAsync(address, amount, ask_currency, price, options);
 
-        const result = {
-            id: tx.id,
-        };
-
-        if (import.meta.env.DEV) {
-            // await broadcastTransactionAsync(tx);
-            await validateTransactionAsync(tx);
-
-            result.dev = {
-                tx,
-            };
-        } else {
-            await broadcastTransactionAsync(tx);
-        }
-
+        const result = broadcastTransactionAsync2(tx);
         return result;
     }, {}),
 
