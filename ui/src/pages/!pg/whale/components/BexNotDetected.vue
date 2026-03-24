@@ -30,8 +30,7 @@
 
         <q-card-actions class="q-pa-md q-pt-none">
             <q-btn
-                href="/bex/mmx-node-web-gui-0.0.1-chrome.zip"
-                target="_blank"
+                :href="`${baseUrl}downloads/bex/mmx-node-web-gui-0.0.1-chrome.zip`"
                 :icon="mdiDownload"
                 label="Download Extension"
                 color="primary"
@@ -42,6 +41,7 @@
 </template>
 
 <script setup>
+const baseUrl = import.meta.env.BASE_URL;
 import { mdiPuzzleOutline, mdiDownload } from "@mdi/js";
 
 const installSteps = [
