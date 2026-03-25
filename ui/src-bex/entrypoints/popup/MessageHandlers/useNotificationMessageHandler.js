@@ -38,24 +38,28 @@ export const useNotificationMessageHandler = () => {
 
         class NotificationMessageHandlerMethods {
             static requestPermissionsAndAccept = async (params) => {
-                return await showHandleRequestDialogAsync(params);
+                isLoading.value = false;
+
+                if (isRunning.value === true) {
+                    throw new Error("Other request is running");
+                }
+
+                isRunning.value = true;
+
+                try {
+                    return await showHandleRequestDialogAsync(params);
+                } finally {
+                    // isLoading.value = false;
+                }
+            };
+
+            static setResult = async (params) => {
+                isRunning.value = false;
+                console.log("setResult", params);
             };
         }
 
         const notificationMessageHandler = new MessageHandler(NotificationMessageHandlerMethods);
-
-        notificationMessageHandler.addPreHook(() => {
-            if (isRunning.value === true) {
-                throw new Error("Other request is running");
-            }
-
-            isRunning.value = true;
-        });
-
-        notificationMessageHandler.addPostHook(() => {
-            isRunning.value = false;
-            isLoading.value = false;
-        });
 
         notificationMessageHandler.register(popupMessenger.onMessage, "notification/request");
         //isMounted.value = true;
