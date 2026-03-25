@@ -35,7 +35,7 @@ export class MessageHandler {
         }
     }
 
-    async #runHooksAsync(context) {
+    async #runPreHooksAsync(context) {
         await this.#executeHooksAsync(context, this.#preHooks);
     }
 
@@ -98,7 +98,7 @@ export class MessageHandler {
         }
 
         const context = { handler, message };
-        await this.#runHooksAsync(context);
+        await this.#runPreHooksAsync(context);
 
         let result;
         try {
@@ -106,17 +106,15 @@ export class MessageHandler {
             result = { success: true, data: callResult };
             await this.#runSuccessHooksAsync({ ...context, result });
         } catch (error) {
-            const errorMessage = this.#normalizeErrorMessage(error);
-
             if (import.meta.env.DEV) {
-                console.error(`Error handling method [${method}]:`, errorMessage);
+                console.error(`Error handling method [${method}]:`, error);
             }
-
+            const errorMessage = this.#normalizeErrorMessage(error);
             result = { success: false, error: errorMessage };
             await this.#runFailHooksAsync({ ...context, result });
+        } finally {
+            await this.#runPostHooksAsync({ ...context, result });
         }
-
-        await this.#runPostHooksAsync({ ...context, result });
 
         return result;
     }
@@ -129,8 +127,9 @@ export class MessageHandler {
                 }
                 return await this.handleAsync(message);
             } catch (error) {
-                console.error(`Error handling message [${messageID}]:`, error.message || error);
-                return { success: false, error: error.message || error };
+                console.error(`Error handling message [${messageID}]:`, error);
+                const errorMessage = this.#normalizeErrorMessage(error);
+                return { success: false, error: errorMessage };
             }
         });
     }

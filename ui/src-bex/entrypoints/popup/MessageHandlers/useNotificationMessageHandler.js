@@ -48,12 +48,7 @@ export const useNotificationMessageHandler = () => {
             isRunning.value = true;
         });
 
-        notificationMessageHandler.addSuccessHook(() => {
-            isRunning.value = false;
-            isLoading.value = false;
-        });
-
-        notificationMessageHandler.addFailHook(() => {
+        notificationMessageHandler.addPostHook(() => {
             isRunning.value = false;
             isLoading.value = false;
         });
