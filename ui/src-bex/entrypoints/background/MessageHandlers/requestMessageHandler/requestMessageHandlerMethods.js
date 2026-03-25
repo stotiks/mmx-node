@@ -126,10 +126,7 @@ export const requestMessageHandlerMethods = {
     // dummy method for testing
     dummy: $method(
         async () => {
-            await notificationMessenger.sendMessageAsync({
-                method: "dummy",
-                params: {},
-            });
+            await notificationMessenger.openNotificationAsync();
             return "Done!";
         },
         {
