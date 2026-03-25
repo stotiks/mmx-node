@@ -11,7 +11,7 @@ const createHistoryHook = () => {
         };
     };
 
-    return async (context) => {
+    const historyHook = async (context) => {
         const isAcceptRequired = context.handler.body.metadata?.isAcceptRequired ?? true;
 
         if (isAcceptRequired) {
@@ -23,6 +23,8 @@ const createHistoryHook = () => {
             });
         }
     };
+
+    return historyHook;
 };
 
 export default createHistoryHook;
