@@ -13,25 +13,35 @@ export class MessageHandler {
         this.#methods = methods;
     }
 
-    addPreHook(hook) {
-        this.#preHooks.push(hook);
+    addPreHook(hookFn, options = {}) {
+        this.#preHooks.push({ hookFn, options });
     }
 
-    addPostHook(hook) {
-        this.#postHooks.push(hook);
+    addPostHook(hookFn, options = {}) {
+        this.#postHooks.push({ hookFn, options });
     }
 
-    addSuccessHook(hook) {
-        this.#successHooks.push(hook);
+    addSuccessHook(hookFn, options = {}) {
+        this.#successHooks.push({ hookFn, options });
     }
 
-    addFailHook(hook) {
-        this.#failHooks.push(hook);
+    addFailHook(hookFn, options = {}) {
+        this.#failHooks.push({ hookFn, options });
     }
 
     async #executeHooksAsync(context, hooks) {
-        for (const hook of hooks) {
-            await hook(context);
+        for (const hookItem of hooks) {
+            const ignoreFail = hookItem.options?.ignoreFail ?? false;
+
+            try {
+                await hookItem.hookFn(context);
+            } catch (error) {
+                if (!ignoreFail) {
+                    throw error;
+                } else {
+                    console.error(`Error in hook [${hookItem.hookFn.name}]:`, error);
+                }
+            }
         }
     }
 
