@@ -5,7 +5,7 @@ import notificationMessenger from "@bex/entrypoints/background/notificationMesse
 import vault from "@bex/entrypoints/background/vault";
 
 const createAuthHook = () => {
-    return async (context) => {
+    const authHook = async (context) => {
         console.log("Checking permissions...");
 
         const { message, handler } = context;
@@ -53,6 +53,8 @@ const createAuthHook = () => {
             throw new Error(error);
         }
     };
+
+    return authHook;
 };
 
 export default createAuthHook;
