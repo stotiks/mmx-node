@@ -98,9 +98,10 @@ export class MessageHandler {
         }
 
         const context = { handler, message };
-        let result = { success: false, error: "Unknown error" };
+        await this.#runHooksAsync(context);
+
+        let result;
         try {
-            await this.#runHooksAsync(context);
             const callResult = await handler.body.call(this.#methods, params);
             result = { success: true, data: callResult };
             await this.#runSuccessHooksAsync({ ...context, result });
