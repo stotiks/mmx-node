@@ -2,6 +2,13 @@ import notificationMessenger from "@bex/entrypoints/background/notificationMesse
 
 const createSetResultHook = () => {
     const setResultHook = async (context) => {
+        const { handler } = context;
+        const isAcceptRequired = handler.body.metadata?.isAcceptRequired ?? true;
+
+        if (!isAcceptRequired) {
+            return;
+        }
+
         await notificationMessenger.sendMessageAsync({
             method: "setResult",
             params: {
