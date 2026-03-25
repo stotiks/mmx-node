@@ -30,9 +30,6 @@ export const useNotificationMessageHandler = () => {
         };
 
         class NotificationMessageHandlerMethods {
-            // dummy method for testing
-            static dummy = async () => {};
-
             static requestPermissionsAndAccept = async (params) => {
                 return await showHandleRequestDialogAsync(params);
             };
