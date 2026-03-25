@@ -4,7 +4,10 @@ const createSetResultHook = () => {
     const setResultHook = async (context) => {
         await notificationMessenger.sendMessageAsync({
             method: "setResult",
-            params: context,
+            params: {
+                handler: { name: context.handler.name },
+                result: context.result,
+            },
         });
     };
 
