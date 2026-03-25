@@ -50,6 +50,9 @@ export const useNotificationMessageHandler = () => {
                     return await showHandleRequestDialogAsync(params);
                 } finally {
                     // isLoading.value = false;
+                    if (params.isAcceptRequired === false) {
+                        isRunning.value = false;
+                    }
                 }
             };
 
