@@ -26,6 +26,28 @@ const useShowHandleRequestDialogAsync = () => {
     };
 };
 
+const useShowResultDialogAsync = () => {
+    const $q = useQuasar();
+    const showResultDialogAsync = (props) => {
+        return new Promise((resolve) => {
+            $q.dialog({
+                component: defineAsyncComponent(() => import("@bex/entrypoints/popup/components/dialogs/ResultDialog")),
+                componentProps: props,
+            })
+                .onOk((data) => {
+                    resolve(data);
+                })
+                .onCancel((data) => {
+                    resolve(data);
+                });
+        });
+    };
+
+    return {
+        showResultDialogAsync,
+    };
+};
+
 export const useNotificationMessageHandler = () => {
     const isNotification = inject("isNotification");
 
@@ -36,10 +58,10 @@ export const useNotificationMessageHandler = () => {
     if (isNotification) {
         const { showHandleRequestDialogAsync } = useShowHandleRequestDialogAsync();
 
+        const { showResultDialogAsync } = useShowResultDialogAsync();
+
         class NotificationMessageHandlerMethods {
             static requestPermissionsAndAccept = async (params) => {
-                isLoading.value = false;
-
                 if (isRunning.value === true) {
                     throw new Error("Other request is running");
                 }
@@ -49,7 +71,7 @@ export const useNotificationMessageHandler = () => {
                 try {
                     return await showHandleRequestDialogAsync(params);
                 } finally {
-                    // isLoading.value = false;
+                    isLoading.value = false;
                     if (params.isAcceptRequired === false) {
                         isRunning.value = false;
                     }
@@ -58,6 +80,7 @@ export const useNotificationMessageHandler = () => {
 
             static setResult = async (params) => {
                 isRunning.value = false;
+                showResultDialogAsync(params);
                 console.log("setResult", params);
             };
         }
@@ -65,6 +88,7 @@ export const useNotificationMessageHandler = () => {
         const notificationMessageHandler = new MessageHandler(NotificationMessageHandlerMethods);
 
         notificationMessageHandler.register(popupMessenger.onMessage, "notification/request");
+
         //isMounted.value = true;
         useTimeoutFn(() => {
             isLoading.value = false;
