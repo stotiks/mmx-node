@@ -66,16 +66,18 @@ export const useNotificationMessageHandler = () => {
                     throw new Error("Other request is running");
                 }
 
-                isRunning.value = true;
-
+                let result = null;
                 try {
-                    return await showHandleRequestDialogAsync(params);
+                    isRunning.value = true;
+                    result = await showHandleRequestDialogAsync(params);
                 } finally {
                     isLoading.value = false;
-                    if (params.isAcceptRequired === false) {
+                    if (params.isAcceptRequired === false || result?.accepted !== true) {
                         isRunning.value = false;
                     }
                 }
+
+                return result;
             };
 
             static setResult = async (params) => {
