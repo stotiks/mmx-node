@@ -38,7 +38,6 @@
                                 <div class="row justify-center q-gutter-x-sm">
                                     <WBtnAutoSubmit
                                         label="Done"
-                                        :icon="mdiClose"
                                         outline
                                         rounded
                                         color="secondary"
@@ -84,5 +83,3 @@ const iconColor = computed(() => (isSuccess.value ? "positive" : "negative"));
 const status = computed(() => (isSuccess.value ? "Success" : "Failed"));
 const statusMessage = computed(() => props.result.error);
 </script>
-
-<style lang="scss" scoped></style>
