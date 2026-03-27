@@ -55,6 +55,11 @@ export const signMessageAsync = async (message, address = vault.getCurrentWallet
 // };
 
 import { getNodeInfoAsync } from "@bex/entrypoints/background/queries";
+export const getCurrentHeightAsync = async () => {
+    const info = await getNodeInfoAsync();
+    return info.height;
+};
+
 const getValidatedSpendOptionsAsync = async (spendOptions) => {
     // validate network
     const network = await vault.getNetworkAsync();
@@ -64,8 +69,7 @@ const getValidatedSpendOptionsAsync = async (spendOptions) => {
 
     // fill expire_at
     if (!spendOptions.expire_at && spendOptions.expire_delta) {
-        const info = await getNodeInfoAsync();
-        const height = info.height;
+        const height = await getCurrentHeightAsync();
 
         spendOptions.expire_at = height + spendOptions.expire_delta;
         spendOptions.expire_delta = null;
