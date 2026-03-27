@@ -1,9 +1,6 @@
-import { spend_options_t } from "@mmx/wallet/common/spend_options_t";
-import { Transaction } from "@mmx/wallet/Transaction";
-import { sha256 } from "@noble/hashes/sha2.js";
 import {
-    broadcastTransactionAsync,
     getNodeInfoAsync,
+    broadcastTransactionAsync,
     validateTransactionAsync,
 } from "@bex/entrypoints/background/queries";
 
@@ -18,27 +15,29 @@ import {
 
 import notificationMessenger from "@bex/entrypoints/background/notificationMessenger";
 import vault from "@bex/entrypoints/background/vault";
-import { utf8ToBytes } from "@noble/hashes/utils.js";
 
 const broadcastTransactionAsync2 = async (tx) => {
-    const result = {
-        id: tx.id,
-    };
-
     if (import.meta.env.DEV) {
-        await validateTransactionAsync(tx);
-        result.dev = {
-            tx,
-        };
+        const result = await validateTransactionAsync(tx);
+
+        if (result.error) {
+            const message = result.error?.message || result.error;
+            throw new Error(message);
+        }
     } else {
         await broadcastTransactionAsync(tx);
     }
 
-    return result;
-};
+    const result = {
+        id: tx.id,
 
-const getValidatedSpendOptions = (spendOptions) => {
-    return new spend_options_t(spendOptions);
+        ...(import.meta.env.DEV && {
+            dev: {
+                tx,
+            },
+        }),
+    };
+    return result;
 };
 
 const $method = (fn, metadata = {}) => {
@@ -57,70 +56,34 @@ export const requestMessageHandlerMethods = {
         }
     ),
 
-    mmx_requestWallets: $method(
-        async () => {
-            return await vault.getWalletsAsync();
-        },
-        {
-            isAcceptRequired: false,
-        }
-    ),
+    mmx_requestWallets: $method(async () => await vault.getWalletsAsync(), {
+        isAcceptRequired: false,
+    }),
 
-    mmx_getCurrentWallet: $method(
-        async () => {
-            return await getCurrentWalletAsync();
-        },
-        {
-            isAcceptRequired: false,
-        }
-    ),
+    mmx_getCurrentWallet: $method(async () => getCurrentWalletAsync(), {
+        isAcceptRequired: false,
+    }),
 
-    mmx_getPubKey: $method(
-        async (params) => {
-            return await getPubKeyAsync(params?.address);
-        },
-        {
-            isAcceptRequired: false,
-        }
-    ),
+    mmx_getPubKey: $method(async (params) => await getPubKeyAsync(params?.address), {
+        isAcceptRequired: false,
+    }),
 
-    mmx_getNetwork: $method(
-        async () => {
-            const network = await vault.getNetworkAsync();
-            return network;
-        },
-        {
-            isAcceptRequired: false,
-        }
-    ),
+    mmx_getNetwork: $method(async () => await vault.getNetworkAsync(), {
+        isAcceptRequired: false,
+    }),
 
-    mmx_signMessage: $method(async ({ message }) => {
-        const msgWithPrefix = `MMX/sign_message/${message}`;
-        const msgHash = sha256(utf8ToBytes(msgWithPrefix));
-        return await signMessageAsync(msgHash);
-    }, {}),
+    mmx_signMessage: $method(async ({ message }) => await signMessageAsync(message), {}),
 
-    mmx_send: $method(async ({ amount, dst_addr, currency, options: _options }) => {
-        const options = getValidatedSpendOptions(_options);
+    mmx_send: $method(async ({ amount, dst_addr, currency, options: options }) => {
         const tx = await getSendTxAsync(amount, dst_addr, currency, options);
-
-        const result = broadcastTransactionAsync2(tx);
-        return result;
+        return broadcastTransactionAsync2(tx);
     }, {}),
 
-    mmx_signTransaction: $method(async ({ tx: _tx, options: _options }) => {
-        const tx = new Transaction(_tx);
-        const options = new spend_options_t(_options);
-        await signTransactionAsync(tx, options);
-        return tx;
-    }, {}),
+    mmx_signTransaction: $method(async ({ tx, options }) => await signTransactionAsync(tx, options), {}),
 
-    mmx_offerTrade: $method(async ({ address, amount, ask_currency, price, options: _options }) => {
-        const options = new spend_options_t(_options);
+    mmx_offerTrade: $method(async ({ address, amount, ask_currency, price, options }) => {
         const tx = await getOfferTradeTxAsync(address, amount, ask_currency, price, options);
-
-        const result = broadcastTransactionAsync2(tx);
-        return result;
+        return broadcastTransactionAsync2(tx);
     }, {}),
 
     // dummy method for testing

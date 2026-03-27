@@ -103,9 +103,10 @@ const requests = [
             currency: "mmx1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqdgytev",
             options: {
                 memo: "test",
-                expire_at: -1,
                 network: "mainnet",
-                nonce: 1,
+                // expire_at: -1,
+                // nonce: 1,
+                expire_delta: 100,
             },
         },
     },
