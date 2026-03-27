@@ -1,5 +1,5 @@
 <template>
-    <q-btn :label="labelX" @click="handleClick" @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
+    <q-btn :label="labelWithCountdown" @click="handleClick" @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
         <slot />
     </q-btn>
 </template>
@@ -27,7 +27,7 @@ const countdown = computed(() => props.timeout - counter.value);
 const countdownIsActive = computed(() => countdown.value > 0 && isActive.value);
 const countdownText = computed(() => (countdownIsActive.value ? `(${countdown.value})` : ""));
 
-const labelX = computed(() => `${props.label} ${countdownText.value}`);
+const labelWithCountdown = computed(() => `${props.label} ${countdownText.value}`);
 
 const emit = defineEmits(["click"]);
 const handleClick = (event) => {
