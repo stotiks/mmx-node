@@ -24,7 +24,8 @@ const { counter, reset, pause, resume, isActive } = useInterval(1000, {
 });
 
 const countdown = computed(() => props.timeout - counter.value);
-const countdownText = computed(() => (countdown.value > 0 ? `(${countdown.value})` : ""));
+const countdownIsActive = computed(() => countdown.value > 0 && isActive.value);
+const countdownText = computed(() => (countdownIsActive.value ? `(${countdown.value})` : ""));
 
 const labelX = computed(() => `${props.label} ${countdownText.value}`);
 
@@ -40,15 +41,7 @@ watchEffect(() => {
 });
 
 const handleMouseOver = () => {
-    if (countdown.value > 0) {
-        pause();
-    }
+    pause();
 };
-const handleMouseLeave = () => {
-    if (countdown.value > 0) {
-        resume();
-    }
-};
+const handleMouseLeave = () => {};
 </script>
-
-<style lang="scss" scoped></style>
