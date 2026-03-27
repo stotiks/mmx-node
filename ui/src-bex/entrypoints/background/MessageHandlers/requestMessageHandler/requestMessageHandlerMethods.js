@@ -1,11 +1,8 @@
-import {
-    getNodeInfoAsync,
-    broadcastTransactionAsync,
-    validateTransactionAsync,
-} from "@bex/entrypoints/background/queries";
+import { broadcastTransactionAsync, validateTransactionAsync } from "@bex/entrypoints/background/queries";
 
 import {
     getCurrentWalletAsync,
+    getCurrentHeightAsync,
     getOfferTradeTxAsync,
     getPubKeyAsync,
     getSendTxAsync,
@@ -46,15 +43,9 @@ const $method = (fn, metadata = {}) => {
 };
 
 export const requestMessageHandlerMethods = {
-    mmx_blockNumber: $method(
-        async () => {
-            const info = await getNodeInfoAsync();
-            return info.height;
-        },
-        {
-            isAcceptRequired: false,
-        }
-    ),
+    mmx_blockNumber: $method(async () => getCurrentHeightAsync(), {
+        isAcceptRequired: false,
+    }),
 
     mmx_requestWallets: $method(async () => await vault.getWalletsAsync(), {
         isAcceptRequired: false,
