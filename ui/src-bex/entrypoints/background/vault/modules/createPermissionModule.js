@@ -60,7 +60,7 @@ export const createPermissionModule = (dependencies = {}) => {
                 allowedOriginsSet.add(origin);
                 eventModule.emit("permission-granted", { origin });
             } catch (error) {
-                throw new Error("Permission: Failed to allow URL:", { cause: error });
+                throw new Error("Permission: Failed to allow URL", { cause: error });
             }
         },
 
@@ -77,7 +77,7 @@ export const createPermissionModule = (dependencies = {}) => {
                 allowedOriginsSet.delete(origin);
                 eventModule.emit("permission-revoked", { origin });
             } catch (error) {
-                throw new Error("Permission: Failed to revoke URL:", { cause: error });
+                throw new Error("Permission: Failed to revoke URL", { cause: error });
             }
         },
 
@@ -117,30 +117,6 @@ export const createPermissionModule = (dependencies = {}) => {
                 return false;
             }
             return allowedOriginsSet.has(origin);
-        },
-
-        /**
-         * Add origin directly (for internal use)
-         * @param {string} origin - Origin to add
-         */
-        addOrigin: (origin) => {
-            requireUnlocked();
-            if (typeof origin !== "string" || !origin) {
-                throw new Error("Origin must be a non-empty string");
-            }
-            allowedOriginsSet.add(origin);
-        },
-
-        /**
-         * Remove origin directly (for internal use)
-         * @param {string} origin - Origin to remove
-         */
-        removeOrigin: (origin) => {
-            requireUnlocked();
-            if (typeof origin !== "string" || !origin) {
-                throw new Error("Origin must be a non-empty string");
-            }
-            allowedOriginsSet.delete(origin);
         },
     };
 

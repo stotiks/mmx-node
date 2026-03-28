@@ -86,14 +86,14 @@ export const createStorageManagerModule = (dependencies = {}) => {
             throw new Error("Vault is already initialized.");
         }
 
-        const masterKey = randomBytes(32);
-        await masterKeyStorage.setAsync({ masterKey: base64.encode(masterKey) }, password);
+        const newMasterKey = randomBytes(32);
+        await masterKeyStorage.setAsync({ masterKey: base64.encode(newMasterKey) }, password);
 
         for (const managedStorage of managedStorages) {
-            await managedStorage.setAsync({}, masterKey);
+            await managedStorage.setAsync({}, newMasterKey);
         }
 
-        masterKey.fill(0);
+        newMasterKey.fill(0);
 
         eventModule.emit("initialized");
     };
@@ -153,10 +153,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
         }
 
         verifiedMasterKey.fill(0);
-        if (rotateMasterKey) {
-            // If rotated, nextMasterKey is the new in-memory masterKey; do not zero it.
-            // If not rotated, nextMasterKey === verifiedMasterKey which has already been zeroed.
-        }
+        nextMasterKey.fill(0);
 
         eventModule.emit("password-updated");
         return true;
@@ -184,7 +181,7 @@ export const createStorageManagerModule = (dependencies = {}) => {
      * @throws {Error} If item is not registered
      */
     const getBoundStorage = (storage) => {
-        if (typeof storage !== "object" && !(storage instanceof EncryptedStorageItem)) {
+        if (typeof storage !== "object" || !(storage instanceof EncryptedStorageItem)) {
             throw new Error("Invalid storage type");
         }
 
