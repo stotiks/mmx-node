@@ -7,7 +7,7 @@ import createSetResultHook from "./hooks/createSetResultHook";
 const requestMessageHandler = new MessageHandler(requestMessageHandlerMethods);
 
 requestMessageHandler.addPreHook(createAuthHook());
-requestMessageHandler.addPostHook(createSetResultHook(), { ignoreFail: true });
+requestMessageHandler.addPostHook(createSetResultHook());
 requestMessageHandler.addPostHook(createHistoryHook());
 
 export default requestMessageHandler;

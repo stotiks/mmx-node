@@ -81,9 +81,8 @@ export const useNotificationMessageHandler = () => {
             };
 
             static setResult = async (params) => {
+                await showResultDialogAsync(params);
                 isRunning.value = false;
-                showResultDialogAsync(params);
-                console.log("setResult", params);
             };
         }
 
