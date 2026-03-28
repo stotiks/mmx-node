@@ -42,6 +42,7 @@
                                         rounded
                                         color="secondary"
                                         :timeout="5"
+                                        no-resume-on-hover
                                         @click="handleCancel"
                                     />
                                 </div>
