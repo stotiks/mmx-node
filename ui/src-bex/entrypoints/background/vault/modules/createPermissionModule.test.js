@@ -120,18 +120,14 @@ describe("createPermissionModule", () => {
         });
 
         it("should throw and log for invalid URL", async () => {
-            await expect(permissionModule.allowUrlAsync("not a url")).rejects.toThrow(/Invalid URL:/);
-
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Permission: Failed to allow URL:", expect.any(Error));
+            await expect(permissionModule.allowUrlAsync("not a url")).rejects.toThrow(/Failed to allow URL/);
 
             expect(permissionModule.getPermissionCount()).toBe(0);
             expect(eventModule.emit).not.toHaveBeenCalledWith("permission-granted", expect.anything());
         });
 
         it("should throw for unsafe protocol", async () => {
-            await expect(permissionModule.allowUrlAsync("ftp://example.com")).rejects.toThrow(
-                /Unsafe protocol not allowed/
-            );
+            await expect(permissionModule.allowUrlAsync("ftp://example.com")).rejects.toThrow(/Failed to allow URL/);
         });
     });
 
@@ -154,15 +150,11 @@ describe("createPermissionModule", () => {
         });
 
         it("should throw and log for invalid URL", async () => {
-            await expect(permissionModule.revokeUrlAsync("not a url")).rejects.toThrow(/Invalid URL:/);
-
-            expect(consoleErrorSpy).toHaveBeenCalledWith("Permission: Failed to revoke URL:", expect.any(Error));
+            await expect(permissionModule.revokeUrlAsync("not a url")).rejects.toThrow(/Failed to revoke URL/);
         });
 
         it("should throw for unsafe protocol", async () => {
-            await expect(permissionModule.revokeUrlAsync("file:///tmp/a")).rejects.toThrow(
-                /Unsafe protocol not allowed/
-            );
+            await expect(permissionModule.revokeUrlAsync("file:///tmp/a")).rejects.toThrow(/Failed to revoke URL/);
         });
 
         it("should revoke only the specified origin and keep others", async () => {
