@@ -158,7 +158,7 @@ export const createWalletModule = (dependencies = {}) => {
      * @param {Function} callback - Async function that receives the ecdsaWallet instance
      * @returns {Promise<*>} The result of the callback function
      */
-    const withECDSAWallet = async (address, callback) => {
+    const withECDSAWalletAsync = async (address, callback) => {
         const ecdsaWallet = await getECDSAWalletAsync({ address });
         try {
             return await callback(ecdsaWallet);
@@ -177,7 +177,7 @@ export const createWalletModule = (dependencies = {}) => {
         getCurrentWalletAddress,
         setCurrentWalletByAddressAsync,
 
-        withECDSAWallet,
+        withECDSAWalletAsync,
         getECDSAWalletAsync,
     };
 

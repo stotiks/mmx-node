@@ -9,13 +9,18 @@ const createSetResultHook = () => {
             return;
         }
 
-        await notificationMessenger.sendMessageAsync({
-            method: "setResult",
-            params: {
-                handler: { name: context.handler.name },
-                result: context.result,
-            },
-        });
+        // no await, fire-and-forget
+        notificationMessenger
+            .sendMessageAsync({
+                method: "setResult",
+                params: {
+                    handler: { name: context.handler.name },
+                    result: context.result,
+                },
+            })
+            .catch((err) => {
+                console.warn("[SetResultHook] Failed to set result:", err);
+            });
     };
 
     return setResultHook;
