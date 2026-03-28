@@ -53,31 +53,38 @@ describe("createStorageManagerModule", () => {
             return true;
         };
 
-        return {
-            getAsync: vi.fn(async (key) => {
-                if (!keysEqual(currentKey, key)) {
-                    throw new Error("Invalid key");
-                }
-                return storedData;
-            }),
-            setAsync: vi.fn(async (data, key) => {
-                storedData = data;
-                // Store as Uint8Array for proper comparison
-                currentKey = key instanceof Uint8Array ? key : Uint8Array.from(key);
-            }),
-            removeAsync: vi.fn(async () => {
-                storedData = null;
-                currentKey = null;
-            }),
-            _setData: (data, key) => {
-                storedData = data;
-                currentKey = key instanceof Uint8Array ? key : Uint8Array.from(key);
-            },
-            _clear: () => {
-                storedData = null;
-                currentKey = null;
-            },
+        // Create an actual EncryptedStorageItem instance with mocked methods
+        const instance = new EncryptedStorageItem("test-key");
+
+        instance.getAsync = vi.fn(async (key) => {
+            if (!keysEqual(currentKey, key)) {
+                throw new Error("Invalid key");
+            }
+            return storedData;
+        });
+
+        instance.setAsync = vi.fn(async (data, key) => {
+            storedData = data;
+            // Store as Uint8Array for proper comparison
+            currentKey = key instanceof Uint8Array ? key : Uint8Array.from(key);
+        });
+
+        instance.removeAsync = vi.fn(async () => {
+            storedData = null;
+            currentKey = null;
+        });
+
+        instance._setData = (data, key) => {
+            storedData = data;
+            currentKey = key instanceof Uint8Array ? key : Uint8Array.from(key);
         };
+
+        instance._clear = () => {
+            storedData = null;
+            currentKey = null;
+        };
+
+        return instance;
     };
 
     const createMockEventModule = () => {
@@ -541,11 +548,10 @@ describe("createStorageManagerModule", () => {
             const module = createStorageManagerModule(deps);
             await module.unlockAsync({ password: "password" });
 
-            // Create a mock EncryptedStorageItem that wraps a managed storage
-            const mockEncryptedStorage = {
-                getAsync: deps.managedStorages[0].getAsync,
-                setAsync: deps.managedStorages[0].setAsync,
-            };
+            // Create an actual EncryptedStorageItem instance
+            const mockEncryptedStorage = new EncryptedStorageItem("test-key-2");
+            mockEncryptedStorage.getAsync = deps.managedStorages[0].getAsync;
+            mockEncryptedStorage.setAsync = deps.managedStorages[0].setAsync;
 
             // Manually add to managedStorages for the test
             deps.managedStorages.push(mockEncryptedStorage);

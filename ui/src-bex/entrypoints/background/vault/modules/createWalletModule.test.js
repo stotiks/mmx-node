@@ -211,6 +211,8 @@ describe("createWalletModule", () => {
         it("stores wallet with encoded seed and password", async () => {
             const deps = createDeps();
             const mockSeed = new Uint8Array([1, 2, 3, 4, 5]);
+            // Capture the expected seed string BEFORE addWalletAsync zeroes the buffer via fill(0)
+            const expectedSeed = base64.encode(mockSeed);
             setupMockECDSAWallet("mmx1newwallet");
             setupMockMnemonicToSeed(mockSeed);
             const module = createWalletModule(deps);
@@ -224,7 +226,7 @@ describe("createWalletModule", () => {
                 wallets: [
                     {
                         address: "mmx1newwallet",
-                        seed: base64.encode(mockSeed),
+                        seed: expectedSeed,
                         password: "mypassword",
                     },
                 ],
@@ -532,7 +534,7 @@ describe("createWalletModule", () => {
             });
             const module = createWalletModule(deps);
 
-            const result = await module.withECDSAWallet("mmx1wallet1", async (ecdsaWallet) => {
+            const result = await module.withECDSAWalletAsync("mmx1wallet1", async (ecdsaWallet) => {
                 return ecdsaWallet.password;
             });
 
@@ -548,7 +550,7 @@ describe("createWalletModule", () => {
             const module = createWalletModule(deps);
 
             let capturedWallet;
-            await module.withECDSAWallet("mmx1wallet1", async (ecdsaWallet) => {
+            await module.withECDSAWalletAsync("mmx1wallet1", async (ecdsaWallet) => {
                 capturedWallet = ecdsaWallet;
                 capturedWallet.destroy = vi.fn();
             });
@@ -566,7 +568,7 @@ describe("createWalletModule", () => {
 
             let capturedWallet;
             await expect(
-                module.withECDSAWallet("mmx1wallet1", async (ecdsaWallet) => {
+                module.withECDSAWalletAsync("mmx1wallet1", async (ecdsaWallet) => {
                     capturedWallet = ecdsaWallet;
                     capturedWallet.destroy = vi.fn();
                     throw new Error("callback error");
@@ -584,7 +586,7 @@ describe("createWalletModule", () => {
             });
             const module = createWalletModule(deps);
 
-            const result = await module.withECDSAWallet("mmx1wallet1", async () => "expected-result");
+            const result = await module.withECDSAWalletAsync("mmx1wallet1", async () => "expected-result");
 
             expect(result).toBe("expected-result");
         });
@@ -594,7 +596,7 @@ describe("createWalletModule", () => {
             deps.walletBoundStorage._setData({ wallets: [] });
             const module = createWalletModule(deps);
 
-            await expect(module.withECDSAWallet("mmx1nonexistent", async () => {})).rejects.toThrow(
+            await expect(module.withECDSAWalletAsync("mmx1nonexistent", async () => {})).rejects.toThrow(
                 "Wallet not found for address: mmx1nonexistent"
             );
         });
@@ -603,7 +605,7 @@ describe("createWalletModule", () => {
             const deps = createDeps();
             const module = createWalletModule(deps);
 
-            await expect(module.withECDSAWallet(null, async () => {})).rejects.toThrow("No wallet selected");
+            await expect(module.withECDSAWalletAsync(null, async () => {})).rejects.toThrow("No wallet selected");
         });
     });
 
@@ -619,7 +621,7 @@ describe("createWalletModule", () => {
             expect(module).toHaveProperty("getCurrentWalletAddress");
             expect(module).toHaveProperty("setCurrentWalletByAddressAsync");
             expect(module).toHaveProperty("getECDSAWalletAsync");
-            expect(module).toHaveProperty("withECDSAWallet");
+            expect(module).toHaveProperty("withECDSAWalletAsync");
 
             expect(typeof module.getNetworkAsync).toBe("function");
             expect(typeof module.getWalletsAsync).toBe("function");
@@ -628,7 +630,7 @@ describe("createWalletModule", () => {
             expect(typeof module.getCurrentWalletAddress).toBe("function");
             expect(typeof module.setCurrentWalletByAddressAsync).toBe("function");
             expect(typeof module.getECDSAWalletAsync).toBe("function");
-            expect(typeof module.withECDSAWallet).toBe("function");
+            expect(typeof module.withECDSAWalletAsync).toBe("function");
         });
 
         it("does not expose internal sensitive methods", () => {
