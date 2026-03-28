@@ -15,8 +15,8 @@ export const useWapiChanger = () => {
                     if (isEmpty(value)) return true;
 
                     try {
-                        new URL(value);
-                        return true;
+                        const url = new URL(value);
+                        return url.protocol === "http:" || url.protocol === "https:";
                     } catch (error) {
                         return false;
                     }
