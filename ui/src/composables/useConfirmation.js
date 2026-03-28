@@ -1,5 +1,4 @@
 export const useConfirmation = () => {
-    const { t } = useI18n();
     const $q = useQuasar();
 
     const withConfirmation = (title, message, callback) => {
