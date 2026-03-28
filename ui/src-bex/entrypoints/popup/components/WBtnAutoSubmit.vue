@@ -16,6 +16,15 @@ const props = defineProps({
         required: false,
         default: -1,
     },
+    /**
+     * If true, the countdown will not resume after mouse hover.
+     * Once the user hovers, the auto-submit is permanently paused.
+     */
+    noResumeOnHover: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
 });
 
 import { useInterval } from "@vueuse/core";
@@ -43,5 +52,10 @@ watchEffect(() => {
 const handleMouseOver = () => {
     pause();
 };
-const handleMouseLeave = () => {};
+
+const handleMouseLeave = () => {
+    if (!props.noResumeOnHover && countdown.value > 0) {
+        resume();
+    }
+};
 </script>
