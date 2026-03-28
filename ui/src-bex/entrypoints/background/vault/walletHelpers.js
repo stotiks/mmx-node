@@ -63,21 +63,22 @@ export const getCurrentHeightAsync = async () => {
 };
 
 const getValidatedSpendOptionsAsync = async (spendOptions) => {
+    const options = { ...spendOptions };
     // validate network
     const network = await vault.getNetworkAsync();
-    if (spendOptions.network !== network) {
+    if (options.network !== network) {
         throw new Error("Invalid network");
     }
 
     // fill expire_at
-    if (!spendOptions.expire_at && spendOptions.expire_delta) {
+    if (!options.expire_at && options.expire_delta) {
         const height = await getCurrentHeightAsync();
 
-        spendOptions.expire_at = height + spendOptions.expire_delta;
-        spendOptions.expire_delta = null;
+        options.expire_at = height + options.expire_delta;
+        options.expire_delta = null;
     }
 
-    return new spend_options_t(spendOptions);
+    return new spend_options_t(options);
 };
 
 export const getSendTxAsync = async (
