@@ -64,6 +64,7 @@ const rows = computed(() => [
         label: t("transaction_view.message"),
         field: "message",
         visible: (data) => data.did_fail,
+        classes: "text-negative",
     },
     {
         label: t("transaction_view.confirmed"),
