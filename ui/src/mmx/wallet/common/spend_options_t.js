@@ -32,10 +32,19 @@ export class spend_options_t {
             throw new Error("expire_at is required");
         }
 
-        if (options.nonce) {
-            options.nonce = BigInt(options.nonce);
+        const safeOptions = Object.create(null);
+        for (const [key, value] of Object.entries(options)) {
+            if (key === "__proto__" || key === "constructor" || key === "prototype") {
+                console.warn(`Skipping dangerous key: ${key}`);
+                continue;
+            }
+            safeOptions[key] = value;
         }
 
-        Object.assign(this, options);
+        if (safeOptions.nonce) {
+            safeOptions.nonce = BigInt(safeOptions.nonce);
+        }
+
+        Object.assign(this, safeOptions);
     }
 }
