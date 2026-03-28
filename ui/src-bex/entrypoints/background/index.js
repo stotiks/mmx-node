@@ -46,5 +46,5 @@ export default defineBackground(() => {
         });
     };
 
-    initializeExtension();
+    initializeExtension().catch((err) => console.error("Extension init failed:", err));
 });
