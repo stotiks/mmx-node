@@ -5,7 +5,13 @@ if (typeof __PUBLIC_RPC_URL__ === "undefined") {
 
 const getData = (endpoint, params) => {
     const url = new URL(endpoint, __PUBLIC_RPC_URL__);
-    return fetch(url + `?${new URLSearchParams(params)}`).then(async (res) => {
+
+    // Properly append query params to handle existing search params
+    Object.entries(params || {}).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+    });
+
+    return fetch(url).then(async (res) => {
         if (!res.ok) {
             const text = await res.text();
             if (text) {
