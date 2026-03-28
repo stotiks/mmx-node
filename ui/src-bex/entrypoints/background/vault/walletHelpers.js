@@ -32,6 +32,9 @@ export const getPubKeyAsync = async (address = vault.getCurrentWalletAddress()) 
 };
 
 export const signMessageAsync = async (message, address = vault.getCurrentWalletAddress()) => {
+    if (typeof message !== "string" || message.length > 10000) {
+        throw new Error("Invalid message");
+    }
     const msgWithPrefix = `MMX/sign_message/${message}`;
     const msgHash = sha256(utf8ToBytes(msgWithPrefix));
     return await vault.withECDSAWalletAsync(

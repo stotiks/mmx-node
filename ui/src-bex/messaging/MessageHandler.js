@@ -63,7 +63,7 @@ export class MessageHandler {
 
     #findHandler(method) {
         if (typeof method !== "string" || !method) {
-            return undefined;
+            return null;
         }
 
         const methodCC = toCamelCase(method);
