@@ -43,7 +43,7 @@ import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
-import router from "@/plugins/router";
+const router = useRouter();
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 const test_password = import.meta.env.DEV && import.meta.env.VITE_TEST_PASSWORD;
