@@ -1,9 +1,17 @@
+// HMR: preserve expansion state across hot reloads
+const _hmrState = import.meta.hot?.data.expansionState ?? new Map();
+
+if (import.meta.hot) {
+    import.meta.hot.accept();
+    import.meta.hot.data.expansionState = _hmrState;
+}
+
 /**
  * Composable for managing object table expansion state
  * @returns {object} - Expansion state and methods
  */
 export const useObjectTableExpansion = () => {
-    const state = reactive(new Map());
+    const state = reactive(_hmrState);
 
     /**
      * Toggle expansion state for a given key
