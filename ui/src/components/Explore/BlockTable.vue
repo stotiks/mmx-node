@@ -33,7 +33,7 @@
 <script setup>
 const props = defineProps({
     rows: {
-        type: Object,
+        type: Array,
         required: true,
     },
     loading: {
