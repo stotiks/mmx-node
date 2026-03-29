@@ -69,6 +69,16 @@ export class ChainParams {
             throw new Error("params must be an object");
         }
 
-        Object.assign(this, params);
+        // Protect against prototype pollution by filtering dangerous keys
+        const safeParams = Object.create(null);
+        for (const [key, value] of Object.entries(params)) {
+            if (key === "__proto__" || key === "constructor" || key === "prototype") {
+                console.warn(`Skipping dangerous key: ${key}`);
+                continue;
+            }
+            safeParams[key] = value;
+        }
+
+        Object.assign(this, safeParams);
     }
 }
