@@ -1,10 +1,17 @@
-import { Quasar, Notify, Dialog } from "quasar";
+import { Quasar, Notify, Dialog, Loading, QSpinnerGears } from "quasar";
 import iconSet from "quasar/icon-set/svg-mdi-v7";
 
-export { Quasar };
-
 export const quasarConfig = {
-    config: { dark: true },
-    plugins: { Notify, Dialog },
+    plugins: { Notify, Dialog, Loading },
     iconSet: iconSet,
+    config: {
+        dark: true,
+        loading: {
+            spinner: QSpinnerGears,
+            spinnerColor: "primary",
+            delay: 400,
+        },
+    },
 };
+
+export { Quasar };
