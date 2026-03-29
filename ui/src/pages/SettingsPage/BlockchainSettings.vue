@@ -21,7 +21,7 @@
                     </q-btn>
                 </template>
             </q-input>
-            <q-btn :disable="btnDisabled" outline color="negative" @click="handleRevertSync(revertHeight)">
+            <q-btn :disable="btnDisabled" outline color="negative" @click="handleRevertSync">
                 {{ $t("node_settings.revert") }}
             </q-btn>
         </q-card-section>
@@ -39,21 +39,28 @@ const btnDisabled = computed(() => {
     return !revertHeightRef.value?.validate() || !revertHeight.value;
 });
 
-const $q = useQuasar();
-const { t } = useI18n();
-
 import { useRevertSync } from "@/queries/api";
 const revertSync = useRevertSync();
-const handleRevertSync = (height) => {
-    height = parseInt(height);
-    revertSync.mutate({ height });
+
+const handleRevertSync = () => {
+    const height = parseInt(revertHeight.value);
+    revertSync.mutate(
+        { height },
+        {
+            onSuccess: () => {
+                revertHeight.value = null;
+            },
+        }
+    );
 };
 
-watchEffect(() => {
+const $q = useQuasar();
+watch(revertSync.isPending, () => {
+    const group = "revertSync";
     if (revertSync.isPending.value) {
-        $q.loading.show();
+        $q.loading.show({ group });
     } else {
-        $q.loading.hide();
+        $q.loading.hide(group);
     }
 });
 
@@ -61,7 +68,7 @@ const nodeStore = useNodeStore();
 const { height } = storeToRefs(nodeStore);
 
 const suggestedHeight = computed(() => {
-    const scale = 10000;
+    const scale = 10_000;
     return height.value && (Math.trunc(height.value / scale) - 1) * scale;
 });
 
