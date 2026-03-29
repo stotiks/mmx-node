@@ -1,5 +1,5 @@
 import axiosLib from "axios";
-axiosLib.defaults.timeout = 30000;
+// axiosLib.defaults.timeout = 30000;
 
 const axios = axiosLib.create();
 
