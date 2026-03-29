@@ -1,6 +1,8 @@
 //
 // https://github.com/quasarframework/quasar/discussions/16989#discussioncomment-10430556
 
+import { nextTick } from "vue";
+
 export const useFormValidator = (formRef) => {
     const rulesValidityStatuses = ref([]);
     const rulesWatchers = ref([]);
@@ -40,7 +42,7 @@ export const useFormValidator = (formRef) => {
         rulesWatchers.value = [];
     };
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
         resetRulesWatchers();
     });
 
@@ -51,7 +53,7 @@ export const useFormValidator = (formRef) => {
             formRef.value?.resetValidation();
             rulesValidityStatuses.value = [];
 
-            setTimeout(() => setupValidation(), 1);
+            nextTick(() => setupValidation());
         });
     }
 
