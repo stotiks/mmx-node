@@ -154,8 +154,8 @@ const columns = computed(() => [
 import { useWalletOffers } from "@/queries/wapi";
 const { rows, loading } = useWalletOffers(reactive({ index: toRef(() => props.index), state }));
 
-const canceled = ref(new Set());
-const withdrawn = ref(new Set());
+const canceled = reactive(new Set());
+const withdrawn = reactive(new Set());
 
 const $q = useQuasar();
 const handleDeposit = (offer) => {
@@ -166,7 +166,7 @@ const handleDeposit = (offer) => {
             offer,
         },
     }).onOk(() => {
-        canceled.value.delete(offer.address);
+        canceled.delete(offer.address);
     });
 };
 
@@ -178,7 +178,7 @@ const handleWithdraw = (offer) => {
             offer,
         },
     }).onOk(() => {
-        withdrawn.value.add(offer.address);
+        withdrawn.add(offer.address);
     });
 };
 
@@ -200,7 +200,7 @@ const handleRevoke = (offer) => {
             offer,
         },
     }).onOk(() => {
-        canceled.value.add(offer.address);
+        canceled.add(offer.address);
     });
 };
 </script>

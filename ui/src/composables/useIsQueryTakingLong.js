@@ -1,4 +1,3 @@
-import { ref, onUnmounted } from "vue";
 import { useQueryClient } from "@tanstack/vue-query";
 
 export function useIsQueryTakingLong(threshold = 10000) {
@@ -7,7 +6,7 @@ export function useIsQueryTakingLong(threshold = 10000) {
     const isQueryTakingLong = ref(false);
 
     // Track queries that have exceeded the threshold
-    const longQueries = ref(new Set());
+    const longQueries = reactive(new Set());
 
     // Store active timeouts for each query
     const timeouts = new Map();
@@ -27,7 +26,7 @@ export function useIsQueryTakingLong(threshold = 10000) {
                 // Set new timeout to check after threshold
                 const timeoutId = setTimeout(() => {
                     if (query.state.fetchStatus === "fetching") {
-                        longQueries.value.add(queryKey);
+                        longQueries.add(queryKey);
                         isQueryTakingLong.value = true;
                     }
                     timeouts.delete(queryKey);
@@ -41,9 +40,9 @@ export function useIsQueryTakingLong(threshold = 10000) {
                     timeouts.delete(queryKey);
                 }
 
-                if (longQueries.value.has(queryKey)) {
-                    longQueries.value.delete(queryKey);
-                    isQueryTakingLong.value = longQueries.value.size > 0;
+                if (longQueries.has(queryKey)) {
+                    longQueries.delete(queryKey);
+                    isQueryTakingLong.value = longQueries.size > 0;
                 }
             }
         }
