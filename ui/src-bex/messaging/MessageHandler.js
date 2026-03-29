@@ -1,6 +1,4 @@
-const toCamelCase = (str) => {
-    return str.replace(/-([a-zA-Z])/g, (match, group1) => group1.toUpperCase());
-};
+import { toCamelCase } from "../../src/utils/toCamelCase";
 
 export class MessageHandler {
     #methods;
