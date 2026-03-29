@@ -66,7 +66,7 @@ export class WriteBytes extends WriteBuffer {
 
     write_bytes_optional(opt) {
         this.write_bytes_cstr("optional<>");
-        if (opt.valueOf() != undefined) {
+        if (opt.valueOf() !== undefined) {
             this.write_bytes(true);
             this.write_bytes(opt.valueOf());
         } else {
