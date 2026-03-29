@@ -133,18 +133,34 @@ export function useConfigData() {
     const data = reactive({ ...initData });
 
     const unwatchArr = [];
+
+    // Track whether the current batch of per-key watchers has already seen their
+    // first value (the one written by `assign`). We flip this flag to `true` only
+    // after the synchronous setup loop finishes, so every callback that fires
+    // during the same microtask tick is treated as the "initial" trigger and
+    // skipped. Only subsequent user-driven changes reach `setConfig`.
+    let initialized = false;
     watchEffect(() => {
+        // Tear down previous per-key watchers before re-assigning.
         Object.keys(unwatchArr).forEach((key) => unwatchArr[key]());
+
+        initialized = false;
         assign(data, queryData.value);
+
         Object.keys(data).forEach((key) => {
             unwatchArr[key] = watch(
                 () => data[key],
-                (value, prev) => {
+                (value) => {
+                    if (!initialized) return;
                     const configKey = configMapping[key].name;
                     setConfig.mutate({ ...configMapping[key], key: configKey, value });
                 }
             );
         });
+
+        // All watchers are now registered with the post-assign values as their
+        // baseline. Any change arriving after this point is a real user edit.
+        initialized = true;
     });
 
     const isWallet = computed(() => {
