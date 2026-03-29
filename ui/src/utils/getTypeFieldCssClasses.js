@@ -1,7 +1,18 @@
+/**
+ * Maps a transaction type to its corresponding Quasar CSS text color class.
+ *
+ * @param {string} type - The transaction type identifier (e.g., "REWARD", "SPEND").
+ * @returns {string} The CSS class string, or empty string if type is unrecognized.
+ */
+
+const TYPE_CLASS_MAP = Object.freeze({
+    REWARD: "text-lime-8",
+    RECEIVE: "text-positive",
+    VDF_REWARD: "text-positive",
+    SPEND: "text-negative",
+    TXFEE: "text-grey",
+});
+
 export const getTypeFieldCssClasses = (type) => {
-    if (type == "REWARD") return "text-lime-8";
-    if (type == "RECEIVE" || type == "REWARD" || type == "VDF_REWARD") return "text-positive";
-    if (type == "SPEND") return "text-negative";
-    if (type == "TXFEE") return "text-grey";
-    return "";
+    return TYPE_CLASS_MAP[type] ?? "";
 };
