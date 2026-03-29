@@ -1,9 +1,8 @@
 <template>
     <q-dialog
         ref="dialogRef"
-        persistent
         maximized
-        transition-show="scale"
+        transition-show="fade"
         transition-hide="scale"
         @show="onDialogShow"
         @hide="onDialogHide"
@@ -17,7 +16,7 @@
                                 :name="icon"
                                 size="xl"
                                 :color="iconColor"
-                                class="animate__animated animate__bounceIn"
+                                class="animate__animated animate__bounceIn animate__slow"
                             />
                             <div class="text-h6">{{ status }}</div>
                             <div class="text-subtitle1">
