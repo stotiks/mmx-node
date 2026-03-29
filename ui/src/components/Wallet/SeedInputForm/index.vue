@@ -128,25 +128,35 @@ const { isValid: isValidForm } = useWalletFormStatusL(formRef);
 const isValid = computed(() => isValidForm.value && wallet.value != null && fingerprint.value != null);
 
 import { ECDSA_Wallet } from "@mmx/wallet/ECDSA_Wallet";
-const tmpWallet = computed(() => {
-    const result = { wallet: null, error: "" };
+
+// Reactive state for wallet and error
+const wallet = ref(null);
+const error = ref("");
+
+// Watch for changes and properly cleanup old wallet instances
+watchEffect(() => {
+    // Cleanup previous wallet instance to prevent memory leaks
+    if (wallet.value) {
+        wallet.value.destroy();
+        wallet.value = null;
+    }
+    error.value = "";
+
     if (!isEmpty(formData.mnemonic) && isValidForm.value) {
         try {
             // markRaw prevents Vue from deep-tracking the wallet object,
             // keeping private key material invisible to Vue Devtools.
-            result.wallet = markRaw(new ECDSA_Wallet(formData.mnemonic, formData.passphrase));
+            wallet.value = markRaw(new ECDSA_Wallet(formData.mnemonic, formData.passphrase));
         } catch (e) {
-            result.error = e.message;
+            error.value = e.message;
         }
     }
-    return result;
 });
-const wallet = toRef(() => tmpWallet.value.wallet);
-const error = toRef(() => tmpWallet.value.error);
+
 const errorMsg = computed(() => error.value.split(".")[0]); // trim long error messages
 
 watch(
-    tmpWallet,
+    wallet,
     () => {
         if (isValid.value) {
             formRef.value.validate();
