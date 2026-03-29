@@ -48,7 +48,7 @@ import { UseClipboard } from "@vueuse/components";
 
 const props = defineProps({
     rows: {
-        type: Object,
+        type: Array,
         required: true,
     },
     data: {
