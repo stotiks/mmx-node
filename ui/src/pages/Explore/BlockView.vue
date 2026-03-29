@@ -272,10 +272,4 @@ const nextPath = computed(() => {
     }
     return null;
 });
-
-// const prefetch = usePrefetch();
-// watchEffect(() => {
-//     prefetch.path(prevPath.value);
-//     prefetch.path(nextPath.value);
-// });
 </script>

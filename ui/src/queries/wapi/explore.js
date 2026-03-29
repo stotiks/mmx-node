@@ -80,7 +80,7 @@ export const prefetchFarmers = (queryClient, params) => {
     queryClient.prefetchQuery({
         queryKey: ["node", "farmers", params],
         queryFn: ({ signal }) => getFarmers(params, signal),
-        staleTime: ONE_SECOND,
+        staleTime: 10 * ONE_SECOND,
     });
 };
 

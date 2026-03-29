@@ -15,15 +15,12 @@
 </template>
 
 <script setup>
-const prefetch = usePrefetch();
-const prefetchFarmers = (event) => {
-    prefetch.path("/explore/farmers");
-};
+const { pathPrefetcher } = usePrefetch();
 
 const { t } = useI18n();
 const tabs = computed(() => [
     { to: "/explore/blocks", label: t("explore_menu.blocks") },
     { to: "/explore/transactions", label: t("explore_menu.transactions") },
-    { to: "/explore/farmers", label: t("explore_menu.farmers"), prefetcher: prefetchFarmers },
+    { to: "/explore/farmers", label: t("explore_menu.farmers"), prefetcher: pathPrefetcher },
 ]);
 </script>
