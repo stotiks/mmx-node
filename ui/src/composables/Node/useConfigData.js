@@ -46,11 +46,11 @@ const configMapping = {
         suppressNotification: true,
     },
     opencl_device_list: {
-        // locally calculated field
+        // locally calculated field — never sent to setConfig
         default: [],
     },
     opencl_device_list_relidx: {
-        // locally calculated field
+        // locally calculated field — never sent to setConfig
         default: [],
     },
 
@@ -90,96 +90,121 @@ const configMapping = {
     },
 };
 
+// Keys that have a server-side `name` and should be sent via setConfig on user edits.
+const writableKeys = Object.keys(configMapping).filter((key) => configMapping[key].name !== undefined);
+
 const getInitData = () => {
     const data = {};
     Object.keys(configMapping).forEach((key) => {
-        const { default: defaultValue } = configMapping[key];
-        data[key] = defaultValue ?? null;
+        data[key] = configMapping[key].default ?? null;
     });
     return data;
 };
 
-const initData = getInitData();
+/**
+ * Reads server response into a plain object (does NOT touch any reactive state).
+ * Returns the mapped values so callers can decide what to do with them.
+ */
+const mapServerData = (source) => {
+    const result = {};
 
-const assign = (target, source) => {
-    if (!source) return;
-
-    Object.keys(configMapping).forEach((key) => {
+    writableKeys.forEach((key) => {
         const { name, default: defaultValue } = configMapping[key];
-        if (name === undefined) return;
-        target[key] = source?.[name] ?? defaultValue;
+        result[key] = source?.[name] ?? defaultValue ?? null;
     });
 
-    {
-        target.opencl_device_list = [];
-        target.opencl_device_list_relidx = [];
-
-        target.opencl_device_list.push({ label: "None", value: -1 });
-        let list = source["Node.opencl_device_list"];
-        if (list) {
-            for (const [i, device] of list.entries()) {
-                target.opencl_device_list.push({ label: device[0], value: i });
-                target.opencl_device_list_relidx.push({ name: device[0], index: device[1] });
-            }
+    // Locally-calculated opencl lists
+    result.opencl_device_list = [{ label: "None", value: -1 }];
+    result.opencl_device_list_relidx = [];
+    const list = source?.["Node.opencl_device_list"];
+    if (list) {
+        for (const [i, device] of list.entries()) {
+            result.opencl_device_list.push({ label: device[0], value: i });
+            result.opencl_device_list_relidx.push({ name: device[0], index: device[1] });
         }
     }
+
+    return result;
 };
+
 export function useConfigData() {
     const setConfig = useSetConfig();
 
     const { data: queryData, isPending, isError } = useConfig();
     const loading = computed(() => isPending.value || isError.value);
 
+    const initData = getInitData();
     const data = reactive({ ...initData });
 
-    const unwatchArr = [];
+    // Snapshot of the last values written from the server.
+    // Used to distinguish server-sync writes from user edits.
+    const serverSnapshot = initData;
 
-    // Track whether the current batch of per-key watchers has already seen their
-    // first value (the one written by `assign`). We flip this flag to `true` only
-    // after the synchronous setup loop finishes, so every callback that fires
-    // during the same microtask tick is treated as the "initial" trigger and
-    // skipped. Only subsequent user-driven changes reach `setConfig`.
-    let initialized = false;
-    watchEffect(() => {
-        // Tear down previous per-key watchers before re-assigning.
-        Object.keys(unwatchArr).forEach((key) => unwatchArr[key]());
+    // ── Server → data sync ────────────────────────────────────────────────────
+    // Runs only when queryData changes (i.e. a fresh server response arrives).
+    // Writes values into `data` and updates the snapshot so the per-key watchers
+    // below know these are not user-initiated changes.
+    watch(
+        queryData,
+        (source) => {
+            if (!source) return;
+            const mapped = mapServerData(source);
+            Object.keys(mapped).forEach((key) => {
+                serverSnapshot[key] = mapped[key];
+                data[key] = mapped[key];
+            });
+        },
+        { immediate: true }
+    );
 
-        initialized = false;
-        assign(data, queryData.value);
-
-        Object.keys(data).forEach((key) => {
-            unwatchArr[key] = watch(
-                () => data[key],
-                (value) => {
-                    if (!initialized) return;
-                    const configKey = configMapping[key].name;
-                    setConfig.mutate({ ...configMapping[key], key: configKey, value });
-                }
-            );
-        });
-
-        // All watchers are now registered with the post-assign values as their
-        // baseline. Any change arriving after this point is a real user edit.
-        initialized = true;
+    // ── data → server sync ────────────────────────────────────────────────────
+    // One watcher per writable key. Fires only when the user changes a value in
+    // the UI. We skip the trigger if the new value matches the last server value
+    // (i.e. the change came from the server sync above, not from the user).
+    writableKeys.forEach((key) => {
+        watch(
+            () => data[key],
+            (value) => {
+                // Ignore writes that originated from the server sync.
+                if (value === serverSnapshot[key]) return;
+                const configKey = configMapping[key].name;
+                setConfig.mutate({ ...configMapping[key], key: configKey, value });
+            }
+        );
     });
 
+    // ── Derived flags ─────────────────────────────────────────────────────────
     const isWallet = computed(() => {
         if (!queryData.value) return false;
-        const data = queryData.value?.wallet;
-        return data || data == null ? true : false;
+        const val = queryData.value?.wallet;
+        return val || val == null ? true : false;
     });
 
     const isFarmer = computed(() => {
         if (!queryData.value) return false;
-        const data = queryData.value?.farmer;
-        return data || data == null ? true : false;
+        const val = queryData.value?.farmer;
+        return val || val == null ? true : false;
     });
 
     const isLocalNode = computed(() => {
         if (!queryData.value) return null;
-        const data = queryData.value?.local_node;
-        return data || data == null ? true : false;
+        const val = queryData.value?.local_node;
+        return val || val == null ? true : false;
     });
+
+    const $q = useQuasar();
+    watch(
+        loading,
+        () => {
+            const group = "useConfigData";
+            if (loading.value) {
+                $q.loading.show({ group });
+            } else {
+                $q.loading.hide(group);
+            }
+        },
+        { immediate: true }
+    );
 
     return { data, loading, isWallet, isFarmer, isLocalNode };
 }
