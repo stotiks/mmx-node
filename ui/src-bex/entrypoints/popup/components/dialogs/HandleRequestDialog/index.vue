@@ -1,10 +1,9 @@
 <template>
     <q-dialog
         ref="dialogRef"
-        persistent
         maximized
         transition-show="scale"
-        transition-hide="scale"
+        transition-hide="fade"
         @show="onDialogShow"
         @hide="onDialogHide"
     >
