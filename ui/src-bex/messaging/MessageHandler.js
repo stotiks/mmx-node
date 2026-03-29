@@ -30,14 +30,24 @@ export class MessageHandler {
     async #executeHooksAsync(context, hooks) {
         for (const hookItem of hooks) {
             const ignoreFail = hookItem.options?.ignoreFail ?? false;
+            const fireAndForget = hookItem.options?.fireAndForget ?? false;
 
-            try {
-                await hookItem.hookFn(context);
-            } catch (error) {
-                if (!ignoreFail) {
-                    throw error;
-                } else {
+            const promise = hookItem.hookFn(context);
+
+            if (fireAndForget) {
+                // Run without awaiting; errors are caught and logged silently
+                promise.catch((error) => {
                     console.error(`Error in hook [${hookItem.hookFn.name}]:`, error);
+                });
+            } else {
+                try {
+                    await promise;
+                } catch (error) {
+                    if (!ignoreFail) {
+                        throw error;
+                    } else {
+                        console.error(`Error in hook [${hookItem.hookFn.name}]:`, error);
+                    }
                 }
             }
         }

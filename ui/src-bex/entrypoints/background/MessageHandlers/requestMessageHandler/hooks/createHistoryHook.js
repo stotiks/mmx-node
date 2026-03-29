@@ -16,11 +16,7 @@ const createHistoryHook = () => {
 
         if (isAcceptRequired) {
             const ctx = ctxCleanup(context);
-
-            // no await, fire-and-forget
-            vault.addHistoryAsync(ctx).catch((err) => {
-                console.warn("[HistoryHook] Failed to save history:", err);
-            });
+            await vault.addHistoryAsync(ctx);
         }
     };
 
