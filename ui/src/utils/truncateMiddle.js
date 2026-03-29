@@ -12,3 +12,6 @@ export const truncateMiddle = (str, frontChars = 10, endChars = 10) => {
     }
     return str.substring(0, frontChars) + "..." + str.substring(str.length - endChars);
 };
+
+export const getShortAddr = (hash, length = 10) => truncateMiddle(hash, length, length);
+export const getShortHash = (hash, length = 10) => truncateMiddle(hash, length, length);
