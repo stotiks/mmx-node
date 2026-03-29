@@ -78,7 +78,7 @@ const bexStatus = computed(() =>
         : { label: "Extension Not Loaded", color: "negative", icon: mdiClose }
 );
 
-const requestResults = ref(new Map());
+const requestResults = reactive(new Map());
 
 const requests = [
     // dummy method for testing
@@ -163,9 +163,9 @@ const doRequest = async (payload) => {
 };
 
 const handleRequest = async (request) => {
-    requestResults.value.delete(request);
+    requestResults.delete(request);
     const result = await doRequest({ method: request.method, params: request.params });
-    requestResults.value.set(request, result);
+    requestResults.set(request, result);
 
     if (request.method === "mmx_send" && !result.error) {
         $q.notify({ type: "positive", message: `Transaction sent successfully: ${result.id}` });
@@ -175,7 +175,7 @@ const handleRequest = async (request) => {
 };
 
 const handleClearResults = () => {
-    requestResults.value.clear();
+    requestResults.clear();
 };
 
 // window.addEventListener("message", function (event) {

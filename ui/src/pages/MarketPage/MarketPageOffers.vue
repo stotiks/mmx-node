@@ -187,7 +187,7 @@ const handleTrade = (offer) => {
     });
 };
 
-const accepted = ref(new Set());
+const accepted = reactive(new Set());
 const handleAccept = (offer) => {
     $q.dialog({
         component: defineAsyncComponent(() => import("@/components/Dialogs/OfferAcceptDialog.vue")),
@@ -196,10 +196,7 @@ const handleAccept = (offer) => {
             offer: offer,
         },
     }).onOk(() => {
-        // Create a new Set to trigger Vue reactivity
-        const newSet = new Set(accepted.value);
-        newSet.add(offer.address);
-        accepted.value = newSet;
+        accepted.add(offer.address);
     });
 };
 </script>

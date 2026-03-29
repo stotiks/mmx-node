@@ -1,18 +1,16 @@
-import { ref, computed } from "vue";
-
 /**
  * Composable for managing object table expansion state
  * @returns {object} - Expansion state and methods
  */
 export const useObjectTableExpansion = () => {
-    const expanded = ref(new Map());
+    const state = reactive(new Map());
 
     /**
      * Toggle expansion state for a given key
      * @param {string} key - The key to toggle
      */
     const toggleExpansion = (key) => {
-        expanded.value.set(key, !expanded.value.get(key));
+        state.set(key, !state.get(key));
     };
 
     /**
@@ -21,7 +19,7 @@ export const useObjectTableExpansion = () => {
      * @param {boolean} isExpanded - The expansion state
      */
     const setExpansion = (key, isExpanded) => {
-        expanded.value.set(key, isExpanded);
+        state.set(key, isExpanded);
     };
 
     /**
@@ -30,15 +28,15 @@ export const useObjectTableExpansion = () => {
      * @returns {boolean} - True if expanded
      */
     const isExpanded = (key) => {
-        return !!expanded.value.get(key);
+        return !!state.get(key);
     };
 
     /**
      * Collapse all expanded items
      */
     const collapseAll = () => {
-        for (const key of expanded.value.keys()) {
-            expanded.value.set(key, false);
+        for (const key of state.keys()) {
+            state.set(key, false);
         }
     };
 
@@ -51,7 +49,7 @@ export const useObjectTableExpansion = () => {
 
         Object.keys(data).forEach((key) => {
             if (key !== "__type") {
-                expanded.value.set(key, true);
+                state.set(key, true);
             }
         });
     };
@@ -60,7 +58,7 @@ export const useObjectTableExpansion = () => {
      * Get expansion state for reactive use
      */
     const expansionState = computed(() => {
-        return Array.from(expanded.value.entries())
+        return Array.from(state.entries())
             .filter(([, isExpanded]) => isExpanded)
             .map(([key]) => key);
     });
