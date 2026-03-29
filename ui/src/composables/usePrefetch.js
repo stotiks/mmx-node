@@ -1,20 +1,18 @@
 import { useQueryClient } from "@tanstack/vue-query";
 
-class Prefetch {
-    constructor() {
-        this.queryClient = useQueryClient();
-        this.router = useRouter();
-    }
+export const usePrefetch = () => {
+    const queryClient = useQueryClient();
+    const router = useRouter();
 
-    path(path) {
+    const pathPrefetcher = (path) => {
         if (path) {
-            const route = this.router.resolve(path);
+            const route = router.resolve(path);
             if (route.meta?.prefetcher) {
-                route.meta.prefetcher(this.queryClient, route);
+                route.meta.prefetcher(queryClient, route);
             }
         }
         return path;
-    }
-}
+    };
 
-export const usePrefetch = () => new Prefetch();
+    return { pathPrefetcher };
+};
