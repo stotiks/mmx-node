@@ -133,12 +133,11 @@ export function useConfigData() {
     const { data: queryData, isPending, isError } = useConfig();
     const loading = computed(() => isPending.value || isError.value);
 
-    const initData = getInitData();
-    const data = reactive({ ...initData });
+    const data = reactive(getInitData());
 
     // Snapshot of the last values written from the server.
     // Used to distinguish server-sync writes from user edits.
-    const serverSnapshot = initData;
+    const serverSnapshot = { ...getInitData() };
 
     // ── Server → data sync ────────────────────────────────────────────────────
     // Runs only when queryData changes (i.e. a fresh server response arrives).
@@ -194,10 +193,10 @@ export function useConfigData() {
 
     const $q = useQuasar();
     watch(
-        loading,
+        isPending,
         () => {
             const group = "useConfigData";
-            if (loading.value) {
+            if (isPending.value) {
                 $q.loading.show({ group });
             } else {
                 $q.loading.hide(group);
