@@ -1,7 +1,7 @@
 <template>
     <q-select
         v-if="wallets.length"
-        v-model="currentWalletAddress"
+        :model-value="currentWalletAddress"
         :options="walletsOptions"
         :display-value="currentWalletAddress ? getShortAddr(currentWalletAddress, 25) : ''"
         emit-value
@@ -9,6 +9,7 @@
         label="Wallet"
         filled
         dense
+        @update:model-value="handleWalletChange"
     />
     <template v-else>
         <div class="row justify-center">
@@ -38,6 +39,12 @@ const walletsOptions = computed(() =>
         value: wallet.address,
     }))
 );
+
+// Use the store action instead of writing currentWalletAddress directly,
+// so the background vault is kept in sync.
+const handleWalletChange = async (address) => {
+    await vaultStore.setCurrentWalletAsync({ address });
+};
 
 const $q = useQuasar();
 const handleAddWallet = () => {

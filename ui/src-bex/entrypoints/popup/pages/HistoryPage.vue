@@ -3,7 +3,13 @@
         <!-- <h1 class="text-h5">History</h1> -->
         <q-card flat class="q-mx-md">
             <q-list bordered separator>
-                <q-item v-for="(item, index) in history" :key="index" v-ripple clickable @click="handleClick(item)">
+                <q-item
+                    v-for="(item, index) in sortedHistory"
+                    :key="index"
+                    v-ripple
+                    clickable
+                    @click="handleClick(item)"
+                >
                     <q-item-section>
                         <q-item-label>{{ item.message?.data?.method }}</q-item-label>
                         <q-item-label caption>{{ item.wallet }}</q-item-label>
@@ -21,7 +27,7 @@
                         </q-icon>
                     </q-item-section>
                 </q-item>
-                <q-item v-if="!history || !history.length">
+                <q-item v-if="!sortedHistory || !sortedHistory.length">
                     <q-item-section class="text-center">
                         <q-item-label>No history yet.</q-item-label>
                     </q-item-section>
@@ -35,7 +41,12 @@
 import { mdiCheckCircle, mdiAlertCircle } from "@mdi/js";
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
 const vaultStore = useVaultStore();
-const { history } = storeToRefs(vaultStore);
+const { sortedHistory } = storeToRefs(vaultStore);
+
+// Fetch fresh history each time the page is entered
+onMounted(async () => {
+    await vaultStore.updateHistoryAsync();
+});
 
 const $q = useQuasar();
 const handleClick = (item) => {
