@@ -153,7 +153,6 @@ export const createStorageManagerModule = (dependencies = {}) => {
         }
 
         verifiedMasterKey.fill(0);
-        nextMasterKey.fill(0);
 
         eventModule.emit("password-updated");
         return true;
