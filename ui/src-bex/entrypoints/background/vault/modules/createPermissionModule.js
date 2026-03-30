@@ -9,6 +9,10 @@ export const createPermissionModule = (dependencies = {}) => {
     // Per-session storage only, no persistence needed - permissions reset on browser restart
     const allowedOriginsSet = new Set();
 
+    eventModule?.on("vault-removed", () => {
+        allowedOriginsSet.clear();
+    });
+
     /**
      * Validate URL and extract origin with security checks
      * @param {string} url - URL to validate

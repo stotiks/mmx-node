@@ -17,7 +17,7 @@
                 </template>
             </template>
 
-            <q-inner-loading :showing="!showContent" class="fullscreen">
+            <q-inner-loading :showing="!showContent || isActionRunning" class="fullscreen">
                 <q-spinner-radio size="50px" color="primary" />
             </q-inner-loading>
         </q-page-container>
@@ -44,6 +44,12 @@ import { useNotificationMessageHandler } from "./MessageHandlers/useNotification
 const { isMounted, isRunning, isLoading } = useNotificationMessageHandler();
 
 const showContent = computed(() => {
-    return isLoaded.value && !isActionRunning.value && isMounted.value && !isLoading.value && !isRunning.value;
+    return (
+        isLoaded.value &&
+        //&& !isActionRunning.value
+        isMounted.value &&
+        !isLoading.value &&
+        !isRunning.value
+    );
 });
 </script>

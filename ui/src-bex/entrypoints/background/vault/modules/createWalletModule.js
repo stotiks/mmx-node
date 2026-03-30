@@ -26,6 +26,11 @@ export const createWalletModule = (dependencies = {}) => {
         cleanedWalletsCache = null;
     });
 
+    eventModule?.on("vault-removed", () => {
+        currentWalletAddress = null;
+        cleanedWalletsCache = null;
+    });
+
     const cacheCleanedWallets = async (wallets$$sensitive) => {
         cleanedWalletsCache = walletsCleanup(wallets$$sensitive);
     };
@@ -105,6 +110,8 @@ export const createWalletModule = (dependencies = {}) => {
         wallets$$sensitive.splice(index, 1);
 
         await setWalletsAsync$$sensitive(wallets$$sensitive);
+
+        currentWalletAddress = wallets$$sensitive[0]?.address ?? null;
         eventModule?.emit("wallet-removed", { address });
     };
 

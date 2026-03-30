@@ -1,10 +1,13 @@
+import { ref, computed, onMounted } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
-import { useVaultService } from "@bex/entrypoints/popup/composables/useVaultService";
+import { useVaultService } from "../composables/useVaultService";
 
 export const useVaultStore = defineStore("vaultStore", () => {
     const vaultService = useVaultService();
 
+    // -------------------------------------------------------------------------
     // State
+    // -------------------------------------------------------------------------
     const isLoaded = ref(false);
     const isInitialized = ref(false);
     const isUnlocked = ref(false);
@@ -14,100 +17,140 @@ export const useVaultStore = defineStore("vaultStore", () => {
 
     const history = ref([]);
 
-    const isActionRunning = ref(false);
     const runningActionCount = ref(0);
 
-    watch(runningActionCount, () => {
-        isActionRunning.value = runningActionCount.value !== 0;
-    });
+    // -------------------------------------------------------------------------
+    // Computed
+    // -------------------------------------------------------------------------
 
-    watch(wallets, async () => {
-        try {
+    // Derived from runningActionCount — no watcher needed
+    const isActionRunning = computed(() => runningActionCount.value !== 0);
+
+    // History sorted by most-recent first — no sorting inside actions needed
+    const sortedHistory = computed(() => [...history.value].sort((a, b) => b.timestamp - a.timestamp));
+
+    // -------------------------------------------------------------------------
+    // Loading helper
+    // Wraps any async action so runningActionCount stays balanced even on error.
+    // Replaces the fragile $onAction + recursive useVaultStore() self-reference.
+    // -------------------------------------------------------------------------
+    const withLoading =
+        (fn) =>
+        async (...args) => {
             runningActionCount.value++;
-
-            let newCurrentWalletAddress = currentWalletAddress.value;
-            if (wallets.value.length > 0) {
-                if (!wallets.value.find((wallet) => wallet.address === currentWalletAddress.value)) {
-                    newCurrentWalletAddress = wallets.value[0].address;
-                }
-            } else {
-                newCurrentWalletAddress = "";
+            try {
+                return await fn(...args);
+            } finally {
+                runningActionCount.value--;
             }
+        };
 
-            if (newCurrentWalletAddress !== currentWalletAddress.value) {
-                currentWalletAddress.value = newCurrentWalletAddress;
-            }
-        } finally {
-            runningActionCount.value--;
-        }
-    });
-
-    watch(currentWalletAddress, async () => {
-        try {
-            runningActionCount.value++;
-
-            if (isUnlocked.value === true) {
-                if (currentWalletAddress.value != (await vaultService.getCurrentWalletAddressAsync())) {
-                    await vaultService.setCurrentWalletByAddressAsync({ address: currentWalletAddress.value });
-                }
-            }
-        } finally {
-            runningActionCount.value--;
-        }
-    });
-
-    watch(isUnlocked, async () => {
-        try {
-            runningActionCount.value++;
-            await _refresh();
-        } finally {
-            runningActionCount.value--;
-        }
-    });
-
-    // Actions
-    const lockAsync = async () => {
-        isUnlocked.value = (await vaultService.lockAsync()) ?? false;
+    // -------------------------------------------------------------------------
+    // Internal refresh helpers
+    // -------------------------------------------------------------------------
+    const _refreshIsInitializedAsync = async () => {
+        isInitialized.value = (await vaultService.getIsInitializedAsync()) ?? false;
     };
 
-    const unlockAsync = async ({ password }) => {
-        isUnlocked.value = (await vaultService.unlockAsync({ password })) ?? false;
-    };
-
-    const updatePasswordAsync = async ({ password, newPassword, rotateMasterKey }) => {
-        await vaultService.updatePasswordAsync({ password, newPassword, rotateMasterKey });
+    const _refreshIsUnlockedAsync = async () => {
+        isUnlocked.value = (await vaultService.getIsUnlockedAsync()) ?? false;
     };
 
     const _refreshWalletsAsync = async () => {
-        wallets.value = await vaultService.getWalletsAsync();
+        const fetched = await vaultService.getWalletsAsync();
+        wallets.value = fetched;
+
+        // Keep currentWalletAddress consistent with the wallet list.
+        // Done here (not in a watcher) to avoid cascading reactive cycles.
+        if (fetched.length > 0) {
+            if (!fetched.find((w) => w.address === currentWalletAddress.value)) {
+                currentWalletAddress.value = fetched[0].address;
+            }
+        } else {
+            currentWalletAddress.value = "";
+        }
     };
 
-    const addWalletAsync = async ({ mnemonic, password }) => {
+    const _refreshCurrentWalletAddressAsync = async () => {
+        if (isUnlocked.value) {
+            currentWalletAddress.value = (await vaultService.getCurrentWalletAddressAsync()) ?? "";
+        }
+    };
+
+    const _refreshHistoryAsync = async () => {
+        history.value = await vaultService.getHistoryAsync();
+    };
+
+    // Runs all refresh operations. Independent fetches are parallelized.
+    const _refresh = async () => {
+        try {
+            // Always fetch real state from background
+            await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
+
+            if (isUnlocked.value) {
+                await Promise.all([_refreshWalletsAsync(), _refreshCurrentWalletAddressAsync()]);
+            }
+        } catch (error) {
+            console.error("[VaultStore] Refresh failed:", error);
+        }
+    };
+
+    // -------------------------------------------------------------------------
+    // Actions (public)
+    // All exposed actions are wrapped with withLoading for consistent tracking.
+    // -------------------------------------------------------------------------
+
+    const lockAsync = withLoading(async () => {
+        isUnlocked.value = (await vaultService.lockAsync()) ?? false;
+        await _refresh();
+    });
+
+    const unlockAsync = withLoading(async ({ password }) => {
+        isUnlocked.value = (await vaultService.unlockAsync({ password })) ?? false;
+        await _refresh();
+    });
+
+    const updatePasswordAsync = withLoading(async ({ password, newPassword, rotateMasterKey }) => {
+        await vaultService.updatePasswordAsync({ password, newPassword, rotateMasterKey });
+    });
+
+    const addWalletAsync = withLoading(async ({ mnemonic, password }) => {
         const newWallet = await vaultService.addWalletAsync({ mnemonic, password });
         await _refreshWalletsAsync();
         currentWalletAddress.value = newWallet.address;
-    };
+        // Sync the new selection to the background
+        await vaultService.setCurrentWalletByAddressAsync({ address: newWallet.address });
+    });
 
-    const removeWalletAsync = async ({ address }) => {
+    const removeWalletAsync = withLoading(async ({ address }) => {
         await vaultService.removeWalletAsync({ address });
         await _refreshWalletsAsync();
-    };
+    });
 
     // NOTE: Users can delete all vault data at any time without password verification.
     // This is intentional - users should always have the ability to clear their local data,
     // even if they've forgotten their password. This is a "factory reset" operation.
-    const clearAllAsync = async () => {
+    const clearAllAsync = withLoading(async () => {
         if (isUnlocked.value) {
-            await lockAsync();
+            isUnlocked.value = (await vaultService.lockAsync()) ?? false;
         }
         await vaultService.clearAllAsync();
         await _refresh();
-    };
+    });
 
-    const initAsync = async ({ password }) => {
+    const initAsync = withLoading(async ({ password }) => {
         await vaultService.initAsync({ password });
         await _refresh();
-    };
+    });
+
+    // Sets the active wallet and syncs the selection to the background.
+    // Components should call this action instead of writing currentWalletAddress directly.
+    const setCurrentWalletAsync = withLoading(async ({ address }) => {
+        if (isUnlocked.value && address !== currentWalletAddress.value) {
+            await vaultService.setCurrentWalletByAddressAsync({ address });
+            currentWalletAddress.value = address;
+        }
+    });
 
     const checkUrlPermissionsAsync = async (url) => {
         return await vaultService.checkUrlPermissionsAsync(url);
@@ -117,51 +160,18 @@ export const useVaultStore = defineStore("vaultStore", () => {
         await vaultService.allowUrlAsync(url);
     };
 
-    const updateHistoryAsync = async () => {
-        const h = await vaultService.getHistoryAsync();
-        history.value = h.sort((a, b) => b.timestamp - a.timestamp);
-    };
+    // Called by useVaultMessageHandler when the background signals a history update,
+    // and by HistoryPage on mount.
+    const updateHistoryAsync = withLoading(async () => {
+        await _refreshHistoryAsync();
+    });
 
-    const _refreshCurrentWalletAddressAsync = async () => {
-        if (isUnlocked.value === true) {
-            currentWalletAddress.value = (await vaultService.getCurrentWalletAddressAsync()) ?? "";
-        }
-    };
-
-    const _refreshIsInitializedAsync = async () =>
-        (isInitialized.value = (await vaultService.getIsInitializedAsync()) ?? false);
-    const _refreshIsUnlockedAsync = async () => (isUnlocked.value = (await vaultService.getIsUnlockedAsync()) ?? false);
-
-    const _refresh = async () => {
-        // Always fetch real state from background
-        await Promise.all([_refreshIsInitializedAsync(), _refreshIsUnlockedAsync()]);
-
-        if (isUnlocked.value) {
-            await _refreshWalletsAsync();
-            await _refreshCurrentWalletAddressAsync();
-            await updateHistoryAsync();
-        }
-    };
-
+    // -------------------------------------------------------------------------
+    // Lifecycle
+    // -------------------------------------------------------------------------
     onMounted(async () => {
         await _refresh();
         isLoaded.value = true;
-    });
-
-    const vaultStore = useVaultStore();
-
-    vaultStore.$onAction(({ name, after, onError }) => {
-        if (name == "updateHistoryAsync") {
-            return;
-        }
-
-        runningActionCount.value++;
-        after(() => {
-            runningActionCount.value--;
-        });
-        onError(() => {
-            runningActionCount.value--;
-        });
     });
 
     return {
@@ -171,6 +181,7 @@ export const useVaultStore = defineStore("vaultStore", () => {
         isUnlocked,
         wallets,
         history,
+        sortedHistory,
         currentWalletAddress,
         isActionRunning,
         runningActionCount,
@@ -185,6 +196,7 @@ export const useVaultStore = defineStore("vaultStore", () => {
         allowUrlAsync,
         clearAllAsync,
         initAsync,
+        setCurrentWalletAsync,
         updateHistoryAsync,
     };
 });
