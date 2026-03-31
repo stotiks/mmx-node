@@ -316,7 +316,7 @@ export class ConfigBuilder {
                             "vue-router": ["useRoute", "useRouter"],
                             "@vueuse/core": ["computedAsync"],
                             pinia: ["storeToRefs"],
-                            quasar: ["useQuasar"],
+                            quasar: ["useQuasar", "useDialogPluginComponent"],
                         },
                     ],
                     dirs: ["src/utils/**/*", "src/composables/**/*", "src/stores/**/*"],

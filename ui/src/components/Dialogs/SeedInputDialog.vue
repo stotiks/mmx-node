@@ -18,7 +18,6 @@
 <script setup>
 import { mdiClose } from "@mdi/js";
 
-import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 

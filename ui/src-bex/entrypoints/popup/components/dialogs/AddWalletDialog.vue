@@ -21,7 +21,6 @@
 </template>
 
 <script setup>
-import { useDialogPluginComponent } from "quasar";
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 import { useAddWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 
