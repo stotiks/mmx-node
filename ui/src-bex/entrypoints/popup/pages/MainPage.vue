@@ -18,5 +18,5 @@ import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
 import { useIsUnlockedQuery, useCurrentWalletQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 
 const { data: isUnlocked } = useIsUnlockedQuery();
-const { data: currentWallet } = useCurrentWalletQuery(isUnlocked.value);
+const { data: currentWallet } = useCurrentWalletQuery(isUnlocked);
 </script>

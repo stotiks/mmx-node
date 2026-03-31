@@ -53,18 +53,13 @@ import { mdiCheck, mdiContentCopy, mdiDelete } from "@mdi/js";
 
 import { UseClipboard } from "@vueuse/components";
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
-import {
-    useWalletsQuery,
-    useCurrentWalletQuery,
-    useIsUnlockedQuery,
-} from "@bex/entrypoints/popup/queries/vaultQueries";
+import { useWalletsQuery, useIsUnlockedQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 import { useRemoveWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 const { data: isUnlocked } = useIsUnlockedQuery();
 const { data: wallets } = useWalletsQuery();
-const { data: currentWalletAddress } = useCurrentWalletQuery(isUnlocked.value);
 const removeMutation = useRemoveWalletMutation();
 
 const $q = useQuasar();

@@ -21,9 +21,10 @@
 </template>
 
 <script setup>
-const props = defineProps({});
-
 import { useDialogPluginComponent } from "quasar";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
+import { useAddWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
@@ -31,18 +32,10 @@ const test_mnemonic = import.meta.env.DEV && import.meta.env.VITE_TEST_MNEMONIC;
 const mnemonic = ref(test_mnemonic || "");
 const password = ref("");
 
-const handleSubmit = async () => {
-    await handleSubmitAsync();
-};
-const onDialogShow = () => {};
-
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
-import { useAddWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
-
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 const addMutation = useAddWalletMutation();
 
-const handleSubmitAsync = async () => {
+const handleSubmit = async () => {
     await tryCatchWrapperAsync(async () => {
         await addMutation.mutateAsync({ mnemonic: mnemonic.value, password: password.value });
         mnemonic.value = ""; // Clear mnemonic from memory after successful wallet addition

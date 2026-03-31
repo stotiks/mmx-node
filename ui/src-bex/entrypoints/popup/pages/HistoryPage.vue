@@ -41,7 +41,7 @@
 import { mdiCheckCircle, mdiAlertCircle } from "@mdi/js";
 import { useHistoryQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 
-const { data: history, isLoading } = useHistoryQuery();
+const { data: history } = useHistoryQuery();
 
 const sortedHistory = computed(() => {
     if (!history.value) return [];

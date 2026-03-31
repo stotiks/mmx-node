@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/vue-query";
 import { useVaultService } from "@bex/entrypoints/popup/composables/useVaultService";
+import { vaultKeys } from "./vaultKeys";
 
 /**
  * Query to fetch all wallets from the vault
@@ -10,7 +11,7 @@ export const useWalletsQuery = () => {
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
-        queryKey: ["vault", "wallets"],
+        queryKey: vaultKeys.wallets(),
         queryFn: () => vaultService.getWalletsAsync(),
         staleTime: 1000 * 60 * 5, // 5 minutes - wallets don't change often
         gcTime: 1000 * 60 * 10, // 10 minutes
@@ -20,14 +21,15 @@ export const useWalletsQuery = () => {
 
 /**
  * Query to fetch the current wallet address
- * Only returns data when vault is unlocked
+ * Only runs when vault is unlocked
+ * @param {import("vue").Ref<boolean>} isUnlocked - Reactive ref indicating vault unlock state
  */
 export const useCurrentWalletQuery = (isUnlocked) => {
     const vaultService = useVaultService();
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
-        queryKey: ["vault", "currentWallet"],
+        queryKey: vaultKeys.currentWallet(),
         queryFn: () => vaultService.getCurrentWalletAddressAsync(),
         staleTime: 1000 * 60 * 5, // 5 minutes
         gcTime: 1000 * 60 * 10, // 10 minutes
@@ -45,7 +47,7 @@ export const useHistoryQuery = () => {
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
-        queryKey: ["vault", "history"],
+        queryKey: vaultKeys.history(),
         queryFn: () => vaultService.getHistoryAsync(),
         staleTime: 0, // Always fetch fresh
         gcTime: 1000 * 60 * 10, // 10 minutes
@@ -61,7 +63,7 @@ export const useIsInitializedQuery = () => {
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
-        queryKey: ["vault", "isInitialized"],
+        queryKey: vaultKeys.isInitialized(),
         queryFn: () => vaultService.getIsInitializedAsync(),
         staleTime: 1000 * 60, // 1 minute
         gcTime: 1000 * 60 * 5, // 5 minutes
@@ -77,7 +79,7 @@ export const useIsUnlockedQuery = () => {
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
-        queryKey: ["vault", "isUnlocked"],
+        queryKey: vaultKeys.isUnlocked(),
         queryFn: () => vaultService.getIsUnlockedAsync(),
         staleTime: 0, // Always check - security critical
         gcTime: 1000 * 60 * 5, // 5 minutes
@@ -86,8 +88,9 @@ export const useIsUnlockedQuery = () => {
 };
 
 /**
- * Combined query hook for vault status (initialized + unlocked)
- * Useful for pages that need both status checks
+ * Combined query hook for vault status (initialized + unlocked).
+ * Returns reactive computed refs for isLoading and isError so consumers
+ * always reflect the latest state rather than a one-time snapshot.
  */
 export const useVaultStatusQuery = () => {
     const isInitializedQuery = useIsInitializedQuery();
@@ -96,21 +99,22 @@ export const useVaultStatusQuery = () => {
     return {
         isInitialized: isInitializedQuery.data,
         isUnlocked: isUnlockedQuery.data,
-        isLoading: isInitializedQuery.isLoading.value || isUnlockedQuery.isLoading.value,
-        isError: isInitializedQuery.isError.value || isUnlockedQuery.isError.value,
-        error: isInitializedQuery.error.value || isUnlockedQuery.error.value,
+        isLoading: computed(() => isInitializedQuery.isLoading.value || isUnlockedQuery.isLoading.value),
+        isError: computed(() => isInitializedQuery.isError.value || isUnlockedQuery.isError.value),
+        error: computed(() => isInitializedQuery.error.value || isUnlockedQuery.error.value),
     };
 };
 
 /**
  * Query to check URL permissions
+ * @param {string | import("vue").Ref<string>} url - URL to check permissions for
  */
 export const useUrlPermissionsQuery = (url) => {
     const vaultService = useVaultService();
 
     // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
-        queryKey: ["vault", "urlPermissions", url],
+        queryKey: vaultKeys.urlPermissions(url),
         queryFn: () => vaultService.checkUrlPermissionsAsync(url),
         enabled: !!url,
         staleTime: 1000 * 60 * 5, // 5 minutes

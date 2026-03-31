@@ -90,7 +90,9 @@ export const useNotificationMessageHandler = () => {
 
         notificationMessageHandler.register(popupMessenger.onMessage, "notification/request");
 
-        //isMounted.value = true;
+        // The notification window opens before the first message arrives.
+        // A short timeout ensures the loading spinner is dismissed even if
+        // the background takes a moment to send the initial request.
         useTimeoutFn(() => {
             isLoading.value = false;
         }, 500);

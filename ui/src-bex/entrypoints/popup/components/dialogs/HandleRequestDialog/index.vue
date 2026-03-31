@@ -64,7 +64,7 @@ import AcceptPage from "./pages/AcceptPage";
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 import InitPage from "@bex/entrypoints/popup/pages/InitPage.vue";
-const tryCatchWrapperASync = useTryCatchWrapperAsync();
+const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
 const UnlockPageComponent = {
     component: UnlockPage,
@@ -77,7 +77,7 @@ const RequestPermissionsPageComponent = {
     events: {
         ok: async (result) => {
             if (result.granted === true) {
-                await tryCatchWrapperASync(async () => {
+                await tryCatchWrapperAsync(async () => {
                     await allowUrlMutation.mutateAsync(props.url);
                     permissionsGranted.value = true;
                 });

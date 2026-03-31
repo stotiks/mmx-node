@@ -1,14 +1,12 @@
 import { useQuasar } from "quasar";
 import { useClearVaultMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
-import { useTryCatchWrapperAsync } from "./useTryCatchWrapperAsync";
 
 export function useRemoveVaultData() {
     const $q = useQuasar();
     const clearMutation = useClearVaultMutation();
-    const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-    const handleRemoveVaultDataAsync = async () => {
-        await tryCatchWrapperAsync(async () => {
+    const handleRemoveVaultDataAsync = () => {
+        return new Promise((resolve) => {
             $q.dialog({
                 title: "Confirm",
                 message: "Are you sure you want to remove the vault data? This action cannot be undone.",
@@ -17,9 +15,19 @@ export function useRemoveVaultData() {
                 ok: {
                     color: "negative",
                 },
-            }).onOk(async () => {
-                await clearMutation.mutateAsync();
-            });
+            })
+                .onOk(async () => {
+                    try {
+                        await clearMutation.mutateAsync();
+                    } catch (error) {
+                        $q.notify({ type: "negative", message: error.message });
+                    } finally {
+                        resolve();
+                    }
+                })
+                .onCancel(() => {
+                    resolve();
+                });
         });
     };
 

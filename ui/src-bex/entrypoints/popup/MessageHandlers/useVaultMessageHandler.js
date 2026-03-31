@@ -1,6 +1,7 @@
 import popupMessenger from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
 import { useQueryClient } from "@tanstack/vue-query";
+import { vaultKeys } from "@bex/entrypoints/popup/queries/vaultKeys";
 
 export const useVaultMessageHandler = () => {
     const queryClient = useQueryClient();
@@ -11,16 +12,16 @@ export const useVaultMessageHandler = () => {
     };
 
     const invalidateAllVaultQueries = () => {
-        queryClient.invalidateQueries({ queryKey: ["vault"] });
+        queryClient.invalidateQueries({ queryKey: vaultKeys.all() });
     };
 
     const invalidateWalletQueries = () => {
-        queryClient.invalidateQueries({ queryKey: ["vault", "wallets"] });
-        queryClient.invalidateQueries({ queryKey: ["vault", "currentWallet"] });
+        queryClient.invalidateQueries({ queryKey: vaultKeys.wallets() });
+        queryClient.invalidateQueries({ queryKey: vaultKeys.currentWallet() });
     };
 
     const invalidateHistoryQuery = () => {
-        queryClient.invalidateQueries({ queryKey: ["vault", "history"] });
+        queryClient.invalidateQueries({ queryKey: vaultKeys.history() });
     };
 
     const vaultMessageHandlerMethods = {
@@ -54,21 +55,17 @@ export const useVaultMessageHandler = () => {
         },
 
         currentWalletChanged: async () => {
-            console.log("currentWalletChanged");
-            queryClient.invalidateQueries({ queryKey: ["vault", "currentWallet"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.currentWallet() });
         },
-        permissionGranted: async () => {
-            console.log("permissionGranted");
-        },
-        permissionRevoked: async () => {
-            console.log("permissionRevoked");
-        },
+
+        permissionGranted: async () => {},
+        permissionRevoked: async () => {},
+
         historyUpdated: async () => {
             invalidateHistoryQuery();
         },
     };
-    const vaultMessageHandler = new MessageHandler(vaultMessageHandlerMethods);
 
-    const messageID = "popup/vault";
-    vaultMessageHandler.register(popupMessenger.onMessage, messageID);
+    const vaultMessageHandler = new MessageHandler(vaultMessageHandlerMethods);
+    vaultMessageHandler.register(popupMessenger.onMessage, "popup/vault");
 };

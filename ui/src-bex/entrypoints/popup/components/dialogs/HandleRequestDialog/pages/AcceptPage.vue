@@ -66,7 +66,7 @@ const handleAccept = () => emit("ok", { accepted: true });
 import { useCurrentWalletQuery, useIsUnlockedQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 
 const { data: isUnlocked } = useIsUnlockedQuery();
-const { data: currentWallet } = useCurrentWalletQuery(isUnlocked.value);
+const { data: currentWallet } = useCurrentWalletQuery(isUnlocked);
 </script>
 
 <style scoped>

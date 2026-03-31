@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { useVaultService } from "@bex/entrypoints/popup/composables/useVaultService";
+import { vaultKeys } from "./vaultKeys";
 
 /**
- * Creates a mutation for locking the vault
- * Invalidates all vault queries on success
+ * Creates a mutation for locking the vault.
+ * Invalidates all vault queries on success.
  */
 export const useLockMutation = () => {
     const queryClient = useQueryClient();
@@ -12,15 +13,14 @@ export const useLockMutation = () => {
     return useMutation({
         mutationFn: () => vaultService.lockAsync(),
         onSuccess: () => {
-            // Invalidate all vault queries
-            queryClient.invalidateQueries({ queryKey: ["vault"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.all() });
         },
     });
 };
 
 /**
- * Creates a mutation for unlocking the vault
- * Invalidates all vault queries on success
+ * Creates a mutation for unlocking the vault.
+ * Invalidates all vault queries on success to refresh wallet data.
  */
 export const useUnlockMutation = () => {
     const queryClient = useQueryClient();
@@ -29,14 +29,13 @@ export const useUnlockMutation = () => {
     return useMutation({
         mutationFn: ({ password }) => vaultService.unlockAsync({ password }),
         onSuccess: () => {
-            // Invalidate all vault queries to refresh wallet data
-            queryClient.invalidateQueries({ queryKey: ["vault"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.all() });
         },
     });
 };
 
 /**
- * Creates a mutation for updating the vault password
+ * Creates a mutation for updating the vault password.
  */
 export const useUpdatePasswordMutation = () => {
     const vaultService = useVaultService();
@@ -48,8 +47,8 @@ export const useUpdatePasswordMutation = () => {
 };
 
 /**
- * Creates a mutation for initializing the vault
- * Invalidates all vault queries on success
+ * Creates a mutation for initializing the vault.
+ * Invalidates all vault queries on success.
  */
 export const useInitVaultMutation = () => {
     const queryClient = useQueryClient();
@@ -58,15 +57,14 @@ export const useInitVaultMutation = () => {
     return useMutation({
         mutationFn: ({ password }) => vaultService.initAsync({ password }),
         onSuccess: () => {
-            // Invalidate all vault queries
-            queryClient.invalidateQueries({ queryKey: ["vault"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.all() });
         },
     });
 };
 
 /**
- * Creates a mutation for adding a new wallet
- * Invalidates wallets and current wallet queries on success
+ * Creates a mutation for adding a new wallet.
+ * Invalidates wallets and current wallet queries on success.
  */
 export const useAddWalletMutation = () => {
     const queryClient = useQueryClient();
@@ -75,9 +73,8 @@ export const useAddWalletMutation = () => {
     return useMutation({
         mutationFn: ({ mnemonic, password }) => vaultService.addWalletAsync({ mnemonic, password }),
         onSuccess: (newWallet) => {
-            // Invalidate wallet queries
-            queryClient.invalidateQueries({ queryKey: ["vault", "wallets"] });
-            queryClient.invalidateQueries({ queryKey: ["vault", "currentWallet"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.wallets() });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.currentWallet() });
 
             // Sync the new selection to the background
             if (newWallet?.address) {
@@ -88,8 +85,8 @@ export const useAddWalletMutation = () => {
 };
 
 /**
- * Creates a mutation for removing a wallet
- * Invalidates wallets query on success
+ * Creates a mutation for removing a wallet.
+ * Invalidates wallets and current wallet queries on success.
  */
 export const useRemoveWalletMutation = () => {
     const queryClient = useQueryClient();
@@ -98,16 +95,15 @@ export const useRemoveWalletMutation = () => {
     return useMutation({
         mutationFn: ({ address }) => vaultService.removeWalletAsync({ address }),
         onSuccess: () => {
-            // Invalidate wallet queries
-            queryClient.invalidateQueries({ queryKey: ["vault", "wallets"] });
-            queryClient.invalidateQueries({ queryKey: ["vault", "currentWallet"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.wallets() });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.currentWallet() });
         },
     });
 };
 
 /**
- * Creates a mutation for clearing all vault data
- * Invalidates all vault queries on success
+ * Creates a mutation for clearing all vault data.
+ * Invalidates all vault queries on success.
  */
 export const useClearVaultMutation = () => {
     const queryClient = useQueryClient();
@@ -116,15 +112,14 @@ export const useClearVaultMutation = () => {
     return useMutation({
         mutationFn: () => vaultService.clearAllAsync(),
         onSuccess: () => {
-            // Invalidate all vault queries
-            queryClient.invalidateQueries({ queryKey: ["vault"] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.all() });
         },
     });
 };
 
 /**
- * Creates a mutation for setting the current wallet
- * Updates the current wallet query directly
+ * Creates a mutation for setting the current wallet.
+ * Updates the current wallet query cache directly for instant UI feedback.
  */
 export const useSetCurrentWalletMutation = () => {
     const queryClient = useQueryClient();
@@ -133,15 +128,14 @@ export const useSetCurrentWalletMutation = () => {
     return useMutation({
         mutationFn: ({ address }) => vaultService.setCurrentWalletByAddressAsync({ address }),
         onSuccess: (_, { address }) => {
-            // Update the current wallet query
-            queryClient.setQueryData(["vault", "currentWallet"], address);
+            queryClient.setQueryData(vaultKeys.currentWallet(), address);
         },
     });
 };
 
 /**
- * Creates a mutation for allowing URL permissions
- * Invalidates URL permissions query on success
+ * Creates a mutation for allowing URL permissions.
+ * Invalidates the URL permissions query for the given URL on success.
  */
 export const useAllowUrlMutation = () => {
     const queryClient = useQueryClient();
@@ -150,15 +144,14 @@ export const useAllowUrlMutation = () => {
     return useMutation({
         mutationFn: (url) => vaultService.allowUrlAsync(url),
         onSuccess: (_, url) => {
-            // Invalidate the URL permissions query
-            queryClient.invalidateQueries({ queryKey: ["vault", "urlPermissions", url] });
+            queryClient.invalidateQueries({ queryKey: vaultKeys.urlPermissions(url) });
         },
     });
 };
 
 /**
- * Creates a mutation for updating history (triggered by message handler)
- * Invalidates history query
+ * Creates a mutation for refreshing history (triggered by message handler).
+ * Updates the history query cache directly with the fetched data.
  */
 export const useUpdateHistoryMutation = () => {
     const queryClient = useQueryClient();
@@ -167,8 +160,7 @@ export const useUpdateHistoryMutation = () => {
     return useMutation({
         mutationFn: () => vaultService.getHistoryAsync(),
         onSuccess: (data) => {
-            // Update the history query directly
-            queryClient.setQueryData(["vault", "history"], data);
+            queryClient.setQueryData(vaultKeys.history(), data);
         },
     });
 };
