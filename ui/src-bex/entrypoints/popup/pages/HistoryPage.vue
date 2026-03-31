@@ -27,7 +27,7 @@
                         </q-icon>
                     </q-item-section>
                 </q-item>
-                <q-item v-if="!sortedHistory || !sortedHistory.length">
+                <q-item v-if="!history || !history.length">
                     <q-item-section class="text-center">
                         <q-item-label>No history yet.</q-item-label>
                     </q-item-section>
@@ -39,13 +39,13 @@
 
 <script setup>
 import { mdiCheckCircle, mdiAlertCircle } from "@mdi/js";
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-const { sortedHistory } = storeToRefs(vaultStore);
+import { useHistoryQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 
-// Fetch fresh history each time the page is entered
-onMounted(async () => {
-    await vaultStore.updateHistoryAsync();
+const { data: history, isLoading } = useHistoryQuery();
+
+const sortedHistory = computed(() => {
+    if (!history.value) return [];
+    return [...history.value].sort((a, b) => b.timestamp - a.timestamp);
 });
 
 const $q = useQuasar();

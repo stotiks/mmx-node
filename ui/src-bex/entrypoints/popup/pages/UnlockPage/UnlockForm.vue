@@ -14,6 +14,7 @@
                 rounded
                 outline
                 :disable="!password"
+                :loading="unlockMutation.isPending.value"
             />
         </div>
     </q-form>
@@ -22,16 +23,16 @@
 <script setup>
 import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
 import WPasswordInput from "@/components/UI/WPasswordInput.vue";
+import { useUnlockMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 
 const test_password = import.meta.env.DEV && import.meta.env.VITE_TEST_PASSWORD;
 const password = ref(test_password || "");
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+const unlockMutation = useUnlockMutation();
+
 const handleUnlockAsync = async () => {
-    await tryCatchWrapperAsync(() => vaultStore.unlockAsync({ password: password.value }));
+    await tryCatchWrapperAsync(() => unlockMutation.mutateAsync({ password: password.value }));
 };
 </script>

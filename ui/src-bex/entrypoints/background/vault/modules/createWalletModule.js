@@ -22,6 +22,10 @@ export const createWalletModule = (dependencies = {}) => {
 
     let cleanedWalletsCache = null;
 
+    eventModule?.on("unlocked", async () => {
+        await getCleanedWalletsAsync();
+    });
+
     eventModule?.on("locked", () => {
         cleanedWalletsCache = null;
     });

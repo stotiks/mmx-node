@@ -29,13 +29,14 @@
                                 dense
                                 round
                                 :icon="mdiDelete"
+                                :loading="removeMutation.isPending.value"
                                 @click.stop="handleRemoveWalletAsync(wallet.address)"
                             />
                         </div>
                     </q-item-section>
                 </q-item>
 
-                <q-item v-if="!wallets.length">
+                <q-item v-if="!wallets || !wallets.length">
                     <q-item-section class="text-center">
                         <q-item-label>No wallets found.</q-item-label>
                     </q-item-section>
@@ -52,12 +53,19 @@ import { mdiCheck, mdiContentCopy, mdiDelete } from "@mdi/js";
 
 import { UseClipboard } from "@vueuse/components";
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
+import {
+    useWalletsQuery,
+    useCurrentWalletQuery,
+    useIsUnlockedQuery,
+} from "@bex/entrypoints/popup/queries/vaultQueries";
+import { useRemoveWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-const { wallets, currentWalletAddress } = storeToRefs(vaultStore);
+const { data: isUnlocked } = useIsUnlockedQuery();
+const { data: wallets } = useWalletsQuery();
+const { data: currentWalletAddress } = useCurrentWalletQuery(isUnlocked.value);
+const removeMutation = useRemoveWalletMutation();
 
 const $q = useQuasar();
 const handleAddWallet = () => {
@@ -68,6 +76,6 @@ const handleAddWallet = () => {
 };
 
 const handleRemoveWalletAsync = async (address) => {
-    await tryCatchWrapperAsync(() => vaultStore.removeWalletAsync({ address }));
+    await tryCatchWrapperAsync(() => removeMutation.mutateAsync({ address }));
 };
 </script>

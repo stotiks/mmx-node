@@ -46,9 +46,17 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginC
 
 const onDialogShow = async () => {};
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-const { isUnlocked, isInitialized } = storeToRefs(vaultStore);
+import {
+    useIsInitializedQuery,
+    useIsUnlockedQuery,
+    useUrlPermissionsQuery,
+} from "@bex/entrypoints/popup/queries/vaultQueries";
+import { useAllowUrlMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+
+const { data: isInitialized } = useIsInitializedQuery();
+const { data: isUnlocked } = useIsUnlockedQuery();
+const { data: hasUrlPermissions } = useUrlPermissionsQuery(props.url);
+const allowUrlMutation = useAllowUrlMutation();
 
 import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import RequestPermissionsPage from "./pages/RequestPermissionsPage";
@@ -69,8 +77,10 @@ const RequestPermissionsPageComponent = {
     events: {
         ok: async (result) => {
             if (result.granted === true) {
-                await tryCatchWrapperASync(async () => await vaultStore.allowUrlAsync(props.url));
-                permissionsGranted.value = true;
+                await tryCatchWrapperASync(async () => {
+                    await allowUrlMutation.mutateAsync(props.url);
+                    permissionsGranted.value = true;
+                });
             }
         },
         cancel: () => {
@@ -101,16 +111,13 @@ const InitPageComponent = {
 const pageComponent = shallowRef(UnlockPageComponent);
 
 watch(
-    [isInitialized, isUnlocked, permissionsGranted],
+    [isInitialized, isUnlocked, permissionsGranted, hasUrlPermissions],
     async () => {
         if (!isInitialized.value) {
             pageComponent.value = InitPageComponent;
         } else if (!isUnlocked.value) {
             pageComponent.value = UnlockPageComponent;
-        } else if (
-            !permissionsGranted.value &&
-            (await vaultStore.checkUrlPermissionsAsync(props.url).catch(() => false)) !== true
-        ) {
+        } else if (!permissionsGranted.value && hasUrlPermissions.value !== true) {
             pageComponent.value = RequestPermissionsPageComponent;
         } else {
             // if initialized, unlocked and url permissions granted:

@@ -3,8 +3,8 @@
         <div class="q-gutter-y-md">
             <WalletSelect2 />
             <BalanceTable
-                v-if="currentWalletAddress"
-                :address="currentWalletAddress"
+                v-if="currentWallet"
+                :address="currentWallet"
                 use-short-addr
                 :use-contract-link="false"
                 show-empty
@@ -15,8 +15,8 @@
 
 <script setup>
 import WalletSelect2 from "@bex/entrypoints/popup/components/WalletSelect2";
+import { useIsUnlockedQuery, useCurrentWalletQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-const { currentWalletAddress } = storeToRefs(vaultStore);
+const { data: isUnlocked } = useIsUnlockedQuery();
+const { data: currentWallet } = useCurrentWalletQuery(isUnlocked.value);
 </script>

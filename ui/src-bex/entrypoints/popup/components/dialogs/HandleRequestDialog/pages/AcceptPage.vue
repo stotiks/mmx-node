@@ -27,7 +27,7 @@
                         outline
                         rounded
                         color="positive"
-                        :disable="!currentWalletAddress"
+                        :disable="!currentWallet"
                         @click="handleAccept"
                     />
                 </div>
@@ -63,9 +63,10 @@ const emit = defineEmits(["ok", "cancel"]);
 const handleCancel = () => emit("cancel");
 const handleAccept = () => emit("ok", { accepted: true });
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-const { currentWalletAddress } = storeToRefs(vaultStore);
+import { useCurrentWalletQuery, useIsUnlockedQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
+
+const { data: isUnlocked } = useIsUnlockedQuery();
+const { data: currentWallet } = useCurrentWalletQuery(isUnlocked.value);
 </script>
 
 <style scoped>

@@ -17,7 +17,7 @@
                 </template>
             </template>
 
-            <q-inner-loading :showing="!showContent || isActionRunning" class="fullscreen">
+            <q-inner-loading :showing="!showContent || isUnlockPending || isInitPending" class="fullscreen">
                 <q-spinner-radio size="50px" color="primary" />
             </q-inner-loading>
         </q-page-container>
@@ -33,22 +33,34 @@ import UnlockPage from "@bex/entrypoints/popup/pages/UnlockPage";
 import InitPage from "@bex/entrypoints/popup/pages/InitPage.vue";
 import Toolbar from "./components/Toolbar.vue";
 
+import { useVaultStatusQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
 import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
+
 const vaultStore = useVaultStore();
-const { isLoaded, isInitialized, isUnlocked, isActionRunning } = storeToRefs(vaultStore);
+const { isActionRunning } = storeToRefs(vaultStore);
+
+const { isInitialized, isUnlocked, isLoading } = useVaultStatusQuery();
+
+// Track mutation states for loading indicator
+import { useUnlockMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+import { useInitVaultMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+const unlockMutation = useUnlockMutation();
+const initMutation = useInitVaultMutation();
+const isUnlockPending = unlockMutation.isPending;
+const isInitPending = initMutation.isPending;
 
 import { useVaultMessageHandler } from "@bex/entrypoints/popup/MessageHandlers/useVaultMessageHandler";
 useVaultMessageHandler();
 
 import { useNotificationMessageHandler } from "./MessageHandlers/useNotificationMessageHandler";
-const { isMounted, isRunning, isLoading } = useNotificationMessageHandler();
+const { isMounted, isRunning, isLoading: isNotificationLoading } = useNotificationMessageHandler();
 
 const showContent = computed(() => {
     return (
-        isLoaded.value &&
+        !isLoading.value &&
         //&& !isActionRunning.value
         isMounted.value &&
-        !isLoading.value &&
+        !isNotificationLoading.value &&
         !isRunning.value
     );
 });
