@@ -1,10 +1,10 @@
 import { useQuasar } from "quasar";
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
+import { useClearVaultMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 import { useTryCatchWrapperAsync } from "./useTryCatchWrapperAsync";
 
 export function useRemoveVaultData() {
     const $q = useQuasar();
-    const vaultStore = useVaultStore();
+    const clearMutation = useClearVaultMutation();
     const tryCatchWrapperAsync = useTryCatchWrapperAsync();
 
     const handleRemoveVaultDataAsync = async () => {
@@ -18,7 +18,7 @@ export function useRemoveVaultData() {
                     color: "negative",
                 },
             }).onOk(async () => {
-                await vaultStore.clearAllAsync();
+                await clearMutation.mutateAsync();
             });
         });
     };

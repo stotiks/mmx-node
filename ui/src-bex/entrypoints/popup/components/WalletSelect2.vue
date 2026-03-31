@@ -1,9 +1,9 @@
 <template>
     <q-select
-        v-if="wallets.length"
-        :model-value="currentWalletAddress"
+        v-if="wallets && wallets.length"
+        :model-value="currentWallet"
         :options="walletsOptions"
-        :display-value="currentWalletAddress ? getShortAddr(currentWalletAddress, 25) : ''"
+        :display-value="currentWallet ? getShortAddr(currentWallet, 25) : ''"
         emit-value
         map-options
         label="Wallet"
@@ -27,11 +27,19 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
+import {
+    useWalletsQuery,
+    useCurrentWalletQuery,
+    useIsUnlockedQuery,
+} from "@bex/entrypoints/popup/queries/vaultQueries";
+import { useSetCurrentWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 
 const router = useRouter();
-const vaultStore = useVaultStore();
-const { wallets, currentWalletAddress } = storeToRefs(vaultStore);
+
+const { data: isUnlocked } = useIsUnlockedQuery();
+const { data: wallets } = useWalletsQuery();
+const { data: currentWallet } = useCurrentWalletQuery(isUnlocked.value);
+const setCurrentWalletMutation = useSetCurrentWalletMutation();
 
 const walletsOptions = computed(() =>
     wallets.value.map((wallet) => ({
@@ -40,10 +48,10 @@ const walletsOptions = computed(() =>
     }))
 );
 
-// Use the store action instead of writing currentWalletAddress directly,
+// Use the mutation to set current wallet
 // so the background vault is kept in sync.
 const handleWalletChange = async (address) => {
-    await vaultStore.setCurrentWalletAsync({ address });
+    setCurrentWalletMutation.mutate({ address });
 };
 
 const $q = useQuasar();

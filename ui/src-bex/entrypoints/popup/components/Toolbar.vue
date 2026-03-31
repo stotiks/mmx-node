@@ -39,17 +39,16 @@ import {
 
 const route = useRoute();
 
-import { useVaultStore } from "../stores/vault";
-const vaultStore = useVaultStore();
-
+import { useLockMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 import { useTryCatchWrapperAsync } from "../composables/useTryCatchWrapperAsync";
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+const lockMutation = useLockMutation();
 
 import { useRemoveVaultData } from "../composables/useRemoveVaultData";
 const { handleRemoveVaultDataAsync } = useRemoveVaultData();
 
 const handleLockAsync = async () => {
-    await tryCatchWrapperAsync(() => vaultStore.lockAsync());
+    await tryCatchWrapperAsync(() => lockMutation.mutateAsync());
 };
 
 const menuItems = [

@@ -9,6 +9,7 @@ describe("createPermissionModule", () => {
     beforeEach(() => {
         eventModule = {
             emit: vi.fn(),
+            on: vi.fn(),
         };
 
         consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -245,7 +246,7 @@ describe("createPermissionModule", () => {
 
     describe("closure-based private storage", () => {
         it("should maintain separate permission storage per instance", async () => {
-            const eventModule2 = { emit: vi.fn() };
+            const eventModule2 = { emit: vi.fn(), on: vi.fn() };
             const requireUnlocked1 = vi.fn();
             const requireUnlocked2 = vi.fn();
             const module1 = createPermissionModule({ eventModule, requireUnlocked: requireUnlocked1 });

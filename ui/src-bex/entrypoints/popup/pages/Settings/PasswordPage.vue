@@ -25,7 +25,12 @@
 
                         <div class="row justify-between">
                             <q-btn label="Reset" type="reset" color="primary" flat />
-                            <q-btn label="Update" type="submit" color="primary" />
+                            <q-btn
+                                label="Update"
+                                type="submit"
+                                color="primary"
+                                :loading="updatePasswordMutation.isPending.value"
+                            />
                         </div>
                     </q-form>
                 </q-card-section>
@@ -37,14 +42,13 @@
 <script setup>
 import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 import PasswordForm from "@bex/entrypoints/popup/components/PasswordForm.vue";
+import { useUpdatePasswordMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 import rules from "@/helpers/rules";
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-
-import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
 const router = useRouter();
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+const updatePasswordMutation = useUpdatePasswordMutation();
 
 const test_password = import.meta.env.DEV && import.meta.env.VITE_TEST_PASSWORD;
 const password = ref(test_password || "");
@@ -54,7 +58,7 @@ const rotateMasterKey = ref(false);
 
 const handleUpdatePasswordAsync = () =>
     tryCatchWrapperAsync(async () => {
-        await vaultStore.updatePasswordAsync({
+        await updatePasswordMutation.mutateAsync({
             password: password.value,
             newPassword: newPassword.value,
             rotateMasterKey: rotateMasterKey.value,

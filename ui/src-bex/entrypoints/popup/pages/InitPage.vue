@@ -12,7 +12,12 @@
 
                         <div class="row justify-between">
                             <q-btn label="Reset" type="reset" color="primary" flat />
-                            <q-btn label="Create" type="submit" color="primary" />
+                            <q-btn
+                                label="Create"
+                                type="submit"
+                                color="primary"
+                                :loading="initMutation.isPending.value"
+                            />
                         </div>
                     </q-form>
                 </q-card-section>
@@ -23,22 +28,18 @@
 
 <script setup>
 import PasswordForm from "@bex/entrypoints/popup/components/PasswordForm.vue";
+import { useInitVaultMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 import { useTryCatchWrapperAsync } from "../composables/useTryCatchWrapperAsync";
+
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+const initMutation = useInitVaultMutation();
 
 const test_password = import.meta.env.DEV && import.meta.env.VITE_TEST_PASSWORD;
 const newPassword = ref(test_password || "");
 const newPasswordConfirm = ref(test_password || "");
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-
 const handleInitAsync = async () => {
-    await tryCatchWrapperAsync(async () => {
-        await vaultStore.initAsync({
-            password: newPassword.value,
-        });
-    });
+    await tryCatchWrapperAsync(() => initMutation.mutateAsync({ password: newPassword.value }));
 };
 
 const handleReset = () => {

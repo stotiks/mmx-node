@@ -9,11 +9,11 @@
 
                 <q-card-actions align="right" class="text-primary">
                     <q-btn flat label="Cancel" @click="onDialogCancel" />
-                    <q-btn flat label="Add" type="submit" />
+                    <q-btn flat label="Add" type="submit" :loading="addMutation.isPending.value" />
                 </q-card-actions>
             </q-form>
 
-            <q-inner-loading :showing="isActionRunning">
+            <q-inner-loading :showing="addMutation.isPending.value">
                 <q-spinner-gears size="50px" color="primary" />
             </q-inner-loading>
         </q-card>
@@ -32,20 +32,19 @@ const mnemonic = ref(test_mnemonic || "");
 const password = ref("");
 
 const handleSubmit = async () => {
-    await handleAddWalletAsync();
+    await handleSubmitAsync();
 };
 const onDialogShow = () => {};
 
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
+import { useAddWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
+
 const tryCatchWrapperAsync = useTryCatchWrapperAsync();
+const addMutation = useAddWalletMutation();
 
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-const vaultStore = useVaultStore();
-const { isActionRunning } = storeToRefs(vaultStore);
-
-const handleAddWalletAsync = async () => {
+const handleSubmitAsync = async () => {
     await tryCatchWrapperAsync(async () => {
-        await vaultStore.addWalletAsync({ mnemonic: mnemonic.value, password: password.value });
+        await addMutation.mutateAsync({ mnemonic: mnemonic.value, password: password.value });
         mnemonic.value = ""; // Clear mnemonic from memory after successful wallet addition
         onDialogOK();
     });
