@@ -38,7 +38,7 @@ const router = useRouter();
 
 const { data: isUnlocked } = useIsUnlockedQuery();
 const { data: wallets } = useWalletsQuery();
-const { data: currentWallet } = useCurrentWalletQuery(isUnlocked.value);
+const { data: currentWallet } = useCurrentWalletQuery(isUnlocked);
 const setCurrentWalletMutation = useSetCurrentWalletMutation();
 
 const walletsOptions = computed(() =>

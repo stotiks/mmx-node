@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { mdiLockOpenVariant, mdiShieldLockOpen, mdiLogin } from "@mdi/js";
+import { mdiLockOpenVariant, mdiShieldLockOpen } from "@mdi/js";
 import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 import { useUnlockMutation } from "@bex/entrypoints/popup/queries/vaultMutations";
 import { useTryCatchWrapperAsync } from "@bex/entrypoints/popup/composables/useTryCatchWrapperAsync";
