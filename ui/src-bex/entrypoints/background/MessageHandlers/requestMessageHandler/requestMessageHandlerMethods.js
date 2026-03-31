@@ -1,8 +1,8 @@
-import { broadcastTransactionAsync, validateTransactionAsync } from "@bex/entrypoints/background/queries";
+import { broadcastTransactionAsync2 } from "./utils/broadcastTransactionAsync2";
 
 import {
-    getCurrentWalletAsync,
     getCurrentHeightAsync,
+    getCurrentWalletAsync,
     getOfferTradeTxAsync,
     getPubKeyAsync,
     getSendTxAsync,
@@ -12,30 +12,6 @@ import {
 
 import notificationMessenger from "@bex/entrypoints/background/notificationMessenger";
 import vault from "@bex/entrypoints/background/vault";
-
-const broadcastTransactionAsync2 = async (tx) => {
-    if (import.meta.env.DEV) {
-        const result = await validateTransactionAsync(tx);
-
-        if (result.error) {
-            const message = result.error?.message || result.error;
-            throw new Error(message);
-        }
-    } else {
-        await broadcastTransactionAsync(tx);
-    }
-
-    const result = {
-        id: tx.id,
-
-        ...(import.meta.env.DEV && {
-            dev: {
-                tx,
-            },
-        }),
-    };
-    return result;
-};
 
 const $method = (fn, metadata = {}) => {
     fn.metadata = { isAcceptRequired: true, ...metadata };
