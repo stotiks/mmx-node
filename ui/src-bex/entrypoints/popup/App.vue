@@ -34,10 +34,6 @@ import InitPage from "@bex/entrypoints/popup/pages/InitPage.vue";
 import Toolbar from "./components/Toolbar.vue";
 
 import { useVaultStatusQuery } from "@bex/entrypoints/popup/queries/vaultQueries";
-import { useVaultStore } from "@bex/entrypoints/popup/stores/vault";
-
-const vaultStore = useVaultStore();
-const { isActionRunning } = storeToRefs(vaultStore);
 
 const { isInitialized, isUnlocked, isLoading } = useVaultStatusQuery();
 
@@ -56,12 +52,6 @@ import { useNotificationMessageHandler } from "./MessageHandlers/useNotification
 const { isMounted, isRunning, isLoading: isNotificationLoading } = useNotificationMessageHandler();
 
 const showContent = computed(() => {
-    return (
-        !isLoading.value &&
-        //&& !isActionRunning.value
-        isMounted.value &&
-        !isNotificationLoading.value &&
-        !isRunning.value
-    );
+    return !isLoading.value && isMounted.value && !isNotificationLoading.value && !isRunning.value;
 });
 </script>
