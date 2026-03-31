@@ -55,7 +55,6 @@ const props = defineProps({
     },
 });
 
-import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 

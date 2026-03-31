@@ -42,7 +42,6 @@ import { mdiLockOpenVariant, mdiEye, mdiEyeOff } from "@mdi/js";
 const passphrase = useSecureRef("");
 const showPassphrase = ref(false);
 
-import { useDialogPluginComponent } from "quasar";
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
