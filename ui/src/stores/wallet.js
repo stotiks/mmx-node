@@ -22,6 +22,10 @@ export const useWalletStore = defineStore("wallet", () => {
         clearWallet();
     };
 
+    onUnmounted(() => {
+        clearWallet();
+    });
+
     return {
         wallet,
         setWallet,
