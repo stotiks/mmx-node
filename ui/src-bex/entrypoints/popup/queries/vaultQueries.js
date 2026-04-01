@@ -13,8 +13,6 @@ export const useWalletsQuery = () => {
     return useQuery({
         queryKey: vaultKeys.wallets(),
         queryFn: () => vaultService.getWalletsAsync(),
-        staleTime: 1000 * 60 * 5, // 5 minutes - wallets don't change often
-        gcTime: 1000 * 60 * 10, // 10 minutes
         placeholderData: [],
     });
 };
@@ -31,8 +29,6 @@ export const useCurrentWalletQuery = (isUnlocked) => {
     return useQuery({
         queryKey: vaultKeys.currentWallet(),
         queryFn: () => vaultService.getCurrentWalletAddressAsync(),
-        staleTime: 1000 * 60 * 5, // 5 minutes
-        gcTime: 1000 * 60 * 10, // 10 minutes
         enabled: isUnlocked,
         placeholderData: "",
     });
@@ -49,8 +45,6 @@ export const useHistoryQuery = () => {
     return useQuery({
         queryKey: vaultKeys.history(),
         queryFn: () => vaultService.getHistoryAsync(),
-        staleTime: 0, // Always fetch fresh
-        gcTime: 1000 * 60 * 10, // 10 minutes
         placeholderData: [],
     });
 };
@@ -65,8 +59,6 @@ export const useIsInitializedQuery = () => {
     return useQuery({
         queryKey: vaultKeys.isInitialized(),
         queryFn: () => vaultService.getIsInitializedAsync(),
-        staleTime: 1000 * 60, // 1 minute
-        gcTime: 1000 * 60 * 5, // 5 minutes
         placeholderData: false,
     });
 };
@@ -81,8 +73,6 @@ export const useIsUnlockedQuery = () => {
     return useQuery({
         queryKey: vaultKeys.isUnlocked(),
         queryFn: () => vaultService.getIsUnlockedAsync(),
-        staleTime: 0, // Always check - security critical
-        gcTime: 1000 * 60 * 5, // 5 minutes
         placeholderData: false,
     });
 };
@@ -117,8 +107,6 @@ export const useUrlPermissionsQuery = (url) => {
         queryKey: vaultKeys.urlPermissions(url),
         queryFn: () => vaultService.checkUrlPermissionsAsync(url),
         enabled: !!url,
-        staleTime: 1000 * 60 * 5, // 5 minutes
-        gcTime: 1000 * 60 * 10, // 10 minutes
         placeholderData: false,
     });
 };

@@ -19,4 +19,7 @@ import { useIsUnlockedQuery, useCurrentWalletQuery } from "@bex/entrypoints/popu
 
 const { data: isUnlocked } = useIsUnlockedQuery();
 const { data: currentWallet } = useCurrentWalletQuery(isUnlocked);
+
+import { useNodeInfo } from "@/queries/wapi";
+useNodeInfo();
 </script>
