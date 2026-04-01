@@ -12,19 +12,26 @@ export class MessageHandler {
     }
 
     addPreHook(hookFn, options = {}) {
-        this.#preHooks.push({ hookFn, options });
+        this.#addHook(this.#preHooks, hookFn, options);
     }
 
     addPostHook(hookFn, options = {}) {
-        this.#postHooks.push({ hookFn, options });
+        this.#addHook(this.#postHooks, hookFn, options);
     }
 
     addSuccessHook(hookFn, options = {}) {
-        this.#successHooks.push({ hookFn, options });
+        this.#addHook(this.#successHooks, hookFn, options);
     }
 
     addFailHook(hookFn, options = {}) {
-        this.#failHooks.push({ hookFn, options });
+        this.#addHook(this.#failHooks, hookFn, options);
+    }
+
+    #addHook(hooks, hookFn, options = {}) {
+        if (typeof hookFn !== "function") {
+            throw new TypeError("hookFn must be a function");
+        }
+        hooks.push({ hookFn, options });
     }
 
     async #executeHooksAsync(context, hooks) {
