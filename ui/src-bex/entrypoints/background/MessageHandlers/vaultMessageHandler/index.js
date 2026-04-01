@@ -4,7 +4,7 @@ import { MessageHandler } from "@bex/messaging/MessageHandler";
 /**
  * Whitelist of safe vault methods that can be accessed via message handler.
  */
-const vaultPublicAPI = {
+const storageAPI = {
     // Storage manager interface
     getIsInitializedAsync: vault.getIsInitializedAsync,
     initAsync: vault.initAsync,
@@ -13,7 +13,9 @@ const vaultPublicAPI = {
     lock: vault.lock,
     clearAllAsync: vault.clearAllAsync,
     updatePasswordAsync: vault.updatePasswordAsync,
+};
 
+const otherAPI = {
     // Wallet interface
     getNetworkAsync: vault.getNetworkAsync,
     getWalletsAsync: vault.getWalletsAsync,
@@ -34,8 +36,25 @@ const vaultPublicAPI = {
     allowUrlAsync: vault.allowUrlAsync,
     revokeUrlAsync: vault.revokeUrlAsync,
     getAllowedOrigins: vault.getAllowedOrigins,
+
+    // Reset idle timeout
+    resetIdleTimeout: vault.resetIdleTimeout,
+};
+
+const vaultPublicAPI = {
+    ...storageAPI,
+    ...otherAPI,
+};
+
+const activityTrackedMethods = {
+    ...otherAPI,
 };
 
 const vaultMessageHandler = new MessageHandler(vaultPublicAPI);
+
+import { createResetTimeoutHook } from "./hooks/createResetTimeoutHook";
+vaultMessageHandler.addPreHook(createResetTimeoutHook(vault.resetIdleTimeout, activityTrackedMethods), {
+    fireAndForget: true,
+});
 
 export default vaultMessageHandler;

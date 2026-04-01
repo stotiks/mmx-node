@@ -1,5 +1,6 @@
 import { createEventModule } from "./modules/createEventModule";
 import { createHistoryModule } from "./modules/createHistoryModule";
+import { createIdleTimeoutModule } from "./modules/createIdleTimeoutModule";
 import { createPermissionModule } from "./modules/createPermissionModule";
 import { createStorageManagerModule } from "./modules/createStorageManagerModule";
 import { createWalletModule } from "./modules/createWalletModule";
@@ -11,6 +12,7 @@ export const createVault = (dependencies = {}) => {
         walletStorage = new EncryptedStorageItem("local:wallets"),
         historyStorage = new EncryptedStorageItem("local:history"),
         maxHistoryEntries = 100,
+        idleTimeoutMinutes = 15,
     } = dependencies;
 
     const eventModule = createEventModule();
@@ -40,6 +42,14 @@ export const createVault = (dependencies = {}) => {
         maxHistoryEntries,
         requireUnlocked: storageManagerModule.requireUnlocked,
     });
+
+    const idleTimeoutModule = createIdleTimeoutModule({
+        lock: storageManagerModule.lock,
+        timeoutMinutes: idleTimeoutMinutes,
+    });
+
+    eventModule.on("unlocked", idleTimeoutModule.startTimeout);
+    eventModule.on("locked", idleTimeoutModule.stopTimeout);
 
     // Compose the final vault interface
     const vault = {
@@ -82,6 +92,12 @@ export const createVault = (dependencies = {}) => {
         // Event interface
         on: eventModule.on,
         removeListener: eventModule.removeListener,
+
+        // Idle timeout interface
+        // startIdleTimeout: idleTimeoutModule.startTimeout,
+        // stopIdleTimeout: idleTimeoutModule.stopTimeout,
+        resetIdleTimeout: idleTimeoutModule.resetTimeout,
+        // getIdleTimeoutEnabled: idleTimeoutModule.getIsEnabled,
     };
 
     return vault;

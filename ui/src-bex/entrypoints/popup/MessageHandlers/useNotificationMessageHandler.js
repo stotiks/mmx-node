@@ -1,6 +1,7 @@
 import popupMessenger from "@bex/messaging/entrypointMessengers/popup";
 import { MessageHandler } from "@bex/messaging/MessageHandler";
 import { useTimeoutFn } from "@vueuse/core";
+import { useVaultService } from "../composables/useVaultService";
 
 const useShowHandleRequestDialogAsync = () => {
     const $q = useQuasar();
@@ -57,14 +58,17 @@ export const useNotificationMessageHandler = () => {
 
     if (isNotification) {
         const { showHandleRequestDialogAsync } = useShowHandleRequestDialogAsync();
-
         const { showResultDialogAsync } = useShowResultDialogAsync();
+
+        const vaultService = useVaultService();
 
         class NotificationMessageHandlerMethods {
             static requestPermissionsAndAccept = async (params) => {
                 if (isRunning.value === true) {
                     throw new Error("Other request is running");
                 }
+
+                vaultService.resetIdleTimeout();
 
                 let result = null;
                 try {
