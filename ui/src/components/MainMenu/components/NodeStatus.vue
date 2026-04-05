@@ -49,12 +49,7 @@ const options = {
 
 const { status } = useNodeStatus();
 
-// import { refThrottled } from "@vueuse/core";
-// const throttledStatus = refThrottled(status, 10000);
-
-const statusOptions = computed(() => {
-    return options[status.value];
-});
+const statusOptions = computed(() => options[status.value]);
 </script>
 
 <style lang="scss" scoped>
