@@ -70,6 +70,12 @@ export const createWalletModule = (dependencies = {}) => {
 
     const getWalletsAsync = getCleanedWalletsAsync;
 
+    const persistWallet$$sensitive = async (newWallet$$sensitive) => {
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
+        wallets$$sensitive.push(newWallet$$sensitive);
+        await setWalletsAsync$$sensitive(wallets$$sensitive);
+    };
+
     const addWalletAsync = async ({ mnemonic, password }) => {
         requireUnlocked();
 
@@ -83,19 +89,15 @@ export const createWalletModule = (dependencies = {}) => {
             ecdsaWallet.destroy();
         }
 
-        const seed = base64.encode(mnemonicToSeed(mnemonic));
-
-        const newWallet$$sensitive = { address, seed, password };
-
         // Check for duplicate wallets
         const wallets = await getWalletsAsync();
         if (wallets.some((wallet) => wallet.address === address)) {
             throw new Error("Wallet already exists");
         }
 
-        const wallets$$sensitive = await getWalletsAsync$$sensitive();
-        wallets$$sensitive.push(newWallet$$sensitive);
-        await setWalletsAsync$$sensitive(wallets$$sensitive);
+        const newWallet$$sensitive = { address, seed: base64.encode(mnemonicToSeed(mnemonic)), password };
+
+        await persistWallet$$sensitive(newWallet$$sensitive);
 
         eventModule?.emit("wallet-added", { address });
         return walletCleanup(newWallet$$sensitive);
@@ -105,14 +107,11 @@ export const createWalletModule = (dependencies = {}) => {
         requireUnlocked();
 
         const wallets$$sensitive = await getWalletsAsync$$sensitive();
-
         const index = wallets$$sensitive.findIndex((wallet) => wallet.address === address);
         if (index === -1) {
             throw new Error("Wallet not found");
         }
-
         wallets$$sensitive.splice(index, 1);
-
         await setWalletsAsync$$sensitive(wallets$$sensitive);
 
         currentWalletAddress = wallets$$sensitive[0]?.address ?? null;
