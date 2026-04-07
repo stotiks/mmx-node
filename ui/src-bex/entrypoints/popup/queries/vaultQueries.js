@@ -13,7 +13,7 @@ export const useWalletsQuery = () => {
     return useQuery({
         queryKey: vaultKeys.wallets(),
         queryFn: () => vaultService.getWalletsAsync(),
-        placeholderData: [],
+        // placeholderData: [],
     });
 };
 

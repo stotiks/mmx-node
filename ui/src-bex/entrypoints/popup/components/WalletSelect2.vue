@@ -1,6 +1,6 @@
 <template>
     <q-select
-        v-if="wallets && wallets.length"
+        v-if="isLoading || (wallets && wallets.length)"
         :model-value="currentWallet"
         :options="walletsOptions"
         :display-value="currentWallet ? getShortAddr(currentWallet, 25) : ''"
@@ -9,6 +9,7 @@
         label="Wallet"
         filled
         dense
+        :loading="isLoading"
         @update:model-value="handleWalletChange"
     />
     <template v-else>
@@ -37,12 +38,12 @@ import { useSetCurrentWalletMutation } from "@bex/entrypoints/popup/queries/vaul
 const router = useRouter();
 
 const { data: isUnlocked } = useIsUnlockedQuery();
-const { data: wallets } = useWalletsQuery();
+const { data: wallets, isLoading } = useWalletsQuery();
 const { data: currentWallet } = useCurrentWalletQuery(isUnlocked);
 const setCurrentWalletMutation = useSetCurrentWalletMutation();
 
 const walletsOptions = computed(() =>
-    wallets.value.map((wallet) => ({
+    (wallets.value || []).map((wallet) => ({
         label: getShortAddr(wallet.address, 25),
         value: wallet.address,
     }))
