@@ -27,6 +27,8 @@ import { useAddWalletMutation } from "@bex/entrypoints/popup/queries/vaultMutati
 defineEmits([...useDialogPluginComponent.emits]);
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } = useDialogPluginComponent();
 
+const onDialogShow = async () => {};
+
 const test_mnemonic = import.meta.env.DEV && import.meta.env.VITE_TEST_MNEMONIC;
 const mnemonic = ref(test_mnemonic || "");
 const password = ref("");
