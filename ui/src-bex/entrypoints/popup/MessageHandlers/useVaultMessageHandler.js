@@ -26,13 +26,25 @@ export const useVaultMessageHandler = () => {
 
     const vaultMessageHandlerMethods = {
         unlocked: async () => {
-            showSuccessNotification("Vault unlocked");
+            //showSuccessNotification("Vault unlocked");
             invalidateAllVaultQueries();
         },
 
         locked: async () => {
-            showSuccessNotification("Vault locked");
+            //showSuccessNotification("Vault locked");
+
             invalidateAllVaultQueries();
+            queryClient.removeQueries({ queryKey: vaultKeys.data() });
+            queryClient.removeQueries({ queryKey: ["node"] });
+            queryClient.removeQueries({ queryKey: ["node_info"] });
+        },
+
+        vaultRemoved: async () => {
+            showSuccessNotification("Vault removed");
+            invalidateAllVaultQueries();
+            queryClient.removeQueries({ queryKey: vaultKeys.data() });
+            queryClient.removeQueries({ queryKey: ["node"] });
+            queryClient.removeQueries({ queryKey: ["node_info"] });
         },
 
         initialized: async () => {

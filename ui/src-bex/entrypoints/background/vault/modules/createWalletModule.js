@@ -6,6 +6,7 @@ export const createWalletModule = (dependencies = {}) => {
     const { walletBoundStorage, eventModule, requireUnlocked } = dependencies;
 
     let currentWalletAddress = null;
+    let cleanedWalletsCache = null;
 
     const getNetworkAsync = () => {
         requireUnlocked();
@@ -20,11 +21,9 @@ export const createWalletModule = (dependencies = {}) => {
     const walletCleanup = ({ seed, password, ...wallet }) => wallet;
     const walletsCleanup = (wallets) => wallets.map(walletCleanup);
 
-    let cleanedWalletsCache = null;
-
-    eventModule?.on("unlocked", async () => {
-        await getCleanedWalletsAsync();
-    });
+    // eventModule?.on("unlocked", async () => {
+    //     await getCleanedWalletsAsync();
+    // });
 
     eventModule?.on("locked", () => {
         cleanedWalletsCache = null;
@@ -35,46 +34,35 @@ export const createWalletModule = (dependencies = {}) => {
         cleanedWalletsCache = null;
     });
 
-    const cacheCleanedWallets = async (wallets$$sensitive) => {
+    const updateCleanedWalletsCacheAsync = async () => {
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
         cleanedWalletsCache = walletsCleanup(wallets$$sensitive);
+        return cleanedWalletsCache;
     };
 
     const getWalletsAsync$$sensitive = async () => {
         const data$$sensitive = await walletBoundStorage.getAsync();
         const wallets$$sensitive = data$$sensitive?.wallets ?? [];
 
-        cacheCleanedWallets(wallets$$sensitive);
-        if (!currentWalletAddress) {
-            currentWalletAddress = wallets$$sensitive[0]?.address;
-        }
-
         return wallets$$sensitive;
     };
 
     const setWalletsAsync$$sensitive = async (wallets$$sensitive) => {
         await walletBoundStorage.setAsync({ wallets: wallets$$sensitive });
-        cacheCleanedWallets(wallets$$sensitive);
+        await updateCleanedWalletsCacheAsync();
     };
 
     const getCleanedWalletsAsync = async () => {
         requireUnlocked();
 
-        if (cleanedWalletsCache) {
-            return cleanedWalletsCache;
+        if (!cleanedWalletsCache) {
+            await updateCleanedWalletsCacheAsync();
         }
 
-        const wallets$$sensitive = await getWalletsAsync$$sensitive();
-        const cleanedWallets = walletsCleanup(wallets$$sensitive);
-        return cleanedWallets;
+        return cleanedWalletsCache;
     };
 
     const getWalletsAsync = getCleanedWalletsAsync;
-
-    const persistWallet$$sensitive = async (newWallet$$sensitive) => {
-        const wallets$$sensitive = await getWalletsAsync$$sensitive();
-        wallets$$sensitive.push(newWallet$$sensitive);
-        await setWalletsAsync$$sensitive(wallets$$sensitive);
-    };
 
     const addWalletAsync = async ({ mnemonic, password }) => {
         requireUnlocked();
@@ -97,7 +85,9 @@ export const createWalletModule = (dependencies = {}) => {
 
         const newWallet$$sensitive = { address, seed: base64.encode(mnemonicToSeed(mnemonic)), password };
 
-        await persistWallet$$sensitive(newWallet$$sensitive);
+        const wallets$$sensitive = await getWalletsAsync$$sensitive();
+        wallets$$sensitive.push(newWallet$$sensitive);
+        await setWalletsAsync$$sensitive(wallets$$sensitive);
 
         eventModule?.emit("wallet-added", { address });
         return walletCleanup(newWallet$$sensitive);
@@ -114,12 +104,15 @@ export const createWalletModule = (dependencies = {}) => {
         wallets$$sensitive.splice(index, 1);
         await setWalletsAsync$$sensitive(wallets$$sensitive);
 
-        currentWalletAddress = wallets$$sensitive[0]?.address ?? null;
         eventModule?.emit("wallet-removed", { address });
     };
 
-    const getCurrentWalletAddress = () => {
+    const getCurrentWalletAddressAsync = async () => {
         requireUnlocked();
+        if (!currentWalletAddress) {
+            const wallets = await getCleanedWalletsAsync();
+            currentWalletAddress = wallets[0]?.address ?? null;
+        }
         return currentWalletAddress;
     };
 
@@ -184,7 +177,7 @@ export const createWalletModule = (dependencies = {}) => {
         addWalletAsync,
         removeWalletAsync,
 
-        getCurrentWalletAddress,
+        getCurrentWalletAddressAsync,
         setCurrentWalletByAddressAsync,
 
         withECDSAWalletAsync,

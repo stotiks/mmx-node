@@ -357,12 +357,12 @@ describe("createWalletModule", () => {
         });
     });
 
-    describe("getCurrentWalletAddress", () => {
-        it("returns null initially", () => {
+    describe("getCurrentWalletAddressAsync", () => {
+        it("returns null initially", async () => {
             const deps = createDeps();
             const module = createWalletModule(deps);
 
-            const address = module.getCurrentWalletAddress();
+            const address = await module.getCurrentWalletAddressAsync();
 
             expect(address).toBeNull();
         });
@@ -376,7 +376,7 @@ describe("createWalletModule", () => {
 
             await module.setCurrentWalletByAddressAsync({ address: "mmx1wallet1" });
 
-            expect(module.getCurrentWalletAddress()).toBe("mmx1wallet1");
+            expect(await module.getCurrentWalletAddressAsync()).toBe("mmx1wallet1");
         });
     });
 
@@ -390,7 +390,7 @@ describe("createWalletModule", () => {
 
             await module.setCurrentWalletByAddressAsync({ address: "mmx1wallet1" });
 
-            expect(module.getCurrentWalletAddress()).toBe("mmx1wallet1");
+            expect(await module.getCurrentWalletAddressAsync()).toBe("mmx1wallet1");
         });
 
         it("throws error when wallet not found", async () => {
@@ -403,28 +403,6 @@ describe("createWalletModule", () => {
             await expect(module.setCurrentWalletByAddressAsync({ address: "mmx1nonexistent" })).rejects.toThrow(
                 "Wallet with address mmx1nonexistent not found"
             );
-        });
-
-        it("allows setting address to null", async () => {
-            const deps = createDeps();
-            deps.walletBoundStorage._setData({
-                wallets: [{ address: "mmx1wallet1", seed: "seed1", password: "pass1" }],
-            });
-            const module = createWalletModule(deps);
-
-            await module.setCurrentWalletByAddressAsync({ address: "mmx1wallet1" });
-            await module.setCurrentWalletByAddressAsync({ address: null });
-
-            expect(module.getCurrentWalletAddress()).toBeNull();
-        });
-
-        it("allows setting address to undefined", async () => {
-            const deps = createDeps();
-            const module = createWalletModule(deps);
-
-            await module.setCurrentWalletByAddressAsync({ address: undefined });
-
-            expect(module.getCurrentWalletAddress()).toBeUndefined();
         });
 
         it("emits 'current-wallet-changed' event", async () => {
@@ -618,7 +596,7 @@ describe("createWalletModule", () => {
             expect(module).toHaveProperty("getWalletsAsync");
             expect(module).toHaveProperty("addWalletAsync");
             expect(module).toHaveProperty("removeWalletAsync");
-            expect(module).toHaveProperty("getCurrentWalletAddress");
+            expect(module).toHaveProperty("getCurrentWalletAddressAsync");
             expect(module).toHaveProperty("setCurrentWalletByAddressAsync");
             expect(module).toHaveProperty("getECDSAWalletAsync");
             expect(module).toHaveProperty("withECDSAWalletAsync");
@@ -627,7 +605,7 @@ describe("createWalletModule", () => {
             expect(typeof module.getWalletsAsync).toBe("function");
             expect(typeof module.addWalletAsync).toBe("function");
             expect(typeof module.removeWalletAsync).toBe("function");
-            expect(typeof module.getCurrentWalletAddress).toBe("function");
+            expect(typeof module.getCurrentWalletAddressAsync).toBe("function");
             expect(typeof module.setCurrentWalletByAddressAsync).toBe("function");
             expect(typeof module.getECDSAWalletAsync).toBe("function");
             expect(typeof module.withECDSAWalletAsync).toBe("function");
@@ -659,7 +637,7 @@ describe("createWalletModule", () => {
 
             // Set as current
             await module.setCurrentWalletByAddressAsync({ address: "mmx1wallet1" });
-            expect(module.getCurrentWalletAddress()).toBe("mmx1wallet1");
+            expect(await module.getCurrentWalletAddressAsync()).toBe("mmx1wallet1");
 
             // Get ECDSA wallet
             const ecdsaWallet = await module.getECDSAWalletAsync({ address: "mmx1wallet1" });
@@ -697,11 +675,11 @@ describe("createWalletModule", () => {
 
             // Set first as current
             await module.setCurrentWalletByAddressAsync({ address: "mmx1wallet1" });
-            expect(module.getCurrentWalletAddress()).toBe("mmx1wallet1");
+            expect(await module.getCurrentWalletAddressAsync()).toBe("mmx1wallet1");
 
             // Switch to second
             await module.setCurrentWalletByAddressAsync({ address: "mmx1wallet2" });
-            expect(module.getCurrentWalletAddress()).toBe("mmx1wallet2");
+            expect(await module.getCurrentWalletAddressAsync()).toBe("mmx1wallet2");
 
             // Verify both wallets exist
             const wallets = await module.getWalletsAsync();

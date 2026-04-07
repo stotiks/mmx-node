@@ -21,7 +21,7 @@ const otherAPI = {
     getWalletsAsync: vault.getWalletsAsync,
     addWalletAsync: vault.addWalletAsync,
     removeWalletAsync: vault.removeWalletAsync,
-    getCurrentWalletAddress: vault.getCurrentWalletAddress,
+    getCurrentWalletAddressAsync: vault.getCurrentWalletAddressAsync,
     setCurrentWalletByAddressAsync: vault.setCurrentWalletByAddressAsync,
     // getECDSAWalletAsync: EXCLUDED - exposes raw private key material
 
