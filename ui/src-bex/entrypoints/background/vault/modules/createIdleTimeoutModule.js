@@ -11,14 +11,14 @@ import { browser } from "wxt/browser";
  * @returns {Object} Idle timeout module interface
  */
 export const createIdleTimeoutModule = ({ lock, timeoutMinutes = 15, alarmName = "vault-idle-timeout" }) => {
-    let isEnabled = false;
+    let isListenerRegistered = false;
 
     /**
      * Starts or resets the idle timeout alarm.
      * If the alarm already exists, it will be cleared and recreated.
      */
     const resetTimeout = async () => {
-        if (!isEnabled) {
+        if (!isListenerRegistered) {
             return;
         }
 
@@ -47,11 +47,11 @@ export const createIdleTimeoutModule = ({ lock, timeoutMinutes = 15, alarmName =
      * Enables the timeout and sets up the alarm listener.
      */
     const startTimeout = async () => {
-        if (isEnabled) {
+        if (isListenerRegistered) {
             return;
         }
 
-        isEnabled = true;
+        isListenerRegistered = true;
         browser.alarms.onAlarm.addListener(handleAlarm);
         await resetTimeout();
     };
@@ -61,11 +61,11 @@ export const createIdleTimeoutModule = ({ lock, timeoutMinutes = 15, alarmName =
      * Disables the timeout, removes the alarm listener, and clears any pending alarms.
      */
     const stopTimeout = async () => {
-        if (!isEnabled) {
+        if (!isListenerRegistered) {
             return;
         }
 
-        isEnabled = false;
+        isListenerRegistered = false;
         browser.alarms.onAlarm.removeListener(handleAlarm);
         await browser.alarms.clear(alarmName);
     };
@@ -73,12 +73,12 @@ export const createIdleTimeoutModule = ({ lock, timeoutMinutes = 15, alarmName =
     /**
      * Gets the current enabled state of the idle timeout.
      */
-    const getIsEnabled = () => isEnabled;
+    //const getIsEnabled = () => isListenerRegistered;
 
     return {
         startTimeout,
         stopTimeout,
         resetTimeout,
-        getIsEnabled,
+        //getIsEnabled,
     };
 };

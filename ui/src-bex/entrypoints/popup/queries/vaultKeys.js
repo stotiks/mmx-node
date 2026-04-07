@@ -4,14 +4,15 @@
  */
 export const vaultKeys = {
     all: () => ["vault"],
+    data: () => ["vault", "data"],
 
-    isInitialized: () => ["vault", "isInitialized"],
-    isUnlocked: () => ["vault", "isUnlocked"],
+    isInitialized: () => ["vault", "status", "isInitialized"],
+    isUnlocked: () => ["vault", "status", "isUnlocked"],
 
-    wallets: () => ["vault", "wallets"],
-    currentWallet: () => ["vault", "currentWallet"],
+    wallets: () => ["vault", "data", "wallets"],
+    currentWallet: () => ["vault", "data", "currentWallet"],
 
-    history: () => ["vault", "history"],
+    history: () => ["vault", "data", "history"],
 
-    urlPermissions: (url) => ["vault", "urlPermissions", url],
+    urlPermissions: (url) => ["vault", "data", "urlPermissions", url],
 };
