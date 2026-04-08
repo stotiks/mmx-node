@@ -127,6 +127,7 @@ const mapServerData = (source) => {
     return result;
 };
 
+import { QSpinnerHourglass as spinner } from "quasar";
 export function useConfigData() {
     const setConfig = useSetConfig();
 
@@ -197,7 +198,13 @@ export function useConfigData() {
         () => {
             const group = "useConfigData";
             if (isPending.value) {
-                $q.loading.show({ group });
+                $q.loading.show({
+                    spinner,
+                    group,
+                    message: "Loading config data...",
+                    spinnerColor: "secondary",
+                    boxClass: "m-bg-grey",
+                });
             } else {
                 $q.loading.hide(group);
             }
