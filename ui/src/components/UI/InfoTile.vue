@@ -21,7 +21,7 @@ const props = defineProps({
         default: null,
     },
     rows: {
-        type: [Object],
+        type: Object,
         default: null,
     },
     loading: Boolean,
