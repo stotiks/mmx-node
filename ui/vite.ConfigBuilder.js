@@ -36,7 +36,7 @@ export class ConfigBuilder {
     usePublicRPC = false;
     usePublicRPCForDevMode = false;
     allowCustomRPC = false;
-    useDefaultRollupOptions = false;
+    useDefaultRolldownOptions = false;
     createSingleFile = false;
 
     static #buildTargetDefaults = {
@@ -76,12 +76,12 @@ export class ConfigBuilder {
         this.#addGenerateFilePlugin(config);
 
         if (this.createSingleFile) {
-            this.useDefaultRollupOptions = true;
+            this.useDefaultRolldownOptions = true;
             config.plugins.push(viteSingleFile());
         }
 
-        if (this.useDefaultRollupOptions) {
-            config.build.rollupOptions = {};
+        if (this.useDefaultRolldownOptions) {
+            config.build.rolldownOptions = {};
         }
 
         config.build.outDir = `dist/${this.buildTarget.toLowerCase()}`;
@@ -194,91 +194,6 @@ export class ConfigBuilder {
 
     // https://vitejs.dev/config/
     #getInitConfig = () => {
-        const createChunkStrategy = () => (id) => {
-            //console.log(id);
-            const { base } = path.parse(id);
-
-            if (id.includes("/node_modules/")) {
-                if (id.includes("@scure")) {
-                    if (id.includes("wordlists")) {
-                        return "@scure-wordlist-" + base;
-                    } else {
-                        return "@scure";
-                    }
-                }
-
-                if (id.includes("@noble")) {
-                    return "@noble";
-                }
-
-                if (id.includes("echarts") || id.includes("zrender")) {
-                    return "echarts";
-                }
-
-                if (id.includes("/quasar/lang/")) {
-                    return "locales/quasar/" + base;
-                }
-
-                if (id.includes("qrcode") || id.includes("dijkstrajs")) {
-                    return "qrcode";
-                }
-
-                if (id.includes("axios")) {
-                    return "axios";
-                }
-
-                if (id.includes("@tanstack")) {
-                    return "query";
-                }
-
-                if (
-                    id.includes("vue") ||
-                    id.includes("pinia") ||
-                    id.includes("birpc") ||
-                    id.includes("@intlify") ||
-                    id.includes("hookable") ||
-                    id.includes("perfect-debounce") ||
-                    id.includes("quasar")
-                ) {
-                    return "quasar";
-                }
-
-                if (id.includes("@mdi") || id.includes("animate.css") || id.includes("highlight.js")) {
-                    return "ui-extras";
-                }
-
-                if (id.includes("json-bigint") || id.includes("bignumber.js") || id.includes("fflate")) {
-                    return "mmx-wallet";
-                }
-
-                //console.log(id);
-                return null;
-            }
-
-            if (id.includes("/src/locales/")) {
-                return "locales/" + base;
-            }
-
-            if (id.includes("/src/mmx/wallet/")) {
-                return "mmx-wallet";
-            }
-
-            if (id.includes("/config/")) {
-                return "mmx-config";
-            }
-
-            if (id.includes("/src/")) {
-                return "app";
-            }
-
-            if (id.includes("vite")) {
-                return "vite";
-            }
-
-            //console.log(id);
-            return null;
-        };
-
         const config = {
             base: "./",
             plugins: [
@@ -361,14 +276,19 @@ export class ConfigBuilder {
             build: {
                 target: "es2020",
                 chunkSizeWarningLimit: 1000,
-                rollupOptions: {
+                rolldownOptions: {
                     output: {
-                        manualChunks: createChunkStrategy(),
-                        assetFileNames: (assetInfo) => {
-                            if (/\.(woff|woff2|eot|ttf|otf)$/.test(assetInfo.name)) {
-                                return "assets/fonts/[name]-[hash][extname]";
-                            }
-                            return "assets/[name]-[hash][extname]";
+                        codeSplitting: {
+                            groups: [
+                                {
+                                    name: "fonts",
+                                    test: /@fontsource-variable/,
+                                },
+                                {
+                                    name: "vendor",
+                                    test: /node_modules/,
+                                },
+                            ],
                         },
                     },
                 },
