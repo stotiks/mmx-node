@@ -14,6 +14,7 @@ import vue from "@vitejs/plugin-vue";
 
 import path from "node:path";
 import { fileURLToPath, URL } from "node:url";
+import { searchForWorkspaceRoot } from "vite";
 
 export const BuildTargets = {
     GUI: "GUI",
@@ -372,6 +373,15 @@ export class ConfigBuilder {
                 },
             },
             server: {
+                fs: {
+                    allow: [
+                        // search up for workspace root
+                        searchForWorkspaceRoot(process.cwd()),
+                        // custom rules
+                        "../config",
+                    ],
+                },
+
                 port: 3000,
                 hmr: {
                     path: "/__hmr",
