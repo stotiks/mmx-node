@@ -36,7 +36,7 @@ export default defineConfig({
     vite: () => {
         const configBuilder = new ConfigBuilder({
             buildTarget: process.env.NODE_ENV === "production" ? BuildTargets.NONE : BuildTargets.PLAYGROUND,
-            useDefaultRollupOptions: true,
+            useDefaultRolldownOptions: true,
             usePublicRPC: true,
             usePublicRPCForDevMode: true,
         });
