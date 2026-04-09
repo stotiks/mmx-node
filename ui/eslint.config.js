@@ -7,23 +7,18 @@ import pluginSecurity from "eslint-plugin-security";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import { defineConfig } from "eslint/config";
 
-// ------------------------------------------------------------------
-// https://eslint.org/docs/latest/use/configure/migration-guide#using-eslintrc-configs-in-flat-config
-// ------------------------------------------------------------------
-import { FlatCompat } from "@eslint/eslintrc";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// mimic CommonJS variables -- not needed if using CommonJS
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-});
-// ------------------------------------------------------------------
+import { join } from "node:path";
+import { readFileSync } from "node:fs";
 import { includeIgnoreFile } from "@eslint/compat";
-const gitignorePath = path.resolve(__dirname, ".gitignore");
+
+const gitignorePath = join(import.meta.dirname, ".gitignore");
+
+let autoImportConfig = { globals: {} };
+try {
+    autoImportConfig = JSON.parse(readFileSync(join(import.meta.dirname, "./.eslintrc-auto-import.json"), "utf8"));
+} catch {
+    // File may not exist yet if auto-import hasn't run
+}
 
 export default defineConfig([
     includeIgnoreFile(gitignorePath),
@@ -37,6 +32,7 @@ export default defineConfig([
                 __ALLOW_CUSTOM_RPC__: "readonly",
                 __PUBLIC_RPC_URL__: "readonly",
                 __TX_QR_SEND_BASE_URL__: "readonly",
+                ...autoImportConfig.globals,
                 ...globals.node,
                 ...globals.browser,
             },
@@ -50,7 +46,6 @@ export default defineConfig([
     ...pluginQuery.configs["flat/recommended"],
     eslintPluginPrettierRecommended,
 
-    ...compat.extends("./.eslintrc-auto-import.json"),
     {
         rules: {
             "prettier/prettier": "warn",
