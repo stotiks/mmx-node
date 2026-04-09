@@ -1,7 +1,7 @@
 import { ChainParams } from "./ChainParams";
 
 const chainParamsList = import.meta.glob(`@mmxConfig/(mainnet|mainnet-rc|testnet??)/chain/params.json`);
-const chainExtraParamsList = import.meta.glob(`@mmxConfig/(mainnet|mainnet-rc|testnet??)/chain/params/(*)`, {
+const chainExtraParamsList = import.meta.glob(`@mmxConfig/(mainnet|mainnet-rc|testnet??)/chain/params/*`, {
     query: "?raw",
     import: "default",
     eager: true,
