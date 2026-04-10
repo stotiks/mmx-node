@@ -64,6 +64,10 @@ export default defineConfig({
         (config.build ??= {}).sourcemap = false;
         delete config.server?.hmr;
 
+        config.server.warmup = {
+            clientFiles: ["./src/pages/!pg/**/*.vue", "./src-bex/entrypoints/popup/**/*.vue"],
+        };
+
         return config;
     },
 });

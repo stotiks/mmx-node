@@ -387,9 +387,9 @@ export class ConfigBuilder {
                     path: "/__hmr",
                     clientPort: 3000,
                 },
-                // warmup: {
-                //     clientFiles: ["./src/components/**/*.vue", "./src/pages/**/*.vue"],
-                // },
+                warmup: {
+                    clientFiles: ["./src/**/*.vue"],
+                },
                 proxy: {
                     "/api": {
                         target: "http://127.0.0.1:11380",
