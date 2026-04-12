@@ -1,7 +1,7 @@
 import { defineConfig, normalizePath } from "vite";
 
 import AutoImport from "unplugin-auto-import/vite";
-import Fonts from "unplugin-fonts/vite";
+import Unfonts from "unplugin-fonts/vite";
 import Components from "unplugin-vue-components/vite";
 
 import GenerateFile from "vite-plugin-generate-file";
@@ -291,7 +291,7 @@ export class ConfigBuilder {
                     sassVariables: fileURLToPath(new URL("./src/css/quasar.variables.scss", import.meta.url)),
                 }),
                 Components({ dts: true }),
-                Fonts({
+                Unfonts({
                     fontsource: {
                         families: [
                             {
