@@ -49,6 +49,7 @@ export class ConfigBuilder {
             writeRobotsTxt: true,
             usePublicRPC: true,
             usePublicRPCForDevMode: true,
+            useDefaultRollupOptions: true,
         },
         [BuildTargets.OFFLINE]: {
             usePublicRPC: true,
