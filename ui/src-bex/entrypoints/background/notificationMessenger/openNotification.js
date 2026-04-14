@@ -9,16 +9,6 @@ let notificationWindowId = null;
 let pendingOpen = null;
 
 /**
- * Listen for window removal to clear stale notificationWindowId.
- * This prevents the code from thinking the window still exists after user closes it.
- */
-browser.windows.onRemoved.addListener((windowId) => {
-    if (windowId === notificationWindowId) {
-        notificationWindowId = null;
-    }
-});
-
-/**
  * Configuration for the notification window.
  */
 const NOTIFICATION_CONFIG = {
@@ -118,6 +108,19 @@ const createNotificationWindow = async () => {
     });
 
     notificationWindowId = newWindow.id;
+
+    /**
+     * Listen for window removal to clear stale notificationWindowId.
+     * This prevents the code from thinking the window still exists after user closes it.
+     */
+    const onWindowRemoved = (removedWindowId) => {
+        if (removedWindowId === notificationWindowId) {
+            notificationWindowId = null;
+            browser.windows.onRemoved.removeListener(onWindowRemoved);
+        }
+    };
+
+    browser.windows.onRemoved.addListener(onWindowRemoved);
 
     return {
         windowId: newWindow.id,
