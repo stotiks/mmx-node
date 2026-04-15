@@ -85,6 +85,9 @@ export const useNotificationMessageHandler = () => {
             };
 
             static setResult = async (params) => {
+                if (isRunning.value !== true) {
+                    throw new Error("No request running");
+                }
                 await showResultDialogAsync(params);
                 isRunning.value = false;
             };
