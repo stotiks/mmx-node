@@ -3,7 +3,7 @@ import { randomBytes } from "@noble/hashes/utils.js";
 import { etc } from "@noble/secp256k1";
 const bytesToNumberBE = etc.bytesToNumberBE;
 
-import { JSONbigNativeString } from "./utils/JSONbigNative";
+import { JSONbigNative, JSONbigNativeString } from "./utils/JSONbigNative";
 import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 import { tx_note_e } from "./common/tx_note_e";
@@ -56,7 +56,7 @@ class Transaction {
     }
 
     static parse(json) {
-        const obj = JSONbigNativeString.parse(json);
+        const obj = JSONbigNative.parse(json);
         const tx = new Transaction(obj);
         return tx;
     }
@@ -73,7 +73,7 @@ class Transaction {
     }
 
     #stringify(...options) {
-        return JSONbigNativeString.stringify(this, ...options);
+        return JSONbigNative.stringify(this, ...options);
     }
 
     toString() {
@@ -81,7 +81,8 @@ class Transaction {
     }
 
     toJSON() {
-        return JSONbigNativeString.parse(JSONbigNativeString.stringify({ ...this }));
+        // store BigInts as strings in JSON
+        return JSONbigNativeString.parse(JSONbigNative.stringify({ ...this }));
     }
 
     static hashHandler = {
