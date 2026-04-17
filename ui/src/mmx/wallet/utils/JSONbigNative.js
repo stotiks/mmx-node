@@ -44,3 +44,34 @@ const createJSONbig = (storeAsString = false) => {
 
 export const JSONbigNative = createJSONbig();
 export const JSONbigNativeString = createJSONbig(true);
+
+/**
+ * Deeply clone a value, converting BigInts to a JSON-safe form that mirrors
+ * `JSONbigNativeString.parse(JSONbigNative.stringify(x))`:
+ *
+ * - BigInt within ±Number.MAX_SAFE_INTEGER → regular Number
+ * - BigInt outside that range → String (preserves precision)
+ *
+ * Objects exposing a `toJSON()` method are honored (matching `JSON.stringify`
+ * semantics), so classes that customize their JSON form (e.g. `Deposit`,
+ * which already stringifies its `amount`) produce the same output as before.
+ */
+export const bigIntToJsonSafe = (value) => {
+    if (typeof value === "bigint") {
+        return value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER ? value.toString() : Number(value);
+    }
+    if (value === null || typeof value !== "object") return value;
+
+    // Respect `toJSON()` like native JSON.stringify does
+    if (typeof value.toJSON === "function") {
+        return bigIntToJsonSafe(value.toJSON());
+    }
+
+    if (Array.isArray(value)) return value.map(bigIntToJsonSafe);
+
+    const out = {};
+    for (const key of Object.keys(value)) {
+        out[key] = bigIntToJsonSafe(value[key]);
+    }
+    return out;
+};

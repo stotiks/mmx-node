@@ -3,7 +3,7 @@ import { randomBytes } from "@noble/hashes/utils.js";
 import { etc } from "@noble/secp256k1";
 const bytesToNumberBE = etc.bytesToNumberBE;
 
-import { JSONbigNative, JSONbigNativeString } from "./utils/JSONbigNative";
+import { JSONbigNative, bigIntToJsonSafe } from "./utils/JSONbigNative";
 import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 import { tx_note_e } from "./common/tx_note_e";
@@ -81,8 +81,10 @@ class Transaction {
     }
 
     toJSON() {
-        // store BigInts as strings in JSON
-        return JSONbigNativeString.parse(JSONbigNative.stringify({ ...this }));
+        // Convert BigInts to JSON-safe values: numbers within the safe integer
+        // range become Number, larger values become strings to preserve precision
+        // when later serialized via standard JSON.stringify.
+        return bigIntToJsonSafe({ ...this });
     }
 
     static hashHandler = {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { JSONbigNative, JSONbigNativeString } from "./JSONbigNative.js";
+import { JSONbigNative, JSONbigNativeString, bigIntToJsonSafe } from "./JSONbigNative.js";
 
 describe("JSONbigNative", () => {
     describe("JSONbigNative (useNativeBigInt: true)", () => {
@@ -226,6 +226,192 @@ describe("JSONbigNative", () => {
             expect(parsed.arr[2]).toBe(true);
             expect(parsed.arr[3]).toBe(null);
             expect(parsed.arr[4]).toBe(9007199254740992n);
+        });
+    });
+});
+
+describe("bigIntToJsonSafe", () => {
+    describe("primitives", () => {
+        it("should return non-BigInt primitives unchanged", () => {
+            expect(bigIntToJsonSafe(42)).toBe(42);
+            expect(bigIntToJsonSafe("hello")).toBe("hello");
+            expect(bigIntToJsonSafe(true)).toBe(true);
+            expect(bigIntToJsonSafe(false)).toBe(false);
+            expect(bigIntToJsonSafe(null)).toBe(null);
+            expect(bigIntToJsonSafe(undefined)).toBe(undefined);
+        });
+
+        it("should convert safe-range BigInt to Number", () => {
+            expect(bigIntToJsonSafe(0n)).toBe(0);
+            expect(bigIntToJsonSafe(1n)).toBe(1);
+            expect(bigIntToJsonSafe(-1n)).toBe(-1);
+            expect(bigIntToJsonSafe(1024n)).toBe(1024);
+            expect(typeof bigIntToJsonSafe(1024n)).toBe("number");
+        });
+
+        it("should convert BigInt at the safe integer boundary to Number", () => {
+            expect(bigIntToJsonSafe(BigInt(Number.MAX_SAFE_INTEGER))).toBe(Number.MAX_SAFE_INTEGER);
+            expect(bigIntToJsonSafe(BigInt(Number.MIN_SAFE_INTEGER))).toBe(Number.MIN_SAFE_INTEGER);
+            expect(typeof bigIntToJsonSafe(BigInt(Number.MAX_SAFE_INTEGER))).toBe("number");
+        });
+
+        it("should convert BigInt beyond safe range to string", () => {
+            const big = BigInt(Number.MAX_SAFE_INTEGER) + 1n;
+            expect(bigIntToJsonSafe(big)).toBe("9007199254740992");
+            expect(typeof bigIntToJsonSafe(big)).toBe("string");
+        });
+
+        it("should convert negative BigInt below safe range to string", () => {
+            const big = BigInt(Number.MIN_SAFE_INTEGER) - 1n;
+            expect(bigIntToJsonSafe(big)).toBe("-9007199254740992");
+            expect(typeof bigIntToJsonSafe(big)).toBe("string");
+        });
+
+        it("should convert very large BigInt to string preserving precision", () => {
+            const huge = 12345678901234567890n;
+            expect(bigIntToJsonSafe(huge)).toBe("12345678901234567890");
+        });
+    });
+
+    describe("objects and arrays", () => {
+        it("should deep-clone plain objects", () => {
+            const input = { a: 1, b: "two", c: null };
+            const result = bigIntToJsonSafe(input);
+
+            expect(result).toEqual({ a: 1, b: "two", c: null });
+            expect(result).not.toBe(input);
+        });
+
+        it("should convert BigInts inside objects", () => {
+            const input = {
+                small: 100n,
+                large: 9007199254740992n,
+                str: "keep",
+            };
+            const result = bigIntToJsonSafe(input);
+
+            expect(result).toEqual({
+                small: 100,
+                large: "9007199254740992",
+                str: "keep",
+            });
+        });
+
+        it("should deep-clone arrays", () => {
+            const input = [1, 2, 3];
+            const result = bigIntToJsonSafe(input);
+
+            expect(result).toEqual([1, 2, 3]);
+            expect(result).not.toBe(input);
+            expect(Array.isArray(result)).toBe(true);
+        });
+
+        it("should convert BigInts inside arrays", () => {
+            const input = [1n, 9007199254740992n, "x"];
+            const result = bigIntToJsonSafe(input);
+
+            expect(result).toEqual([1, "9007199254740992", "x"]);
+        });
+
+        it("should handle nested objects and arrays", () => {
+            const input = {
+                list: [{ v: 1n }, { v: 9007199254740993n }],
+                meta: { count: 2n, name: "test" },
+            };
+            const result = bigIntToJsonSafe(input);
+
+            expect(result).toEqual({
+                list: [{ v: 1 }, { v: "9007199254740993" }],
+                meta: { count: 2, name: "test" },
+            });
+        });
+
+        it("should handle empty object and array", () => {
+            expect(bigIntToJsonSafe({})).toEqual({});
+            expect(bigIntToJsonSafe([])).toEqual([]);
+        });
+
+        it("should not mutate the input", () => {
+            const input = { a: 1n, nested: { b: 2n } };
+            const snapshot = { a: 1n, nested: { b: 2n } };
+
+            bigIntToJsonSafe(input);
+
+            expect(input.a).toBe(snapshot.a);
+            expect(input.nested.b).toBe(snapshot.nested.b);
+        });
+    });
+
+    describe("toJSON handling", () => {
+        it("should honor a toJSON method on nested objects", () => {
+            const custom = {
+                internal: 999n,
+                toJSON() {
+                    return { wrapped: this.internal };
+                },
+            };
+            const result = bigIntToJsonSafe({ custom });
+
+            expect(result).toEqual({ custom: { wrapped: 999 } });
+        });
+
+        it("should recursively process the result of toJSON", () => {
+            const custom = {
+                toJSON() {
+                    return { big: 9007199254740994n };
+                },
+            };
+            const result = bigIntToJsonSafe(custom);
+
+            expect(result).toEqual({ big: "9007199254740994" });
+        });
+
+        it("should support toJSON returning a BigInt primitive", () => {
+            const custom = {
+                toJSON() {
+                    return 42n;
+                },
+            };
+            expect(bigIntToJsonSafe(custom)).toBe(42);
+        });
+
+        it("should match native JSON.stringify semantics for toJSON", () => {
+            const obj = {
+                a: 1n,
+                custom: {
+                    toJSON() {
+                        return "replaced";
+                    },
+                },
+            };
+
+            // bigIntToJsonSafe + JSON.stringify should equal JSON.stringify with a BigInt replacer
+            const viaSafe = JSON.stringify(bigIntToJsonSafe(obj));
+            expect(viaSafe).toBe('{"a":1,"custom":"replaced"}');
+        });
+    });
+
+    describe("JSON.stringify compatibility", () => {
+        it("should produce output that is safe for standard JSON.stringify", () => {
+            const input = { small: 1n, big: 9007199254740992n, arr: [1n, 2n] };
+            const result = bigIntToJsonSafe(input);
+
+            // Should not throw and should produce the expected string
+            expect(JSON.stringify(result)).toBe('{"small":1,"big":"9007199254740992","arr":[1,2]}');
+        });
+
+        it("should match JSONbigNativeString round-trip semantics", () => {
+            const input = {
+                safe: 123n,
+                unsafe: 9007199254740992n,
+                nested: { value: 18446744073709551615n },
+                list: [1n, 2n, 9999999999999999999n],
+            };
+
+            const viaRoundTrip = JSONbigNativeString.parse(JSONbigNative.stringify(input));
+            const viaSafe = bigIntToJsonSafe(input);
+
+            expect(viaSafe).toEqual(viaRoundTrip);
         });
     });
 });
