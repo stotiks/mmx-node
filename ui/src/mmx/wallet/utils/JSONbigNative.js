@@ -52,26 +52,36 @@ export const JSONbigNativeString = createJSONbig(true);
  * - BigInt within ±Number.MAX_SAFE_INTEGER → regular Number
  * - BigInt outside that range → String (preserves precision)
  *
- * Objects exposing a `toJSON()` method are honored (matching `JSON.stringify`
- * semantics), so classes that customize their JSON form (e.g. `Deposit`,
- * which already stringifies its `amount`) produce the same output as before.
+ * Nested objects exposing a `toJSON()` method are honored (matching
+ * `JSON.stringify` semantics), so classes that customize their JSON form
+ * (e.g. `Deposit`, which stringifies its `amount`) produce identical output.
+ *
+ * The top-level `value` is NOT dispatched through its own `toJSON()`. This
+ * allows callers to do `bigIntToJsonSafe(this)` from inside their own `toJSON`
+ * implementation without recursing infinitely, while still having `toJSON`
+ * applied to every nested child (which is the common case — matching what
+ * `JSON.stringify` does when it calls a root `toJSON()` and then recurses
+ * into the returned value).
  */
-export const bigIntToJsonSafe = (value) => {
+export const bigIntToJsonSafe = (value) => _bigIntToJsonSafe(value, true);
+
+const _bigIntToJsonSafe = (value, isRoot) => {
     if (typeof value === "bigint") {
         return value > Number.MAX_SAFE_INTEGER || value < Number.MIN_SAFE_INTEGER ? value.toString() : Number(value);
     }
     if (value === null || typeof value !== "object") return value;
 
-    // Respect `toJSON()` like native JSON.stringify does
-    if (typeof value.toJSON === "function") {
-        return bigIntToJsonSafe(value.toJSON());
+    // Respect `toJSON()` like native JSON.stringify does, but skip it for the
+    // top-level value so callers can safely pass `this` from their own toJSON.
+    if (!isRoot && typeof value.toJSON === "function") {
+        return _bigIntToJsonSafe(value.toJSON(), false);
     }
 
-    if (Array.isArray(value)) return value.map(bigIntToJsonSafe);
+    if (Array.isArray(value)) return value.map((v) => _bigIntToJsonSafe(v, false));
 
     const out = {};
     for (const key of Object.keys(value)) {
-        out[key] = bigIntToJsonSafe(value[key]);
+        out[key] = _bigIntToJsonSafe(value[key], false);
     }
     return out;
 };
