@@ -355,27 +355,56 @@ describe("bigIntToJsonSafe", () => {
             expect(result).toEqual({ custom: { wrapped: 999 } });
         });
 
-        it("should recursively process the result of toJSON", () => {
-            const custom = {
+        it("should skip toJSON on the root value (no infinite recursion)", () => {
+            // Classic case: a class whose own toJSON calls bigIntToJsonSafe(this)
+            const self = {
+                internal: 1n,
+                toJSON() {
+                    return bigIntToJsonSafe(this);
+                },
+            };
+
+            // Calling root toJSON (or passing `self` to bigIntToJsonSafe) must not recurse forever
+            const fromMethod = self.toJSON();
+            const fromHelper = bigIntToJsonSafe(self);
+
+            expect(fromMethod).toEqual({ internal: 1, toJSON: expect.any(Function) });
+            expect(fromHelper).toEqual(fromMethod);
+        });
+
+        it("should recursively process toJSON results on nested values", () => {
+            const nested = {
                 toJSON() {
                     return { big: 9007199254740994n };
                 },
             };
-            const result = bigIntToJsonSafe(custom);
+            const result = bigIntToJsonSafe({ nested });
 
-            expect(result).toEqual({ big: "9007199254740994" });
+            expect(result).toEqual({ nested: { big: "9007199254740994" } });
         });
 
-        it("should support toJSON returning a BigInt primitive", () => {
+        it("should skip toJSON returning a BigInt when it is the root", () => {
+            // Root-level toJSON is skipped, so the object is walked as a plain object.
             const custom = {
                 toJSON() {
                     return 42n;
                 },
             };
-            expect(bigIntToJsonSafe(custom)).toBe(42);
+            const result = bigIntToJsonSafe(custom);
+
+            expect(result).toEqual({ toJSON: expect.any(Function) });
         });
 
-        it("should match native JSON.stringify semantics for toJSON", () => {
+        it("should apply toJSON returning a BigInt when nested", () => {
+            const custom = {
+                toJSON() {
+                    return 42n;
+                },
+            };
+            expect(bigIntToJsonSafe({ value: custom })).toEqual({ value: 42 });
+        });
+
+        it("should match native JSON.stringify semantics for nested toJSON", () => {
             const obj = {
                 a: 1n,
                 custom: {
@@ -385,7 +414,7 @@ describe("bigIntToJsonSafe", () => {
                 },
             };
 
-            // bigIntToJsonSafe + JSON.stringify should equal JSON.stringify with a BigInt replacer
+            // bigIntToJsonSafe + JSON.stringify should equal the expected output
             const viaSafe = JSON.stringify(bigIntToJsonSafe(obj));
             expect(viaSafe).toBe('{"a":1,"custom":"replaced"}');
         });

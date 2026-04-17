@@ -84,7 +84,7 @@ class Transaction {
         // Convert BigInts to JSON-safe values: numbers within the safe integer
         // range become Number, larger values become strings to preserve precision
         // when later serialized via standard JSON.stringify.
-        return bigIntToJsonSafe({ ...this });
+        return bigIntToJsonSafe(this);
     }
 
     static hashHandler = {
