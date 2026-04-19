@@ -3,20 +3,19 @@
         "allowJs": true,
         "target": "ES2020",
         "module": "esnext",
-        "baseUrl": "./",
         "moduleResolution": "bundler",
         "paths": {
             "@/*": [
-                "src/*"
+                "./src/*"
             ],
             "@bex/*": [
-                "src-bex/*"
+                "./src-bex/*"
             ],
             "@buildRoutes": [
-                "src/router/routes/guiRoutes.js"
+                "./src/router/routes/guiRoutes.js"
             ],
             "@buildMenu": [
-                "src/components/MainMenu/GuiMainMenu.vue"
+                "./src/components/MainMenu/GuiMainMenu.vue"
             ]
         },
         "lib": [
