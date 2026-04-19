@@ -35,4 +35,4 @@ web-ext.config.js
 /components.d.ts
 .env
 .env.*
-/src/mmx/config/default/build.json
+/**/coverage/
