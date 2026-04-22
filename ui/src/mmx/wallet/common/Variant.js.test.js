@@ -4,7 +4,7 @@ import { Variant } from "./Variant";
 
 describe("Variant", () => {
     it("unsupported type", () => {
-        expect(() => new Variant(Symbol("unsupported type"))).toThrowError();
+        expect(() => new Variant(Symbol("unsupported type"))).toThrow();
     });
 
     it("deep recursion", () => {
@@ -12,8 +12,8 @@ describe("Variant", () => {
         for (let index = 1; index <= 100 - 1; index++) {
             obj = { index, obj };
         }
-        expect(() => new Variant(obj)).not.toThrowError();
-        expect(() => new Variant({ obj: obj })).toThrowError();
+        expect(() => new Variant(obj)).not.toThrow();
+        expect(() => new Variant({ obj: obj })).toThrow();
     });
 
     it("size", () => {

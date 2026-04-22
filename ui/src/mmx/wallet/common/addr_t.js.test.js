@@ -25,7 +25,7 @@ describe("bytes_t", () => {
     });
 
     it("invalid input type", () => {
-        expect(() => new bytes_t(666)).toThrowError();
+        expect(() => new bytes_t(666)).toThrow();
     });
 });
 
@@ -56,16 +56,16 @@ describe("addr_t", () => {
 
     it("invalid address prefix", () => {
         const invalidAddr = "xch1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq2u30kz";
-        expect(() => new addr_t(invalidAddr)).toThrowError();
+        expect(() => new addr_t(invalidAddr)).toThrow();
     });
 
     it("invalid input type", () => {
-        expect(() => new addr_t(0)).toThrowError();
+        expect(() => new addr_t(0)).toThrow();
     });
 
     it("invalid length", () => {
-        expect(() => new addr_t(new Uint8Array(0))).toThrowError();
-        expect(() => new addr_t(new Uint8Array(31))).toThrowError();
+        expect(() => new addr_t(new Uint8Array(0))).toThrow();
+        expect(() => new addr_t(new Uint8Array(31))).toThrow();
     });
 });
 
@@ -88,6 +88,6 @@ describe("hash_t", () => {
     });
 
     it("invalid input type", () => {
-        expect(() => new hash_t(666)).toThrowError();
+        expect(() => new hash_t(666)).toThrow();
     });
 });

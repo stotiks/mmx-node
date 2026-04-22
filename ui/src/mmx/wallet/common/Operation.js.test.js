@@ -593,7 +593,7 @@ describe("mmx.operation.Execute", () => {
 describe("mmx.operation.Operation", () => {
     describe("constructor", () => {
         it("should throw error for invalid type", () => {
-            expect(() => new Operation(Symbol("invalid type"))).toThrowError("Invalid Operation type");
+            expect(() => new Operation(Symbol("invalid type"))).toThrow("Invalid Operation type");
         });
 
         it("should create Execute operation when __type is mmx.operation.Execute", () => {

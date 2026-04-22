@@ -101,13 +101,11 @@ describe("Transaction misc", () => {
     it("memo too long", () => {
         const tx = new Transaction();
         const memo = "x".repeat(txio_t.MAX_MEMO_SIZE + 1);
-        expect(() => tx.add_output(new addr_t().toString(), new addr_t().toString(), 0, memo)).toThrowError(
-            "memo too long"
-        );
+        expect(() => tx.add_output(new addr_t().toString(), new addr_t().toString(), 0, memo)).toThrow("memo too long");
     });
 
     it("Invalid transaction format", () => {
-        expect(() => new Transaction("")).toThrowError("Invalid transaction format");
+        expect(() => new Transaction("")).toThrow("Invalid transaction format");
     });
 
     // it("tx cost amount overflow", async () => {
@@ -117,6 +115,6 @@ describe("Transaction misc", () => {
     //     for (let i = 0; i < 1000000000; i++) {
     //         tx.add_output(new addr_t().toString(), new addr_t().toString(), 0, memo);
     //     }
-    //     expect(() => tx.calc_cost(chainParams)).toThrowError("tx cost amount overflow");
+    //     expect(() => tx.calc_cost(chainParams)).toThrow("tx cost amount overflow");
     // });
 });

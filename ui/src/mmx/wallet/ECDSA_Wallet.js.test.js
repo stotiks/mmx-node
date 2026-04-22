@@ -34,12 +34,12 @@ describe("ECDSA_Wallet", async () => {
     const addressWithPassphraseU8 = await ecdsaWallet3.getAddressAsync(0);
 
     it("invalid seed type", () => {
-        expect(() => new ECDSA_Wallet(Symbol("invalid seed type"))).toThrowError();
+        expect(() => new ECDSA_Wallet(Symbol("invalid seed type"))).toThrow();
     });
 
     it("invalid passphrase type throws", () => {
-        expect(() => new ECDSA_Wallet(seed, 42)).toThrowError("Invalid passphrase type: number");
-        expect(() => new ECDSA_Wallet(seed, Symbol("bad"))).toThrowError("Invalid passphrase type: symbol");
+        expect(() => new ECDSA_Wallet(seed, 42)).toThrow("Invalid passphrase type: number");
+        expect(() => new ECDSA_Wallet(seed, Symbol("bad"))).toThrow("Invalid passphrase type: symbol");
     });
 
     it("createFarmerKey", () => {

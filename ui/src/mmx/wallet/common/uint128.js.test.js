@@ -15,15 +15,15 @@ describe("uint128", () => {
     });
 
     it("negative", () => {
-        expect(() => new uint128(-1n)).toThrowError();
+        expect(() => new uint128(-1n)).toThrow();
     });
 
     it("overflow", () => {
-        expect(() => new uint128(0xffffffffffffffffffffffffffffffffn + 1n)).toThrowError();
+        expect(() => new uint128(0xffffffffffffffffffffffffffffffffn + 1n)).toThrow();
     });
 
     it("unsupported type", () => {
-        expect(() => new uint128(Symbol("unsupported type"))).toThrowError();
+        expect(() => new uint128(Symbol("unsupported type"))).toThrow();
     });
 
     it("number", () => {

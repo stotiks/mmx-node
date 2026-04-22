@@ -12,7 +12,6 @@ const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
 const ecdsaWallet = new ECDSA_Wallet(mnemonic, "");
 
 import { txs } from "./Transaction.js.txs.test.js";
-import { uint128 } from "./common/uint128";
 import { get_inv_price } from "./common/offer_data_t";
 
 describe("Wallet", () => {
@@ -36,11 +35,11 @@ describe("Wallet", () => {
         assert.equal(tx.aux.feeAmount, "60000");
         assert.equal(tx.aux.feeValue, 0.06);
 
-        await expect(() => Wallet.getSendTxAsync(ecdsaWallet, 0, dst_addr, currency, options)).rejects.toThrowError(
+        await expect(() => Wallet.getSendTxAsync(ecdsaWallet, 0, dst_addr, currency, options)).rejects.toThrow(
             "amount cannot be zero"
         );
 
-        await expect(() => Wallet.getSendTxAsync(ecdsaWallet, amount, "", currency, options)).rejects.toThrowError(
+        await expect(() => Wallet.getSendTxAsync(ecdsaWallet, amount, "", currency, options)).rejects.toThrow(
             "dst_addr cannot be zero"
         );
     });
@@ -71,7 +70,7 @@ describe("Wallet", () => {
             { address: "mmx1mw38rg8jcy2tjc5r7sxque6z45qrw6dsu6g2wmhahwf30342rraqyhsnea", amount: 0 },
         ];
 
-        await expect(() => Wallet.getSendManyTxAsync(ecdsaWallet, payments2, currency, options)).rejects.toThrowError(
+        await expect(() => Wallet.getSendManyTxAsync(ecdsaWallet, payments2, currency, options)).rejects.toThrow(
             "amount cannot be zero"
         );
 
@@ -80,7 +79,7 @@ describe("Wallet", () => {
             { address: "", amount: 1 },
         ];
 
-        await expect(() => Wallet.getSendManyTxAsync(ecdsaWallet, payments3, currency, options)).rejects.toThrowError(
+        await expect(() => Wallet.getSendManyTxAsync(ecdsaWallet, payments3, currency, options)).rejects.toThrow(
             "dst_addr cannot be zero"
         );
     });
@@ -203,11 +202,11 @@ describe("Wallet", () => {
 
         await expect(() =>
             Wallet.getMakeOfferTxAsync(ecdsaWallet, owner, 0, bid_currency, ask_amount, ask_currency, options)
-        ).rejects.toThrowError("amount cannot be zero");
+        ).rejects.toThrow("amount cannot be zero");
 
         await expect(() =>
             Wallet.getMakeOfferTxAsync(ecdsaWallet, owner, 1n << 64n, bid_currency, 1, ask_currency, options)
-        ).rejects.toThrowError("price out of range");
+        ).rejects.toThrow("price out of range");
     });
 
     it("getOfferTradeTxAsync", async () => {

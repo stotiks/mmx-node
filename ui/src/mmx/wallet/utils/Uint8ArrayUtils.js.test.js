@@ -6,13 +6,13 @@ describe("Uint8ArrayUtils", () => {
     describe("splitHmacDigest", () => {
         it("incorrect length", () => {
             const t0 = new Uint8Array(0);
-            expect(() => splitHmacDigest(t0)).toThrowError(/expected Uint8Array of length 64/);
+            expect(() => splitHmacDigest(t0)).toThrow(/expected Uint8Array of length 64/);
 
             const t63 = new Uint8Array(63);
-            expect(() => splitHmacDigest(t63)).toThrowError(/expected Uint8Array of length 64/);
+            expect(() => splitHmacDigest(t63)).toThrow(/expected Uint8Array of length 64/);
 
             const t65 = new Uint8Array(65);
-            expect(() => splitHmacDigest(t65)).toThrowError(/expected Uint8Array of length 64/);
+            expect(() => splitHmacDigest(t65)).toThrow(/expected Uint8Array of length 64/);
         });
 
         it("first/second", () => {
