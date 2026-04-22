@@ -3,25 +3,25 @@ import { spend_options_t } from "./spend_options_t";
 
 describe("spend_options_t", () => {
     it("no prams", () => {
-        expect(() => new spend_options_t()).toThrowError();
+        expect(() => new spend_options_t()).toThrow();
     });
 
     it("invalid init param type", () => {
-        expect(() => new spend_options_t(666)).toThrowError();
+        expect(() => new spend_options_t(666)).toThrow();
     });
 
     it("no network", () => {
         const params = {
             expire_at: -1,
         };
-        expect(() => new spend_options_t(params)).toThrowError();
+        expect(() => new spend_options_t(params)).toThrow();
     });
 
     it("no expire_at", () => {
         const params = {
             network: "mainnet",
         };
-        expect(() => new spend_options_t(params)).toThrowError();
+        expect(() => new spend_options_t(params)).toThrow();
     });
 
     it("fee_ratio #1", () => {

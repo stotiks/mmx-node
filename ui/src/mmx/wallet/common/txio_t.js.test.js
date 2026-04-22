@@ -362,7 +362,7 @@ describe("Transaction I/O Types", () => {
             expect(() => {
                 const proxy = txio.getHashProxy();
                 proxy.address;
-            }).toThrowError("Invalid address");
+            }).toThrow("Invalid address");
         });
 
         it("should handle undefined contract", () => {

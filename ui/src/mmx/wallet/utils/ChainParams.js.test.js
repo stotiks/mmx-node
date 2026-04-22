@@ -4,17 +4,17 @@ import { ChainParams } from "./ChainParams";
 describe("ChainParams", () => {
     describe("constructor", () => {
         it("should throw error when params is undefined", () => {
-            expect(() => new ChainParams()).toThrowError("params is required");
+            expect(() => new ChainParams()).toThrow("params is required");
         });
 
         it("should throw error when params is null", () => {
-            expect(() => new ChainParams(null)).toThrowError("params is required");
+            expect(() => new ChainParams(null)).toThrow("params is required");
         });
 
         it("should throw error when params is not an object", () => {
-            expect(() => new ChainParams("string")).toThrowError("params must be an object");
-            expect(() => new ChainParams(123)).toThrowError("params must be an object");
-            expect(() => new ChainParams(true)).toThrowError("params must be an object");
+            expect(() => new ChainParams("string")).toThrow("params must be an object");
+            expect(() => new ChainParams(123)).toThrow("params must be an object");
+            expect(() => new ChainParams(true)).toThrow("params must be an object");
         });
 
         it("should create instance with empty object params", () => {

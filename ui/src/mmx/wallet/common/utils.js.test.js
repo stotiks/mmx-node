@@ -19,7 +19,7 @@ describe("utils cost_to_fee", () => {
 
 describe("utils bigIntMin", () => {
     it("throws with no arguments", () => {
-        expect(() => bigIntMin()).toThrowError("bigIntMin requires at least one argument");
+        expect(() => bigIntMin()).toThrow("bigIntMin requires at least one argument");
     });
     it("returns single argument", () => {
         expect(bigIntMin(1n)).toBe(1n);
@@ -39,7 +39,7 @@ describe("utils bigIntMin", () => {
 
 describe("utils bigIntMax", () => {
     it("throws with no arguments", () => {
-        expect(() => bigIntMax()).toThrowError("bigIntMax requires at least one argument");
+        expect(() => bigIntMax()).toThrow("bigIntMax requires at least one argument");
     });
     it("returns single argument", () => {
         expect(bigIntMax(1n)).toBe(1n);
@@ -59,7 +59,7 @@ describe("utils bigIntMax", () => {
 
 describe("utils get_num_bytes", () => {
     it("invalid type", () => {
-        expect(() => get_num_bytes(Symbol("invalid type"))).toThrowError("Invalid type");
+        expect(() => get_num_bytes(Symbol("invalid type"))).toThrow("Invalid type");
     });
 
     it("null", () => {

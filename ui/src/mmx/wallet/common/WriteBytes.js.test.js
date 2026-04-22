@@ -17,21 +17,21 @@ describe("WriteBuffer", () => {
 
     it("unknown type", () => {
         const wb = new WriteBytes();
-        expect(() => wb.write_field("field", Symbol("unknown object type"))).toThrowError();
+        expect(() => wb.write_field("field", Symbol("unknown object type"))).toThrow();
     });
 
     it("unknown object type", () => {
         const wb = new WriteBytes();
-        expect(() => wb.write_field("field", {})).toThrowError();
+        expect(() => wb.write_field("field", {})).toThrow();
     });
 
     it("invalid number", () => {
         const wb = new WriteBytes();
-        expect(() => wb.write_field("field", -0x7fffffff - 2)).toThrowError();
+        expect(() => wb.write_field("field", -0x7fffffff - 2)).toThrow();
     });
 
     it("invalid number [float]", () => {
         const wb = new WriteBytes();
-        expect(() => wb.write_field("field", -1337.1337)).toThrowError();
+        expect(() => wb.write_field("field", -1337.1337)).toThrow();
     });
 });
