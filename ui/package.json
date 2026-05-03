@@ -28,8 +28,8 @@
     "test": "bunx vitest"
   },
   "dependencies": {
-    "@capacitor/android": "^7.6.2",
-    "@capacitor/core": "^7.6.2",
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
     "@fontsource-variable/roboto-flex": "^5.2.8",
     "@fontsource-variable/roboto-mono": "^5.2.8",
     "@highlightjs/vue-plugin": "^2.1.0",
@@ -62,7 +62,7 @@
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
-    "@capacitor/cli": "^7.6.2",
+    "@capacitor/cli": "^8.3.1",
     "@eslint/compat": "^2.0.4",
     "@eslint/js": "^10.0.1",
     "@quasar/vite-plugin": "^1.11.0",
