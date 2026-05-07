@@ -2,7 +2,7 @@ import { hmac } from "@noble/hashes/hmac.js";
 import { sha512 } from "@noble/hashes/sha2.js";
 import { hexToBytes, isBytes, u32, u8, utf8ToBytes, concatBytes } from "@noble/hashes/utils.js";
 
-import * as secp256k1 from "./secp256k1";
+import secp256k1 from "./secp256k1";
 
 import { addr_t, hash_t } from "@mmx/wallet/common/addr_t";
 import { splitHmacDigest } from "@mmx/wallet/utils/Uint8ArrayUtils";
