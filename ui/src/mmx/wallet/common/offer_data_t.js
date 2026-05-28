@@ -44,3 +44,7 @@ export const get_ask_amount = (bid_amount, inv_price) => {
 
     return ask_amount;
 };
+
+export const get_inv_price_with_decimals = (price, bid_decimals, ask_decimals) => {
+    return price * Math.pow(2, 64) * Math.pow(10, bid_decimals - ask_decimals);
+};

@@ -66,6 +66,7 @@
 
 <script setup>
 import rules from "@/helpers/rules";
+import { get_inv_price_with_decimals } from "@/mmx/wallet/common/offer_data_t";
 
 const props = defineProps({
     index: {
@@ -99,20 +100,20 @@ const defaultFormData = {
 const formRef = ref(null);
 const formData = reactive({ ...defaultFormData });
 
-const newPrice = computed(
-    () => formData.amount * Math.pow(2, 64) * Math.pow(10, props.offer.bid_decimals - props.offer.ask_decimals)
-);
-const payload = computed(() => ({
-    index: props.index,
-    address: props.offer.address,
-    method: "set_price",
-    args: [intToHex(newPrice.value ?? 0)],
-    options: {
-        //memo: "Update offer price",
-        user: props.offer.owner,
-        fee_ratio: formData.feeRatio,
-    },
-}));
+const payload = computed(() => {
+    const newPrice = get_inv_price_with_decimals(formData.amount, props.offer.bid_decimals, props.offer.ask_decimals);
+    return {
+        index: props.index,
+        address: props.offer.address,
+        method: "set_price",
+        args: [intToHex(newPrice ?? 0)],
+        options: {
+            //memo: "Update offer price",
+            user: props.offer.owner,
+            fee_ratio: formData.feeRatio,
+        },
+    };
+});
 
 const { protectedMutate, isLocked } = useWalletLocker(reactive({ index: toRef(() => props.index) }));
 const { isValid, isValidConfirmed, isValidUnlocked, isValidConfirmedUnlocked } = useWalletFormStatusL(
