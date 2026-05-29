@@ -232,11 +232,13 @@ describe("Wallet", () => {
 
         const amount = 100001; //value = "0.100001"
 
-        const _price = 1000;
-        const price = get_inv_price(_price); //"0x4189374bc6a7f0" = 18446744073709552
+        //const _price = 1000;
+        const ask_amount = amount;
+        const bid_amount = 100;
+        const price = get_inv_price(bid_amount, ask_amount);
 
-        //{"input": {"amount": "100000", "value": "0.1"}, "inv_price": "18446744073709552", "next_input": {"amount": "100001", "value": "0.100001"}, "trade": {"amount": "100", "value": "0.0001"}}
-        //{"input": {"amount": "100001", "value": "0.100001"}, "inv_price": "18446744073709552", "next_input": {"amount": "101000", "value": "0.101"}, "trade": {"amount": "100", "value": "0.0001"}}
+        //{"input": {"amount": "100000", "value": "0.1"}, "inv_price": "18446744073709551", "next_input": {"amount": "100001", "value": "0.100001"}, "trade": {"amount": "100", "value": "0.0001"}}
+        //{"input": {"amount": "100001", "value": "0.100001"}, "inv_price": "18446744073709551", "next_input": {"amount": "101000", "value": "0.101"}, "trade": {"amount": "100", "value": "0.0001"}}
 
         const tx = await Wallet.getOfferTradeTxAsync(ecdsaWallet, address, amount, ask_currency, price, options);
 
