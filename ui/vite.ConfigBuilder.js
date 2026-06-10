@@ -278,17 +278,15 @@ export class ConfigBuilder {
                 chunkSizeWarningLimit: 1000,
                 rolldownOptions: {
                     output: {
+                        assetFileNames: (assetInfo) => {
+                            const name = assetInfo.name || (assetInfo.names ? assetInfo.names[0] : "");
+                            if (/\.(woff2?|eot|ttf|otf)(\?.*)?$/i.test(name)) {
+                                return "assets/fonts/[name]-[hash][extname]";
+                            }
+                            return "assets/[name]-[hash][extname]";
+                        },
                         codeSplitting: {
-                            groups: [
-                                {
-                                    name: "fonts",
-                                    test: /@fontsource-variable/,
-                                },
-                                {
-                                    name: "vendor",
-                                    test: /node_modules/,
-                                },
-                            ],
+                            groups: [],
                         },
                     },
                 },
