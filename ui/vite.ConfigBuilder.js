@@ -192,11 +192,47 @@ export class ConfigBuilder {
         }
     }
 
+    #preconnectPlugin({ urls }) {
+        const preconnect = urls.map((url) => ({
+            tag: "link",
+            attrs: {
+                rel: "preconnect",
+                href: url,
+                crossorigin: true,
+            },
+            injectTo: "head-prepend",
+        }));
+
+        const dnsPrefetch = urls.map((url) => ({
+            tag: "link",
+            attrs: {
+                rel: "dns-prefetch",
+                href: url,
+            },
+            injectTo: "head-prepend",
+        }));
+
+        const tags = [...preconnect, ...dnsPrefetch];
+
+        return {
+            name: "preconnect",
+            transformIndexHtml(html) {
+                return {
+                    html,
+                    tags,
+                };
+            },
+        };
+    }
+
     // https://vitejs.dev/config/
     #getInitConfig = () => {
         const config = {
             base: "./",
             plugins: [
+                this.#preconnectPlugin({
+                    urls: [...(this.usePublicRPC ? [this.publicRPCUrl] : [])],
+                }),
                 VueDevTools(),
                 vue({
                     template: { transformAssetUrls },
@@ -325,7 +361,6 @@ export class ConfigBuilder {
                 },
             },
         };
-
         return config;
     };
 }
