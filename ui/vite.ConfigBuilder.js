@@ -193,21 +193,24 @@ export class ConfigBuilder {
     }
 
     #preconnectPlugin({ urls }) {
-        const preconnect = urls.map((url) => ({
+        const hrefs = urls.map((url) => new URL(url).origin);
+
+        const preconnect = hrefs.map((href) => ({
             tag: "link",
             attrs: {
                 rel: "preconnect",
-                href: url,
+                href,
                 crossorigin: true,
             },
+
             injectTo: "head-prepend",
         }));
 
-        const dnsPrefetch = urls.map((url) => ({
+        const dnsPrefetch = hrefs.map((href) => ({
             tag: "link",
             attrs: {
                 rel: "dns-prefetch",
-                href: url,
+                href,
             },
             injectTo: "head-prepend",
         }));
