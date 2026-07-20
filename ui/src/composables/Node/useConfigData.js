@@ -201,7 +201,7 @@ export function useConfigData() {
                 $q.loading.show({
                     spinner,
                     group,
-                    message: "Loading config data...",
+                    message: "Fetching config data...",
                     spinnerColor: "secondary",
                     boxClass: "m-bg-grey",
                 });
