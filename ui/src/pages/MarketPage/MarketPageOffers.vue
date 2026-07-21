@@ -109,8 +109,7 @@ const columns = computed(() => [
     // ask
     {
         label: t("market_offers.they_ask"),
-        field: (row) => row.bid_balance_value * row.display_price,
-        format: (item) => parseFloat(item.toPrecision(6)),
+        field: (row) => row.ask_value,
         headerStyle: "width: 8%",
         align: "right",
         headerClasses: "dense-amount",
