@@ -116,3 +116,8 @@ input:read-only {
 .q-skeleton--anim {
     cursor: unset;
 }
+
+.m-inner-loading {
+    backdrop-filter: blur(1px);
+    background-color: transparent;
+}
