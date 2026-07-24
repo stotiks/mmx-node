@@ -9,7 +9,6 @@ import { vaultKeys } from "./vaultKeys";
 export const useWalletsQuery = () => {
     const vaultService = useVaultService();
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
         queryKey: vaultKeys.wallets(),
         queryFn: () => vaultService.getWalletsAsync(),
@@ -25,7 +24,6 @@ export const useWalletsQuery = () => {
 export const useCurrentWalletQuery = (isUnlocked) => {
     const vaultService = useVaultService();
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
         queryKey: vaultKeys.currentWallet(),
         queryFn: () => vaultService.getCurrentWalletAddressAsync(),
@@ -41,7 +39,6 @@ export const useCurrentWalletQuery = (isUnlocked) => {
 export const useHistoryQuery = () => {
     const vaultService = useVaultService();
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
         queryKey: vaultKeys.history(),
         queryFn: () => vaultService.getHistoryAsync(),
@@ -55,7 +52,6 @@ export const useHistoryQuery = () => {
 export const useIsInitializedQuery = () => {
     const vaultService = useVaultService();
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
         queryKey: vaultKeys.isInitialized(),
         queryFn: () => vaultService.getIsInitializedAsync(),
@@ -69,7 +65,6 @@ export const useIsInitializedQuery = () => {
 export const useIsUnlockedQuery = () => {
     const vaultService = useVaultService();
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
         queryKey: vaultKeys.isUnlocked(),
         queryFn: () => vaultService.getIsUnlockedAsync(),
@@ -102,7 +97,6 @@ export const useVaultStatusQuery = () => {
 export const useUrlPermissionsQuery = (url) => {
     const vaultService = useVaultService();
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- vaultService is a stable singleton
     return useQuery({
         queryKey: vaultKeys.urlPermissions(url),
         queryFn: () => vaultService.checkUrlPermissionsAsync(url),
