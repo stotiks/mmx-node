@@ -8,17 +8,17 @@
         readonly
         class="col-2"
     >
-        <q-inner-loading :showing="loading">
+        <q-inner-loading :showing="loading" class="m-inner-loading">
             <q-spinner-dots color="grey" size="2em" />
         </q-inner-loading>
 
-        <q-inner-loading :showing="locked">
+        <q-inner-loading :showing="locked" class="m-inner-loading">
             <q-icon :name="mdiLockOpenAlert" size="sm" class="text-warning">
                 <q-tooltip>{{ $t("wallet_common.unlock_to_see_fee") }}</q-tooltip>
             </q-icon>
         </q-inner-loading>
 
-        <q-inner-loading :showing="error != null">
+        <q-inner-loading :showing="error != null" class="m-inner-loading">
             <q-icon :name="mdiAlert" size="sm" class="text-warning">
                 <q-tooltip>{{ error }}</q-tooltip>
             </q-icon>
@@ -55,10 +55,3 @@ const props = defineProps({
 
 const loadingE = computed(() => props.loading && props.error === null);
 </script>
-
-<style scoped>
-.q-inner-loading {
-    backdrop-filter: blur(1px);
-    background-color: transparent;
-}
-</style>

@@ -32,7 +32,11 @@
                             input-class="amount-input"
                             readonly
                             class="col-6"
-                        />
+                        >
+                            <q-inner-loading :showing="estTradeLatestError != null" class="m-inner-loading">
+                                <q-icon />
+                            </q-inner-loading>
+                        </q-input>
                         <q-input
                             :model-value="estTradeAmount"
                             :label="$t('swap.you_receive_estimated')"
@@ -40,7 +44,13 @@
                             input-class="amount-input"
                             readonly
                             class="col-6"
-                        />
+                        >
+                            <q-inner-loading :showing="estTradeLatestError != null" class="m-inner-loading">
+                                <q-icon :name="mdiAlert" size="sm" class="text-warning">
+                                    <q-tooltip>{{ estTradeLatestError }}</q-tooltip>
+                                </q-icon>
+                            </q-inner-loading>
+                        </q-input>
                     </div>
                     <div class="row justify-end q-col-gutter-x-md">
                         <IterSelect v-model="formData.numIter" class="col" />
@@ -51,7 +61,11 @@
                             input-class="amount-input"
                             readonly
                             class="col-8"
-                        />
+                        >
+                            <q-inner-loading :showing="estTradeLatestError != null" class="m-inner-loading">
+                                <q-icon />
+                            </q-inner-loading>
+                        </q-input>
                     </div>
 
                     <div class="row justify-end q-col-gutter-x-md">
@@ -86,7 +100,7 @@
 </template>
 
 <script setup>
-import { mdiBankTransfer } from "@mdi/js";
+import { mdiBankTransfer, mdiAlert } from "@mdi/js";
 
 import rules from "@/helpers/rules";
 import SlippageSelect from "./SlippageSelect.vue";
@@ -133,7 +147,7 @@ const estPayload = reactive({
 });
 
 import { useSwapTradeEstimate } from "@/queries/wapi";
-const { data: estTradeData } = useSwapTradeEstimate(estPayload, isValid);
+const { data: estTradeData, latestError: estTradeLatestError } = useSwapTradeEstimate(estPayload, isValid);
 const estTradeFee = computed(() => estTradeData.value?.fee_percent.toFixed(2));
 const estTradePrice = computed(() => {
     const avgPrice = estTradeData.value?.avg_price;
