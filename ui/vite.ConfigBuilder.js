@@ -132,7 +132,7 @@ export class ConfigBuilder {
                 viteStaticCopy({
                     targets: [
                         {
-                            src: normalizePath(path.resolve(__dirname, ".output/*.zip")),
+                            src: normalizePath(path.resolve(import.meta.dirname, ".output/*.zip")),
                             dest: "downloads/bex/",
                             rename: { stripBase: 1 },
                         },
