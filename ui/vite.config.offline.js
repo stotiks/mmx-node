@@ -1,4 +1,4 @@
-import { ConfigBuilder, BuildTargets } from "./vite.ConfigBuilder";
+import { ConfigBuilder, BuildTargets } from "./vite.ConfigBuilder.js";
 
 const configBuilder = new ConfigBuilder({
     buildTarget: BuildTargets.OFFLINE,

@@ -1,5 +1,5 @@
 import { defineConfig } from "wxt";
-import { BuildTargets, ConfigBuilder } from "./vite.ConfigBuilder";
+import { BuildTargets, ConfigBuilder } from "./vite.ConfigBuilder.js";
 
 import { fileURLToPath, URL } from "node:url";
 
