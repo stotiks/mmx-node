@@ -37,8 +37,9 @@ export class WriteBuffer {
 
     flush() {
         if (this.#chunks.length > 0) {
-            this.#buffer = concatUint8Arrays(this.#chunks, this.#buffer);
+            const newBuffer = concatUint8Arrays(this.#chunks, this.#buffer);
             this.#chunks = [];
+            this.#buffer = newBuffer;
         }
     }
 
