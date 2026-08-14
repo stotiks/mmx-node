@@ -1,0 +1,1 @@
+import{Ot as e}from"./render-I--gmxzp.js";function t(){return e(`_q_`)}export{t};

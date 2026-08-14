@@ -1,0 +1,1 @@
+import{ar as e}from"./render-I--gmxzp.js";import{K as t}from"./common-BALQyHd_.js";import{t as n}from"./session-DHz1zKAa.js";var r=()=>{let r=n(),{market:i}=t(r),{menu:a}=e(i.value),{bid:o,ask:s}=e(a.value);return{bid:o,ask:s}};export{r as t};

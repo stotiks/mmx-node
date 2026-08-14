@@ -1,0 +1,1 @@
+import{Kt as e,Qn as t}from"./render-I--gmxzp.js";var n=n=>{let r=t(n);return e(()=>{let e=r.value;if(Array.isArray(e)){for(let t=0;t<e.length;t++)e[t]=``;r.value=[]}else typeof e==`string`?r.value=``:r.value=null}),r};export{n as t};

@@ -1,0 +1,1 @@
+import{bt as e,o as t}from"./render-I--gmxzp.js";var n=t({name:`QSpace`,setup(){let t=e(`div`,{class:`q-space`});return()=>t}});export{n as t};

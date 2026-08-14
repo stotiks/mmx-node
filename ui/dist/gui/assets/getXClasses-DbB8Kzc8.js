@@ -1,0 +1,1 @@
+var e=e=>{let t=e.col.xclasses,n=e.value;return t instanceof Function?t(n):t};export{e as t};

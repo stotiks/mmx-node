@@ -1,0 +1,1 @@
+import{Dn as e,Jt as t,Q as n,st as r}from"./render-I--gmxzp.js";import{t as i}from"./TrRouterView-Bobd6jt0.js";import{t as a}from"./QPage-BUjoImpk.js";var o={__name:`index`,setup(o){return(o,s)=>{let c=i;return t(),n(a,{padding:``},{default:e(()=>[r(c)]),_:1})}}};export{o as default};

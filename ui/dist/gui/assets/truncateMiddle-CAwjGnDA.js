@@ -1,0 +1,1 @@
+var e=(e,t=10,n=10)=>!e||e.length<=t+n?e:e.substring(0,t)+`...`+e.substring(e.length-n),t=(t,n=10)=>e(t,n,n),n=(t,n=10)=>e(t,n,n);export{n,t};

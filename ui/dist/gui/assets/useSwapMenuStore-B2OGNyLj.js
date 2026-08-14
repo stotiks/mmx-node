@@ -1,0 +1,1 @@
+import{ar as e}from"./render-I--gmxzp.js";import{K as t}from"./common-BALQyHd_.js";import{t as n}from"./session-DHz1zKAa.js";var r=()=>{let r=n(),{swap:i}=t(r),{menu:a}=e(i.value),{token:o,currency:s}=e(a.value);return{token:o,currency:s}};export{r as t};
