@@ -1,0 +1,1 @@
+var e=null,t=()=>{if(!e){let t=typeof navigator<`u`?navigator.language:`en-US`;e=new Intl.NumberFormat(t,{minimumFractionDigits:1,maximumFractionDigits:12})}return e},n=e=>t().format(e);export{n as t};

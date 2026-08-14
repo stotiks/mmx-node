@@ -1,0 +1,1 @@
+import{Jt as e,et as t,st as n}from"./render-I--gmxzp.js";import{t as r}from"./AccountTxHistoryTable-BgiAZbI-.js";var i={class:`q-gutter-y-sm`},a={__name:`AccountLog`,props:{index:{type:Number,required:!0}},setup(a){return(o,s)=>{let c=r;return e(),t(`div`,i,[n(c,{index:a.index,limit:200},null,8,[`index`])])}}};export{a as default};

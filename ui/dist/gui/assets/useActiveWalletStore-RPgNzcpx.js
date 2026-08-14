@@ -1,0 +1,1 @@
+import{K as e}from"./common-BALQyHd_.js";import{t}from"./session-DHz1zKAa.js";var n=()=>{let n=t(),{activeWalletIndex:r}=e(n);return{activeWalletIndex:r}};export{n as t};

@@ -1,0 +1,1 @@
+import{X as e,bt as t,i as n,o as r}from"./render-I--gmxzp.js";import{d as i,u as a}from"./use-dark-Diqbatdv.js";var o=r({name:`QCardActions`,props:{...i,vertical:Boolean},setup(r,{slots:i}){let o=a(r),s=e(()=>`q-card__actions ${o.value} q-card__actions--${r.vertical?`vert column`:`horiz row`}`);return()=>t(`div`,{class:s.value},n(i.default))}});export{o as t};
