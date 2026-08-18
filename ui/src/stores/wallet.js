@@ -5,30 +5,31 @@ export const useWalletStore = defineStore("wallet", () => {
     // markRaw (applied on set) ensures Vue never traverses wallet internals,
     // keeping private key material (#seed_value, #passphrase, #keysCache)
     // invisible to Vue Devtools.
-    const wallet = shallowRef(null);
+    const _wallet = shallowRef(null);
 
-    const setWallet = (walletInstance) => {
-        // Destroy any existing wallet before replacing
-        wallet.value?.destroy?.();
-        wallet.value = walletInstance ? markRaw(walletInstance) : null;
-    };
+    const wallet = computed({
+        get: () => _wallet.value,
+        set: (walletInstance) => {
+            clearWallet();
+            _wallet.value = walletInstance ? markRaw(walletInstance) : null;
+        },
+    });
 
     const clearWallet = () => {
-        wallet.value?.destroy?.();
-        wallet.value = null;
+        _wallet.value?.destroy?.();
+        _wallet.value = null;
     };
 
     const doLogout = () => {
         clearWallet();
     };
 
-    onUnmounted(() => {
-        clearWallet();
-    });
+    // onUnmounted(() => {
+    //     clearWallet();
+    // });
 
     return {
         wallet,
-        setWallet,
         clearWallet,
         doLogout,
     };
