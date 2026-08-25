@@ -26,6 +26,7 @@ const CODE_STRING = 32;
 const VNX_MAX_SIZE = 0xffffffff;
 
 const max_recursion = 100;
+
 export class Variant {
     #wb = new WriteBuffer();
     get data() {
@@ -153,5 +154,54 @@ export class Variant {
 
     bitSize(num) {
         return num.toString(2).length;
+    }
+
+    get_code() {
+        if (this.data.byteLength >= 2 * 2 /* sizeof(uint16_t) = 2*/) {
+            const code =
+                this.data.byteOffset % 2 === 0
+                    ? new Uint16Array(this.data.buffer, this.data.byteOffset, Math.floor(this.data.byteLength / 2))
+                    : new Uint16Array(
+                          this.data.buffer.slice(
+                              this.data.byteOffset,
+                              this.data.byteOffset + this.data.byteLength - (this.data.byteLength % 2)
+                          )
+                      );
+            return code.subarray(1);
+        }
+        return null;
+    }
+
+    is_ulong() {
+        const code = this.get_code();
+        if (code) {
+            switch (code[0]) {
+                case CODE_UINT8:
+                case CODE_UINT16:
+                case CODE_UINT32:
+                case CODE_UINT64:
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    is_long() {
+        const code = this.get_code();
+        if (code) {
+            switch (code[0]) {
+                case CODE_UINT8:
+                case CODE_UINT16:
+                case CODE_UINT32:
+                case CODE_INT8:
+                case CODE_INT16:
+                case CODE_INT32:
+                case CODE_INT64:
+                    return true;
+                case CODE_UINT64:
+                    return this.bitSize(this.value) <= 64 - 1;
+            }
+        }
+        return false;
     }
 }

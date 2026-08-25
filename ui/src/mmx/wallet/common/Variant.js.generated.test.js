@@ -15,6 +15,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 1;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 0;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("bool true", () => {
@@ -26,6 +30,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 1;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 31;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("bool false", () => {
@@ -37,6 +45,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 1;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 31;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("zero", () => {
@@ -48,6 +60,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 1;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("unsigned integer 8bit", () => {
@@ -59,6 +75,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 1;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("unsigned integer 16bit", () => {
@@ -70,6 +90,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 2;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("unsigned integer 32bit", () => {
@@ -81,6 +105,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 3;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("unsigned integer 64bit", () => {
@@ -92,6 +120,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 4;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("signed integer 8bit", () => {
@@ -103,6 +135,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 5;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("signed integer 16bit", () => {
@@ -114,6 +150,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 6;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("signed integer 32bit", () => {
@@ -125,6 +165,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 7;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("signed integer 64bit", () => {
@@ -136,6 +180,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 8;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("string", () => {
@@ -147,6 +195,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 8;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 32;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("string empty", () => {
@@ -158,6 +210,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 4;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 32;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("list", () => {
@@ -169,6 +225,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 36;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 12;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("object empty", () => {
@@ -180,6 +240,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 4;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 24;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("object", () => {
@@ -192,6 +256,10 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 34;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 24;
+        assert.equal(cppCode0, jsCode[0]);
     });
 
     it("object nested", () => {
@@ -209,5 +277,9 @@ describe("Variant", () => {
         const jsNumBytes = get_num_bytes(variant);
         const cppNumBytes = 71;
         assert.equal(jsNumBytes, cppNumBytes);
+
+        const jsCode = variant.get_code();
+        const cppCode0 = 24;
+        assert.equal(cppCode0, jsCode[0]);
     });
 });
