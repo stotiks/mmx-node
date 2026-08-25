@@ -10,6 +10,8 @@ void static print_test(const std::string& testname, const T& value, const std::s
 	const auto cppHex = vnx::to_hex_string(buffer.data(), buffer.size());
 	const auto cppNumBytes = mmx::get_num_bytes(variant);
 
+	const auto cppCode = variant.get_code();
+
 	const auto test =
 		"it(\"" + testname + "\", () => {\n"
 		"   const variant = new Variant(" + jsvalue + ");\n"
@@ -18,7 +20,11 @@ void static print_test(const std::string& testname, const T& value, const std::s
 		"   assert.equal(jsHex, cppHex);\n\n"
 		"   const jsNumBytes = get_num_bytes(variant);\n"
 		"   const cppNumBytes = " + std::to_string(cppNumBytes) + ";\n"
-		"   assert.equal(jsNumBytes, cppNumBytes);\n"
+		"   assert.equal(jsNumBytes, cppNumBytes);\n\n"
+
+		"   const jsCode = variant.get_code();\n"
+		"   const cppCode0 = " + std::to_string(cppCode[0]) + ";\n"
+		"   assert.equal(cppCode0, jsCode[0]);\n"
 		"});";
 
 

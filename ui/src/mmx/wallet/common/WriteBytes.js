@@ -9,6 +9,18 @@ import { vnxObject } from "./vnxObject";
 import { WriteBuffer } from "./WriteBuffer";
 
 export class WriteBytes extends WriteBuffer {
+    #version;
+
+    constructor(version) {
+        super();
+
+        if (!Number.isInteger(version) || (version !== 0 && version !== 1)) {
+            throw new Error("version must be 0 or 1");
+        }
+
+        this.#version = version;
+    }
+
     write_bytes_cstr(str) {
         const tmp = new TextEncoder().encode(str);
         this.write(tmp);
@@ -29,7 +41,8 @@ export class WriteBytes extends WriteBuffer {
         if (!Number.isInteger(num) || num < -0x7fffffff - 1 || num > 0xffffffff) {
             throw new Error(`Invalid number: ${num}`);
         }
-        this.write_bytes_int64(new Uint32Array([num]));
+        const tmp = num >= 0 ? new Uint32Array([num]) : new Int32Array([num]);
+        this.write_bytes_int64(tmp);
     }
 
     write_bytes_int64(bigNum) {
@@ -55,12 +68,41 @@ export class WriteBytes extends WriteBuffer {
 
     write_bytes_variant(variant) {
         const value = variant.valueOf();
+
+        const is_json = (value) => !(typeof value === "object" && value instanceof Array); //TODO is_json
+
+        if (this.#version >= 1 && !is_json(value)) {
+            this.write_bytes_cstr("variant<>");
+        }
+
         if (value === undefined || value === null) {
             this.write_bytes_cstr("NULL");
-        } else if (typeof value === "number") {
-            this.write_bytes_int64(BigInt(value));
-        } else {
+        } else if (typeof value === "boolean") {
+            if (this.#version >= 1) {
+                this.write_bytes_cstr("<bool>");
+            }
             this.write_bytes(value);
+        } else if (typeof value === "number" || typeof value === "bigint") {
+            if (variant.is_ulong()) {
+                if (this.#version >= 1) {
+                    this.write_bytes_cstr("<u64>");
+                }
+                this.write_bytes_int64(BigInt(value));
+            } else if (variant.is_long()) {
+                if (this.#version >= 1) {
+                    this.write_bytes_cstr("<i64>");
+                }
+                this.write_bytes_int64(BigInt(value));
+            }
+        } else if (typeof value === "string") {
+            this.write_bytes_string(value);
+        } else if (typeof value === "object" && value instanceof Array) {
+            const _value = value.map((v) => new Variant(v));
+            this.write_bytes_array(_value);
+        } else if (typeof value === "object") {
+            this.write_bytes_object(value);
+        } else {
+            this.write_bytes(variant.data);
         }
     }
 
@@ -129,7 +171,9 @@ export class WriteBytes extends WriteBuffer {
     }
 
     write_bytes(value, full_hash) {
-        if (value == null) {
+        if (value === undefined) {
+            //
+        } else if (value === null) {
             this.write_bytes_boolean(false);
         } else if (typeof value === "boolean") {
             this.write_bytes_boolean(value);
@@ -173,11 +217,13 @@ export class WriteBytes extends WriteBuffer {
         }
     }
 
-    write_field(field_name, field_value, full_hash) {
+    write_field_name(field_name) {
         this.write_bytes_cstr("field<>");
         this.write_bytes(field_name);
-        if (field_value !== undefined) {
-            this.write_bytes(field_value, full_hash);
-        }
+    }
+
+    write_field(field_name, field_value, full_hash) {
+        this.write_field_name(field_name);
+        this.write_bytes(field_value, full_hash);
     }
 }
