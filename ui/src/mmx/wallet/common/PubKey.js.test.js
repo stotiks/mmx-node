@@ -95,7 +95,7 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const serialized = pubKey.hash_serialize(false);
+            const serialized = pubKey.hash_serialize();
             expect(serialized).toBeDefined();
             expect(serialized.byteLength).toBeGreaterThan(0);
         });
@@ -111,8 +111,8 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const serialized1 = pubKey1.hash_serialize(false);
-            const serialized2 = pubKey2.hash_serialize(false);
+            const serialized1 = pubKey1.hash_serialize();
+            const serialized2 = pubKey2.hash_serialize();
 
             expect(new Uint8Array(serialized1)).toEqual(new Uint8Array(serialized2));
         });
@@ -128,8 +128,8 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const serialized1 = pubKey1.hash_serialize(false);
-            const serialized2 = pubKey2.hash_serialize(false);
+            const serialized1 = pubKey1.hash_serialize();
+            const serialized2 = pubKey2.hash_serialize();
 
             expect(new Uint8Array(serialized1)).not.toEqual(new Uint8Array(serialized2));
         });
@@ -140,7 +140,7 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const serialized = pubKey.hash_serialize(false);
+            const serialized = pubKey.hash_serialize();
             // Type hash is written first as BigInt, should be present
             expect(serialized.byteLength).toBeGreaterThan(8);
         });
@@ -153,7 +153,7 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const hash = pubKey.calc_hash(false);
+            const hash = pubKey.calc_hash();
             expect(hash).toBeDefined();
             expect(typeof hash).toBe("object");
             expect(hash.constructor.name).toBe("hash_t");
@@ -170,8 +170,8 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const hash1 = pubKey1.calc_hash(false);
-            const hash2 = pubKey2.calc_hash(false);
+            const hash1 = pubKey1.calc_hash();
+            const hash2 = pubKey2.calc_hash();
 
             expect(hash1.toString()).toBe(hash2.toString());
         });
@@ -188,8 +188,8 @@ describe("PubKey", () => {
                     "024F512B1F7149662F2D7B1901A2B1A392971091263A40E6DFE415314322EDD321CFE68AA81CDAAA854EA15F5BB9891F38A37F6CDADEFA6153F8613F7B133415",
             });
 
-            const hash1 = pubKey1.calc_hash(false);
-            const hash2 = pubKey2.calc_hash(false);
+            const hash1 = pubKey1.calc_hash();
+            const hash2 = pubKey2.calc_hash();
 
             expect(hash1.toString()).not.toBe(hash2.toString());
         });
@@ -200,8 +200,8 @@ describe("PubKey", () => {
                 signature: testSignature,
             });
 
-            const hashFull = pubKey.calc_hash(true);
-            const hashNotFull = pubKey.calc_hash(false);
+            const hashFull = pubKey.calc_hash();
+            const hashNotFull = pubKey.calc_hash();
 
             expect(hashFull).toBeDefined();
             expect(hashNotFull).toBeDefined();

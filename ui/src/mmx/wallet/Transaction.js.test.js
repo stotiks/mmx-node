@@ -35,7 +35,7 @@ txs.forEach((item, key) => {
         it("calc_hash content_hash", () => {
             const tx = Transaction.parse(json);
 
-            const hash_serialize = tx.hash_serialize(item.full_hash ?? true);
+            const hash_serialize = tx.hash_serialize(item.full_hash ?? true, tx.version);
             const hash = tx.calc_hash(true);
 
             assert.equal(toUpperHex(hash_serialize), hex);
@@ -89,7 +89,7 @@ describe("Transaction #nonce as string", () => {
     it("calc_hash content_hash", () => {
         const tx = Transaction.parse(json);
 
-        const hash_serialize = tx.hash_serialize(true);
+        const hash_serialize = tx.hash_serialize(true, tx.version);
         const hash = tx.calc_hash(true);
 
         assert.equal(toUpperHex(hash_serialize), hex);

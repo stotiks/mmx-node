@@ -32,10 +32,10 @@ class PubKey {
         this.signature = signature;
     }
 
-    hash_serialize(full_hash) {
+    hash_serialize() {
         const hp = this.getHashProxy();
 
-        const wb = new WriteBytes();
+        const wb = new WriteBytes(0);
         wb.write_bytes(this.#type_hash);
         wb.write_field("version", hp.version);
         wb.write_field("pubkey", hp.pubkey);
@@ -43,8 +43,8 @@ class PubKey {
         return wb.buffer;
     }
 
-    calc_hash(full_hash) {
-        const tmp = this.hash_serialize(full_hash);
+    calc_hash() {
+        const tmp = this.hash_serialize();
         const hash = new hash_t(tmp);
         return hash;
     }
