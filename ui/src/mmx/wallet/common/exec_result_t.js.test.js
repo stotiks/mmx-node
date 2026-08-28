@@ -157,7 +157,7 @@ describe("exec_result_t", () => {
                 error: null,
             });
 
-            const serialized = result.hash_serialize(false);
+            const serialized = result.hash_serialize();
             expect(serialized).toBeDefined();
             expect(serialized.byteLength).toBeGreaterThan(0);
         });
@@ -175,8 +175,8 @@ describe("exec_result_t", () => {
             const result1 = new exec_result_t(params);
             const result2 = new exec_result_t(params);
 
-            const serialized1 = result1.hash_serialize(false);
-            const serialized2 = result2.hash_serialize(false);
+            const serialized1 = result1.hash_serialize();
+            const serialized2 = result2.hash_serialize();
 
             expect(new Uint8Array(serialized1)).toEqual(new Uint8Array(serialized2));
         });
@@ -191,7 +191,7 @@ describe("exec_result_t", () => {
                 error: null,
             });
 
-            const serialized = result.hash_serialize(false);
+            const serialized = result.hash_serialize();
             // Type hash is written first as BigInt (8 bytes)
             expect(serialized.byteLength).toBeGreaterThan(8);
         });
@@ -218,7 +218,7 @@ describe("exec_result_t", () => {
                 error: null,
             });
 
-            const serialized = result.hash_serialize(false);
+            const serialized = result.hash_serialize();
             expect(serialized.byteLength).toBeGreaterThan(100); // Should be larger with data
         });
     });
@@ -234,7 +234,7 @@ describe("exec_result_t", () => {
                 error: null,
             });
 
-            const hash = result.calc_hash(false);
+            const hash = result.calc_hash();
             expect(hash).toBeDefined();
             expect(typeof hash).toBe("object");
             expect(hash.constructor.name).toBe("hash_t");
@@ -253,8 +253,8 @@ describe("exec_result_t", () => {
             const result1 = new exec_result_t(params);
             const result2 = new exec_result_t(params);
 
-            const hash1 = result1.calc_hash(false);
-            const hash2 = result2.calc_hash(false);
+            const hash1 = result1.calc_hash();
+            const hash2 = result2.calc_hash();
 
             expect(hash1.toString()).toBe(hash2.toString());
         });
@@ -278,8 +278,8 @@ describe("exec_result_t", () => {
                 error: null, // Error needs to be object with calc_hash() or null
             });
 
-            const hash1 = result1.calc_hash(false);
-            const hash2 = result2.calc_hash(false);
+            const hash1 = result1.calc_hash();
+            const hash2 = result2.calc_hash();
 
             expect(hash1.toString()).not.toBe(hash2.toString());
         });
@@ -435,8 +435,8 @@ describe("exec_result_t", () => {
             });
 
             expect(() => {
-                result.hash_serialize(false);
-                result.calc_hash(false);
+                result.hash_serialize();
+                result.calc_hash();
             }).not.toThrow();
         });
 
@@ -449,7 +449,7 @@ describe("exec_result_t", () => {
             });
 
             expect(() => {
-                result.hash_serialize(false);
+                result.hash_serialize();
             }).not.toThrow();
         });
 
@@ -472,7 +472,7 @@ describe("exec_result_t", () => {
                 error: null,
             });
 
-            expect(resultTrue.hash_serialize(false)).not.toEqual(resultFalse.hash_serialize(false));
+            expect(resultTrue.hash_serialize()).not.toEqual(resultFalse.hash_serialize());
         });
     });
 });

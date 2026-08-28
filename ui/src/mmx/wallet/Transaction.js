@@ -106,6 +106,8 @@ class Transaction {
                     return target.deploy ? new Executable(target.deploy) : null;
                 case "exec_result":
                     return new optional(target.exec_result !== null ? new exec_result_t(target.exec_result) : null);
+                case "expires":
+                    return target.expires == -1 ? 4294967295 : target.expires; // TODO uint32 cast
                 default:
                     return Reflect.get(target, prop);
             }
@@ -119,7 +121,7 @@ class Transaction {
     hash_serialize(full_hash) {
         const hp = this.getHashProxy();
 
-        const wb = new WriteBytes();
+        const wb = new WriteBytes(hp.version);
         wb.write_bytes(this.#type_hash);
         wb.write_field("version", hp.version);
         wb.write_field("expires", hp.expires);
@@ -139,10 +141,10 @@ class Transaction {
 
         for (const op of hp.execute) {
             //write_bytes(out, op ? op->calc_hash(full_hash) : hash_t());
-            wb.write_bytes(new bytes_t(op.calc_hash(full_hash)));
+            wb.write_bytes(new bytes_t(op.calc_hash(full_hash, hp.version)));
         }
 
-        wb.write_field("deploy", hp.deploy ? new bytes_t(hp.deploy.calc_hash(full_hash)) : new hash_t());
+        wb.write_field("deploy", hp.deploy ? new bytes_t(hp.deploy.calc_hash(full_hash, hp.version)) : new hash_t());
 
         if (full_hash) {
             wb.write_field("static_cost", hp.static_cost);

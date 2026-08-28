@@ -160,7 +160,7 @@ describe("Contract", () => {
                 init_method: "init",
             });
 
-            const serialized = executable.hash_serialize(false);
+            const serialized = executable.hash_serialize(false, 0);
             expect(serialized).toBeDefined();
             expect(serialized.byteLength).toBeGreaterThan(0);
         });
@@ -174,7 +174,7 @@ describe("Contract", () => {
                 init_method: "init",
             });
 
-            const hash = executable.calc_hash(false);
+            const hash = executable.calc_hash(false, 0);
             expect(hash).toBeDefined();
             expect(typeof hash).toBe("object");
             expect(hash.constructor.name).toBe("hash_t");

@@ -105,9 +105,9 @@ export class Executable extends TokenBase {
         return new Proxy(this, Executable.hashHandler);
     }
 
-    hash_serialize(full_hash) {
+    hash_serialize(full_hash, hash_version) {
         const hp = this.getHashProxy();
-        const wb = new WriteBytes();
+        const wb = new WriteBytes(hash_version);
 
         wb.write_bytes(this.#type_hash);
         wb.write_field("version", hp.version);
@@ -123,8 +123,8 @@ export class Executable extends TokenBase {
         return wb.buffer;
     }
 
-    calc_hash(full_hash) {
-        const tmp = this.hash_serialize(full_hash);
+    calc_hash(full_hash, hash_version) {
+        const tmp = this.hash_serialize(full_hash, hash_version);
         const hash = new hash_t(tmp);
         return hash;
     }

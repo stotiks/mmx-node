@@ -13,7 +13,7 @@ describe("mmx.operation.Deposit", () => {
     it("hash_serialize", () => {
         const obj = JSON.parse(json);
         const op = new Operation(obj);
-        const hash_serialize = op.hash_serialize(true);
+        const hash_serialize = op.hash_serialize(true, 0);
         assert.equal(toUpperHex(hash_serialize), hex);
     });
 
@@ -166,7 +166,7 @@ describe("mmx.operation.Deposit", () => {
             };
 
             const op = new Deposit(params);
-            const hash = op.calc_hash(false);
+            const hash = op.calc_hash(false, 0);
 
             expect(hash).toBeDefined();
             expect(hash.toString()).toBeTruthy();
@@ -184,7 +184,7 @@ describe("mmx.operation.Deposit", () => {
             };
 
             const op = new Deposit(params);
-            const hash = op.calc_hash(true);
+            const hash = op.calc_hash(true, 0);
 
             expect(hash).toBeDefined();
             expect(hash.toString()).toBeTruthy();
@@ -208,7 +208,7 @@ describe("mmx.operation.Deposit", () => {
             const op1 = new Deposit(params1);
             const op2 = new Deposit(params2);
 
-            expect(op1.calc_hash(false).toString()).not.toBe(op2.calc_hash(false).toString());
+            expect(op1.calc_hash(false, 0).toString()).not.toBe(op2.calc_hash(false, 0).toString());
         });
     });
 
@@ -224,7 +224,7 @@ describe("mmx.operation.Deposit", () => {
             };
 
             const op = new Deposit(params);
-            const serialized = op.hash_serialize(false);
+            const serialized = op.hash_serialize(false, 0);
 
             expect(serialized).toBeInstanceOf(Uint8Array);
             expect(serialized.length).toBeGreaterThan(0);
@@ -242,7 +242,7 @@ describe("mmx.operation.Execute", () => {
     it("hash_serialize", () => {
         const obj = JSON.parse(json);
         const op = new Operation(obj);
-        const hash_serialize = op.hash_serialize(true);
+        const hash_serialize = op.hash_serialize(true, 0);
         assert.equal(toUpperHex(hash_serialize), hex);
     });
 
@@ -370,7 +370,7 @@ describe("mmx.operation.Execute", () => {
             };
 
             const op = new Operation(params);
-            const hash = op.calc_hash(false);
+            const hash = op.calc_hash(false, 0);
 
             expect(hash).toBeDefined();
             expect(hash.toString()).toBeTruthy();
@@ -387,7 +387,7 @@ describe("mmx.operation.Execute", () => {
             };
 
             const op = new Operation(params);
-            const hash = op.calc_hash(true);
+            const hash = op.calc_hash(true, 0);
 
             expect(hash).toBeDefined();
             expect(hash.toString()).toBeTruthy();
@@ -404,8 +404,8 @@ describe("mmx.operation.Execute", () => {
             };
 
             const op = new Operation(params);
-            const hashWithoutSolution = op.calc_hash(false);
-            const hashWithSolution = op.calc_hash(true);
+            const hashWithoutSolution = op.calc_hash(false, 0);
+            const hashWithSolution = op.calc_hash(true, 0);
 
             expect(hashWithoutSolution.toString()).not.toBe(hashWithSolution.toString());
         });
@@ -480,7 +480,7 @@ describe("mmx.operation.Execute", () => {
             };
 
             const op = new Operation(params);
-            const serialized = op.hash_serialize(false);
+            const serialized = op.hash_serialize(false, 0);
 
             expect(serialized).toBeInstanceOf(Uint8Array);
             expect(serialized.length).toBeGreaterThan(0);
@@ -497,7 +497,7 @@ describe("mmx.operation.Execute", () => {
             };
 
             const op = new Operation(params);
-            const serialized = op.hash_serialize(true);
+            const serialized = op.hash_serialize(true, 0);
 
             expect(serialized).toBeInstanceOf(Uint8Array);
             expect(serialized.length).toBeGreaterThan(0);
