@@ -59,6 +59,7 @@ export class ChainParams {
     reward_activation = 50000;
     transaction_activation = 100000;
     hardfork1_height = 1000000;
+    hardfork1_height2 = 5050000;
 
     constructor(params) {
         if (!params) {

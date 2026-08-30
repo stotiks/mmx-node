@@ -12,6 +12,7 @@ import { getChainParamsAsync } from "./utils/getChainParamsAsync";
 import { spend_options_t } from "./common/spend_options_t";
 import { Operation, Execute, Deposit } from "./common/Operation";
 import { toUpperHex } from "./utils/Uint8ArrayUtils";
+import { getTransactionVersion } from "./utils/getTransactionVersion";
 
 /**
  * Convert a passphrase to a Uint8Array for secure storage.
@@ -26,7 +27,15 @@ const encodePassphrase = (passphrase) => {
     throw new Error(`Invalid passphrase type: ${typeof passphrase}`);
 };
 
+const MAX_TRANSACTION_VERSION = 1;
+
 export class ECDSA_Wallet {
+    #height = null;
+
+    updateHeight = (height) => {
+        this.#height = height;
+    };
+
     #seed_value;
     #passphrase = new Uint8Array(0);
 
@@ -150,6 +159,13 @@ export class ECDSA_Wallet {
 
     completeAsync = async (tx, _options, deposit = []) => {
         const options = new spend_options_t(_options);
+        const chainParams = await getChainParamsAsync(options.network);
+
+        if (this.#height !== null) {
+            tx.version = getTransactionVersion(chainParams, this.#height + 1);
+        } else {
+            tx.version = MAX_TRANSACTION_VERSION;
+        }
 
         if (options.note) {
             tx.note = options.note;
@@ -160,7 +176,11 @@ export class ECDSA_Wallet {
         }
 
         if (options.expire_delta) {
-            throw new Error("expire_delta not supported");
+            if (this.#height !== null) {
+                tx.expires = bigIntMin(tx.expires, BigInt(this.#height) + options.expire_delta);
+            } else {
+                throw new Error("expire_delta not supported");
+            }
         }
 
         tx.fee_ratio = bigIntMax(BigInt(tx.fee_ratio), BigInt(options.fee_ratio));
@@ -217,7 +237,6 @@ export class ECDSA_Wallet {
         }
         //---
 
-        const chainParams = await getChainParamsAsync(options.network);
         const static_cost = tx.calc_cost(chainParams);
         tx.max_fee_amount = cost_to_fee(BigInt(static_cost) + BigInt(options.gas_limit), tx.fee_ratio);
 

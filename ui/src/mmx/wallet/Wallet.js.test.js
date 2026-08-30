@@ -10,6 +10,7 @@ import { toUpperHex } from "./utils/Uint8ArrayUtils";
 
 const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
 const ecdsaWallet = new ECDSA_Wallet(mnemonic, "");
+ecdsaWallet.updateHeight(0);
 
 import { txs } from "./Transaction.js.txs.test.js";
 import { get_inv_price } from "./common/offer_data_t";
