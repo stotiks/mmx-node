@@ -39,8 +39,8 @@
                                         label="Done"
                                         outline
                                         rounded
-                                        color="secondary"
-                                        :timeout="5"
+                                        :color="btnColor"
+                                        :timeout="btnTimeout"
                                         no-resume-on-hover
                                         @click="handleCancel"
                                     />
@@ -78,6 +78,8 @@ const handleCancel = () => onDialogCancel();
 const isSuccess = computed(() => props.result.success);
 const icon = computed(() => (isSuccess.value ? mdiCheckCircle : mdiCloseCircle));
 const iconColor = computed(() => (isSuccess.value ? "positive" : "negative"));
+const btnColor = computed(() => (isSuccess.value ? "secondary" : "negative"));
+const btnTimeout = computed(() => (isSuccess.value ? 5 : -1));
 
 const status = computed(() => (isSuccess.value ? "Success" : "Failed"));
 const statusMessage = computed(() => props.result.error);
