@@ -7,6 +7,13 @@ import { Wallet } from "@mmx/wallet/Wallet";
 import { spend_options_t } from "@/mmx/wallet/common/spend_options_t";
 import { Transaction } from "@/mmx/wallet/Transaction";
 
+const withECDSAWalletAsync = async (address, callback) =>
+    await vault.withECDSAWalletAsync(address, async (ecdsaWallet) => {
+        const height = await getCurrentHeightAsync();
+        ecdsaWallet.updateHeight(height);
+        return await callback(ecdsaWallet);
+    });
+
 const getWalletByAddressAsync = async (address) => {
     if (!address) {
         throw new Error("No wallet selected");
@@ -26,7 +33,7 @@ export const getCurrentWalletAsync = async () => {
 
 export const getPubKeyAsync = async (address) => {
     address ??= await vault.getCurrentWalletAddressAsync();
-    return await vault.withECDSAWalletAsync(address, async (ecdsaWallet) => {
+    return await withECDSAWalletAsync(address, async (ecdsaWallet) => {
         const { pubKey } = await ecdsaWallet.getKeysAsync(0);
         return bytesToHex(pubKey).toUpperCase();
     });
@@ -39,10 +46,7 @@ export const signMessageAsync = async (message, address) => {
     }
     const msgWithPrefix = `MMX/sign_message/${message}`;
     const msgHash = sha256(utf8ToBytes(msgWithPrefix));
-    return await vault.withECDSAWalletAsync(
-        address,
-        async (ecdsaWallet) => await ecdsaWallet.signMsgAsync(address, msgHash)
-    );
+    return await withECDSAWalletAsync(address, async (ecdsaWallet) => await ecdsaWallet.signMsgAsync(address, msgHash));
 };
 
 // const getMojoAmountAsync = async (amount, currency, options) => {
@@ -92,7 +96,7 @@ export const getSendTxAsync = async (amount, dst_addr, currency, _options, addre
     if (!currency) {
         currency = new addr_t().toString();
     }
-    return await vault.withECDSAWalletAsync(
+    return await withECDSAWalletAsync(
         address,
         async (ecdsaWallet) => await Wallet.getSendTxAsync(ecdsaWallet, amount, dst_addr, currency, options)
     );
@@ -101,7 +105,7 @@ export const getSendTxAsync = async (amount, dst_addr, currency, _options, addre
 export const getOfferTradeTxAsync = async (address, amount, ask_currency, price, _options, wallet_address) => {
     wallet_address ??= await vault.getCurrentWalletAddressAsync();
     const options = await getValidatedSpendOptionsAsync(_options);
-    return await vault.withECDSAWalletAsync(
+    return await withECDSAWalletAsync(
         wallet_address,
         async (ecdsaWallet) =>
             await Wallet.getOfferTradeTxAsync(ecdsaWallet, address, amount, ask_currency, price, options)
@@ -113,7 +117,7 @@ export const signTransactionAsync = async (_tx, _options, address) => {
     const options = await getValidatedSpendOptionsAsync(_options);
     const tx = new Transaction(_tx);
 
-    return await vault.withECDSAWalletAsync(address, async (ecdsaWallet) => {
+    return await withECDSAWalletAsync(address, async (ecdsaWallet) => {
         await ecdsaWallet.signOfAsync(tx, options);
         return tx;
     });
