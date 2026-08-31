@@ -79,13 +79,13 @@ const getValidatedSpendOptionsAsync = async (spendOptions) => {
         throw new Error("Invalid network");
     }
 
-    // fill expire_at
-    if (!options.expire_at && options.expire_delta) {
-        const height = await getCurrentHeightAsync();
+    // // fill expire_at
+    // if (!options.expire_at && options.expire_delta) {
+    //     const height = await getCurrentHeightAsync();
 
-        options.expire_at = height + options.expire_delta;
-        options.expire_delta = null;
-    }
+    //     options.expire_at = height + options.expire_delta;
+    //     options.expire_delta = null;
+    // }
 
     return new spend_options_t(options);
 };

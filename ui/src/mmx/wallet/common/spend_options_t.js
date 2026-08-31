@@ -28,8 +28,8 @@ export class spend_options_t {
             throw new Error("network is required");
         }
 
-        if (!options.expire_at) {
-            throw new Error("expire_at is required");
+        if (!options.expire_at && !options.expire_delta) {
+            throw new Error("expire_at or expire_delta is required");
         }
 
         const safeOptions = Object.create(null);

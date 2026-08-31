@@ -172,12 +172,12 @@ export class ECDSA_Wallet {
         }
 
         if (options.expire_at) {
-            tx.expires = bigIntMin(tx.expires, options.expire_at);
+            tx.expires = Math.min(tx.expires, options.expire_at);
         }
 
         if (options.expire_delta) {
             if (this.#height !== null) {
-                tx.expires = bigIntMin(tx.expires, BigInt(this.#height) + options.expire_delta);
+                tx.expires = Math.min(tx.expires, this.#height + options.expire_delta);
             } else {
                 throw new Error("expire_delta not supported");
             }
