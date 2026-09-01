@@ -4,7 +4,7 @@ import { Variant } from "./Variant";
 import { get_num_bytes } from "./utils";
 
 import { toUpperHex } from "../utils/Uint8ArrayUtils";
-describe("Variant", () => {
+describe.concurrent("Variant", () => {
     // generated from C++
     it("null", () => {
         const variant = new Variant(null);
