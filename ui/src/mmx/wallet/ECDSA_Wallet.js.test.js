@@ -10,7 +10,7 @@ import { signAsync } from "./common/ECDSAUtils";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { verify, verifyAsync } from "@noble/secp256k1";
 
-describe("ECDSA_Wallet", async () => {
+describe.concurrent("ECDSA_Wallet", async () => {
     const mnemonic = import.meta.env.VITE_TEST_MNEMONIC;
 
     const seed = mnemonicToSeed(mnemonic);

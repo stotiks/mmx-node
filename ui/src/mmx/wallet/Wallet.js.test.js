@@ -15,7 +15,7 @@ ecdsaWallet.updateHeight(0);
 import { txs } from "./Transaction.js.txs.test.js";
 import { get_inv_price } from "./common/offer_data_t";
 
-describe("Wallet", () => {
+describe.concurrent("Wallet", () => {
     const currency = new addr_t().toString();
 
     it("getSendTxAsync", async () => {

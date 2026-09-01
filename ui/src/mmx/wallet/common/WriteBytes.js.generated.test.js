@@ -12,7 +12,7 @@ import { WriteBytes } from "./WriteBytes";
 
 import { toUpperHex } from "../utils/Uint8ArrayUtils";
 
-describe("WriteBuffer", () => {
+describe.concurrent("WriteBuffer", () => {
     it("nullptr {v0}", () => {
         const wb = new WriteBytes(0);
         wb.write_field("field_name", null);
