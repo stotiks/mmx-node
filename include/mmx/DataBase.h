@@ -256,18 +256,31 @@ public:
 	template<typename T>
 	void open_async(T& table, const std::string& path) {
 		threads.add_task([this, &table, path]() {
-			add(table.open(path));
+			try {
+				const auto impl = table.open(path);
+				if(!impl) {
+					throw std::runtime_error("open() failed");
+				}
+				add(impl);
+			} catch(const std::exception& ex) {
+				record_open_error(path, ex.what());
+			} catch(...) {
+				record_open_error(path, "unknown exception");
+			}
 		});
 	}
 
-	void sync() {
-		threads.sync();
-	}
+	void sync();
 
 private:
+	void record_open_error(const std::string& path, const std::string& message);
+
+	void check_open_errors() const;
+
 	mutable std::mutex mutex;
 	vnx::ThreadPool threads;
 	std::vector<std::shared_ptr<Table>> tables;
+	std::vector<std::pair<std::string, std::string>> open_errors;
 
 };
 

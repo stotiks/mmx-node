@@ -338,6 +338,41 @@ int main(int argc, char** argv)
 	}
 	VNX_TEST_END()
 
+	VNX_TEST_BEGIN("async_open_failure")
+	{
+		const std::string path = "tmp/async_open_failure";
+		vnx::Directory(path).create();
+		{
+			vnx::File file(path + "/000000.dat");
+			file.open("wb");
+			file.out.write("x", 1);
+			file.close();
+		}
+
+		mmx::DataBase db(1);
+		mmx::uint_table<uint32_t, uint32_t> table;
+		db.open_async(table, path);
+
+		std::string error;
+		try {
+			db.sync();
+		} catch(const std::exception& ex) {
+			error = ex.what();
+		}
+		vnx::test::expect(error.find("Failed to open 1 table") != std::string::npos, true);
+		vnx::test::expect(error.find(path) != std::string::npos, true);
+		vnx::test::expect(error.find("read(): EOF") != std::string::npos, true);
+		vnx::test::expect(bool(table.get_impl()), false);
+
+		bool iterator_failed = false;
+		try {
+			mmx::Table::Iterator iter(table.get_impl());
+		} catch(const std::logic_error& ex) {
+			iterator_failed = std::string(ex.what()).find("!table") != std::string::npos;
+		}
+		vnx::test::expect(iterator_failed, true);
+	}
+	VNX_TEST_END()
+
 	return vnx::test::done();
 }
-

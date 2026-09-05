@@ -10,6 +10,8 @@
 
 #include <vnx/vnx.h>
 
+#include <sstream>
+
 
 namespace mmx {
 
@@ -753,6 +755,9 @@ void Table::rename(std::shared_ptr<block_t> block, const std::string& new_name) 
 Table::Iterator::Iterator(const Table* table)
 	:	table(table), block_map(compare_t(this))
 {
+	if(!table) {
+		throw std::logic_error("Table::Iterator(): !table");
+	}
 	std::lock_guard lock(table->mutex);
 	table->write_lock++;
 }
@@ -765,8 +770,10 @@ Table::Iterator::Iterator(std::shared_ptr<const Table> table)
 
 Table::Iterator::~Iterator()
 {
-	std::lock_guard lock(table->mutex);
-	table->write_lock--;
+	if(table) {
+		std::lock_guard lock(table->mutex);
+		table->write_lock--;
+	}
 }
 
 bool Table::Iterator::compare_t::operator()(
@@ -1014,8 +1021,40 @@ DataBase::~DataBase()
 
 void DataBase::add(std::shared_ptr<Table> table)
 {
+	if(!table) {
+		throw std::logic_error("DataBase::add(): !table");
+	}
 	std::lock_guard<std::mutex> lock(mutex);
 	tables.push_back(table);
+}
+
+void DataBase::record_open_error(const std::string& path, const std::string& message)
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	open_errors.emplace_back(path, message);
+}
+
+void DataBase::check_open_errors() const
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	if(open_errors.empty()) {
+		return;
+	}
+	std::ostringstream out;
+	out << "Failed to open " << open_errors.size() << " table";
+	if(open_errors.size() != 1) {
+		out << 's';
+	}
+	for(const auto& error : open_errors) {
+		out << ", '" << error.first << "': " << error.second;
+	}
+	throw std::runtime_error(out.str());
+}
+
+void DataBase::sync()
+{
+	threads.sync();
+	check_open_errors();
 }
 
 void DataBase::commit(const uint32_t new_version)
