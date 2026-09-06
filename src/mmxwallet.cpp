@@ -46,6 +46,8 @@
 
 namespace {
 
+constexpr uint32_t MAX_NUM_ADDRESSES = 10;
+
 std::string trim(std::string value)
 {
 	while(!value.empty() && std::isspace(static_cast<unsigned char>(value.back()))) {
@@ -864,8 +866,8 @@ int main(int argc, char** argv)
 
 		if(command.empty() || command == "help" || command == "--help") {
 			print_help();
-		} else if(!num_addresses || num_addresses > 1000) {
-			throw std::logic_error("num-addresses needs to be between 1 and 1000");
+		} else if(!num_addresses || num_addresses > MAX_NUM_ADDRESSES) {
+			throw std::logic_error("num-addresses needs to be between 1 and " + std::to_string(MAX_NUM_ADDRESSES));
 		} else if(command == "history" && (!history_limit || history_limit > 1000)) {
 			throw std::logic_error("limit needs to be between 1 and 1000");
 		} else {

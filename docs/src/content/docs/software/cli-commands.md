@@ -50,7 +50,7 @@ To show recent transaction history: `mmxwallet history [--limit <count>]`
 History shows only MMX by default. Use `--currency <token_address|symbol>` to show another currency, or `--currency all`
 to show all currencies. Every currency with an exactly matching symbol is included. History defaults to 20 entries and
 accepts a limit from 1 to 1000. Entries are printed oldest first, with the latest entry last. Use
-`--num-addresses <count>` to include additional derived addresses.
+`--num-addresses <count>` to include additional derived addresses, up to a hard limit of 10.
 
 To transfer MMX: `mmxwallet send --target <address> --amount <value>`
 
