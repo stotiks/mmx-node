@@ -37,8 +37,8 @@ import rules from "@/helpers/rules";
 
 import WPasswordInput from "@/components/UI/WPasswordInput.vue";
 
-const newPassword = defineModel("newPassword", { type: String });
-const newPasswordConfirm = defineModel("newPasswordConfirm", { type: String });
+const newPassword = defineModel("newPassword", { type: String, required: true });
+const newPasswordConfirm = defineModel("newPasswordConfirm", { type: String, required: true });
 
 const matchRule = computed(() => (v) => v === newPassword.value || "Passwords do not match.");
 
