@@ -12,6 +12,61 @@ With a binary package install, just open a new terminal. On Windows search for `
 
 To run any `mmx` commands (except `mmx wallet create`), the node needs to be running. See [Getting Started](../../guides/getting-started/) to read on how to start it.
 
+## Standalone Wallet CLI
+
+`mmxwallet` keeps the seed and signs transactions locally, but gets chain state and submits signed transactions through
+the public RPC. It does not need a local MMX node. The default RPC is `rpc.mmx.network`; use `--rpc <URL>` to select
+another public RPC.
+
+To create a wallet: `mmxwallet create [--with-passphrase]`
+
+To import a wallet from its mnemonic seed phrase: `mmxwallet import [--with-passphrase]`
+
+Wallet files use the `mmxwallet_<fingerprint>.dat` naming convention so they do not collide with node-wallet files.
+Creating or importing a wallet makes it active. List wallets with `mmxwallet list`, then persistently select the active
+wallet by list index or fingerprint with `mmxwallet use <index|fingerprint>`. The selection is stored in
+`mmxwallet.json`.
+
+Use `--wallet <fingerprint>` with any wallet command to select a wallet for that invocation without changing the active
+wallet. One-shot selection deliberately does not accept list indices. For example:
+`mmxwallet send --wallet <fingerprint> --target <address> --amount <value>`.
+
+To show the first address: `mmxwallet address`
+
+To show every derived address: `mmxwallet addresses --num-addresses <count>`
+
+To show the primary address and mnemonic seed phrase: `mmxwallet mnemonic`
+
+To print only the raw word list: `mmxwallet get mnemonic`
+
+To show the MMX balance: `mmxwallet balance`
+
+To show a token balance: `mmxwallet balance --currency <token_address|symbol>`
+
+To show all currency balances: `mmxwallet balance --currency all`
+
+To show recent transaction history: `mmxwallet history [--limit <count>]`
+
+History shows only MMX by default. Use `--currency <token_address|symbol>` to show another currency, or `--currency all`
+to show all currencies. Every currency with an exactly matching symbol is included. History defaults to 20 entries and
+accepts a limit from 1 to 1000. Entries are printed oldest first, with the latest entry last. Use
+`--num-addresses <count>` to include additional derived addresses.
+
+To transfer MMX: `mmxwallet send --target <address> --amount <value>`
+
+To transfer a token: `mmxwallet send --target <address> --amount <value> --currency <token_address>`
+
+To check the configured public RPC: `mmxwallet info`
+
+By default wallets are stored in `$MMX_HOME`, or `$HOME/.mmx` when `MMX_HOME` is not set. Existing `wallet.dat` and
+`wallet_<fingerprint>.dat` node-wallet files are also discovered, but new files are always created with the distinct
+`mmxwallet_` prefix. Use `--file <path>` to select another key file directly. The key file format remains compatible
+with the existing MMX wallet and GUI.
+
+The optional passphrase changes key derivation; it does not encrypt the seed stored in the wallet file. Keep the key
+file and the mnemonic backup private. Only public addresses and signed transactions are sent to the RPC. `curl` is
+required for HTTPS RPC access.
+
 ## Node CLI
 
 To check on the node: `mmx node info`
