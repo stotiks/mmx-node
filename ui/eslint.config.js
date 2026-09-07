@@ -5,13 +5,13 @@ import pluginVue from "eslint-plugin-vue";
 import pluginQuery from "@tanstack/eslint-plugin-query";
 import pluginSecurity from "eslint-plugin-security";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
-import { defineConfig } from "eslint/config";
+import { defineConfig, globalIgnores, includeIgnoreFile } from "eslint/config";
 
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
-import { includeIgnoreFile } from "@eslint/compat";
+import { fileURLToPath } from "node:url";
 
-const gitignorePath = join(import.meta.dirname, ".gitignore");
+const gitignorePath = fileURLToPath(new URL(".gitignore", import.meta.url));
 
 let autoImportConfig = { globals: {} };
 try {
@@ -21,7 +21,8 @@ try {
 }
 
 export default defineConfig([
-    includeIgnoreFile(gitignorePath),
+    includeIgnoreFile(gitignorePath, { gitignoreResolution: true }),
+    globalIgnores(["dist/**/*"], "Ignore Build Directory"),
 
     {
         languageOptions: {

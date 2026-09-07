@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "mkdir -p dist && rm -rf dist/* || true",
-    "lint": "bunx eslint ./src ./src-bex --fix",
+    "lint": "bunx eslint ./ --fix",
     "format": "bunx prettier --write \"**/*.{js,vue,scss,html,md,json}\" --list-different --ignore-path .gitignore --ignore-path .prettierignore",
     "dev": "bunx vite",
     "build": "bunx vite build",
