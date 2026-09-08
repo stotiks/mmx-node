@@ -782,7 +782,9 @@ void print_help()
 		<< "  mmxwallet history [--wallet FINGERPRINT] [--currency ADDRESS|SYMBOL|all] [--limit N]\n"
 		<< "                    [--num-addresses N] [--rpc URL]\n"
 		<< "  mmxwallet send [--wallet FINGERPRINT] --target ADDRESS --amount VALUE\n"
-		<< "                 [--currency ADDRESS] [--memo TEXT] [--yes]\n"
+		<< "                 [--currency ADDRESS] [--memo TEXT] [--transaction PATH]\n"
+		<< "                 [--yes] [--json]\n"
+		<< "  mmxwallet broadcast --transaction PATH [--rpc URL] [--json]\n"
 		<< "  mmxwallet info [--rpc URL]\n\n"
 		<< "Defaults:\n"
 		<< "  RPC: rpc.mmx.network\n"
@@ -810,6 +812,7 @@ int main(int argc, char** argv)
 	options["N"] = "num-addresses";
 	options["w"] = "wallet";
 	options["y"] = "yes";
+	options["json"] = "";
 	options["rpc"] = "URL";
 	options["file"] = "PATH";
 	options["amount"] = "VALUE";
@@ -820,6 +823,7 @@ int main(int argc, char** argv)
 	options["limit"] = "N";
 	options["num-addresses"] = "N";
 	options["wallet"] = "FINGERPRINT";
+	options["transaction"] = "PATH";
 	options["account"] = "N";
 	options["fee-ratio"] = "VALUE";
 	options["expire-delta"] = "BLOCKS";
@@ -836,6 +840,7 @@ int main(int argc, char** argv)
 		std::string target_string;
 		std::string currency_string;
 		std::string wallet_selector;
+		std::string transaction_file;
 		vnx::optional<std::string> memo;
 		uint32_t account_index = 0;
 		uint32_t num_addresses = 1;
@@ -845,6 +850,7 @@ int main(int argc, char** argv)
 		uint32_t expire_delta = 100;
 		bool with_passphrase = false;
 		bool pre_accept = false;
+		bool json_output = false;
 		mmx::fixed128 value;
 
 		vnx::read_config("$1", command);
@@ -853,6 +859,7 @@ int main(int argc, char** argv)
 		vnx::read_config("target", target_string);
 		vnx::read_config("currency", currency_string);
 		vnx::read_config("wallet", wallet_selector);
+		vnx::read_config("transaction", transaction_file);
 		vnx::read_config("memo", memo);
 		vnx::read_config("account", account_index);
 		vnx::read_config("num-addresses", num_addresses);
@@ -862,6 +869,7 @@ int main(int argc, char** argv)
 		vnx::read_config("expire-delta", expire_delta);
 		vnx::read_config("with-passphrase", with_passphrase);
 		vnx::read_config("yes", pre_accept);
+		vnx::read_config("json", json_output);
 		const auto have_amount = vnx::read_config("amount", value);
 
 		if(command.empty() || command == "help" || command == "--help") {
@@ -977,6 +985,42 @@ int main(int argc, char** argv)
 				std::cout << "Network: " << info["name"].to_string_value() << "\n";
 				std::cout << "Height: " << info["height"].to_string_value() << "\n";
 				std::cout << "Synced: " << (info["is_synced"].to<bool>() ? "yes" : "no") << "\n";
+			}
+			else if(command == "broadcast") {
+				if(transaction_file.empty()) {
+					throw std::logic_error("broadcast requires --transaction PATH");
+				}
+				std::ifstream stream(transaction_file, std::ios::binary);
+				if(!stream) {
+					throw std::runtime_error("failed to read transaction: " + transaction_file);
+				}
+				std::ostringstream encoded;
+				encoded << stream.rdbuf();
+				const auto tx_json = encoded.str();
+				const auto tx = vnx::from_string<mmx::Transaction>(tx_json);
+				const rpc_client_t rpc(rpc_url);
+				const auto params = fetch_params(rpc);
+				check_rpc_state(rpc, params);
+				if(!tx.is_signed() || !tx.is_valid(params)) {
+					throw std::runtime_error("transaction file does not contain a valid signed transaction");
+				}
+				const auto validation = rpc.post_json("/transaction/validate", tx_json).to_object();
+				if(validation["did_fail"].to<bool>()) {
+					throw std::runtime_error("transaction execution would fail: "
+							+ vnx::to_string(validation["error"]));
+				}
+				rpc.post("/transaction/broadcast", tx_json);
+				if(json_output) {
+					vnx::Object result;
+					result["command"] = "broadcast";
+					result["status"] = "broadcast";
+					result["transaction_id"] = tx.id.to_string();
+					result["broadcast"] = true;
+					std::cout << vnx::to_string(vnx::Variant(result)) << "\n";
+				} else {
+					std::cout << "Transaction ID: " << tx.id << "\n";
+					std::cout << "Transaction broadcast successfully.\n";
+				}
 			}
 			else if(command == "mnemonic" || command == "get" || command == "address" || command == "addresses"
 					|| command == "balance" || command == "history" || command == "send") {
@@ -1103,18 +1147,53 @@ int main(int argc, char** argv)
 						if(total_fee > tx->max_fee_amount) {
 							throw std::runtime_error("RPC returned a transaction fee above the signed maximum");
 						}
+						if(!transaction_file.empty()) {
+							std::ofstream transaction_stream(transaction_file,
+									std::ios::binary | std::ios::trunc);
+							if(!transaction_stream) {
+								throw std::runtime_error("failed to write transaction: " + transaction_file);
+							}
+							transaction_stream << tx_json;
+							transaction_stream.close();
+							std::filesystem::permissions(transaction_file,
+									std::filesystem::perms::owner_read | std::filesystem::perms::owner_write,
+									std::filesystem::perm_options::replace);
+						}
 
-						std::cout << "Amount: " << format_amount(amount, decimals) << " " << symbol << "\n";
-						std::cout << "Target: " << target << "\n";
-						std::cout << "Fee: " << format_amount(total_fee, params->decimals) << " MMX\n";
-						std::cout << "Expires: " << tx->expires << " (current height " << state.height << ")\n";
-						std::cout << "Transaction ID: " << tx->id << "\n";
-
-						if(pre_accept || accept_prompt()) {
+						const bool broadcast = pre_accept || (!json_output && accept_prompt());
+						if(broadcast) {
 							rpc.post("/transaction/broadcast", tx_json);
-							std::cout << "Transaction broadcast successfully.\n";
+						}
+						if(json_output) {
+							vnx::Object result;
+							result["command"] = "send";
+							result["status"] = broadcast ? "broadcast" : "validated";
+							result["transaction_id"] = tx->id.to_string();
+							result["amount"] = format_amount(amount, decimals);
+							result["amount_atomic"] = amount.to_string();
+							result["currency"] = symbol;
+							result["currency_address"] = currency.to_string();
+							result["target"] = target.to_string();
+							result["fee"] = format_amount(total_fee, params->decimals);
+							result["fee_atomic"] = total_fee.to_string();
+							result["expires_height"] = tx->expires;
+							result["current_height"] = state.height;
+							result["broadcast"] = broadcast;
+							if(memo) {
+								result["memo"] = *memo;
+							}
+							std::cout << vnx::to_string(vnx::Variant(result)) << "\n";
 						} else {
+							std::cout << "Amount: " << format_amount(amount, decimals) << " " << symbol << "\n";
+							std::cout << "Target: " << target << "\n";
+							std::cout << "Fee: " << format_amount(total_fee, params->decimals) << " MMX\n";
+							std::cout << "Expires: " << tx->expires << " (current height " << state.height << ")\n";
+							std::cout << "Transaction ID: " << tx->id << "\n";
+							if(broadcast) {
+								std::cout << "Transaction broadcast successfully.\n";
+							} else {
 							std::cout << "Transaction not broadcast.\n";
+							}
 						}
 					}
 				}
@@ -1125,7 +1204,16 @@ int main(int argc, char** argv)
 		}
 	}
 	catch(const std::exception& ex) {
-		std::cerr << "Error: " << ex.what() << "\n";
+		bool json_output = false;
+		vnx::read_config("json", json_output);
+		if(json_output) {
+			vnx::Object error;
+			error["status"] = "error";
+			error["error"] = ex.what();
+			std::cerr << vnx::to_string(vnx::Variant(error)) << "\n";
+		} else {
+			std::cerr << "Error: " << ex.what() << "\n";
+		}
 		exit_code = 1;
 	}
 
