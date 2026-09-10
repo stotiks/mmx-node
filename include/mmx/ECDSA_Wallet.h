@@ -24,6 +24,13 @@
 
 namespace mmx {
 
+// A recoverable wallet-liquidity condition, distinct from invalid requests or
+// signing failures. CLI callers can wait for replenishment without parsing prose.
+class insufficient_wallet_funds : public std::logic_error {
+public:
+	using std::logic_error::logic_error;
+};
+
 class ECDSA_Wallet {
 public:
 	const account_t config;
@@ -323,7 +330,7 @@ public:
 			tx->inputs.push_back(in);
 		}
 		if(left) {
-			throw std::logic_error("not enough funds");
+			throw insufficient_wallet_funds("not enough funds");
 		}
 	}
 
@@ -522,7 +529,7 @@ public:
 					if(max_amount >= static_fee) {
 						tx->sender = max_address;
 					} else {
-						throw std::logic_error("insufficient funds for tx fee");
+						throw insufficient_wallet_funds("insufficient funds for tx fee");
 					}
 				}
 			}
