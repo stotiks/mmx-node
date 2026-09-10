@@ -1210,7 +1210,7 @@ int main(int argc, char** argv)
 			vnx::Object error;
 			error["status"] = "error";
 			error["error"] = ex.what();
-			error["code"] = dynamic_cast<const mmx::insufficient_wallet_funds*>(&ex)
+			error["code"] = dynamic_cast<const mmx::insufficient_funds*>(&ex)
 					? "insufficient_funds" : "wallet_error";
 			std::cerr << vnx::to_string(vnx::Variant(error)) << "\n";
 		} else {
